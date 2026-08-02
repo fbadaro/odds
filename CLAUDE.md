@@ -4,10 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This repository currently contains **only specification documents** — no source code, build tooling, or git repository has been initialized yet. Before writing code, check whether that has changed (`ls`, `git status`) since this file may be stale relative to the actual state of the repo.
+This repository currently contains **only specification documents** — no source code or build tooling exists yet. Before writing code, check whether that has changed (`ls`, `git status`) since this file may be stale relative to the actual state of the repo.
 
 - `PRD.md` — Product requirements for ODDS (Open Domain Driven Specification): a client-side, browser-only DSL and interactive "playground" for writing DDD (Domain-Driven Design) context maps as text and rendering them as diagrams.
-- `RULES-EN.md` / `RULES-PT.md` — The DDD conceptual reference (Team Relationships, Context Map Patterns) and the full semantic validation spec for the ODDS language, in English and Portuguese respectively. These two files are parallel translations — keep them in sync if either is edited.
+- `RULES-EN.md` / `RULES-PT.md` — The DDD conceptual reference (Team Relationships, Context Map Patterns), the Context Properties (metadata) reference, and the full semantic validation spec for the ODDS language, in English and Portuguese respectively. These two files are parallel translations — keep them in sync if either is edited.
+- `GRAMMAR.md` — The authoritative EBNF syntax for the ODDS language (lexical rules, block structure, Context Map syntax). This is the source of truth for anything about the *form* of a valid `.odds` file, as opposed to `RULES.md`, which covers *meaning*.
+- `AST_SCHEMA.md` — TypeScript interfaces for the Abstract Syntax Tree the parser must produce, derived 1:1 from `GRAMMAR.md`. This is the data contract between the parser, the semantic validator (Visitor), and the visualizer.
 
 ## What ODDS is (read PRD.md and RULES-EN.md before implementing)
 
@@ -19,16 +21,9 @@ Key design constraints from the PRD that should shape any implementation:
 - Auto-save of the current workspace and theme (light/dark) to local storage.
 - Export to high-resolution vector images.
 
-### DSL grammar (block syntax)
+### DSL grammar
 
-```
-domain [DomainName] {
-  subdomain [core | supporting | generic] [SubdomainName] {
-    context [ContextName]
-    context [NextContextName] [OptionalAttribute]
-  }
-}
-```
+See `GRAMMAR.md` §2–3 for the authoritative, versioned EBNF (block structure, `context` properties, and the `mapping` block syntax) — don't duplicate it here; it drifts. `title` is optional at all three levels (`domain`/`subdomain`/`context`) and, when present, must be the first line of its block. `context` properties are all optional and order-free among themselves.
 
 ### Relationship connectors (Context Map)
 
@@ -47,10 +42,10 @@ domain [DomainName] {
 
 The spec (RULES-EN.md) is the authoritative source for exact error/warning strings and trigger conditions. Any parser/validator implementation must distinguish:
 
-- **Critical errors** (block rendering): orphan context (context outside a subdomain), orphan subdomain (subdomain outside a domain), phantom reference (relationship references an undeclared context), invalid subdomain type (anything other than `core`/`supporting`/`generic`), misplaced tags (upstream-only tag on the downstream side or vice versa), separation conflict (integration tags combined with `-x-`/`SW`), role conflict (`C` and `S` on the same relationship), and CF+ACL mutual exclusivity.
+- **Critical errors** (block rendering): orphan context (context outside a subdomain), orphan subdomain (subdomain outside a domain), phantom reference (relationship references an undeclared context), duplicate context declaration (same context name reused anywhere in the domain), invalid domain cardinality (a file must declare exactly one `domain`), invalid subdomain type (anything other than `core`/`supporting`/`generic`), misplaced tags (upstream-only tag on the downstream side or vice versa), separation conflict (integration tags combined with `-x-`/`SW`), role conflict (`C` and `S` on the same relationship), and CF+ACL mutual exclusivity.
 - **Design warnings** (render but flag): a `core` subdomain context accepting `CF` or depending on `BBM` (should use `ACL` instead), generic subdomains acting as broad upstream without `OHS`, excessive use of `SK` across the architecture, and undocumented integration contracts (a relationship arrow with no pattern tag — this warning does **not** apply to `-x-` lines, where no tag is expected).
 
-The suggested implementation approach (RULES-EN.md, "Summary for AST Implementation") is a two-pass visitor over the AST: first collect all declared contexts and their parent subdomain's type into a symbol table, then traverse relationship nodes to cross-reference existence and validate positional/conflict rules on tags.
+The suggested implementation approach (RULES-EN.md, "Summary for AST Implementation") is a three-step visitor over the AST: Step 0, verify exactly one `Domain` node exists (stop and report if not); Step 1, traverse subdomains, collecting each declared context and its parent subdomain's type into a symbol table while flagging name collisions; Step 2, traverse relationship nodes to cross-reference existence against that table and validate positional/conflict rules on tags. `AST_SCHEMA.md` §1 is the authoritative list of stable `DiagnosticCode`s (syntax and semantic) — add a code there before adding a new rule to RULES.md.
 
 ## Working in this repo before code exists
 

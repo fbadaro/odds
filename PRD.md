@@ -84,12 +84,30 @@ The parser must recognize block declarations using braces for visual scope inher
 
 ```
 domain [DomainName] {
+  title: "Optional display label"
+
   subdomain [core | supporting | generic] [SubdomainName] {
+    title: "Optional display label"
+
     context [ContextName]
-    context [NextContextName] [OptionalAttribute]
+
+    context [NextContextName] {
+      type: "Free-text classification"
+      description: "Free-text description"
+      responsibilities: ["Responsibility 1", "Responsibility 2"]
+      maturity: experimental | growing | mature | legacy
+      team: "Free-text team name"
+      technology: "Free-text stack"
+    }
+  }
+
+  mapping {
+    [ContextName] --> [OHS, PL] [NextContextName]
   }
 }
 ```
+
+> See `GRAMMAR.md` for the authoritative, versioned EBNF grammar — this snippet is illustrative only and must be kept in sync with it.
 
 ### 4.3. Team relationship connectors
 

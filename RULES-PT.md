@@ -65,21 +65,21 @@ Estas regras garantem a integridade do código e a consistência básica do mapa
 #### A. Validações de Escopo e Hierarquia (Lexical Scoping)
 
 * **Contexto Órfão:** Um `context` não pode existir solto fora de um `subdomain`.
-* *Erro:* `"Um Bounded Context deve obrigatoriamente pertencer a um Subdomínio."*
+* *Erro:* `"Um Bounded Context deve obrigatoriamente pertencer a um Subdomínio."`
 
 
 * **Subdomínio Órfão:** Um `subdomain` não pode existir fora do escopo de um `domain`.
-* *Erro:* `"Declaração de subdomínio inválida fora do escopo principal de 'domain'."*
+* *Erro:* `"Declaração de subdomínio inválida fora do escopo principal de 'domain'."`
 
 
 * **Referência Fantasma no Context Map:** O parser deve ler todas as declarações de contextos primeiro. Quando chegar na seção de relacionamentos, deve checar se os contextos citados existem.
-* *Erro:* `"O contexto 'Pagamento' referenciado no Context Map não foi declarado em nenhum subdomínio."*
+* *Erro:* `"O contexto 'Pagamento' referenciado no Context Map não foi declarado em nenhum subdomínio."`
 
 * **Declaração Duplicada de Contexto:** O nome de um `context` deve ser único em todo o `domain`. O mesmo nome não pode ser declarado em dois `subdomain` diferentes (nem duas vezes no mesmo).
-* *Erro:* `"O contexto 'PaymentGateway' foi declarado mais de uma vez. Nomes de contexto devem ser únicos dentro do domain."*
+* *Erro:* `"O contexto 'PaymentGateway' foi declarado mais de uma vez. Nomes de contexto devem ser únicos dentro do domain."`
 
 * **Cardinalidade Inválida de Domain:** Um arquivo ODDS deve declarar **exatamente um** `domain`. Um arquivo com zero declarações de `domain`, ou com mais de uma, é inválido.
-* *Erro:* `"Um arquivo ODDS deve conter exatamente uma declaração de 'domain'."*
+* *Erro:* `"Um arquivo ODDS deve conter exatamente uma declaração de 'domain'."`
 
 #### B. Validações de Tipagem Estrita
 
@@ -94,11 +94,11 @@ Esta é a parte mais inteligente do parser, baseada na direção das setas (`-->
 
 * **Tags exclusivas de Upstream (Fornecedor):** As tags `[OHS]` (Open Host Service), `[PL]` (Published Language) e `[S]` (Supplier) **só podem** aparecer no lado que está fornecendo a informação.
 * *Exemplo Inválido:* `ContextA --> [OHS] ContextB` (O `-->` diz que B é Downstream, mas OHS é padrão de Upstream).
-* *Erro:* `"Padrão Inválido: Um Open Host Service (OHS) só pode ser exposto pelo lado Upstream da integração."*
+* *Erro:* `"Padrão Inválido: Um Open Host Service (OHS) só pode ser exposto pelo lado Upstream da integração."`
 
 
 * **Tags exclusivas de Downstream (Consumidor):** As tags `[ACL]` (Anti-Corruption Layer), `[CF]` (Conformist) e `[C]` (Customer) **só podem** aparecer no lado que consome a informação.
-* *Erro:* `"Padrão Inválido: Uma Anti-Corruption Layer (ACL) só pode ser aplicada no lado Downstream para proteger seu próprio modelo."*
+* *Erro:* `"Padrão Inválido: Uma Anti-Corruption Layer (ACL) só pode ser aplicada no lado Downstream para proteger seu próprio modelo."`
 
 
 * **Tags Mútuas Exclusivas:** As tags `[SK]` (Shared Kernel) e `[P]` (Partnership) exigem bidirecionalidade.
@@ -115,7 +115,7 @@ Esta é a parte mais inteligente do parser, baseada na direção das setas (`-->
 
 * **Conflitos de Papel:** Um contexto não pode ser `[C]` (Customer) e `[S]` (Supplier) simultaneamente na mesma relação.
 * **Conflito de Proteção:** Não faz sentido um contexto ser `[CF]` (Conformist - aceita tudo) e ter um `[ACL]` (Anti-Corruption Layer - protege e traduz) para a mesma integração.
-* *Erro:* `"Conflito de Padrões: Um contexto não pode ser Conformist e ter uma Anti-Corruption Layer simultaneamente."*
+* *Erro:* `"Conflito de Padrões: Um contexto não pode ser Conformist e ter uma Anti-Corruption Layer simultaneamente."`
 
 ---
 
@@ -127,17 +127,17 @@ Estas validações não quebram o desenho, mas podem colocar um ícone de alerta
 
 * **Core Domain se Conformando ou Herdando Lama:** O `core` é a maior vantagem competitiva da empresa. Se ele é refém de sistemas externos, o negócio corre risco.
 * *Gatilho:* Um contexto dentro de um `subdomain core` recebendo uma seta com `[CF]` (Conformist) ou se conectando a um sistema com `[BBM]` (Big Ball of Mud).
-* *Aviso:* `"⚠️ Risco Estratégico: Um contexto do Core Domain está se conformando ao modelo de outro sistema. Considere utilizar um [ACL] para proteger sua vantagem competitiva."*
+* *Aviso:* `"⚠️ Risco Estratégico: Um contexto do Core Domain está se conformando ao modelo de outro sistema. Considere utilizar um [ACL] para proteger sua vantagem competitiva."`
 
 
 * **Core Domain Focado em Infraestrutura/Prateleira:**
 * *Gatilho:* Se muitos padrões `generic` começarem a ditar regras (sendo amplamente Upstream sem ACL nos consumidores).
-* *Aviso:* `"⚠️ Soluções Genéricas devem idealmente fornecer serviços bem definidos [OHS]. Cuidado com o acoplamento excessivo."*
+* *Aviso:* `"⚠️ Soluções Genéricas devem idealmente fornecer serviços bem definidos [OHS]. Cuidado com o acoplamento excessivo."`
 
 
 * **Excesso de Shared Kernel:**
 * *Gatilho:* Múltiplos contextos usando `[SK]` na arquitetura.
-* *Aviso:* `"⚠️ O uso excessivo de Shared Kernel aumenta drasticamente o acoplamento entre equipes. Utilize com parcimônia."*
+* *Aviso:* `"⚠️ O uso excessivo de Shared Kernel aumenta drasticamente o acoplamento entre equipes. Utilize com parcimônia."`
 
 * **Contrato de Integração Não Documentado:**
 * *Gatilho:* Uma seta de relacionamento (`-->`, `<--` ou `<->`) entre dois contextos sem nenhuma tag de Context Map Pattern (ex.: `[OHS]`, `[ACL]`, `[CF]`, `[PL]`, `[SK]`, `[C]`, `[S]`, `[P]`) declarada em nenhum dos lados. Não dispara em linhas `-x-` (Free), onde a ausência de tag é o sinal esperado.
