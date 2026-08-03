@@ -1,0 +1,14 @@
+{
+  "description": "Duas relações diferentes ('Checkout' e 'Orders' com 'PaymentGateway') usam [SK], ambas corretamente bidirecionais (<-> com SK nos dois lados, conforme recomendado em RULES §C). O gatilho é 'múltiplos contextos usando SK na arquitetura' — um padrão agregado do arquivo inteiro, não de uma linha isolada.",
+  "interpretationNote": "Como este é um warning de escopo AGREGADO (não por linha), a convenção adotada aqui é: 1 diagnóstico por arquivo, com o span apontando para a abertura do bloco 'mapping' (não para cada linha individual). RULES.md não define um limiar numérico exato para 'excessivo' — este golden file assume que 2+ relações com SK já configura o gatilho. Esse limiar deveria ser explicitado em RULES.md.",
+  "astGenerated": true,
+  "astNotes": "2 RelationshipNodes com 'SK' em leftTags e rightTags simultaneamente.",
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "EXCESSIVE_SHARED_KERNEL_WARNING",
+      "message": "⚠️ The excessive use of Shared Kernels drastically increases coupling between teams. Use with caution.",
+      "span": { "start": { "line": 11, "column": 3 }, "end": { "line": 11, "column": 12 } }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "description": "'critical' não é um subdomain_type válido (core|supporting|generic). Desde GRAMMAR.md v0.1.8, subdomain_type é 'identifier' livre na gramática — isso PASSA no parsing normalmente (SubdomainNode.subdomainType = 'critical', um valor bruto), e é o Visitor quem rejeita.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "INVALID_SUBDOMAIN_TYPE",
+      "message": "Unknown subdomain type. Use only 'core', 'supporting', or 'generic'.",
+      "span": { "start": { "line": 2, "column": 13 }, "end": { "line": 2, "column": 21 } }
+    }
+  ]
+}

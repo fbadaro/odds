@@ -1,0 +1,22 @@
+domain ECommercePlatform {
+  title: "E-Commerce Platform"
+
+  subdomain core Sales {
+    title: "Vendas"
+    context Checkout {
+      description: "Handles the checkout flow"
+      maturity: mature
+    }
+  }
+
+  subdomain generic Payments {
+    context PaymentGateway {
+      type: "generic"
+      maturity: mature
+    }
+  }
+
+  mapping {
+    Checkout [OHS, PL] --> PaymentGateway
+  }
+}

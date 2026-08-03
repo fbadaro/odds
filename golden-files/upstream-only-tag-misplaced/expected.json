@@ -1,0 +1,13 @@
+{
+  "description": "'Checkout --> [OHS] PaymentGateway': o conector --> torna PaymentGateway (lado direito) o Downstream. [OHS] é uma tag exclusiva de Upstream (RULES §C), mas está do lado direito (rightTags) — logo, mal posicionada.",
+  "astGenerated": true,
+  "astNotes": "RelationshipNode: { left: 'Checkout', leftTags: [], connector: '-->', rightTags: ['OHS'], right: 'PaymentGateway' }",
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "UPSTREAM_ONLY_TAG_MISPLACED",
+      "message": "Invalid Pattern: An Open Host Service (OHS) can only be exposed by the Upstream side of the integration.",
+      "span": { "start": { "line": 11, "column": 18 }, "end": { "line": 11, "column": 23 } }
+    }
+  ]
+}

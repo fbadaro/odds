@@ -1,0 +1,9 @@
+subdomain core Orphan {
+  context Foo
+}
+
+domain Test {
+  subdomain supporting Sales {
+    context Checkout
+  }
+}

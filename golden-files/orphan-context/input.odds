@@ -1,0 +1,7 @@
+domain Test {
+  context Orphan
+
+  subdomain core Sales {
+    context Checkout
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "description": "Arquivo sem nenhum 'domain' declarado (só comentários). Convenção adotada para erros de nível de arquivo (sem um nó específico ao qual apontar): span cobre o arquivo inteiro, do início da linha 1 até o fim da última linha.",
+  "astGenerated": true,
+  "astNotes": "ProgramNode.domains deve ser um array vazio ([]) — a AST em si é válida (0 é um valor sintaticamente aceitável para 'program = { domain_decl }'), só que semanticamente errada. É o Passo 0 do Visitor (RULES.md, Resumo para Implementação da AST) que rejeita e para antes de qualquer outro passo.",
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "INVALID_DOMAIN_CARDINALITY",
+      "message": "An ODDS file must contain exactly one 'domain' declaration.",
+      "span": { "start": { "line": 1, "column": 1 }, "end": { "line": 2, "column": 67 } }
+    }
+  ]
+}

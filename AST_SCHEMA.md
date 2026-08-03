@@ -4,7 +4,7 @@
 
 Este arquivo é o **contrato de dados** entre as três camadas do sistema: Parser → Validador (Visitor) → Visualizador. Define, em TypeScript, a forma exata da Árvore Sintática Abstrata (AST) que o parser produz a partir de um arquivo `.odds` válido sintaticamente (ver `GRAMMAR.md`), e que o Visitor percorre para aplicar as regras semânticas (ver `RULES-EN.md`).
 
-Esta AST corresponde 1:1 à gramática **GRAMMAR.md v0.1.7**. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ainda não criada).
+Esta AST corresponde 1:1 à gramática **GRAMMAR.md v0.1.9**. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`).
 
 **Convenção:** cada nó carrega um campo `span` com a posição de início/fim no arquivo-fonte. Isso é o que viabiliza a navegação clique-a-clique do painel de validação (PRD §5.2 / GH-002) — tanto para erros sintáticos quanto semânticos.
 
@@ -81,6 +81,8 @@ type DiagnosticCode = SyntaxDiagnosticCode | SemanticDiagnosticCode;
 
 > 📝 Cada `SemanticDiagnosticCode` deve ter pelo menos um golden file de teste associado (ver artefato pendente "suíte de testes golden files"). Esta lista é a fonte de verdade de quais regras do `RULES.md` já têm um `code` estável atribuído — se uma regra nova for adicionada ao `RULES.md`, adicione o code correspondente aqui primeiro.
 
+> ⚠️ **Nota especial sobre `ORPHAN_CONTEXT` e `ORPHAN_SUBDOMAIN`:** apesar de agrupados aqui junto aos demais `SemanticDiagnosticCode` (por afinidade temática com `RULES.md` §1.A), esses dois codes **não** são produzidos pelo Visitor percorrendo uma AST já construída. Eles são emitidos **pelo parser**, durante recuperação de erro (ver `GRAMMAR.md` §5.1) — a gramática continua estrita (um `context` só é sintaticamente válido dentro de um `subdomain`, e vice-versa para `subdomain`/`domain`), então um `context`/`subdomain` deslocado nunca vira um nó real na AST. Diferente de `SYNTAX_ERROR`, porém, esses dois diagnósticos **não interrompem** a geração da AST para o restante do arquivo — o parser descarta a declaração malformada e continua.
+
 ---
 
 ## 2. Nó raiz
@@ -116,7 +118,12 @@ type SubdomainType = "core" | "supporting" | "generic";
 
 interface SubdomainNode extends AstNode {
   kind: "Subdomain";
-  subdomainType: SubdomainType;
+  /**
+   * Valor bruto do identifier lido pelo parser (ver GRAMMAR.md v0.1.8: subdomain_type = identifier).
+   * PODE ser inválido — o parser não valida contra SubdomainType, só a AST representa o que foi escrito.
+   * É o Visitor quem valida este campo contra o union SubdomainType e emite INVALID_SUBDOMAIN_TYPE se não bater.
+   */
+  subdomainType: string;
   name: string;
   title?: string;
   contexts: ContextNode[];
@@ -145,7 +152,7 @@ interface ContextNode extends AstNode {
 **Notas de implementação:**
 - `DomainNode.name`, `SubdomainNode.name` e `ContextNode.name` são os identificadores técnicos (usados em `mapping` via `context_ref`) — **não** confundir com `title`, que é só um rótulo de exibição sem função de referência.
 - `ContextNode.properties` é `undefined` (não um objeto vazio) quando o `context` foi declarado sem bloco (`context Checkout`, sem `{ }`). Isso permite ao visualizador diferenciar "sem metadados" de "metadados declarados mas todos opcionais".
-- A checagem `INVALID_SUBDOMAIN_TYPE` (seção RULES.md §1.B) na prática **não deveria ocorrer** se o parser for implementado seguindo `GRAMMAR.md` §2, já que `subdomain_type` é um conjunto fechado de literais na própria gramática (`"core" | "supporting" | "generic"`). Esse code fica mantido na lista por segurança/documentação, mas um parser correto já rejeita valores fora desse conjunto como erro sintático antes de a AST existir.
+- A checagem `INVALID_SUBDOMAIN_TYPE` (seção RULES.md §1.B) é responsabilidade exclusiva do Visitor. Desde `GRAMMAR.md` v0.1.8, `subdomain_type` é um `identifier` livre na gramática (não mais um enum fechado de literais) — precisamente para que este code seja alcançável na prática, e não um caminho morto nunca disparado por um parser correto.
 
 ---
 
@@ -185,7 +192,7 @@ Não faz parte da AST — é uma estrutura intermediária que o Visitor constró
 interface SymbolTableEntry {
   contextName: string;
   subdomainName: string;
-  subdomainType: SubdomainType;
+  subdomainType: string;       // valor bruto — ver nota em SubdomainNode.subdomainType
   node: ContextNode;           // referência ao nó original, para reportar span em erros
 }
 
@@ -287,3 +294,5 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 ## Changelog
 
 - **v0.1.0** — versão inicial, derivada de `GRAMMAR.md` v0.1.7 (todas as pendências da gramática já resolvidas nesse ponto). Define `ProgramNode`, `DomainNode`, `SubdomainNode`, `ContextNode`, `MappingNode`, `RelationshipNode`, a tabela de `DiagnosticCode` sincronizada com `RULES.md`, e a estrutura auxiliar `SymbolTable` usada pelo Visitor.
+- **v0.1.1** — sincronizado com `GRAMMAR.md` v0.1.8: `SubdomainNode.subdomainType` e `SymbolTableEntry.subdomainType` passaram de `SubdomainType` (union fechada) para `string` (valor bruto do parser), já que a gramática abriu `subdomain_type` para `identifier` livre. Isso torna `INVALID_SUBDOMAIN_TYPE` um code de fato alcançável pelo Visitor, corrigindo uma inconsistência encontrada ao desenhar a suíte de golden files.
+- **v0.1.2** — sincronizado com `GRAMMAR.md` v0.1.9: adicionada nota explicando que `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` são emitidos pelo parser durante recuperação de erro, não pelo Visitor — a gramática permanece estrita, então nenhum campo novo foi adicionado à AST (ao contrário do que se cogitou inicialmente).

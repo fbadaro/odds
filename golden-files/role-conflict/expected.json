@@ -1,0 +1,19 @@
+{
+  "description": "'Checkout [C, S] --> PaymentGateway': [C] (Customer) e [S] (Supplier) juntos no mesmo lado (leftTags). ATENÇÃO — este caso é estruturalmente inevitável de gerar 2 diagnósticos simultâneos: como C é downstream-only e S é upstream-only, colocar os dois no mesmo lado sempre viola também a regra de posição para um deles (aqui, C está do lado Upstream/esquerdo, que é errado para uma tag downstream-only). Um validador correto deve emitir AMBOS os diagnósticos abaixo para esta linha, não só ROLE_CONFLICT.",
+  "astGenerated": true,
+  "astNotes": "RelationshipNode: { left: 'Checkout', leftTags: ['C', 'S'], connector: '-->', rightTags: [], right: 'PaymentGateway' }",
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "DOWNSTREAM_ONLY_TAG_MISPLACED",
+      "message": "Invalid Pattern: A Customer (C) tag can only appear on the Downstream side of the integration.",
+      "span": { "start": { "line": 11, "column": 15 }, "end": { "line": 11, "column": 16 } }
+    },
+    {
+      "severity": "error",
+      "code": "ROLE_CONFLICT",
+      "message": "A context cannot be Customer (C) and Supplier (S) simultaneously in the same relationship.",
+      "span": { "start": { "line": 11, "column": 14 }, "end": { "line": 11, "column": 20 } }
+    }
+  ]
+}

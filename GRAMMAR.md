@@ -68,7 +68,7 @@ subdomain_decl  = "subdomain" , subdomain_type , identifier , "{" ,
                      { context_decl } ,
                    "}" ;
 
-subdomain_type  = "core" | "supporting" | "generic" ;
+subdomain_type  = identifier ;
 
 title_decl      = "title" , ":" , string_literal ;
 
@@ -103,7 +103,7 @@ maturity_value  = "experimental" | "growing" | "mature" | "legacy" ;
 
 **Erros sintáticos cobertos nesta seção** (distintos dos erros semânticos de `RULES.md`):
 - `domain` sem identificador → erro de parsing puro.
-- `subdomain` com `subdomain_type` fora de `core | supporting | generic` — **atenção**: tecnicamente o parser aceita qualquer `identifier` aqui e a rejeição de valores inválidos (`"Invalid Subdomain Modifiers"`, RULES §1.B) é uma validação semântica pós-parsing, não uma regra léxica. Mantemos isso como nota para quem for implementar: não trave o parser nessa checagem, deixe para o Visitor/validador gerar o erro com mensagem amigável.
+- ✅ **Decisão fechada (v0.1.8):** `subdomain` com `subdomain_type` fora de `core | supporting | generic` **não** é erro sintático. A gramática aceita qualquer `identifier` na posição de `subdomain_type` (ver produção na seção 2) — a rejeição de valores inválidos (`"Invalid Subdomain Modifiers"`, RULES §1.B, code `INVALID_SUBDOMAIN_TYPE`) é responsabilidade exclusiva do Visitor/validador semântico, que gera uma mensagem amigável apontando os três valores aceitos. Isso resolve uma contradição que existia entre esta gramática (que antes definia `subdomain_type` como enum fechado, tornando o code semântico teoricamente inalcançável) e a intenção original documentada em `RULES.md`. Não trave o parser nessa checagem.
 
 ---
 
@@ -191,6 +191,21 @@ Correspondência com a AST (ver `AST_SCHEMA.md`, a ser criado):
 
 Um erro sintático deve **impedir totalmente** a geração da AST (não há árvore válida para percorrer). Um erro semântico crítico impede a *renderização*, mas a AST ainda existe e pode ser usada pelo editor para navegação/highlight.
 
+### 5.1 Exceção obrigatória: recuperação de erro para `context`/`subdomain` deslocados
+
+`ORPHAN_CONTEXT` e `ORPHAN_SUBDOMAIN` (`RULES.md` §1.A) são um caso especial que não se encaixa perfeitamente na dicotomia acima, e merece uma regra própria de implementação:
+
+Estruturalmente, a gramática (seção 2) **permanece estrita**: `context_decl` só é uma produção válida dentro de `subdomain_decl`, e `subdomain_decl` só é válido dentro de `domain_decl`. Isso é deliberado — a hierarquia Domain → Subdomain → Context é garantida pela própria forma da linguagem, não apenas por convenção ou checagem posterior. Um `context` solto direto num `domain`, ou um `subdomain` solto fora de qualquer `domain`, **não** correspondem a nenhuma produção da gramática.
+
+Isso normalmente significaria `SYNTAX_ERROR` puro (parser aborta, nenhuma AST é gerada — ver tabela acima). Só que, diferente de outros erros sintáticos genéricos (ex: conector desconhecido, chave não fechada), este caso específico tem uma mensagem amigável já definida em `RULES.md` (`"A Bounded Context must belong to a Subdomain."` / `"Invalid subdomain declaration outside the main 'domain' scope."`) e representa um erro estrutural comum o bastante para merecer tratamento especial.
+
+✅ **Decisão fechada:** uma implementação em conformidade **deve** usar recuperação de erro ("panic-mode recovery") especificamente para esses dois casos: ao encontrar um `context` diretamente dentro de um `domain` (fora de qualquer `subdomain`), ou um `subdomain` fora do escopo de qualquer `domain`, o parser não deve abortar a geração da AST inteira. Em vez disso, deve:
+1. Descartar a declaração malformada (consumindo os tokens até um ponto de recuperação seguro — ex: a chave de fechamento correspondente, ou a próxima palavra-chave reconhecida no mesmo nível de aninhamento).
+2. Emitir um `Diagnostic` com o code `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` (ver `AST_SCHEMA.md` §1) e o `span` exato da declaração descartada.
+3. **Continuar parseando o restante do arquivo normalmente.**
+
+Diferente de um `SYNTAX_ERROR` comum, este diagnóstico **não impede** que uma AST (parcial, mas válida para o resto do arquivo) seja gerada — isso é essencial para que o painel de validação (PRD §5.2/GH-002) possa reportar múltiplos problemas do arquivo de uma vez, em vez de forçar o usuário a corrigir um erro estrutural por vez antes de ver qualquer outro diagnóstico. Note que, por essa razão, `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` são produzidos **pelo parser durante a recuperação**, não pelo Visitor semântico — mesmo estando listados junto aos demais erros críticos em `RULES.md` §1.A por motivo de organização temática (todos são "Validações de Escopo e Hierarquia"), não por fase de implementação. Ver nota correspondente em `AST_SCHEMA.md` §1.
+
 ---
 
 ## 6. Evolução futura (Fase 4 — Tactical Design)
@@ -224,6 +239,8 @@ Todas as pendências originais foram resolvidas. Nenhuma pendência em aberto ne
 - ✅ **`type` como enum fechado**: decidido manter texto livre permanentemente. Ver seção 2.
 - ✅ **Escape de aspas em `string_literal`**: adicionado suporte a `\"` e `\\`. Ver seção 1.
 - ✅ **Palavras reservadas**: `reserved_word` não pode ser usada como `identifier` (case-sensitive). Ver seção 1.
+- ✅ **Contradição em `subdomain_type`**: gramática aberta (`identifier`), rejeição de valores fica 100% a cargo do Visitor (code `INVALID_SUBDOMAIN_TYPE`). Ver seção 2. Encontrada durante o desenho da suíte de golden files.
+- ✅ **`ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` código morto**: gramática permanece estrita (hierarquia garantida pela forma), mas o parser é obrigado a usar recuperação de erro para esses dois casos específicos, em vez de abortar a AST inteira. Ver seção 5.1. Também encontrada durante o desenho da suíte de golden files.
 
 ### Ação pendente fora desta gramática
 
@@ -243,3 +260,5 @@ Duas decisões registradas aqui ainda precisam ser propagadas para outro artefat
 - **v0.1.5** — resolvida a pendência de rótulos/display names: adicionada a propriedade `title` (string livre) a `domain`, `subdomain` e `context`, com posição fixa (sempre a primeira declaração do bloco, quando presente). `title` foi extraído como produção própria (`title_decl`), separada de `property_key`, para ser reutilizável nos três níveis sem duplicar regras.
 - **v0.1.6** — resolvidas as duas últimas pendências: `type` permanece texto livre permanentemente (decisão consciente, não enum); `string_literal` passou a suportar escape via barra invertida (`\"` e `\\`). **Todas as pendências originais da gramática estão resolvidas nesta versão.**
 - **v0.1.7** — fechamento de lacunas identificadas em revisão final: (1) adicionada `reserved_word`, proibindo identificadores que coincidam com palavras-chave da linguagem; (2) estendida a regra de vírgula sobrando (já aplicada a `tag_group`) para `string_list`, por consistência; (3) registrada como ação pendente a formalização da regra de unicidade de nomes de `context` em `RULES.md`, junto da regra de cardinalidade de `domain`.
+- **v0.1.8** — corrigida contradição interna sobre `subdomain_type`: a produção passou de enum fechado (`"core" | "supporting" | "generic"`) para `identifier` livre, tornando `INVALID_SUBDOMAIN_TYPE` (RULES §1.B) um code semântico de fato alcançável pelo Visitor, em vez de código morto. Encontrado durante o desenho da suíte de golden files — ver `TEST_SUITE.md`.
+- **v0.1.9** — resolvido código morto em `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN`: ao contrário de `subdomain_type`, a gramática **não** foi afrouxada (a hierarquia domain→subdomain→context continua estrutural). Em vez disso, adicionada seção 5.1 exigindo que o parser implemente recuperação de erro para esses dois casos específicos, permitindo que o restante do arquivo ainda seja validado mesmo com um `context`/`subdomain` deslocado. Também encontrado durante o desenho da suíte de golden files.

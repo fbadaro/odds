@@ -64,9 +64,11 @@ These rules ensure code integrity and basic context map consistency.
 
 * **Orphan Context:** A `context` cannot exist detached outside a `subdomain`.
   * *Error:* `"A Bounded Context must belong to a Subdomain."`
+  * *Note:* detected by the **parser**, via error recovery, not by the Visitor — see `GRAMMAR.md` §5.1. The grammar itself remains strict (a `context` is only ever syntactically valid inside a `subdomain`); this diagnostic does not block AST generation for the rest of the file.
 
 * **Orphan Subdomain:** A `subdomain` cannot exist outside the scope of a `domain`.
   * *Error:* `"Invalid subdomain declaration outside the main 'domain' scope."`
+  * *Note:* same parser-level recovery mechanism as Orphan Context above.
 
 * **Phantom Reference in Context Map:** The parser must read all context declarations first. When it reaches the relationships section, it must verify that the referenced contexts actually exist.
   * *Error:* `"The context 'Payment' referenced in the Context Map was not declared in any subdomain."`

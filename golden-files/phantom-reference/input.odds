@@ -1,0 +1,9 @@
+domain Test {
+  subdomain generic Payments {
+    context PaymentGateway
+  }
+
+  mapping {
+    Checkout --> PaymentGateway
+  }
+}

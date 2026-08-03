@@ -1,0 +1,14 @@
+{
+  "description": "'PaymentGateway --> [C] Checkout': PaymentGateway pertence a um subdomain 'generic' e está do lado Upstream (esquerda, -->), sem declarar [OHS]. [C] no lado direito evita que UNDOCUMENTED_CONTRACT_WARNING dispare junto (há uma tag presente), isolando este teste para GENERIC_WITHOUT_OHS_WARNING.",
+  "interpretationNote": "O texto original de RULES.md para esta regra é ambíguo ('If many generic patterns start dictating rules... being widely Upstream without ACL on consumers') — não deixa claro se o gatilho é por RELACIONAMENTO INDIVIDUAL (um generic Upstream sem OHS numa única linha) ou um padrão AGREGADO no arquivo inteiro (múltiplas ocorrências). Este golden file assume a interpretação mais simples (relacionamento individual), por consistência com as demais regras de tag, que são todas avaliadas por linha. Isso deveria ser esclarecido em RULES.md antes da implementação final.",
+  "astGenerated": true,
+  "astNotes": "RelationshipNode: { left: 'PaymentGateway', leftTags: [], connector: '-->', rightTags: ['C'], right: 'Checkout' }. PaymentGateway pertence ao subdomain 'Payments' (subdomainType: 'generic').",
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "GENERIC_WITHOUT_OHS_WARNING",
+      "message": "⚠️ Generic solutions should ideally provide well-defined services [OHS]. Beware of excessive coupling.",
+      "span": { "start": { "line": 11, "column": 5 }, "end": { "line": 11, "column": 36 } }
+    }
+  ]
+}

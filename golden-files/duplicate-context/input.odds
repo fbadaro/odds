@@ -1,0 +1,9 @@
+domain Test {
+  subdomain core Sales {
+    context PaymentGateway
+  }
+
+  subdomain generic Payments {
+    context PaymentGateway
+  }
+}

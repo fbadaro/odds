@@ -1,0 +1,12 @@
+{
+  "description": "Conector desconhecido ('==>' não é -->, <--, <-> ou -x-). Erro sintático puro: nenhuma AST válida deve ser gerada para este arquivo.",
+  "astGenerated": false,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "SYNTAX_ERROR",
+      "message": "Unexpected token '==>': expected a valid connector (-->, <--, <->, -x-).",
+      "span": { "start": { "line": 7, "column": 14 }, "end": { "line": 7, "column": 17 } }
+    }
+  ]
+}

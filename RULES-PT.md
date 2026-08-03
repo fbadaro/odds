@@ -66,10 +66,12 @@ Estas regras garantem a integridade do código e a consistência básica do mapa
 
 * **Contexto Órfão:** Um `context` não pode existir solto fora de um `subdomain`.
 * *Erro:* `"Um Bounded Context deve obrigatoriamente pertencer a um Subdomínio."`
+* *Nota:* detectado pelo **parser**, via recuperação de erro, não pelo Visitor — ver `GRAMMAR.md` §5.1. A gramática permanece estrita (um `context` só é sintaticamente válido dentro de um `subdomain`); este diagnóstico não bloqueia a geração da AST para o resto do arquivo.
 
 
 * **Subdomínio Órfão:** Um `subdomain` não pode existir fora do escopo de um `domain`.
 * *Erro:* `"Declaração de subdomínio inválida fora do escopo principal de 'domain'."`
+* *Nota:* mesmo mecanismo de recuperação do parser descrito em Contexto Órfão acima.
 
 
 * **Referência Fantasma no Context Map:** O parser deve ler todas as declarações de contextos primeiro. Quando chegar na seção de relacionamentos, deve checar se os contextos citados existem.

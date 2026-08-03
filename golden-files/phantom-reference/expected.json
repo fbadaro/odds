@@ -1,0 +1,12 @@
+{
+  "description": "O mapping referencia 'Checkout', que nunca foi declarado em nenhum subdomain. Erro semântico puro, detectado pelo Visitor no Passo 2 (RULES.md, Resumo para Implementação da AST) — a AST é válida e completa, o problema está na resolução da referência.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "PHANTOM_REFERENCE",
+      "message": "The context 'Checkout' referenced in the Context Map was not declared in any subdomain.",
+      "span": { "start": { "line": 7, "column": 5 }, "end": { "line": 7, "column": 13 } }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+domain Sales {
+  subdomain core Deals {
+    context Checkout
+  }
+}
+
+domain Support {
+  subdomain supporting Tickets {
+    context Helpdesk
+  }
+}

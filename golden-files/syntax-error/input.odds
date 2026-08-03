@@ -1,0 +1,9 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  mapping {
+    Checkout ==> PaymentGateway
+  }
+}

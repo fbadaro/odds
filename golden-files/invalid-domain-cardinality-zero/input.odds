@@ -1,0 +1,2 @@
+// Arquivo .odds sem nenhuma declaração de domain.
+// Deve disparar INVALID_DOMAIN_CARDINALITY no Passo 0 do Visitor.
