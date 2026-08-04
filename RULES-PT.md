@@ -111,8 +111,11 @@ Esta é a parte mais inteligente do parser, baseada na direção das setas (`-->
 #### D. Validações de Conflito e Exclusividade
 
 * **Conflito de Separação:** Se o conector `-x-` (Free) ou a tag `[SW]` (Separate Ways) for usada, não pode haver indicativo de integração técnica na mesma linha.
-* *Exemplo Inválido:* `ContextA [OHS] -x- [ACL] ContextB`
-* *Erro:* `"Conflito Semântico: O relacionamento Separate Ways (-x-) indica ausência de integração. Remova as tags [OHS] e [ACL]."`
+* *Regra:* `[SW]` só pode aparecer numa linha `-x-`. Usar `[SW]` junto de um conector direcional (`-->`, `<--` ou `<->`) já é, por si só, um conflito — o conector em si é o "indicativo de integração técnica" que contradiz Separate Ways, independentemente de qualquer outra tag de padrão presente.
+* *Exemplo Inválido (tag vs. tag):* `ContextA [OHS] -x- [ACL] ContextB`
+* *Erro (tag vs. tag):* `"Conflito Semântico: O relacionamento Separate Ways (-x-) indica ausência de integração. Remova as tags [OHS] e [ACL]."`
+* *Exemplo Inválido (tag vs. conector):* `ContextA [SW] --> ContextB`
+* *Erro (tag vs. conector):* `"Conflito Semântico: A tag [SW] (Separate Ways) só pode ser usada com o conector Free (-x-). Remova [SW] ou troque o conector para -x-."`
 
 
 * **Conflitos de Papel:** Um contexto não pode ser `[C]` (Customer) e `[S]` (Supplier) simultaneamente na mesma relação.
@@ -128,17 +131,21 @@ Estas validações não quebram o desenho, mas podem colocar um ícone de alerta
 #### E. Avisos de Alinhamento de Negócio (Espaço do Problema)
 
 * **Core Domain se Conformando ou Herdando Lama:** O `core` é a maior vantagem competitiva da empresa. Se ele é refém de sistemas externos, o negócio corre risco.
-* *Gatilho:* Um contexto dentro de um `subdomain core` recebendo uma seta com `[CF]` (Conformist) ou se conectando a um sistema com `[BBM]` (Big Ball of Mud).
-* *Aviso:* `"⚠️ Risco Estratégico: Um contexto do Core Domain está se conformando ao modelo de outro sistema. Considere utilizar um [ACL] para proteger sua vantagem competitiva."`
+* *Escopo:* Por relacionamento, apenas linhas direcionais (`-->` ou `<--`) em que um contexto pertencente a um subdomínio `core` está do lado Downstream.
+* *Gatilho:* Dispara quando qualquer uma das condições vale nessa relação — (a) o lado Downstream (o próprio contexto `core`) carrega `[CF]`, ou (b) o lado Upstream (o outro contexto) carrega `[BBM]`. As duas condições são avaliadas independentemente; se ambas valem na mesma linha, emita um único aviso, não dois.
+* *Aviso (condição a — `[CF]`):* `"⚠️ Risco Estratégico: Um contexto do Core Domain está se conformando ao modelo de outro sistema. Considere utilizar um [ACL] para proteger sua vantagem competitiva."`
+* *Aviso (condição b — `[BBM]`):* `"⚠️ Risco Estratégico: Um contexto do Core Domain depende de um sistema Big Ball of Mud. Considere utilizar um [ACL] para proteger sua vantagem competitiva."`
 
 
-* **Core Domain Focado em Infraestrutura/Prateleira:**
-* *Gatilho:* Se muitos padrões `generic` começarem a ditar regras (sendo amplamente Upstream sem ACL nos consumidores).
+* **Core Domain Focado em Infraestrutura/Prateleira (Generic sem OHS):**
+* *Escopo:* Por relacionamento — avaliado independentemente em cada linha direcional (`-->` ou `<--`). Não se aplica a `<->` ou `-x-`, já que `[OHS]` não é uma tag válida em nenhum dos dois.
+* *Gatilho:* O contexto do lado Upstream do relacionamento pertence a um subdomínio `generic` e não possui a tag `[OHS]` declarada nesse lado.
 * *Aviso:* `"⚠️ Soluções Genéricas devem idealmente fornecer serviços bem definidos [OHS]. Cuidado com o acoplamento excessivo."`
 
 
 * **Excesso de Shared Kernel:**
-* *Gatilho:* Múltiplos contextos usando `[SK]` na arquitetura.
+* *Escopo:* Nível de arquivo (agregado) — avaliado uma vez por arquivo, não uma vez por relacionamento.
+* *Gatilho:* O arquivo contém duas ou mais relações usando a tag `[SK]`, independentemente de quais contextos estão envolvidos. Emita um único aviso por arquivo ao atingir esse limiar, não um por relacionamento.
 * *Aviso:* `"⚠️ O uso excessivo de Shared Kernel aumenta drasticamente o acoplamento entre equipes. Utilize com parcimônia."`
 
 * **Contrato de Integração Não Documentado:**

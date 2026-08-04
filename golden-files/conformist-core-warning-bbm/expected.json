@@ -1,0 +1,13 @@
+{
+  "description": "'Checkout <-- [BBM] OldBilling': variante auxiliar de 'conformist-core-warning' que exercita a condição (b) da regra formalizada em RULES.md §2.E — em vez de [CF] no lado Downstream, aqui é [BBM] no lado Upstream (OldBilling) que dispara o aviso. Checkout pertence a um subdomain 'core' e está do lado Downstream (conector <--, então o lado direito OldBilling é Upstream).",
+  "astGenerated": true,
+  "astNotes": "RelationshipNode: { left: 'Checkout', leftTags: [], connector: '<--', rightTags: ['BBM'], right: 'OldBilling' }. Checkout pertence ao subdomain 'Sales' (subdomainType: 'core').",
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "CONFORMIST_CORE_WARNING",
+      "message": "⚠️ Strategic Risk: A Core Domain context depends on a Big Ball of Mud system. Consider using an [ACL] to protect your competitive advantage.",
+      "span": { "start": { "line": 11, "column": 5 }, "end": { "line": 11, "column": 34 } }
+    }
+  ]
+}

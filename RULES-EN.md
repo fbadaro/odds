@@ -103,8 +103,11 @@ This is the most intelligent part of the parser, based on the direction of the a
 #### D. Conflict and Exclusivity Validations
 
 * **Separation Conflict:** If the `-x-` connector (Free) or the `[SW]` tag (Separate Ways) is used, there must not be any technical integration indicators on the same line.
-  * *Invalid Example:* `ContextA [OHS] -x- [ACL] ContextB`
-  * *Error:* `"Semantic Conflict: The Separate Ways relationship (-x-) indicates absence of integration. Remove [OHS] and [ACL] tags."`
+  * *Rule:* `[SW]` may only appear on a `-x-` line. Using `[SW]` together with a directional connector (`-->`, `<--`, or `<->`) is itself a conflict — the connector is, by definition, the "technical integration indicator" that contradicts Separate Ways, regardless of whether any other pattern tag is also present.
+  * *Invalid Example (tag vs. tag):* `ContextA [OHS] -x- [ACL] ContextB`
+  * *Error (tag vs. tag):* `"Semantic Conflict: The Separate Ways relationship (-x-) indicates absence of integration. Remove [OHS] and [ACL] tags."`
+  * *Invalid Example (tag vs. connector):* `ContextA [SW] --> ContextB`
+  * *Error (tag vs. connector):* `"Semantic Conflict: The [SW] (Separate Ways) tag can only be used with the Free connector (-x-). Remove [SW] or change the connector to -x-."`
 
 * **Role Conflicts:** A context cannot be `[C]` (Customer) and `[S]` (Supplier) simultaneously in the same relationship.
 
@@ -120,15 +123,19 @@ These validations do not break the diagram, but they can place a warning icon (�
 #### E. Business Alignment Warnings (Problem Space)
 
 * **Core Domain Conforming or Inheriting Mud:** The `core` is the company's main competitive advantage. If it is held hostage by external systems, the business is at risk.
-  * *Trigger:* A context inside a `core subdomain` receiving an arrow with `[CF]` (Conformist) or connecting to a system with `[BBM]` (Big Ball of Mud).
-  * *Warning:* `"⚠️ Strategic Risk: A Core Domain context is conforming to the model of another system. Consider using an [ACL] to protect your competitive advantage."`
+  * *Scope:* Per relationship, directional lines only (`-->` or `<--`) where a context belonging to a `core` subdomain sits on the Downstream side.
+  * *Trigger:* Fires when either condition holds on that relationship — (a) the Downstream side (the `core` context itself) carries `[CF]`, or (b) the Upstream side (the other context) carries `[BBM]`. The two conditions are evaluated independently; if both hold on the same line, emit a single warning, not two.
+  * *Warning (condition a — `[CF]`):* `"⚠️ Strategic Risk: A Core Domain context is conforming to the model of another system. Consider using an [ACL] to protect your competitive advantage."`
+  * *Warning (condition b — `[BBM]`):* `"⚠️ Strategic Risk: A Core Domain context depends on a Big Ball of Mud system. Consider using an [ACL] to protect your competitive advantage."`
 
-* **Core Domain Focused on Infrastructure/Shelf Solutions:**
-  * *Trigger:* If many `generic` patterns start dictating rules (being widely Upstream without ACL on consumers).
+* **Core Domain Focused on Infrastructure/Shelf Solutions (Generic without OHS):**
+  * *Scope:* Per relationship — evaluated independently on each directional line (`-->` or `<--`). Does not apply to `<->` or `-x-`, since `[OHS]` is not a valid tag on either.
+  * *Trigger:* The context on the Upstream side of the relationship belongs to a `generic` subdomain and does not have the `[OHS]` tag declared on that side.
   * *Warning:* `"⚠️ Generic solutions should ideally provide well-defined services [OHS]. Beware of excessive coupling."`
 
 * **Excessive Shared Kernel:**
-  * *Trigger:* Multiple contexts using `[SK]` in the architecture.
+  * *Scope:* File-wide (aggregate) — evaluated once per file, not once per relationship.
+  * *Trigger:* The file contains two or more relationships using the `[SK]` tag, regardless of which contexts are involved. Emit a single warning per file once this threshold is met, not one per relationship.
   * *Warning:* `"⚠️ The excessive use of Shared Kernels drastically increases coupling between teams. Use with caution."`
 
 * **Undocumented Integration Contract:**

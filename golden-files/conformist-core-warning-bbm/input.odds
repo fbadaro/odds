@@ -1,0 +1,13 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  subdomain generic LegacyBilling {
+    context OldBilling
+  }
+
+  mapping {
+    Checkout <-- [BBM] OldBilling
+  }
+}

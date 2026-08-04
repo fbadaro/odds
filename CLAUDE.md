@@ -49,6 +49,16 @@ The spec (RULES-EN.md) is the authoritative source for exact error/warning strin
 
 The suggested implementation approach (RULES-EN.md, "Summary for AST Implementation") is a three-step visitor over the AST: Step 0, verify exactly one `Domain` node exists (stop and report if not); Step 1, traverse subdomains, collecting each declared context and its parent subdomain's type into a symbol table while flagging name collisions; Step 2, traverse relationship nodes to cross-reference existence against that table and validate positional/conflict rules on tags. `AST_SCHEMA.md` §1 is the authoritative list of stable `DiagnosticCode`s (syntax and semantic) — add a code there before adding a new rule to RULES.md.
 
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (github.com/fbadaro/odds). See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
 ## Working in this repo before code exists
 
 If asked to scaffold the implementation, confirm the target stack with the user rather than assuming one — the PRD specifies product behavior and constraints (client-side only, DSL grammar, validation rules) but not a framework, parser toolchain, or diagram-rendering library. Once real source and tooling exist, this file should be updated with actual build/lint/test commands and the real code architecture.

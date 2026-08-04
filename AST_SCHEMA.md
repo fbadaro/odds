@@ -293,6 +293,4 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 
 ## Changelog
 
-- **v0.1.0** — versão inicial, derivada de `GRAMMAR.md` v0.1.7 (todas as pendências da gramática já resolvidas nesse ponto). Define `ProgramNode`, `DomainNode`, `SubdomainNode`, `ContextNode`, `MappingNode`, `RelationshipNode`, a tabela de `DiagnosticCode` sincronizada com `RULES.md`, e a estrutura auxiliar `SymbolTable` usada pelo Visitor.
-- **v0.1.1** — sincronizado com `GRAMMAR.md` v0.1.8: `SubdomainNode.subdomainType` e `SymbolTableEntry.subdomainType` passaram de `SubdomainType` (union fechada) para `string` (valor bruto do parser), já que a gramática abriu `subdomain_type` para `identifier` livre. Isso torna `INVALID_SUBDOMAIN_TYPE` um code de fato alcançável pelo Visitor, corrigindo uma inconsistência encontrada ao desenhar a suíte de golden files.
-- **v0.1.2** — sincronizado com `GRAMMAR.md` v0.1.9: adicionada nota explicando que `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` são emitidos pelo parser durante recuperação de erro, não pelo Visitor — a gramática permanece estrita, então nenhum campo novo foi adicionado à AST (ao contrário do que se cogitou inicialmente).
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.1.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

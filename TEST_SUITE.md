@@ -4,9 +4,9 @@
 
 Este arquivo documenta a suíte de testes de referência ("golden files") para o parser e o validador semântico da ODDS. Cada caso de teste é um par `input.odds` + `expected.json`: o primeiro é um arquivo `.odds` de entrada, o segundo é o resultado exato (diagnósticos, e notas sobre a AST) que uma implementação **em conformidade** deve produzir para aquela entrada.
 
-O objetivo é permitir desenvolvimento (humano ou via IA) no estilo TDD: "faça o parser/validador passar nestes 18 casos" é uma especificação muito mais verificável do que "implemente as regras descritas em prosa no RULES.md".
+O objetivo é permitir desenvolvimento (humano ou via IA) no estilo TDD: "faça o parser/validador passar nestes 20 casos" é uma especificação muito mais verificável do que "implemente as regras descritas em prosa no RULES.md".
 
-Esta suíte corresponde à `GRAMMAR.md` v0.1.9 e `AST_SCHEMA.md` v0.1.2. Qualquer mudança em qualquer um dos dois documentos-fonte deve ser acompanhada de uma revisão desta suíte.
+Esta suíte (`TEST_SUITE.md` v0.1.1) corresponde à `GRAMMAR.md` v0.1.9 e `AST_SCHEMA.md` v0.1.2. Qualquer mudança em qualquer um dos três documentos-fonte deve ser acompanhada de uma revisão desta suíte — e de uma entrada nova em [`CHANGELOG.md`](./CHANGELOG.md).
 
 ---
 
@@ -94,9 +94,11 @@ Os spans desta suíte foram calculados programaticamente (script auxiliar, não 
 
 Dois casos desta suíte (`role-conflict` e, potencialmente, combinações não cobertas aqui) **sempre** disparam mais de um `DiagnosticCode` para a mesma linha, porque as regras são estruturalmente interdependentes — ex: colocar `[C]` e `[S]` no mesmo lado força necessariamente uma violação de posição para um dos dois, já que um é upstream-only e o outro downstream-only. Esses casos documentam explicitamente **todos** os diagnósticos esperados, não só o que dá nome ao diretório. Uma implementação que reporte só um dos dois está incompleta.
 
-### 5.2 Regras com gatilho ambíguo em `RULES.md`
+### 5.2 Regras cujo gatilho foi formalizado após a suíte original
 
-Dois warnings (`generic-without-ohs-warning`, `excessive-shared-kernel-warning`) têm texto de gatilho vago no `RULES.md` original ("se muitos padrões genéricos começarem a ditar regras", "múltiplos contextos usando SK") — não fica claro se o critério é por linha de relacionamento individual ou um padrão agregado do arquivo inteiro, nem qual o limiar numérico de "múltiplos". Os golden files desta suíte **fixam uma interpretação razoável** (documentada no campo `interpretationNote` de cada um), mas isso é uma lacuna real do `RULES.md` que vale formalizar com um limiar explícito antes da implementação final — não é uma ambiguidade que esta suíte resolve sozinha, só uma que ela contorna de forma documentada.
+Dois warnings (`generic-without-ohs-warning`, `excessive-shared-kernel-warning`) tinham texto de gatilho vago no `RULES.md` original ("se muitos padrões genéricos começarem a ditar regras", "múltiplos contextos usando SK") — não ficava claro se o critério era por linha de relacionamento individual ou um padrão agregado do arquivo inteiro, nem qual o limiar numérico de "múltiplos". Isso já foi resolvido em `RULES-EN.md`/`RULES-PT.md` (seção 2.E): `GENERIC_WITHOUT_OHS_WARNING` é avaliado por relacionamento (linhas direcionais `-->`/`<--` apenas), e `EXCESSIVE_SHARED_KERNEL_WARNING` é agregado por arquivo com limiar de 2+ relações usando `[SK]`. Os golden files desta suíte já haviam fixado exatamente essa interpretação antes da formalização — nenhum caso precisou mudar.
+
+Duas tags (`[SW]`, `[BBM]`) não tinham nenhum golden file, e suas regras tinham lacunas reais: (1) `CONFORMIST_CORE_WARNING` tem duas condições de gatilho disjuntas (`[CF]` no lado Downstream OU `[BBM]` no lado Upstream), mas só a primeira tinha um caso de teste; (2) `SEPARATION_CONFLICT` nunca deixava explícito se `[SW]` combinado com um conector direcional (`-->`/`<--`/`<->`), sem nenhuma outra tag, já configurava o conflito — a gramática permite essa combinação sintaticamente (ver `GRAMMAR.md` §3), então isso era 100% responsabilidade de uma regra semântica que não existia. Ambas foram formalizadas em `RULES-EN.md`/`RULES-PT.md` e ganharam casos auxiliares: `conformist-core-warning-bbm` e `separation-conflict-sw-directional`.
 
 ---
 
@@ -115,15 +117,17 @@ Dois warnings (`generic-without-ohs-warning`, `excessive-shared-kernel-warning`)
 | 9 | `upstream-only-tag-misplaced` | `UPSTREAM_ONLY_TAG_MISPLACED` | error |
 | 10 | `downstream-only-tag-misplaced` | `DOWNSTREAM_ONLY_TAG_MISPLACED` | error |
 | 11 | `separation-conflict` | `SEPARATION_CONFLICT` | error |
-| 12 | `role-conflict` | `ROLE_CONFLICT` (+ `DOWNSTREAM_ONLY_TAG_MISPLACED`) | error |
-| 13 | `protection-conflict` | `PROTECTION_CONFLICT` | error |
-| 14 | `conformist-core-warning` | `CONFORMIST_CORE_WARNING` | warning |
-| 15 | `generic-without-ohs-warning` | `GENERIC_WITHOUT_OHS_WARNING` | warning |
-| 16 | `excessive-shared-kernel-warning` | `EXCESSIVE_SHARED_KERNEL_WARNING` | warning |
-| 17 | `undocumented-contract-warning` | `UNDOCUMENTED_CONTRACT_WARNING` | warning |
-| 18 | `valid-baseline` | — (0 diagnósticos, sanity check) | — |
+| 12 | `separation-conflict-sw-directional` | `SEPARATION_CONFLICT` | error |
+| 13 | `role-conflict` | `ROLE_CONFLICT` (+ `DOWNSTREAM_ONLY_TAG_MISPLACED`) | error |
+| 14 | `protection-conflict` | `PROTECTION_CONFLICT` | error |
+| 15 | `conformist-core-warning` | `CONFORMIST_CORE_WARNING` | warning |
+| 16 | `conformist-core-warning-bbm` | `CONFORMIST_CORE_WARNING` | warning |
+| 17 | `generic-without-ohs-warning` | `GENERIC_WITHOUT_OHS_WARNING` | warning |
+| 18 | `excessive-shared-kernel-warning` | `EXCESSIVE_SHARED_KERNEL_WARNING` | warning |
+| 19 | `undocumented-contract-warning` | `UNDOCUMENTED_CONTRACT_WARNING` | warning |
+| 20 | `valid-baseline` | — (0 diagnósticos, sanity check) | — |
 
-Todos os 15 `SemanticDiagnosticCode` + `SYNTAX_ERROR` de `AST_SCHEMA.md` §1 têm cobertura. **Contribuição real desta suíte:** o processo de escrevê-la encontrou e corrigiu duas contradições reais entre `GRAMMAR.md` e `RULES.md` que teriam gerado código morto (`INVALID_SUBDOMAIN_TYPE` e `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN`) — ver changelog de `GRAMMAR.md` v0.1.8 e v0.1.9.
+Todos os 15 `SemanticDiagnosticCode` + `SYNTAX_ERROR` de `AST_SCHEMA.md` §1 têm cobertura. **Contribuição real desta suíte:** o processo de escrevê-la encontrou e corrigiu duas contradições reais entre `GRAMMAR.md` e `RULES.md` que teriam gerado código morto (`INVALID_SUBDOMAIN_TYPE` e `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN`) — ver changelog de `GRAMMAR.md` v0.1.8 e v0.1.9. `separation-conflict-sw-directional` e `conformist-core-warning-bbm` são casos auxiliares que cobrem as duas tags (`SW`, `BBM`) que não tinham nenhum golden file até então — ver seção 5.2.
 
 ---
 
@@ -131,10 +135,9 @@ Todos os 15 `SemanticDiagnosticCode` + `SYNTAX_ERROR` de `AST_SCHEMA.md` §1 tê
 
 - Cada code tem exatamente 1 caso (2 no caso de cardinalidade). Casos de **combinação** adicionais (ex: um arquivo com múltiplos warnings simultâneos em contextos diferentes) ainda não existem — úteis para testar que o Visitor não para no primeiro problema encontrado.
 - Não há golden files para os **presets** completos do produto (E-Commerce, Simple Domain — PRD GH-001); esta suíte testa regras isoladas, não os arquivos de exemplo reais que o playground vai carregar.
-- O limiar numérico de `EXCESSIVE_SHARED_KERNEL_WARNING` e o escopo exato de `GENERIC_WITHOUT_OHS_WARNING` (ver seção 5.2) devem ser formalizados em `RULES.md` — o valor usado aqui (2+ ocorrências) é uma suposição documentada, não uma decisão confirmada com o time.
 
 ---
 
 ## Changelog
 
-- **v0.1.0** — versão inicial. 18 golden files cobrindo todos os `DiagnosticCode` de `AST_SCHEMA.md` v0.1.2 / `GRAMMAR.md` v0.1.9. Encontradas e corrigidas duas contradições estruturais na gramática durante o processo (ver seção 6).
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## TEST_SUITE.md`). Versão atual: **v0.1.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
