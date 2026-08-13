@@ -154,6 +154,49 @@ Estas validações não quebram o desenho, mas podem colocar um ícone de alerta
 
 ---
 
+### 3. Pipeline de Validação: Fases, Princípio do Erro-Raiz e Ordenação dos Diagnósticos
+
+Esta seção é **normativa**. O `TEST_SUITE.md` compara o array de diagnósticos emitidos por igualdade estrutural, então a *ordem* dos diagnósticos faz parte do contrato — não é detalhe de apresentação.
+
+#### 3.1 Princípio do erro-raiz
+
+Um elemento que já produziu um **`error`** é registrado como *declarado porém inválido* e sai de todas as fases **seguintes** — ele não gera diagnósticos derivados. `warning` e `info` nunca invalidam nada.
+
+O caso que motiva o princípio: um `context` declarado fora de um `subdomain` é descartado pelo panic-mode recovery do parser (`GRAMMAR.md` §5.1) e reportado como `ORPHAN_CONTEXT`. Sem o princípio, toda linha do `mapping` que referenciasse aquele contexto emitiria *também* `PHANTOM_REFERENCE` — um erro do usuário, dois diagnósticos, e o segundo falso: o contexto *foi* declarado, apenas no lugar errado. Por isso, declarações descartadas precisam mesmo assim ser registradas na tabela de símbolos, marcadas como inválidas, para que as fases seguintes as reconheçam sem voltar a reportá-las.
+
+Consequência aceita deliberadamente: **o conserto é iterativo.** Uma linha de relacionamento que é ao mesmo tempo duplicata e arriscada do ponto de vista estratégico reporta só a duplicata; o aviso estratégico aparece assim que a duplicata for apagada. Esse é o comportamento padrão de qualquer compilador e, com validação ao vivo, a segunda passada não custa nada ao usuário.
+
+#### 3.2 Fases
+
+Todas as regras de uma **mesma** fase rodam e reportam. A invalidação só vale para as fases posteriores.
+
+| # | Fase | Roda em | Diagnósticos produzidos |
+|---|---|---|---|
+| 0 | Léxica / Sintática | Parser | `SYNTAX_ERROR` — não há AST, então o pipeline para aqui |
+| 1 | Estrutural | Parser (panic-mode recovery) | `ORPHAN_CONTEXT`, `ORPHAN_SUBDOMAIN` |
+| 2 | Declarativa | Visitor, Passos 0–1 | `INVALID_DOMAIN_CARDINALITY`, `INVALID_SUBDOMAIN_TYPE`, `DUPLICATE_CONTEXT` |
+| 3 | Referencial | Visitor, Passo 2 — identidade e existência das pontas da relação | `PHANTOM_REFERENCE` |
+| 4 | Relacional | Visitor, Passo 2 — as tags em si | `UPSTREAM_ONLY_TAG_MISPLACED`, `DOWNSTREAM_ONLY_TAG_MISPLACED`, `SEPARATION_CONFLICT`, `ROLE_CONFLICT`, `PROTECTION_CONFLICT` |
+| 5 | Estratégica | Visitor — juízo sobre o desenho | `CONFORMIST_CORE_WARNING`, `GENERIC_WITHOUT_OHS_WARNING`, `EXCESSIVE_SHARED_KERNEL_WARNING`, `UNDOCUMENTED_CONTRACT_WARNING` |
+
+**Regra de admissão:** todo `DiagnosticCode` novo precisa receber uma fase no momento em que é adicionado ao `AST_SCHEMA.md` §1. Um code sem fase não tem posição definida no array emitido e, portanto, não pode ser testado.
+
+#### 3.3 Ordem de emissão
+
+O array de diagnósticos é ordenado pelas chaves abaixo, nesta ordem, até encontrar uma diferença:
+
+1. **Fase**, crescente (§3.2).
+2. **`span.start.line`**, crescente.
+3. **`span.start.column`**, crescente.
+4. **`span.end.column`**, crescente — um span mais estreito (um único token) precede um mais largo que comece na mesma coluna.
+5. **`code`**, em ordem alfabética — desempate final, para que a ordem seja total e nenhuma implementação precise adivinhar.
+
+As chaves 2–4 fazem o painel ser lido na ordem do arquivo, coincidindo com a régua do editor, que é o comportamento de todo linter que o público-alvo já usa. A chave 5 existe apenas para tornar a ordem **total**: um desempate definido pela implementação faria duas implementações conformes produzirem arrays diferentes, e o `TEST_SUITE.md` não conseguiria asserir nenhuma das duas.
+
+Rejeitado deliberadamente: uma lista de prioridade entre codes, mantida à mão, dentro de cada fase. Ela teria que ser atualizada a cada regra nova, divergiria do código, e codificaria "qual problema importa mais" — juízo que pertence ao campo `severity`, não à posição no array.
+
+---
+
 ### Resumo para a Implementação do AST
 
 Ao construir o seu *Visitor* (a função que percorre a árvore gerada pelo Parser), você precisará de uma estrutura de dados de "Tabela de Símbolos" ou "Dicionário de Contextos".
