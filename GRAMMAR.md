@@ -26,7 +26,7 @@ digit         = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
 identifier    = letter , { letter | digit | "_" } , ?e não deve coincidir exatamente com nenhuma reserved_word? ;
 
-reserved_word = "domain" | "subdomain" | "context" | "mapping"
+reserved_word = "domain" | "subdomain" | "context" | "mapping" | "external"
               | "core" | "supporting" | "generic"
               | "title" | "type" | "description" | "responsibilities" | "maturity" | "team" | "technology"
               | "experimental" | "growing" | "mature" | "legacy" ;
@@ -34,6 +34,12 @@ reserved_word = "domain" | "subdomain" | "context" | "mapping"
 line_comment  = "//" , { ?qualquer caractere exceto newline? } , newline ;
 block_comment = "/*" , { ?qualquer caractere? } , "*/" ;
 comment       = line_comment | block_comment ;
+
+(* Um comentário de linha cujo primeiro token é o prefixo `odds-disable-next-line`
+   NÃO é um comentário comum: é uma diretiva de supressão, e precisa sobreviver
+   ao lexer. Ver a regra léxica correspondente abaixo e RULES.md §4. *)
+suppression_directive = "//" , { " " | "\t" } , "odds-disable-next-line" ,
+                        { ?qualquer caractere exceto newline? } , newline ;
 
 whitespace    = " " | "\t" | "\r" | "\n" ;
 newline       = "\n" | "\r\n" ;
@@ -44,7 +50,9 @@ escape_sequence = "\" , ( '"' | "\" ) ;
 ```
 
 **Regras léxicas gerais:**
-- Whitespace e comentários são insignificantes sintaticamente (podem aparecer entre quaisquer dois tokens) e devem ser descartados pelo lexer antes de chegar ao parser — exceto para fins de rastreamento de linha/coluna (necessário para o painel de validação interativo, ver PRD §5.2 / GH-002).
+- Whitespace é insignificante sintaticamente (pode aparecer entre quaisquer dois tokens) e deve ser descartado pelo lexer antes de chegar ao parser — exceto para fins de rastreamento de linha/coluna (necessário para o painel de validação interativo, ver PRD §5.2 / GH-002).
+- ⚠️ **Comentários não são mais totalmente descartáveis.** A regra anterior ("comentários são insignificantes e devem ser descartados pelo lexer") vale para `block_comment` e para todo `line_comment` **comum**, mas deixou de valer para o subconjunto que carrega diretiva. Um comentário de linha cujo primeiro token, após o `//`, é `odds-disable-next-line` é uma `suppression_directive` e **precisa sobreviver até o validador** (ver `AST_SCHEMA.md` §2.1: `ProgramNode.suppressions`). O lexer decide entre as duas produções olhando **apenas o prefixo** — nada além dele.
+- ✅ **Decisão fechada:** a estrutura interna da diretiva (`<CODE>: <justificativa>`) **não** é validada pelo lexer nem pelo parser, e por isso a produção acima aceita qualquer resto de linha. Isso é deliberado: uma diretiva malformada (code inexistente, dois-pontos ausente, justificativa vazia) precisa produzir o diagnóstico `MALFORMED_SUPPRESSION` (`info`) na fase 6, e **nunca** um `SYNTAX_ERROR` — um comentário quebrado não pode derrubar o parsing do arquivo inteiro. Se o prefixo casar, é uma diretiva, mesmo que quebrada; se não casar, é comentário livre e o lexer o descarta como sempre.
 - ODDS é **case-sensitive**. `context` ≠ `Context`; nomes de tags são sempre maiúsculas (`OHS`, não `ohs`).
 - Identificadores de domínio/subdomínio/contexto **não** podem conter espaços (ex: `PaymentGateway`, não `Payment Gateway`). Nomes compostos usam PascalCase ou snake_case por convenção, mas isso é estilo, não regra sintática.
 - ✅ **Decisão fechada:** `string_literal` suporta escape via barra invertida: `\"` produz uma aspa dupla literal dentro da string, e `\\` produz uma barra invertida literal. Nenhuma outra sequência de escape é reconhecida nesta versão (sem `\n`, `\t`, etc. — strings ODDS são de linha única, já que `newline` não é um caractere válido dentro de `string_char`).
@@ -60,6 +68,7 @@ program         = { domain_decl } ;
 domain_decl     = "domain" , identifier , "{" ,
                      [ title_decl ] ,
                      { subdomain_decl } ,
+                     [ external_decl ] ,
                      [ mapping_decl ] ,
                    "}" ;
 
@@ -69,6 +78,8 @@ subdomain_decl  = "subdomain" , subdomain_type , identifier , "{" ,
                    "}" ;
 
 subdomain_type  = identifier ;
+
+external_decl   = "external" , "{" , { context_decl } , "}" ;
 
 title_decl      = "title" , ":" , string_literal ;
 
@@ -88,10 +99,15 @@ maturity_value  = "experimental" | "growing" | "mature" | "legacy" ;
 ```
 
 **Notas:**
+- ✅ **Decisão fechada:** sistemas de terceiros (Stripe, o ERP de outra empresa, um legado que você não controla) são declarados no bloco `external_decl`, **único e anônimo**, posicionado entre os `subdomain_decl` e o `mapping_decl`. Quatro consequências que a produção acima já codifica:
+  - **O invariante estrutural é preservado.** Todo `context` continua morando dentro de um bloco declarado, então `ORPHAN_CONTEXT` e a recuperação de erro da seção 5.1 seguem valendo sem exceção nova: um `context` solto direto no `domain` continua órfão.
+  - **Sem grupos nomeáveis nem repetíveis** (`external Payments { }` + `external ERP { }`). Um nome de grupo sem semântica vira classificação improvisada ("external Legacy", "external Critical") que a ferramenta não sabe validar — recriando por outro caminho a taxonomia que `core`/`supporting`/`generic` deliberadamente não estende a terceiros. `[ external_decl ]` é opcional e no máximo um por `domain`.
+  - **A ordem é fixa** (subdomains → external → mapping) para o arquivo ler como uma narrativa: *seu* domínio primeiro, a fronteira depois, as integrações por último.
+  - **Contradição conceitual assumida:** o bloco do que é "externo" fica declarado *dentro* do `domain`, que por definição não o contém. Aceito por pragmatismo — a alternativa (declarar no nível do `program`, irmão do `domain`) colide com `INVALID_DOMAIN_CARDINALITY` e com a premissa "um arquivo = um domain" que sustenta o compartilhamento por URL. A contradição é nomeada em `RULES.md` §0.5 em vez de escondida, e é cancelada na vista de contenção, que desenha o bloco fora da fronteira do domínio.
 - ✅ **Decisão fechada:** `domain`, `subdomain` e `context` podem opcionalmente declarar `title: "..."` — um rótulo textual livre para exibição no canvas/diagrama, distinto do identificador técnico (`identifier`) usado para referência (ex: em `mapping`). **Regra fixa de posição:** quando presente, `title` deve ser sempre a **primeira declaração dentro do bloco**, antes de qualquer filho (`subdomain_decl`/`context_decl`) ou, no caso do `context`, antes das demais `property_decl`. Essa é uma decisão deliberada — ao contrário das demais propriedades de `context_block` (que são livres de ordem), `title` funciona como um "cabeçalho" do bloco e o time preferiu essa posição fixa por legibilidade, mesmo custando um pouco de rigidez sintática a mais.
 - Note que `title` em `context` **não faz parte** do conjunto `property_key` — foi deliberadamente extraído para uma produção própria (`title_decl`) para poder reutilizar exatamente a mesma regra (e a mesma restrição de posição) nos três níveis (`domain`, `subdomain`, `context`) sem duplicar lógica.
 - "No máximo um `title` por bloco" é, como as demais restrições de cardinalidade desta gramática, uma regra **semântica** — sintaticamente `[ title_decl ]` já impede sozinho mais de um `title`, então essa em particular já é garantida pela própria gramática (não precisa de checagem extra no validador).
-- ✅ **Decisão fechada:** um arquivo `.odds` contém **exatamente um** `domain`. Sintaticamente a gramática ainda permite `program = { domain_decl }` (zero ou mais), porque a restrição "exatamente um" é uma regra **semântica**, não sintática — ela pertence ao `RULES.md` (validação de tipo "Multiple Domains Declared" ou similar), não a esta gramática. **Ação pendente:** adicionar essa regra explicitamente em `RULES-EN.md`/`RULES-PT.md` como um novo erro crítico (arquivo com zero ou mais de um `domain` declarado) — ainda não foi feito, só está decidido aqui.
+- ✅ **Decisão fechada:** um arquivo `.odds` contém **exatamente um** `domain`. Sintaticamente a gramática ainda permite `program = { domain_decl }` (zero ou mais), porque a restrição "exatamente um" é uma regra **semântica**, não sintática — ela pertence ao `RULES.md`, não a esta gramática — e já está formalizada lá (§1.A) como `INVALID_DOMAIN_CARDINALITY`, cobrindo tanto zero quanto mais de um `domain`.
 - ✅ **Decisão fechada:** `context_decl` agora pode abrir um bloco opcional `context_block` (`{ }`), com propriedades no formato `chave: valor`. Isso resolve a pendência sobre o vocabulário de `attribute_list`, e substitui completamente a produção antiga (`attribute_list = attribute, { attribute }`, que era apenas uma lista de identificadores soltos sem valores associados).
 - As seis propriedades definidas — `type`, `description`, `responsibilities`, `maturity`, `team`, `technology` — são as únicas reconhecidas nesta versão. Qualquer outra chave é um erro (sintático, já que `property_key` é um conjunto fechado de literais, não um `identifier` livre).
 - `type` e `description` são texto livre (`string_literal`). ✅ **Decisão fechada:** `type` permanece texto livre permanentemente (não vai virar enum fechado como `maturity`) — sem um vocabulário real testado em uso, fechar um enum agora seria especulação, e é mais seguro apertar a regra depois (se necessário) do que afrouxar uma restrição já em uso e quebrar arquivos `.odds` existentes.
@@ -122,18 +138,23 @@ connector          = "-->" | "<--" | "<->" | "-x-" ;
 
 tag_group          = "[" , tag , { "," , tag } , "]" ;
 
-tag                = "OHS" | "PL" | "ACL" | "CF" | "SK" | "C" | "S" | "P" | "SW" | "BBM" ;
+tag                = "OHS" | "PL" | "ACL" | "CF" | "SK" | "C" | "S" | "P" | "BBM" ;
+
+removed_tag        = "SW" ;   (* removida da linguagem — ver nota abaixo *)
 ```
 
 **Notas:**
 - ✅ **Decisão fechada:** a seção de relacionamentos é um bloco explícito, delimitado por chaves `{ }` (não por indentação nem por palavra-chave de fechamento tipo `end`), e sua palavra-chave é `mapping` (não `context_map`). Isso resolve a pendência #1 do changelog anterior. Motivação registrada na discussão: buscamos uma sintaxe mais próxima do estilo Mermaid (mais enxuta), mas optamos por manter as chaves em vez de indentação significativa, para não introduzir a classe de erros de indentação (tabs/espaços, reindentação ao colar trechos) em troca de um ganho puramente estético. `mapping` foi escolhido no lugar de `context_map` por ser mais curto e mais próximo do vocabulário natural que o time já estava usando nos exemplos.
 - ✅ **Decisão fechada:** múltiplas tags do mesmo lado usam **lista separada por vírgula dentro de um único colchete** (`[OHS, PL]`), e não colchetes empilhados (`[OHS][PL]`). Um único colchete com uma tag só (`[OHS]`) é o caso degenerado dessa mesma regra (lista de um elemento), então nenhuma produção extra é necessária para o caso simples. **Atenção para a implementação:** o lexer/parser precisa tratar vírgula e espaços em branco opcionais dentro do colchete (`[OHS,PL]`, `[OHS, PL]` e `[OHS , PL]` devem ser equivalentes), e uma vírgula sobrando no final (`[OHS,]`) deve ser um erro sintático explícito, não silenciosamente ignorado.
-- `tag_group` é **opcional em ambos os lados simultaneamente** — isso é sintaticamente válido (`ContextA --> ContextB`) e semanticamente gera o warning "Undocumented Integration Contract" (RULES §E), não um erro de parsing.
+- ✅ **Decisão fechada:** são **nove** tags. `SW` foi **removida da linguagem** — o conector `-x-` passou a significar *Free / Separate Ways* por si só (racional completo em `RULES.md` §0.2: conector e tag pertencem a taxonomias diferentes, e Separate Ways é a única célula em que as duas degeneram num ponto). `removed_tag` está registrada na gramática **não** como produção válida, mas para dar ao lexer um alvo reconhecível: encontrar `SW` dentro de um `tag_group` deve produzir o diagnóstico `REMOVED_CONSTRUCT` (`error`, fase 1), com recuperação — descarte a tag, continue parseando —, e **não** um `SYNTAX_ERROR` genérico do tipo "tag desconhecida". Ver seção 5.1 e `RULES.md` §6: toda construção removida ganha diagnóstico dedicado, para que um arquivo antigo (em Git ou numa URL compartilhada) explique ao usuário o que aconteceu em vez de só falhar.
+- `tag_group` é **opcional em ambos os lados simultaneamente** — isso é sintaticamente válido (`ContextA --> ContextB`) e semanticamente gera o diagnóstico `UNDOCUMENTED_CONTRACT` (`info`, RULES §2.F), não um erro de parsing.
 - A gramática **não** distingue aqui se uma tag está semanticamente correta para aquele lado/conector (ex: `OHS` do lado errado). Isso é 100% responsabilidade da camada de validação semântica (`RULES.md` seções C e D) — a gramática apenas garante que a *forma* `identifier [tags] connector [tags] identifier` seja respeitada.
 
 ---
 
 ## 4. Exemplo anotado
+
+Este é o exemplo canônico da linguagem, e ele é **deliberadamente limpo**: produz **zero diagnósticos**, incluindo os de `warning` e `info`. É o mesmo arquivo do golden file `valid-baseline` (`TEST_SUITE.md`), e os dois devem ser mantidos idênticos — um exemplo canônico que dispara avisos ensina o vocabulário errado para todo mundo que o copia.
 
 ```odds
 domain ECommercePlatform {
@@ -142,41 +163,57 @@ domain ECommercePlatform {
   subdomain core Sales {
     title: "Vendas"
     context OrderManagement
-    context Checkout
+    context Checkout {
+      description: "Fluxo de finalização de compra"
+      maturity: mature
+    }
   }
 
   subdomain supporting Fulfillment {
     context Shipping
+    context Inventory
   }
 
   subdomain generic Payments {
     context PaymentGateway {
-      title: "Gateway de Pagamentos Stripe"
-      type: "generic"
-      description: "Integração com gateways de pagamento de terceiros"
+      title: "Gateway de Pagamentos"
+      type: "gateway"
+      description: "Integração com provedores de pagamento"
       responsibilities: ["Processar transações", "Tratar webhooks do provedor"]
       maturity: mature
       team: "Payments Squad"
-      technology: "Node.js, Stripe API"
+      technology: "Node.js"
+    }
+  }
+
+  external {
+    context StripeApi {
+      description: "Provedor de pagamentos de terceiros"
+      technology: "Stripe REST API"
     }
   }
 
   mapping {
-    Checkout           --> [OHS, PL]        PaymentGateway
-    OrderManagement   [ACL] <--                          Shipping
-    Checkout          [SK]  <->  [SK]                    OrderManagement
-    Shipping                     -x-                     PaymentGateway
+    Checkout        <-- [OHS, PL]  PaymentGateway
+    OrderManagement [ACL] <--      Shipping
+    Shipping        [SK]  <-> [SK] Inventory
+    PaymentGateway  [ACL] <--      StripeApi
+    Shipping        -x-            StripeApi
   }
 }
 ```
 
-Correspondência com a AST (ver `AST_SCHEMA.md`, a ser criado):
+Correspondência com a AST (ver `AST_SCHEMA.md`):
 - `domain ECommercePlatform { ... }` → 1 `DomainNode`, com `title` opcional
-- cada `subdomain ... { ... }` → 1 `SubdomainNode` filho, com `type ∈ {core, supporting, generic}` e `title` opcional
-- cada `context X` → 1 `ContextNode` filho do `SubdomainNode` atual, com `title` opcional e um objeto `properties` opcional contendo `type`, `description`, `responsibilities[]`, `maturity`, `team`, `technology` (todos opcionais)
+- cada `subdomain ... { ... }` → 1 `SubdomainNode` filho, com `subdomainType` bruto (validado pelo Visitor, não pelo parser) e `title` opcional
+- o bloco `external { ... }` → 1 `ExternalBlockNode`, irmão dos subdomains; seus filhos são `ContextNode` comuns — a externalidade é dada pela **posição na árvore**, não por um tipo de nó próprio
+- cada `context X` → 1 `ContextNode`, com `title` opcional e um objeto `properties` opcional contendo `type`, `description`, `responsibilities[]`, `maturity`, `team`, `technology` (todos opcionais)
 - cada linha dentro de `mapping` → 1 `RelationshipNode`, com `left`, `right`, `connector`, `leftTags[]`, `rightTags[]` e posição (linha/coluna) para navegação clique-a-clique
 
-> 📝 **Caso de teste candidato para a suíte de golden files:** durante a discussão desta gramática, surgiu um exemplo com o mesmo nome de contexto (`PaymentGateway`) declarado em dois `subdomain` diferentes. Isso deve gerar um erro semântico de contexto duplicado — vale registrar como um dos primeiros golden files da Fase 1 (ver artefato pendente "suíte de testes golden files").
+> 📝 **Por que o exemplo é escrito assim.** Três detalhes não são estéticos, e cada um evita um diagnóstico que a versão anterior deste exemplo disparava:
+> - `Checkout <-- [OHS, PL] PaymentGateway` e não `Checkout --> [OHS, PL] PaymentGateway`: com `-->`, o lado direito é o Downstream, e `[OHS]`/`[PL]` são exclusivas de Upstream — a versão antiga deste exemplo estava mal posicionada (`UPSTREAM_ONLY_TAG_MISPLACED`). Invertido o conector, o genérico `PaymentGateway` é o Upstream que publica o serviço, o `core` o consome, e a direção fica de acordo com o DDD estratégico (`CORE_UPSTREAM_OF_GENERIC` não dispara).
+> - `type: "gateway"` e não `type: "generic"`: `type` é texto livre com intenção totalmente diferente da classificação de subdomínio. Reaproveitar `generic` ali dentro de um `subdomain generic` ensinava vocabulário sobrecarregado no arquivo que todo mundo copia.
+> - O Shared Kernel é entre dois contextos `supporting`, não entre dois `core`: um `core` dentro de um Shared Kernel dispara `CORE_IN_SHARED_KERNEL`.
 
 ---
 
@@ -189,22 +226,28 @@ Correspondência com a AST (ver `AST_SCHEMA.md`, a ser criado):
 | Erro sintático (esta gramática) | `domain { ... }` sem identificador; `mapping` sem `{` de fechamento; conector desconhecido (`==>`) | Parser (fase de parsing, antes de gerar AST válida) |
 | Erro semântico (RULES.md) | `context` fora de `subdomain`; `subdomain` com tipo inválido; tag `OHS` do lado Downstream | Visitor/Validador (fase pós-parsing, percorrendo a AST) |
 
-Um erro sintático deve **impedir totalmente** a geração da AST (não há árvore válida para percorrer). Um erro semântico crítico impede a *renderização*, mas a AST ainda existe e pode ser usada pelo editor para navegação/highlight.
+Um erro sintático deve **impedir totalmente** a geração da AST (não há árvore válida para percorrer). Um erro semântico, por outro lado, **não impede nada**: a AST existe, e desde a decisão de renderização degradada (`RULES.md` §5) o diagrama continua sendo desenhado, com o elemento problemático marcado visualmente. Só o `SYNTAX_ERROR` puro congela o último diagrama bom — e mesmo aí o congelamento precisa ficar visível ao usuário.
 
-### 5.1 Exceção obrigatória: recuperação de erro para `context`/`subdomain` deslocados
+> ⚠️ **Correção de uma afirmação antiga deste documento.** Versões anteriores diziam que "um erro semântico crítico impede a *renderização*". Isso deixou de valer. O motivo é prático, não filosófico: o PRD promete visualização instantânea durante a digitação, e **todo estado intermediário de um arquivo sendo digitado é um erro de sintaxe** — sob bloqueio estrito, o canvas piscaria vazio a cada tecla.
 
-`ORPHAN_CONTEXT` e `ORPHAN_SUBDOMAIN` (`RULES.md` §1.A) são um caso especial que não se encaixa perfeitamente na dicotomia acima, e merece uma regra própria de implementação:
+### 5.1 Exceção obrigatória: recuperação de erro (panic-mode)
 
-Estruturalmente, a gramática (seção 2) **permanece estrita**: `context_decl` só é uma produção válida dentro de `subdomain_decl`, e `subdomain_decl` só é válido dentro de `domain_decl`. Isso é deliberado — a hierarquia Domain → Subdomain → Context é garantida pela própria forma da linguagem, não apenas por convenção ou checagem posterior. Um `context` solto direto num `domain`, ou um `subdomain` solto fora de qualquer `domain`, **não** correspondem a nenhuma produção da gramática.
+Três diagnósticos não se encaixam na dicotomia acima e merecem uma regra própria de implementação: `ORPHAN_CONTEXT`, `ORPHAN_SUBDOMAIN` (`RULES.md` §1.A) e `REMOVED_CONSTRUCT` (`RULES.md` §6).
 
-Isso normalmente significaria `SYNTAX_ERROR` puro (parser aborta, nenhuma AST é gerada — ver tabela acima). Só que, diferente de outros erros sintáticos genéricos (ex: conector desconhecido, chave não fechada), este caso específico tem uma mensagem amigável já definida em `RULES.md` (`"A Bounded Context must belong to a Subdomain."` / `"Invalid subdomain declaration outside the main 'domain' scope."`) e representa um erro estrutural comum o bastante para merecer tratamento especial.
+Estruturalmente, a gramática (seção 2) **permanece estrita**: `context_decl` só é uma produção válida dentro de `subdomain_decl` ou de `external_decl`, e `subdomain_decl` só é válido dentro de `domain_decl`. Isso é deliberado — a hierarquia Domain → Subdomain → Context é garantida pela própria forma da linguagem, não apenas por convenção ou checagem posterior, e a chegada do bloco `external` não abriu exceção nenhuma nisso: um `context` solto direto num `domain` continua sem corresponder a produção alguma. Um `subdomain` solto fora de qualquer `domain`, idem.
 
-✅ **Decisão fechada:** uma implementação em conformidade **deve** usar recuperação de erro ("panic-mode recovery") especificamente para esses dois casos: ao encontrar um `context` diretamente dentro de um `domain` (fora de qualquer `subdomain`), ou um `subdomain` fora do escopo de qualquer `domain`, o parser não deve abortar a geração da AST inteira. Em vez disso, deve:
-1. Descartar a declaração malformada (consumindo os tokens até um ponto de recuperação seguro — ex: a chave de fechamento correspondente, ou a próxima palavra-chave reconhecida no mesmo nível de aninhamento).
-2. Emitir um `Diagnostic` com o code `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` (ver `AST_SCHEMA.md` §1) e o `span` exato da declaração descartada.
-3. **Continuar parseando o restante do arquivo normalmente.**
+Isso normalmente significaria `SYNTAX_ERROR` puro (parser aborta, nenhuma AST é gerada — ver tabela acima). Só que, diferente de outros erros sintáticos genéricos (ex: conector desconhecido, chave não fechada), estes casos têm um diagnóstico próprio e uma mensagem amigável já definidos (`RULES.md` §1.A, `MESSAGES.md`) e representam erros comuns o bastante para merecerem tratamento especial. O mesmo raciocínio vale para `[SW]`: escrever uma tag que existiu numa versão anterior da linguagem é um erro previsível, e falhar com "tag desconhecida" desperdiça a única chance de explicar o que aconteceu.
 
-Diferente de um `SYNTAX_ERROR` comum, este diagnóstico **não impede** que uma AST (parcial, mas válida para o resto do arquivo) seja gerada — isso é essencial para que o painel de validação (PRD §5.2/GH-002) possa reportar múltiplos problemas do arquivo de uma vez, em vez de forçar o usuário a corrigir um erro estrutural por vez antes de ver qualquer outro diagnóstico. Note que, por essa razão, `ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` são produzidos **pelo parser durante a recuperação**, não pelo Visitor semântico — mesmo estando listados junto aos demais erros críticos em `RULES.md` §1.A por motivo de organização temática (todos são "Validações de Escopo e Hierarquia"), não por fase de implementação. Ver nota correspondente em `AST_SCHEMA.md` §1.
+✅ **Decisão fechada:** uma implementação em conformidade **deve** usar recuperação de erro ("panic-mode recovery") especificamente nesses três casos. Ao encontrar um `context` diretamente dentro de um `domain` (fora de qualquer `subdomain` e de `external`), um `subdomain` fora do escopo de qualquer `domain`, ou uma `removed_tag` dentro de um `tag_group`, o parser não deve abortar a geração da AST inteira. Em vez disso, deve:
+
+1. Descartar a construção malformada (consumindo os tokens até um ponto de recuperação seguro — ex: a chave de fechamento correspondente, ou a próxima palavra-chave reconhecida no mesmo nível de aninhamento; no caso da tag removida, apenas a tag).
+2. Emitir um `Diagnostic` com o code correspondente — `ORPHAN_CONTEXT`, `ORPHAN_SUBDOMAIN` ou `REMOVED_CONSTRUCT` (ver `AST_SCHEMA.md` §1.3, todos de **fase 1**) — e o `span` exato da construção descartada.
+3. **Registrar a declaração descartada como inválida**, em vez de simplesmente esquecê-la (ver abaixo).
+4. **Continuar parseando o restante do arquivo normalmente.**
+
+Diferente de um `SYNTAX_ERROR` comum, esses diagnósticos **não impedem** que uma AST (parcial, mas válida para o resto do arquivo) seja gerada — isso é essencial para que o painel de validação (PRD §5.2/GH-002) possa reportar múltiplos problemas de uma vez, em vez de forçar o usuário a corrigir um erro estrutural por vez antes de ver qualquer outro diagnóstico. Note que, por essa razão, esses três codes são produzidos **pelo parser durante a recuperação**, não pelo Visitor semântico — mesmo estando listados junto aos demais erros em `RULES.md` §1.A por organização temática, não por fase de implementação. Ver nota correspondente em `AST_SCHEMA.md` §1.5.
+
+> ⚠️ **O passo 3 é novo e não é opcional: descartar não é esquecer.** Um `context` órfão descartado precisa **entrar na tabela de símbolos marcado como inválido** (`SymbolTableEntry.valid: false`, `AST_SCHEMA.md` §5). Se ele simplesmente desaparecer, toda linha do `mapping` que o referencia passa a emitir `PHANTOM_REFERENCE` — um erro do usuário, dois diagnósticos, e o segundo **falso**: o contexto *foi* declarado, apenas no lugar errado. É o princípio do erro-raiz (`RULES.md` §3.1), e é também o que permite ao renderizador desenhar o nó fantasma marcado em vez de nada.
 
 ---
 
@@ -234,22 +277,23 @@ Todas as pendências originais foram resolvidas. Nenhuma pendência em aberto ne
 - ✅ **Palavra-chave e delimitação do bloco de relacionamentos**: bloco explícito `mapping { }`, delimitado por chaves. Ver seção 3 para o racional completo (inspiração no Mermaid, mas mantendo chaves em vez de indentação para evitar erros de indentação).
 - ✅ **Sintaxe de múltiplas tags**: lista separada por vírgula em um único colchete (`[OHS, PL]`), não colchetes empilhados. Ver seção 3.
 - ✅ **Vocabulário de propriedades de contexto**: bloco chave-valor `context_block` com seis propriedades (`type`, `description`, `responsibilities`, `maturity`, `team`, `technology`); `responsibilities` é lista, `team`/`technology` são string única, `maturity` é enum fechado (`experimental | growing | mature | legacy`). Ver seção 2.
-- ✅ **Um `domain` por arquivo**: exatamente um, restrição semântica a ser adicionada ao `RULES.md` (ainda não feito — ver seção 2).
+- ✅ **Um `domain` por arquivo**: exatamente um; restrição semântica, formalizada em `RULES.md` §1.A como `INVALID_DOMAIN_CARDINALITY`.
 - ✅ **Rótulos/display names**: resolvido com a propriedade `title` (string livre), disponível em `domain`, `subdomain` e `context`, sempre como primeira declaração do bloco quando presente. Ver seção 2.
 - ✅ **`type` como enum fechado**: decidido manter texto livre permanentemente. Ver seção 2.
 - ✅ **Escape de aspas em `string_literal`**: adicionado suporte a `\"` e `\\`. Ver seção 1.
 - ✅ **Palavras reservadas**: `reserved_word` não pode ser usada como `identifier` (case-sensitive). Ver seção 1.
 - ✅ **Contradição em `subdomain_type`**: gramática aberta (`identifier`), rejeição de valores fica 100% a cargo do Visitor (code `INVALID_SUBDOMAIN_TYPE`). Ver seção 2. Encontrada durante o desenho da suíte de golden files.
-- ✅ **`ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` código morto**: gramática permanece estrita (hierarquia garantida pela forma), mas o parser é obrigado a usar recuperação de erro para esses dois casos específicos, em vez de abortar a AST inteira. Ver seção 5.1. Também encontrada durante o desenho da suíte de golden files.
+- ✅ **`ORPHAN_CONTEXT`/`ORPHAN_SUBDOMAIN` código morto**: gramática permanece estrita (hierarquia garantida pela forma), mas o parser é obrigado a usar recuperação de erro para esses casos específicos, em vez de abortar a AST inteira. Ver seção 5.1. Também encontrada durante o desenho da suíte de golden files.
+- ✅ **Sistemas de terceiros**: bloco `external_decl`, único e anônimo, entre os subdomains e o mapping. Ver seção 2.
+- ✅ **Supressão de diagnósticos**: `suppression_directive` na seção 1; comentários deixam de ser universalmente descartáveis, e a validação da diretiva é 100% da fase 6 (nunca `SYNTAX_ERROR`). Ver seção 1 e `RULES.md` §4.
+- ✅ **Remoção da tag `SW`**: nove tags; `-x-` carrega Separate Ways sozinho, e `[SW]` produz `REMOVED_CONSTRUCT` com recuperação. Ver seções 3 e 5.1.
 
 ### Ação pendente fora desta gramática
 
-Duas decisões registradas aqui ainda precisam ser propagadas para outro artefato:
-- A regra "exatamente um `domain` por arquivo" é semântica e deve virar um novo erro crítico em `RULES-EN.md`/`RULES-PT.md`. Ainda não foi escrita lá — só está decidida e documentada nesta gramática.
-- Unicidade de nomes de `context` dentro do mesmo `domain` (um mesmo nome não pode aparecer em dois `subdomain` diferentes) — já citada como caso de teste candidato na seção 4, mas ainda não está formalizada como regra em `RULES.md`. Hoje o `RULES.md` só cobre "Phantom Reference" (referência a contexto inexistente); duplicidade de nome é uma regra distinta e ainda não escrita.
+Nenhuma. As duas ações que constavam aqui — formalizar "exatamente um `domain` por arquivo" e a unicidade de nomes de `context` — **já foram propagadas** para `RULES-EN.md`/`RULES-PT.md` §1.A, como `INVALID_DOMAIN_CARDINALITY` e `DUPLICATE_CONTEXT`, ambas com golden file próprio. Esta seção existia porque a gramática decidiu duas regras semânticas antes de o `RULES.md` as registrar; a defasagem acabou.
 
 ---
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## GRAMMAR.md`). Versão atual: **v0.1.9**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## GRAMMAR.md`). Versão atual: **v0.2.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
