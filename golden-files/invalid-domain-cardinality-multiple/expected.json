@@ -1,13 +1,24 @@
 {
-  "description": "Dois blocos 'domain' no mesmo arquivo ('Sales' e 'Support'). Convenção adotada: aponta para o SEGUNDO domain (linha 7) — o que 'causa' a multiplicidade — mesma lógica usada em DUPLICATE_CONTEXT.",
+  "description": "Dois blocos 'domain' no mesmo arquivo. Convenção adotada: aponta para o SEGUNDO — o que 'causa' a multiplicidade — mesma lógica de DUPLICATE_CONTEXT.",
   "astGenerated": true,
-  "astNotes": "ProgramNode.domains deve conter 2 elementos (['Sales', 'Support']) — a AST representa fielmente os dois, mesmo sendo semanticamente inválido. É o Passo 0 do Visitor que rejeita e para antes de processar qualquer domain.",
+  "astNotes": "ProgramNode.domains contém 2 elementos: a AST representa fielmente os dois. O Passo 0 do Visitor rejeita e para antes de processar qualquer domain, por isso nenhuma regra de fase 5 (ex.: UNMAPPED_CONTEXT) é avaliada.",
   "diagnostics": [
     {
       "severity": "error",
       "code": "INVALID_DOMAIN_CARDINALITY",
-      "message": "An ODDS file must contain exactly one 'domain' declaration.",
-      "span": { "start": { "line": 7, "column": 1 }, "end": { "line": 7, "column": 15 } }
+      "data": {
+        "count": "2"
+      },
+      "span": {
+        "start": {
+          "line": 7,
+          "column": 1
+        },
+        "end": {
+          "line": 7,
+          "column": 15
+        }
+      }
     }
   ]
 }

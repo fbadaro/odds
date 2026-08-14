@@ -1,0 +1,24 @@
+{
+  "description": "[PL] declarada num lado que não carrega também [OHS]. A literatura combina os dois com frequência, não sempre — uma Published Language pode existir sem um host service —, por isso 'info'.",
+  "interpretationNote": "UNDOCUMENTED_CONTRACT não dispara: [PL] É uma tag de padrão, então o contrato está declarado, ainda que de forma incomum.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "PL_WITHOUT_OHS",
+      "data": {
+        "context": "Shipping"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 19
+        },
+        "end": {
+          "line": 11,
+          "column": 21
+        }
+      }
+    }
+  ]
+}

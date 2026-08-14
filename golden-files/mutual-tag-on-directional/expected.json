@@ -1,0 +1,25 @@
+{
+  "description": "[SK] descreve uma dependência mútua e não pode ser usada sobre um conector direcional. É a dimensão NOVA da validação de tag — compatibilidade com o CONECTOR, independente da compatibilidade com o LADO (que é o que 'upstream-only-tag-misplaced' testa).",
+  "interpretationNote": "Cada conector tem exatamente um code para 'tag errada aqui', então não há sobreposição: '-->'/'<--' rejeitam SK/P via este code, '<->' rejeita as seis posicionais via POSITIONAL_TAG_ON_MUTUAL, e '-x-' rejeita todas via SEPARATION_CONFLICT.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "MUTUAL_TAG_ON_DIRECTIONAL",
+      "data": {
+        "tag": "SK",
+        "connector": "-->"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 15
+        },
+        "end": {
+          "line": 11,
+          "column": 17
+        }
+      }
+    }
+  ]
+}

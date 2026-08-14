@@ -1,0 +1,13 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  external {
+    context OldBilling
+  }
+
+  mapping {
+    Checkout [CF] <-- OldBilling
+  }
+}

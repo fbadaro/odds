@@ -1,0 +1,15 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  subdomain supporting Fulfillment {
+    context Shipping
+  }
+
+  mapping {
+    Checkout <-- [OHS] Shipping
+    // odds-disable-next-line PHANTOM_REFERENCE: esse sistema vai existir no próximo trimestre
+    Checkout <-- [OHS] Gateway
+  }
+}

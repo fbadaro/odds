@@ -1,0 +1,24 @@
+{
+  "description": "Três relações distintas usando [SK]. Regra de escopo AGREGADO: um diagnóstico por arquivo ao atingir o limiar, não um por relacionamento, com o span ancorado na abertura do bloco 'mapping'.",
+  "interpretationNote": "Duas mudanças em relação à versão anterior deste caso: a severidade caiu para 'info' e o limiar subiu de 2 para 3. Com CORE_IN_SHARED_KERNEL e MUTUAL_TAG_WITH_EXTERNAL no catálogo, os shared kernels perigosos ganharam regra dedicada com conserto próprio; o que sobra para a regra agregada — alguns SK entre subdomínios de apoio — não é alarmante. Por isso os três SK aqui são todos entre contextos 'supporting': se um deles envolvesse o 'core', o diagnóstico grave seria outro. Note também que a regra conta RELAÇÕES DISTINTAS, nunca linhas — sem essa cláusula, um Ctrl+V estouraria o limiar sozinho.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "EXCESSIVE_SHARED_KERNEL",
+      "data": {
+        "count": "3"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 3
+        },
+        "end": {
+          "line": 12,
+          "column": 10
+        }
+      }
+    }
+  ]
+}

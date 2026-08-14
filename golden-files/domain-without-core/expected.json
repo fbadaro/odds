@@ -1,0 +1,24 @@
+{
+  "description": "Nenhum 'subdomain core' declarado no arquivo. Regra de arquivo inteiro, avaliada uma vez, ancorada na linha de declaração do domain.",
+  "interpretationNote": "O arquivo é irrepreensível em tudo o mais — o genérico Upstream publica [OHS], todos os contextos estão mapeados —, e ainda assim o mapa não respondeu à única pergunta que o desenho estratégico existe para responder: onde está a vantagem competitiva.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "DOMAIN_WITHOUT_CORE",
+      "data": {
+        "domain": "Test"
+      },
+      "span": {
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 12
+        }
+      }
+    }
+  ]
+}

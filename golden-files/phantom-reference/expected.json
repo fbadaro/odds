@@ -1,12 +1,24 @@
 {
-  "description": "O mapping referencia 'Checkout', que nunca foi declarado em nenhum subdomain. Erro semântico puro, detectado pelo Visitor no Passo 2 (RULES.md, Resumo para Implementação da AST) — a AST é válida e completa, o problema está na resolução da referência.",
+  "description": "O mapping referencia 'Gateway', que nunca foi declarado. Erro semântico puro, detectado pelo Visitor na fase 3 — a AST é válida e completa; o problema está na resolução da referência.",
+  "interpretationNote": "A linha 12 é invalidada e sai das fases 4 e 5, por isso não produz INCOMPLETE_CUSTOMER_SUPPLIER (o [S] sem [C] do outro lado). A linha 11 é limpa e mantém todos os contextos declarados referenciados no mapping, o que evita UNMAPPED_CONTEXT.",
   "astGenerated": true,
   "diagnostics": [
     {
       "severity": "error",
       "code": "PHANTOM_REFERENCE",
-      "message": "The context 'Checkout' referenced in the Context Map was not declared in any subdomain.",
-      "span": { "start": { "line": 7, "column": 5 }, "end": { "line": 7, "column": 13 } }
+      "data": {
+        "context": "Gateway"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 24
+        },
+        "end": {
+          "line": 12,
+          "column": 31
+        }
+      }
     }
   ]
 }

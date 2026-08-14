@@ -1,0 +1,25 @@
+{
+  "description": "Um contexto de subdomínio 'core' está Upstream de um contexto 'generic' — o genérico se conformando ao core. O DDD estratégico aponta na direção oposta: o core consome o genérico, não o contrário.",
+  "interpretationNote": "Este é exatamente o cheiro que existia no 'valid-baseline' da suíte anterior, cujo trabalho era produzir zero diagnósticos. A regra nova o transformou em teste, e o baseline foi reescrito.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "CORE_UPSTREAM_OF_GENERIC",
+      "data": {
+        "core": "Checkout",
+        "generic": "PaymentGateway"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 38
+        }
+      }
+    }
+  ]
+}

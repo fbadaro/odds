@@ -1,0 +1,15 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  external {
+    context StripeApi
+    context SapErp
+  }
+
+  mapping {
+    Checkout <-- [OHS] StripeApi
+    StripeApi --> [OHS] SapErp
+  }
+}

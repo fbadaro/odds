@@ -1,0 +1,43 @@
+{
+  "description": "Variante que exercita o gatilho (b) da regra: em vez de [CF] no lado Downstream, é [BBM] no lado Upstream que dispara o aviso.",
+  "interpretationNote": "Dois diagnósticos, e o segundo é a demonstração de que [BBM] NÃO é tag de padrão: a linha carrega uma tag, mas não carrega nenhum PADRÃO, então o contrato de integração continua não documentado. Ordem: os dois são fase 5 com o mesmo span (a linha inteira), então o desempate é o code em ordem alfabética. Note também que basta acrescentar [ACL] no lado do core para o CONFORMIST_CORE sumir — a regra não insiste em sugerir um conserto que já foi aplicado.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "CONFORMIST_CORE",
+      "data": {
+        "context": "Checkout",
+        "trigger": "bbm"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 34
+        }
+      }
+    },
+    {
+      "severity": "info",
+      "code": "UNDOCUMENTED_CONTRACT",
+      "data": {
+        "left": "Checkout",
+        "right": "OldBilling"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 34
+        }
+      }
+    }
+  ]
+}

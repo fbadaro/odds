@@ -1,0 +1,26 @@
+{
+  "description": "'OldErp' carrega [BBM] na linha 15 e não carrega na linha 16. Como [BBM] caracteriza o SISTEMA e não o contrato, um sistema marcado como pântano numa relação e não em outra é um modelo internamente contraditório.",
+  "interpretationNote": "Esta regra é a mitigação de um custo aceito conscientemente: manter [BBM] como tag (e não como propriedade de contexto) preserva a fronteira 'tag = contrato validável / propriedade = documentação', ao preço de ter que repetir a tag em toda linha. A regra fecha o furo sem tocar na fronteira, porque opera sobre tags. Span: a primeira linha em que o contexto aparece SEM a tag — a que o usuário provavelmente esqueceu. Note ainda que CONFORMIST_CORE não dispara na linha 15: o lado 'core' já carrega [ACL], e a regra não insiste em sugerir um conserto já aplicado.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "INCONSISTENT_BBM",
+      "data": {
+        "context": "OldErp",
+        "withBbm": "1",
+        "withoutBbm": "1"
+      },
+      "span": {
+        "start": {
+          "line": 16,
+          "column": 5
+        },
+        "end": {
+          "line": 16,
+          "column": 30
+        }
+      }
+    }
+  ]
+}

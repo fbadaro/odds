@@ -277,6 +277,7 @@ Estas não dizem que o modelo está quebrado; dizem que o desenho merece um segu
 * **Core Conformista** — `CONFORMIST_CORE` · `warning` · fase 5 · Externo? ✅ vale
   * *Escopo:* por relacionamento; apenas linhas direcionais (`-->`/`<--`) em que um contexto de subdomínio `core` está do lado Downstream.
   * *Gatilho:* qualquer uma das condições vale — **(a)** o lado Downstream (o contexto `core`) carrega `[CF]`, ou **(b)** o lado Upstream carrega `[BBM]`. Avaliadas independentemente; se as duas valem na mesma linha, emita um **único** diagnóstico, com `data.trigger` registrando qual condição disparou (`"conformist"` tem precedência sobre `"bbm"` quando ambas valem).
+  * *Exceção:* a condição **(b) não dispara quando o lado Downstream `core` já carrega `[ACL]`**. O propósito inteiro da regra é aconselhar uma Anti-Corruption Layer; insistir num conserto que o autor já aplicou é exatamente o ruído que o critério da correção distinta (§0.4) existe para evitar. A condição (a) não precisa da mesma exceção — `[CF]` e `[ACL]` no mesmo lado já é `PROTECTION_CONFLICT`.
   * *Por que o externo importa aqui:* um ERP de terceiro é o Big Ball of Mud clássico, então este é o cenário-alvo da regra, não uma exceção a ela.
 
 * **Genérico Upstream sem OHS** — `GENERIC_WITHOUT_OHS` · `warning` · fase 5 · Externo? ❌ não consegue disparar
@@ -328,6 +329,8 @@ Estas não dizem que o modelo está quebrado; dizem que o desenho merece um segu
 * **Contexto Não Mapeado** — `UNMAPPED_CONTEXT` · `info` · fase 5 · Externo? ✅ vale
   * *Escopo:* por declaração de contexto.
   * *Gatilho:* um contexto é declarado e nunca referenciado no bloco `mapping`.
+  * *Inerte quando não há mapa nenhum:* se o arquivo **não declara bloco `mapping`**, esta regra não dispara para contexto algum. Um modelo em que o mapeamento ainda não começou é um rascunho, e acusar todos os contextos de uma vez é ruído, não sinal.
+  * *Referência numa linha inválida ainda conta.* Se um contexto aparece apenas numa linha de relacionamento que outra regra invalidou, ele continua "referenciado" — reportá-lo como não mapeado seria um diagnóstico derivado de um erro, que a §3.1 proíbe.
   * *Nota:* um contexto genuinamente isolado é legítimo, que é exatamente por que isso é `info` e não warning — sinaliza uma omissão provável, não um erro.
 
 * **Subdomínio Vazio** — `EMPTY_SUBDOMAIN` · `info` · fase 5 · Externo? n/a
@@ -351,6 +354,8 @@ Um elemento que já produziu um **`error`** é registrado como *declarado porém
 O caso que motiva o princípio: um `context` declarado fora de um `subdomain` é descartado pelo panic-mode recovery do parser (`GRAMMAR.md` §5.1) e reportado como `ORPHAN_CONTEXT`. Sem o princípio, toda linha do `mapping` que referenciasse aquele contexto emitiria *também* `PHANTOM_REFERENCE` — um erro do usuário, dois diagnósticos, e o segundo falso: o contexto *foi* declarado, apenas no lugar errado. Por isso, declarações descartadas precisam mesmo assim ser registradas na tabela de símbolos, marcadas como inválidas, para que as fases seguintes as reconheçam sem voltar a reportá-las.
 
 A leitura é **larga**: um `error` remove o elemento do pipeline inteiro, não apenas das regras que consomem o que foi invalidado. A leitura estreita obrigaria cada uma das duas dúzias de regras da §2 a declarar de qual invalidação depende — o regime caso a caso que este princípio existe para evitar, fantasiado de arquitetura.
+
+**Um elemento invalidado leva os filhos junto.** Um `subdomain` que produziu um `error` (`INVALID_SUBDOMAIN_TYPE`, `DUPLICATE_SUBDOMAIN`) sai do pipeline junto com os contextos declarados dentro dele, e um bloco `subdomain` descartado leva seus contextos também. Esses contextos continuam registrados como *declarados porém inválidos*, então não viram referências fantasma — mas também não são julgados por conta própria.
 
 Consequência aceita deliberadamente: **o conserto é iterativo.** Uma linha de relacionamento que é ao mesmo tempo duplicata e arriscada do ponto de vista estratégico reporta só a duplicata; o aviso estratégico aparece assim que a duplicata for apagada. Do mesmo modo, não se reporta `DUPLICATE_CONTEXT` entre um órfão descartado e um homônimo válido. Esse é o comportamento padrão de qualquer compilador e, com validação ao vivo, a segunda passada não custa nada ao usuário.
 

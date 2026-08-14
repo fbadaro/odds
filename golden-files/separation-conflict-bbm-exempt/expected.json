@@ -1,0 +1,6 @@
+{
+  "description": "Caso auxiliar de 'separation-conflict', e um dos dois casos da suíte que devem produzir ZERO diagnósticos. [BBM] numa linha '-x-' é legítima: ela não é tag de padrão, e sim a terceira categoria de anotação — caracteriza o SISTEMA, não o contrato.",
+  "interpretationNote": "Este arquivo diz 'aquele ERP é um pântano, e É POR ISSO que decidimos não integrar' — uma das informações mais valiosas que um mapa pode registrar, e que seria inexprimível se [BBM] fosse restrita a conectores direcionais. UNDOCUMENTED_CONTRACT também não dispara, porque não se aplica a '-x-'.",
+  "astGenerated": true,
+  "diagnostics": []
+}

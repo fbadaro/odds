@@ -1,13 +1,24 @@
 {
-  "description": "Um 'context' declarado diretamente dentro de 'domain', sem 'subdomain'. Testa a recuperação de erro exigida em GRAMMAR.md §5.1: o parser descarta a declaração malformada e continua — o restante do arquivo (subdomain Sales/context Checkout) deve aparecer normalmente na AST.",
+  "description": "Um 'context' declarado diretamente dentro de 'domain', fora de qualquer 'subdomain' e do bloco 'external'. Testa a recuperação de erro exigida em GRAMMAR.md §5.1: o parser descarta a declaração malformada e continua — o restante do arquivo deve aparecer normalmente na AST.",
   "astGenerated": true,
   "diagnostics": [
     {
       "severity": "error",
       "code": "ORPHAN_CONTEXT",
-      "message": "A Bounded Context must belong to a Subdomain.",
-      "span": { "start": { "line": 2, "column": 3 }, "end": { "line": 2, "column": 17 } }
+      "data": {
+        "context": "Orphan"
+      },
+      "span": {
+        "start": {
+          "line": 2,
+          "column": 3
+        },
+        "end": {
+          "line": 2,
+          "column": 17
+        }
+      }
     }
   ],
-  "partialAstNotes": "A declaração 'context Orphan' (linha 2) NÃO deve aparecer em nenhum lugar da AST — foi descartada pela recuperação de erro. O domain 'Test' deve conter normalmente subdomains: [{ name: 'Sales', subdomainType: 'core', contexts: [{ name: 'Checkout' }] }]."
+  "partialAstNotes": "A declaração 'context Orphan' (linha 2) NÃO aparece na AST. Mas ela DEVE aparecer na SymbolTable com valid: false (GRAMMAR.md §5.1, passo 3) — descartar não é esquecer. Por isso 'Orphan' não gera UNMAPPED_CONTEXT: um elemento que já produziu um error sai do pipeline (RULES.md §3.1)."
 }

@@ -1,0 +1,24 @@
+{
+  "description": "'Inventory' é declarado e nunca referenciado no bloco 'mapping'. Um contexto genuinamente isolado é legítimo — daí 'info' e não 'warning': a regra sinaliza uma omissão provável, não um erro.",
+  "interpretationNote": "A regra é inerte quando o arquivo não declara bloco 'mapping' NENHUM (ver 'duplicate-context'). Aqui existe um mapping, então o silêncio sobre 'Inventory' é informativo.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "UNMAPPED_CONTEXT",
+      "data": {
+        "context": "Inventory"
+      },
+      "span": {
+        "start": {
+          "line": 8,
+          "column": 5
+        },
+        "end": {
+          "line": 8,
+          "column": 22
+        }
+      }
+    }
+  ]
+}

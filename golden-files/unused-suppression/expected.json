@@ -1,0 +1,23 @@
+{
+  "description": "A diretiva está bem formada, mas a regra que ela nomeia não disparou na linha seguinte — a linha declara [OHS], então o contrato está documentado. Supressão obsoleta: sem esta regra, elas se acumulam e a justificativa apodrece junto com o modelo.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "UNUSED_SUPPRESSION",
+      "data": {
+        "code": "UNDOCUMENTED_CONTRACT"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 91
+        }
+      }
+    }
+  ]
+}

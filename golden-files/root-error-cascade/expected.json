@@ -1,0 +1,25 @@
+{
+  "description": "Caso-bandeira do princípio do erro-raiz (RULES.md §3.1). 'Orphan' é declarado fora de qualquer subdomain (ORPHAN_CONTEXT) E é referenciado no mapping. Um validador ingênuo emitiria DOIS diagnósticos aqui — e o segundo, PHANTOM_REFERENCE, seria FALSO: o contexto foi declarado, apenas no lugar errado.",
+  "interpretationNote": "É este caso que obriga o parser a REGISTRAR a declaração descartada como inválida, em vez de simplesmente esquecê-la (GRAMMAR.md §5.1, passo 3). A entrada 'declarada porém inválida' na SymbolTable serve a dois propósitos ao mesmo tempo: matar a cascata aqui, e permitir ao renderizador desenhar o nó fantasma marcado em vez de nada.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "ORPHAN_CONTEXT",
+      "data": {
+        "context": "Orphan"
+      },
+      "span": {
+        "start": {
+          "line": 2,
+          "column": 3
+        },
+        "end": {
+          "line": 2,
+          "column": 17
+        }
+      }
+    }
+  ],
+  "partialAstNotes": "A linha 9 do mapping também sai do pipeline, por referenciar um elemento inválido — por isso não produz UNDOCUMENTED_CONTRACT nem qualquer regra de fase 4/5. 'Checkout' continua referenciado no mapping, então não gera UNMAPPED_CONTEXT."
+}

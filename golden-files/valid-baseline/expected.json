@@ -1,6 +1,7 @@
 {
-  "description": "Arquivo .odds completo e válido — usa title (nos 3 níveis), context_block com todas as propriedades exercitadas parcialmente, subdomains core/generic, e uma relação com tags corretamente posicionadas (OHS/PL no lado Upstream). Serve como sanity check: qualquer implementação do parser/validador DEVE retornar uma lista de diagnósticos vazia para este arquivo. Se este teste falhar (reportar qualquer diagnóstico), o bug está no validador, não no arquivo de entrada.",
+  "description": "Arquivo .odds completo e válido — title nos três níveis, context_block com todas as propriedades exercitadas, os três tipos de subdomínio, um bloco 'external', e cinco relações cobrindo os quatro conectores. Sanity check da suíte: qualquer implementação DEVE retornar uma lista de diagnósticos VAZIA, incluindo warnings e infos. Se este teste falhar, o bug está no validador, não no arquivo.",
+  "interpretationNote": "Este arquivo é idêntico ao exemplo canônico de GRAMMAR.md §4, e os dois devem ser mantidos em sincronia — um exemplo canônico que dispara avisos ensina o vocabulário errado para todo mundo que o copia. A versão anterior deste baseline disparava três coisas: [OHS, PL] no lado Downstream (UPSTREAM_ONLY_TAG_MISPLACED), 'core' Upstream de 'generic' (CORE_UPSTREAM_OF_GENERIC) e 'type: \\\"generic\\\"' dentro de um 'subdomain generic', que sobrecarregava o vocabulário sem disparar regra nenhuma.",
   "astGenerated": true,
-  "astNotes": "ProgramNode.domains tem exatamente 1 elemento. Domain 'ECommercePlatform' com title, 2 subdomains (core 'Sales' com title e 1 context; generic 'Payments' com 1 context), e 1 mapping com 1 relationship.",
+  "astNotes": "1 DomainNode com title, 3 SubdomainNodes, 1 ExternalBlockNode com 1 contexto, e 1 MappingNode com 5 RelationshipNodes. A SymbolTable tem 6 entradas, todas com valid: true; apenas 'StripeApi' tem isExternal: true e subdomainName/subdomainType undefined.",
   "diagnostics": []
 }

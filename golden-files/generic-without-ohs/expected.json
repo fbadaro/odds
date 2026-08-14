@@ -1,0 +1,25 @@
+{
+  "description": "PaymentGateway pertence a um subdomain 'generic' e está do lado Upstream sem declarar [OHS]. Avaliado por RELACIONAMENTO (não agregado), e apenas em linhas direcionais.",
+  "interpretationNote": "O par [S]/[C] está completo e corretamente posicionado de propósito: [S] é upstream-only e está no Upstream, [C] é downstream-only e está no Downstream. Isso isola o teste — sem eles a linha também dispararia UNDOCUMENTED_CONTRACT, e com apenas um dos dois dispararia INCOMPLETE_CUSTOMER_SUPPLIER.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "GENERIC_WITHOUT_OHS",
+      "data": {
+        "context": "PaymentGateway",
+        "subdomain": "Payments"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 40
+        }
+      }
+    }
+  ]
+}

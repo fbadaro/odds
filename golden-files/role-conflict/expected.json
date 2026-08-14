@@ -1,19 +1,41 @@
 {
-  "description": "'Checkout [C, S] --> PaymentGateway': [C] (Customer) e [S] (Supplier) juntos no mesmo lado (leftTags). ATENÇÃO — este caso é estruturalmente inevitável de gerar 2 diagnósticos simultâneos: como C é downstream-only e S é upstream-only, colocar os dois no mesmo lado sempre viola também a regra de posição para um deles (aqui, C está do lado Upstream/esquerdo, que é errado para uma tag downstream-only). Um validador correto deve emitir AMBOS os diagnósticos abaixo para esta linha, não só ROLE_CONFLICT.",
+  "description": "[C] (Customer) e [S] (Supplier) no mesmo lado. Este caso é estruturalmente incapaz de gerar um diagnóstico só: como C é downstream-only e S é upstream-only, colocar os dois no mesmo lado sempre viola também uma regra de posição. Um validador que reporte apenas ROLE_CONFLICT está incompleto.",
+  "interpretationNote": "A ORDEM aqui é o que a regra de ordenação (RULES.md §3.3) determina, e ela INVERTEU em relação à versão anterior desta suíte. Os dois codes são da mesma fase (4) e da mesma linha, então o desempate é por span.start.column: ROLE_CONFLICT ancora no grupo '[C, S]' (coluna do colchete) e DOWNSTREAM_ONLY_TAG_MISPLACED no token 'C' (uma coluna depois). A ordem antiga era prioridade implícita de quem escreveu o arquivo, não regra.",
   "astGenerated": true,
-  "astNotes": "RelationshipNode: { left: 'Checkout', leftTags: ['C', 'S'], connector: '-->', rightTags: [], right: 'PaymentGateway' }",
   "diagnostics": [
     {
       "severity": "error",
-      "code": "DOWNSTREAM_ONLY_TAG_MISPLACED",
-      "message": "Invalid Pattern: A Customer (C) tag can only appear on the Downstream side of the integration.",
-      "span": { "start": { "line": 11, "column": 15 }, "end": { "line": 11, "column": 16 } }
+      "code": "ROLE_CONFLICT",
+      "data": {
+        "context": "Checkout"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 14
+        },
+        "end": {
+          "line": 11,
+          "column": 20
+        }
+      }
     },
     {
       "severity": "error",
-      "code": "ROLE_CONFLICT",
-      "message": "A context cannot be Customer (C) and Supplier (S) simultaneously in the same relationship.",
-      "span": { "start": { "line": 11, "column": 14 }, "end": { "line": 11, "column": 20 } }
+      "code": "DOWNSTREAM_ONLY_TAG_MISPLACED",
+      "data": {
+        "tag": "C"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 15
+        },
+        "end": {
+          "line": 11,
+          "column": 16
+        }
+      }
     }
   ]
 }

@@ -1,0 +1,25 @@
+{
+  "description": "[SK] declarada em apenas um lado de um '<->'. A inferência automática do outro lado é PROIBIDA: um 'o parser pode inferir' na especificação faria duas implementações conformes divergirem na saída, e completar o texto do usuário em silêncio faria o arquivo e o diagrama discordarem.",
+  "interpretationNote": "Shared Kernel e Partnership são acordos bilaterais — escrever os dois lados é o próprio ato de registrar que a outra equipe também assinou embaixo. Compare com INCOMPLETE_CUSTOMER_SUPPLIER, que é apenas 'warning': lá são duas tags distintas, e meia declaração é uma afirmação unilateral coerente.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "INCOMPLETE_MUTUAL_TAG",
+      "data": {
+        "tag": "SK",
+        "declaredSide": "left"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 15
+        },
+        "end": {
+          "line": 11,
+          "column": 17
+        }
+      }
+    }
+  ]
+}

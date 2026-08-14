@@ -1,12 +1,42 @@
 {
-  "description": "'critical' não é um subdomain_type válido (core|supporting|generic). Desde GRAMMAR.md v0.1.8, subdomain_type é 'identifier' livre na gramática — isso PASSA no parsing normalmente (SubdomainNode.subdomainType = 'critical', um valor bruto), e é o Visitor quem rejeita.",
+  "description": "'critical' não é um subdomain_type válido. A gramática aceita qualquer identifier nessa posição (por isso o arquivo passa no parsing e SubdomainNode.subdomainType = 'critical'), e é o Visitor quem rejeita.",
+  "interpretationNote": "Dois diagnósticos, e o segundo é consequência do primeiro pelo princípio do erro-raiz (RULES.md §3.1): o subdomínio inválido sai do pipeline levando 'Checkout' junto — por isso 'Checkout' não gera UNMAPPED_CONTEXT —, e como ele era o único subdomínio do arquivo, não resta nenhum 'core' válido, o que faz DOMAIN_WITHOUT_CORE disparar na fase 5.",
   "astGenerated": true,
   "diagnostics": [
     {
       "severity": "error",
       "code": "INVALID_SUBDOMAIN_TYPE",
-      "message": "Unknown subdomain type. Use only 'core', 'supporting', or 'generic'.",
-      "span": { "start": { "line": 2, "column": 13 }, "end": { "line": 2, "column": 21 } }
+      "data": {
+        "subdomain": "Sales",
+        "value": "critical"
+      },
+      "span": {
+        "start": {
+          "line": 2,
+          "column": 13
+        },
+        "end": {
+          "line": 2,
+          "column": 21
+        }
+      }
+    },
+    {
+      "severity": "warning",
+      "code": "DOMAIN_WITHOUT_CORE",
+      "data": {
+        "domain": "Test"
+      },
+      "span": {
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 12
+        }
+      }
     }
   ]
 }

@@ -1,0 +1,43 @@
+{
+  "description": "O code existe e a linha alvo realmente viola a regra, mas a diretiva não traz justificativa — e a justificativa é OBRIGATÓRIA. A supressão não tem efeito, e o diagnóstico original é reportado.",
+  "interpretationNote": "A obrigatoriedade é o que converte a supressão em documentação arquitetural em vez de escape hatch: uma supressão sem motivo é indistinguível de desistência, e seis meses depois ninguém sabe se foi decisão consciente ou cansaço.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "UNDOCUMENTED_CONTRACT",
+      "data": {
+        "left": "Checkout",
+        "right": "Shipping"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 5
+        },
+        "end": {
+          "line": 12,
+          "column": 26
+        }
+      }
+    },
+    {
+      "severity": "info",
+      "code": "MALFORMED_SUPPRESSION",
+      "data": {
+        "code": "UNDOCUMENTED_CONTRACT",
+        "reason": "missing-justification"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 52
+        }
+      }
+    }
+  ]
+}

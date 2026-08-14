@@ -1,0 +1,25 @@
+{
+  "description": "Relação sem nenhuma tag de Context Map Pattern em nenhum dos lados. Caso limpo e direto: o Upstream é 'supporting' (não 'generic'), o que evita a sobreposição com GENERIC_WITHOUT_OHS.",
+  "interpretationNote": "A regra caiu de 'warning' para 'info': é higiene de documentação, e inflar o contador de avisos com ela treinaria o usuário a ignorar o painel inteiro.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "UNDOCUMENTED_CONTRACT",
+      "data": {
+        "left": "Checkout",
+        "right": "Shipping"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 26
+        }
+      }
+    }
+  ]
+}

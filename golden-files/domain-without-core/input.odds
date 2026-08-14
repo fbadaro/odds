@@ -1,0 +1,13 @@
+domain Test {
+  subdomain supporting Fulfillment {
+    context Shipping
+  }
+
+  subdomain generic Payments {
+    context PaymentGateway
+  }
+
+  mapping {
+    Shipping <-- [OHS] PaymentGateway
+  }
+}

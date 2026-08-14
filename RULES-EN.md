@@ -275,6 +275,7 @@ These do not say the model is broken; they say the design is worth a second look
 * **Conformist Core** — `CONFORMIST_CORE` · `warning` · phase 5 · External? ✅ applies
   * *Scope:* per relationship; directional lines only (`-->`/`<--`) where a context belonging to a `core` subdomain sits on the Downstream side.
   * *Trigger:* either condition holds — **(a)** the Downstream side (the `core` context) carries `[CF]`, or **(b)** the Upstream side carries `[BBM]`. Evaluated independently; if both hold on one line, emit a **single** diagnostic, with `data.trigger` recording which condition fired (`"conformist"` takes precedence over `"bbm"` when both hold).
+  * *Exception:* condition **(b) does not fire when the `core` Downstream side already carries `[ACL]`**. The whole point of the rule is to advise an Anti-Corruption Layer; insisting on a fix the author has already applied is exactly the noise the distinct-fix criterion (§0.4) exists to prevent. Condition (a) needs no such exception — `[CF]` and `[ACL]` on the same side is already `PROTECTION_CONFLICT`.
   * *Why external matters here:* a third-party ERP is the classic Big Ball of Mud, so this is the rule's target scenario, not an exception to it.
 
 * **Generic Upstream without OHS** — `GENERIC_WITHOUT_OHS` · `warning` · phase 5 · External? ❌ cannot fire
@@ -326,6 +327,8 @@ These do not say the model is broken; they say the design is worth a second look
 * **Unmapped Context** — `UNMAPPED_CONTEXT` · `info` · phase 5 · External? ✅ applies
   * *Scope:* per context declaration.
   * *Trigger:* a context is declared and never referenced in the `mapping` block.
+  * *Inert when there is no map at all:* if the file declares **no `mapping` block**, this rule does not fire for any context. A model where the mapping has not been started yet is a draft, and accusing every context at once is noise rather than signal.
+  * *A reference on an invalid line still counts.* If a context appears only on a relationship line that some other rule invalidated, it is still "referenced" — reporting it as unmapped would be a derived diagnostic from an error, which §3.1 forbids.
   * *Note:* a genuinely isolated context is legitimate, which is exactly why this is `info` and not a warning — it flags a probable omission, not a mistake.
 
 * **Empty Subdomain** — `EMPTY_SUBDOMAIN` · `info` · phase 5 · External? n/a
@@ -349,6 +352,8 @@ An element that has produced an **`error`** is recorded as *declared but invalid
 The motivating case: a `context` declared outside a `subdomain` is discarded by the parser's panic-mode recovery (`GRAMMAR.md` §5.1) and reported as `ORPHAN_CONTEXT`. Without this principle, every `mapping` line referencing that context would *also* emit `PHANTOM_REFERENCE` — one user mistake, two diagnostics, and the second one false: the context *was* declared, just in the wrong place. Discarded declarations must therefore still be registered in the symbol table, flagged as invalid, so that later phases can recognise them without re-reporting them.
 
 The reading is **broad**: an `error` removes the element from the pipeline entirely, not merely from the rules that consume whatever was invalidated. The narrow reading would force each of the two dozen rules in §2 to declare which invalidation it depends on — the case-by-case regime this principle exists to avoid, wearing an architecture costume.
+
+**An invalidated element takes its children with it.** A `subdomain` that produced an `error` (`INVALID_SUBDOMAIN_TYPE`, `DUPLICATE_SUBDOMAIN`) leaves the pipeline together with the contexts declared inside it, and a discarded `subdomain` block takes its contexts too. Those contexts are still registered as *declared but invalid*, so they do not become phantom references — but they are not re-judged on their own account either.
 
 Consequence, accepted deliberately: **fixing is iterative.** A relationship line that is both a duplicate and strategically risky reports only the duplicate; the strategic warning appears once the duplicate is deleted. Likewise, no `DUPLICATE_CONTEXT` is reported between a discarded orphan and a valid namesake. This is standard compiler behaviour, and with live validation the second pass costs the user nothing.
 

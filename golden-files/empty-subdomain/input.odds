@@ -1,0 +1,13 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+    context Orders
+  }
+
+  subdomain supporting Fulfillment {
+  }
+
+  mapping {
+    Checkout <-- [OHS] Orders
+  }
+}

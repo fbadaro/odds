@@ -1,0 +1,23 @@
+{
+  "description": "[ACL] é definida por uma posição Upstream/Downstream, e '<->' não tem nenhuma das duas. O erro não é de lado — é de conector.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "POSITIONAL_TAG_ON_MUTUAL",
+      "data": {
+        "tag": "ACL"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 15
+        },
+        "end": {
+          "line": 11,
+          "column": 18
+        }
+      }
+    }
+  ]
+}

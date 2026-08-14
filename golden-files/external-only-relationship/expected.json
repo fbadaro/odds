@@ -1,0 +1,25 @@
+{
+  "description": "Os dois lados da relação são sistemas de terceiros. Um context map documenta as SUAS integrações — como dois fornecedores conversam entre si não é decisão sua, não é acionável, e nenhuma regra de padrão consegue validá-la (princípio da autoria, RULES.md §0.4).",
+  "interpretationNote": "A linha 12 é legítima e silenciosa: 'StripeApi' está Upstream sem pertencer a subdomínio nenhum, então GENERIC_WITHOUT_OHS não tem como disparar contra ele — a isenção que o princípio da autoria exige é estrutural, não uma cláusula. 'SapErp' aparece só na linha inválida, mas ainda assim conta como referenciado, e por isso não gera UNMAPPED_CONTEXT.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "EXTERNAL_ONLY_RELATIONSHIP",
+      "data": {
+        "left": "StripeApi",
+        "right": "SapErp"
+      },
+      "span": {
+        "start": {
+          "line": 13,
+          "column": 5
+        },
+        "end": {
+          "line": 13,
+          "column": 31
+        }
+      }
+    }
+  ]
+}

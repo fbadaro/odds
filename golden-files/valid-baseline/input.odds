@@ -3,20 +3,42 @@ domain ECommercePlatform {
 
   subdomain core Sales {
     title: "Vendas"
+    context OrderManagement
     context Checkout {
-      description: "Handles the checkout flow"
+      description: "Fluxo de finalização de compra"
       maturity: mature
     }
+  }
+
+  subdomain supporting Fulfillment {
+    context Shipping
+    context Inventory
   }
 
   subdomain generic Payments {
     context PaymentGateway {
-      type: "generic"
+      title: "Gateway de Pagamentos"
+      type: "gateway"
+      description: "Integração com provedores de pagamento"
+      responsibilities: ["Processar transações", "Tratar webhooks do provedor"]
       maturity: mature
+      team: "Payments Squad"
+      technology: "Node.js"
+    }
+  }
+
+  external {
+    context StripeApi {
+      description: "Provedor de pagamentos de terceiros"
+      technology: "Stripe REST API"
     }
   }
 
   mapping {
-    Checkout [OHS, PL] --> PaymentGateway
+    Checkout        <-- [OHS, PL]  PaymentGateway
+    OrderManagement [ACL] <--      Shipping
+    Shipping        [SK]  <-> [SK] Inventory
+    PaymentGateway  [ACL] <--      StripeApi
+    Shipping        -x-            StripeApi
   }
 }

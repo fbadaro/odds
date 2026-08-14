@@ -1,0 +1,42 @@
+{
+  "description": "A diretiva está sintaticamente perfeita e a justificativa é até razoável — mas nomeia um code de severidade 'error', e erro nunca é suprimível. O PHANTOM_REFERENCE é reportado apesar da diretiva.",
+  "interpretationNote": "A fronteira é de princípio, não de conveniência: o escape hatch existe para decisões conscientes contra um CONSELHO estratégico. Silenciar uma referência fantasma faria o diagrama mentir sobre o próprio modelo — e o diagrama já degrada por elemento (desenha o nó fantasma pontilhado), então o usuário vê o desenho de qualquer forma.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "PHANTOM_REFERENCE",
+      "data": {
+        "context": "Gateway"
+      },
+      "span": {
+        "start": {
+          "line": 13,
+          "column": 24
+        },
+        "end": {
+          "line": 13,
+          "column": 31
+        }
+      }
+    },
+    {
+      "severity": "info",
+      "code": "MALFORMED_SUPPRESSION",
+      "data": {
+        "code": "PHANTOM_REFERENCE",
+        "reason": "not-suppressible"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 5
+        },
+        "end": {
+          "line": 12,
+          "column": 95
+        }
+      }
+    }
+  ]
+}

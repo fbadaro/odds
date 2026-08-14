@@ -1,0 +1,25 @@
+{
+  "description": "O conector '<--' torna Checkout (esquerda) Downstream e OldBilling (direita) Upstream. Checkout pertence a um subdomain 'core' e carrega [CF] — gatilho (a) da regra. [CF] está corretamente posicionada no lado Downstream, então não há erro de posição: só o aviso estratégico.",
+  "interpretationNote": "O campo data.trigger é o que distingue este caso de 'conformist-core-bbm'. Sem ele, os dois asseririam a mesma severity, o mesmo code e spans que diferem por uma coluna acidental — e uma implementação que disparasse o gatilho errado passaria nos dois testes. Foi esse buraco que tirou 'message' do contrato e colocou 'data' no lugar.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "CONFORMIST_CORE",
+      "data": {
+        "context": "Checkout",
+        "trigger": "conformist"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 33
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "description": "A tag [SW] foi removida da linguagem (RULES.md §0.2): '-x-' sozinho já significa Free / Separate Ways. Escrevê-la NÃO é SYNTAX_ERROR genérico — é REMOVED_CONSTRUCT, com recuperação: o parser descarta a tag e continua, e a mensagem diz o que usar no lugar.",
+  "interpretationNote": "O elemento invalidado é a TAG, não a relação: a linha sobrevive como 'Checkout -x- PaymentGateway' e é avaliada normalmente pelas fases seguintes. Ela não produz mais nada porque '-x-' sem tags é uma linha perfeitamente válida — SEPARATION_CONFLICT precisa de tag, e UNDOCUMENTED_CONTRACT não se aplica a '-x-'.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "REMOVED_CONSTRUCT",
+      "data": {
+        "construct": "[SW]",
+        "removedIn": "0.1.0",
+        "replacement": "`-x-` on its own"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 15
+        },
+        "end": {
+          "line": 11,
+          "column": 17
+        }
+      }
+    }
+  ]
+}

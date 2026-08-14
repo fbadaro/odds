@@ -1,0 +1,26 @@
+{
+  "description": "Uma diretiva de supressão bem formada, com justificativa. A linha 12 viola DUAS regras — UNDOCUMENTED_CONTRACT (nenhuma tag em nenhum lado) e GENERIC_WITHOUT_OHS (o Upstream é 'generic' e não publica [OHS]) — e a diretiva nomeia apenas a primeira.",
+  "interpretationNote": "Este é o caso que prova que a supressão é POR CODE, e não por linha: o GENERIC_WITHOUT_OHS sobrevive e é reportado normalmente. UNUSED_SUPPRESSION também não dispara, porque a diretiva de fato silenciou algo.",
+  "astGenerated": true,
+  "astNotes": "ProgramNode.suppressions deve conter 1 SuppressionDirective: { code: 'UNDOCUMENTED_CONTRACT', justification: 'contrato ainda em negociação com o fornecedor', targetLine: 12 }. Comentários com o prefixo 'odds-disable-next-line' NÃO podem ser descartados pelo lexer.",
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "GENERIC_WITHOUT_OHS",
+      "data": {
+        "context": "PaymentGateway",
+        "subdomain": "Payments"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 5
+        },
+        "end": {
+          "line": 12,
+          "column": 32
+        }
+      }
+    }
+  ]
+}

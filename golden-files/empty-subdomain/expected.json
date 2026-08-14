@@ -1,0 +1,23 @@
+{
+  "description": "Um 'subdomain' que não declara nenhum 'context'. Normalmente é rascunho em andamento, daí 'info'.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "info",
+      "code": "EMPTY_SUBDOMAIN",
+      "data": {
+        "subdomain": "Fulfillment"
+      },
+      "span": {
+        "start": {
+          "line": 7,
+          "column": 3
+        },
+        "end": {
+          "line": 7,
+          "column": 35
+        }
+      }
+    }
+  ]
+}

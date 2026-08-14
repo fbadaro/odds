@@ -1,13 +1,24 @@
 {
-  "description": "Conector -x- (Free) usado junto com tags de integração ([OHS] e [ACL]) na mesma linha. Diferente das checagens de posição (que apontam para uma tag específica), este erro cobre a relação inteira, já que o conflito é entre o conector e AMBAS as tags.",
+  "description": "Conector '-x-' (ausência de integração) com tags de padrão na mesma linha. Diferente das checagens de posição (que apontam uma tag específica), este erro cobre a relação inteira, já que o conflito é entre o conector e AMBAS as tags.",
+  "interpretationNote": "A regra colapsou para uma linha só — 'qualquer tag de padrão em -x- é erro' — quando [SW] saiu da linguagem. Antes ela precisava enumerar quais tags contavam como 'indicativo de integração' e tratar à parte o caso [SW] + conector direcional.",
   "astGenerated": true,
-  "astNotes": "RelationshipNode: { left: 'Checkout', leftTags: ['OHS'], connector: '-x-', rightTags: ['ACL'], right: 'PaymentGateway' }",
   "diagnostics": [
     {
       "severity": "error",
       "code": "SEPARATION_CONFLICT",
-      "message": "Semantic Conflict: The Separate Ways relationship (-x-) indicates absence of integration. Remove [OHS] and [ACL] tags.",
-      "span": { "start": { "line": 11, "column": 5 }, "end": { "line": 11, "column": 44 } }
+      "data": {
+        "tags": "[OHS], [ACL]"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 44
+        }
+      }
     }
   ]
 }

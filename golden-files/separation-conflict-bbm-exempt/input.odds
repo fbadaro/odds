@@ -1,0 +1,13 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  external {
+    context OldErp
+  }
+
+  mapping {
+    Checkout -x- [BBM] OldErp
+  }
+}

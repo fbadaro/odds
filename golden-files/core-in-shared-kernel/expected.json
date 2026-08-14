@@ -1,0 +1,25 @@
+{
+  "description": "Um contexto de subdomínio 'core' dentro de um Shared Kernel. O [SK] está impecável do ponto de vista sintático e posicional (bidirecional, nos dois lados de um '<->') — o problema é estratégico: um Shared Kernel é acoplamento físico de modelo, e a vantagem competitiva deixa de poder evoluir sozinha.",
+  "interpretationNote": "EXCESSIVE_SHARED_KERNEL não dispara: são 3+ relações com [SK] para o limiar agregado, e aqui há uma só.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "CORE_IN_SHARED_KERNEL",
+      "data": {
+        "core": "Checkout",
+        "other": "Shipping"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 36
+        }
+      }
+    }
+  ]
+}

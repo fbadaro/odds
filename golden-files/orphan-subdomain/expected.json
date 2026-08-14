@@ -1,13 +1,24 @@
 {
-  "description": "Um 'subdomain' declarado fora do escopo de qualquer 'domain' (topo do arquivo). Testa a recuperação de erro exigida em GRAMMAR.md §5.1: o parser descarta o bloco inteiro (incluindo seu conteúdo) e continua — o domain 'Test' que vem depois deve aparecer normalmente na AST.",
+  "description": "Um 'subdomain' declarado fora do escopo de qualquer 'domain'. O parser descarta o bloco inteiro (incluindo 'context Foo') e continua — o domain 'Test' que vem depois deve ser validado normalmente.",
   "astGenerated": true,
   "diagnostics": [
     {
       "severity": "error",
       "code": "ORPHAN_SUBDOMAIN",
-      "message": "Invalid subdomain declaration outside the main 'domain' scope.",
-      "span": { "start": { "line": 1, "column": 1 }, "end": { "line": 1, "column": 22 } }
+      "data": {
+        "subdomain": "Orphan"
+      },
+      "span": {
+        "start": {
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "line": 1,
+          "column": 22
+        }
+      }
     }
   ],
-  "partialAstNotes": "O bloco 'subdomain core Orphan { context Foo }' (linhas 1-3) NÃO deve aparecer em nenhum lugar da AST — foi descartado inteiro pela recuperação de erro, incluindo 'context Foo' dentro dele. A AST deve conter exatamente 1 domain ('Test'), com 1 subdomain ('Sales', supporting) contendo 1 context ('Checkout')."
+  "partialAstNotes": "O bloco das linhas 1-3 não aparece na AST. 'Foo' também não gera PHANTOM_REFERENCE nem UNMAPPED_CONTEXT — saiu do pipeline junto com o subdomínio que o continha."
 }

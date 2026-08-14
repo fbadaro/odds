@@ -1,0 +1,13 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  external {
+    context StripeApi
+  }
+
+  mapping {
+    Checkout [SK] <-> [SK] StripeApi
+  }
+}

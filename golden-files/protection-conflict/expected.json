@@ -1,13 +1,24 @@
 {
-  "description": "'Checkout --> [CF, ACL] PaymentGateway': [CF] e [ACL] juntos no lado Downstream (PaymentGateway). Diferente de role-conflict, este caso é limpo — CF e ACL são AMBAS downstream-only, então ambas estão corretamente posicionadas; o único problema é fazerem sentido semanticamente opostos entre si (Conformist aceita tudo vs. ACL protege/traduz). Deve gerar SOMENTE este diagnóstico.",
+  "description": "[CF] e [ACL] juntas no lado Downstream. Diferente de 'role-conflict', este caso é limpo: CF e ACL são AMBAS downstream-only, então estão corretamente posicionadas; o problema é serem semanticamente opostas entre si (Conformist aceita tudo vs. ACL protege e traduz).",
+  "interpretationNote": "CORE_UPSTREAM_OF_GENERIC (Checkout 'core' Upstream de PaymentGateway 'generic') não aparece porque a linha foi invalidada na fase 4.",
   "astGenerated": true,
-  "astNotes": "RelationshipNode: { left: 'Checkout', leftTags: [], connector: '-->', rightTags: ['CF', 'ACL'], right: 'PaymentGateway' }",
   "diagnostics": [
     {
       "severity": "error",
       "code": "PROTECTION_CONFLICT",
-      "message": "Pattern Conflict: A context cannot be a Conformist and have an Anti-Corruption Layer simultaneously.",
-      "span": { "start": { "line": 11, "column": 18 }, "end": { "line": 11, "column": 27 } }
+      "data": {
+        "context": "PaymentGateway"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 18
+        },
+        "end": {
+          "line": 11,
+          "column": 27
+        }
+      }
     }
   ]
 }

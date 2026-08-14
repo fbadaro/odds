@@ -1,12 +1,24 @@
 {
-  "description": "O nome 'PaymentGateway' é declarado em dois subdomains diferentes ('Sales' e 'Payments'). Convenção adotada: o diagnóstico aponta para a SEGUNDA ocorrência (linha 7) — a que 'causa' a duplicidade — não a primeira (linha 3, a declaração original). Este é o caso de teste citado desde GRAMMAR.md v0.1.1.",
+  "description": "O nome 'PaymentGateway' é declarado em dois subdomains diferentes. Convenção: o diagnóstico aponta para a SEGUNDA ocorrência (linha 7) — a que 'causa' a duplicidade —, não para a declaração original.",
+  "interpretationNote": "UNMAPPED_CONTEXT não dispara para a primeira ocorrência: o arquivo não declara bloco 'mapping' nenhum, e a regra é explicitamente inerte nesse caso (RULES.md §2.F) — um modelo em que o mapeamento ainda não começou não deve acusar todos os contextos de uma vez.",
   "astGenerated": true,
   "diagnostics": [
     {
       "severity": "error",
       "code": "DUPLICATE_CONTEXT",
-      "message": "The context 'PaymentGateway' is declared more than once. Context names must be unique within the domain.",
-      "span": { "start": { "line": 7, "column": 5 }, "end": { "line": 7, "column": 27 } }
+      "data": {
+        "context": "PaymentGateway"
+      },
+      "span": {
+        "start": {
+          "line": 7,
+          "column": 5
+        },
+        "end": {
+          "line": 7,
+          "column": 27
+        }
+      }
     }
   ]
 }

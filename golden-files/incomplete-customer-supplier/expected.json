@@ -1,0 +1,26 @@
+{
+  "description": "[S] declarada no Upstream sem [C] no Downstream. Customer/Supplier é um acordo bilateral, e meia declaração documenta meio contrato.",
+  "interpretationNote": "É 'warning' e não 'error', ao contrário de INCOMPLETE_MUTUAL_TAG, e a assimetria é deliberada: [C] e [S] são tags DISTINTAS com significado independente (a extensão da ODDS sobre o Customer/Supplier clássico), então uma delas sozinha é uma afirmação unilateral coerente — apenas mal documentada. Já [SK]/[P] são a MESMA tag repetida, e metade dela é uma declaração malformada de um fato único.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "INCOMPLETE_CUSTOMER_SUPPLIER",
+      "data": {
+        "context": "PaymentGateway",
+        "declared": "S",
+        "missing": "C"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 41
+        }
+      }
+    }
+  ]
+}

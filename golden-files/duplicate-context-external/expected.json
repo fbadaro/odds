@@ -1,0 +1,24 @@
+{
+  "description": "Caso auxiliar de 'duplicate-context': o mesmo nome declarado uma vez num subdomain e outra no bloco 'external'. Contextos internos e externos compartilham UM ÚNICO espaço de nomes, porque o 'mapping' referencia contexto por identificador simples, sem qualificação de escopo — logo isto é duplicata, exatamente como duas declarações internas seriam.",
+  "interpretationNote": "A entrada externa (segunda ocorrência) é a inválida. A linha do mapping resolve para a interna, que é 'generic' e está Upstream com [OHS] — por isso GENERIC_WITHOUT_OHS não dispara.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "DUPLICATE_CONTEXT",
+      "data": {
+        "context": "StripeApi"
+      },
+      "span": {
+        "start": {
+          "line": 11,
+          "column": 5
+        },
+        "end": {
+          "line": 11,
+          "column": 22
+        }
+      }
+    }
+  ]
+}

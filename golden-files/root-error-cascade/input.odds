@@ -1,0 +1,11 @@
+domain Test {
+  context Orphan
+
+  subdomain core Sales {
+    context Checkout
+  }
+
+  mapping {
+    Checkout <-- [OHS] Orphan
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "description": "As duas linhas dizem exatamente a mesma coisa — 'PaymentGateway é Upstream de Checkout, com OHS' — escrita de duas formas. A identidade de uma relação é o PAR NÃO-ORDENADO {left, right}: conector e tags não entram na identidade, então a segunda linha é duplicata mesmo quando é a redundante e não a contraditória.",
+  "interpretationNote": "Um único code cobre as três formas de duplicata (redundante, contraditória e split de tags). O span acusa a SEGUNDA ocorrência, e a PRIMEIRA é a que desenha (RULES.md §5). A segunda linha sai do pipeline, por isso não é reavaliada por nenhuma regra de tag.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "DUPLICATE_RELATIONSHIP",
+      "data": {
+        "left": "PaymentGateway",
+        "right": "Checkout",
+        "firstLine": "11"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 5
+        },
+        "end": {
+          "line": 12,
+          "column": 38
+        }
+      }
+    }
+  ]
+}

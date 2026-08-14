@@ -1,0 +1,24 @@
+{
+  "description": "Os dois lados da relação nomeiam o mesmo contexto. Erro de relação inteira, então o span cobre a linha toda.",
+  "interpretationNote": "A linha invalidada não gera UNDOCUMENTED_CONTRACT, apesar de não ter nenhuma tag: fase 5 não roda sobre elemento já invalidado na fase 3.",
+  "astGenerated": true,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "SELF_RELATIONSHIP",
+      "data": {
+        "context": "Checkout"
+      },
+      "span": {
+        "start": {
+          "line": 12,
+          "column": 5
+        },
+        "end": {
+          "line": 12,
+          "column": 26
+        }
+      }
+    }
+  ]
+}

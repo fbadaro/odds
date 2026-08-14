@@ -1,0 +1,14 @@
+domain Test {
+  subdomain core Sales {
+    context Checkout
+  }
+
+  subdomain generic Payments {
+    context PaymentGateway
+  }
+
+  mapping {
+    Checkout <-- [OHS] PaymentGateway
+    Checkout --> Checkout
+  }
+}
