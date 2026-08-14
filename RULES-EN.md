@@ -157,7 +157,7 @@ These rules guarantee the integrity of the model and the basic coherence of the 
 
 * **Removed Construct** — `REMOVED_CONSTRUCT` · phase 1 · External? n/a
   * *Trigger:* the file uses a construct that existed in an earlier ODDS Language Version and no longer does — today, the `[SW]` tag.
-  * *Note:* this exists so that reopening an old file or an old shared URL produces *"`[SW]` was removed in v0.2 — use `-x-` on its own"* instead of a generic `SYNTAX_ERROR` that explains nothing. Same parser recovery mechanism as above: the removed construct is discarded and parsing continues. See §6.
+  * *Note:* this exists so that reopening an old file or an old shared URL produces *"`[SW]` was removed in ODDS 0.1.0 — use `-x-` on its own"* instead of a generic `SYNTAX_ERROR` that explains nothing. Same parser recovery mechanism as above: the removed construct is discarded and parsing continues. See §6.
 
 * **Phantom Reference in Context Map** — `PHANTOM_REFERENCE` · phase 3 · External? ✅ applies
   * *Trigger:* a `mapping` line references a context that was never declared — in any `subdomain` or in the `external` block.

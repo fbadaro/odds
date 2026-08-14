@@ -159,7 +159,7 @@ Estas regras garantem a integridade do modelo e a coerência básica do mapa de 
 
 * **Construção Removida** — `REMOVED_CONSTRUCT` · fase 1 · Externo? n/a
   * *Gatilho:* o arquivo usa uma construção que existia numa `ODDS Language Version` anterior e não existe mais — hoje, a tag `[SW]`.
-  * *Nota:* existe para que reabrir um arquivo antigo ou uma URL antiga produza *"`[SW]` foi removida na v0.2 — use `-x-` sozinho"* em vez de um `SYNTAX_ERROR` genérico que não explica nada. Mesmo mecanismo de recuperação do parser: a construção removida é descartada e o parsing continua. Ver §6.
+  * *Nota:* existe para que reabrir um arquivo antigo ou uma URL antiga produza *"`[SW]` foi removida na ODDS 0.1.0 — use `-x-` sozinho"* em vez de um `SYNTAX_ERROR` genérico que não explica nada. Mesmo mecanismo de recuperação do parser: a construção removida é descartada e o parsing continua. Ver §6.
 
 * **Referência Fantasma no Context Map** — `PHANTOM_REFERENCE` · fase 3 · Externo? ✅ vale
   * *Gatilho:* uma linha do `mapping` referencia um contexto que nunca foi declarado — nem em `subdomain` nem no bloco `external`.
