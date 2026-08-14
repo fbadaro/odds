@@ -784,6 +784,18 @@ O que resta é **execução**, consolidada abaixo por arquivo. A fonte de verdad
 | **`MESSAGES.md` / `messages.json`** | **Artefato novo** — catálogo de mensagens por code, PT+EN, com placeholders casando com as chaves de `data` (D16). |
 | `CLAUDE.md` | Corrigir F1; refletir D9, D10, D11, D12, D13, D18, D19, D21, D23, D24, D25 e o novo modelo de validação. |
 
+### Ordem de execução da passada final
+
+**A ordem importa** — ela segue a cadeia de dependência entre os artefatos. Executar fora dela (em especial mexer nos golden files antes dos contratos) garante retrabalho. Cada bloco é uma etapa revisável, com commit próprio; uma leva única seria impossível de revisar ou reverter parcialmente.
+
+1. **`AST_SCHEMA.md`** — é o contrato de dados do qual todo o resto depende: `DiagnosticSeverity` para 3 níveis (D2), `Diagnostic` perdendo `message` e ganhando `data` (D16), os 18 codes novos **cada um com sua fase** (D19/D23), renomear os 4 codes tirando `_WARNING` (D2), `ExternalContextNode` (D6), `SymbolTableEntry` com subdomínio opcional (D6) e marca de inválido (D18), `PatternTag` 10 → 9 (D10).
+2. **`RULES-EN.md` + `RULES-PT.md`** — **sempre em par**, nunca um sem o outro (exigência do `CLAUDE.md`). Maior volume da passada, e consome os codes do passo 1. Atenção: a **§3 já existe** (D19, propagada durante as rodadas) — não reescrever, só integrar ao redor.
+3. **`GRAMMAR.md`** — `external` reservada + `external_decl` + ordem em `domain_decl` (D6/D8), `suppression_directive` e comentários deixando de ser descartáveis (D3/D4), `tag` perde `"SW"` (D10), §7 obsoleta (F3), panic-mode passa a registrar em vez de só descartar (D18).
+4. **`MESSAGES.md` / `messages.json`** (novo) — sai naturalmente do passo 2, quando as strings deixam o RULES. Placeholders precisam casar com as chaves de `data` definidas no passo 1.
+5. **`PRD.md`** e **`CHANGELOG.md`** — dependem de os quatro anteriores estarem estáveis. O `CHANGELOG.md` ganha a seção da `ODDS Language Version` (D21/D22) e registra o bump de versão de cada documento tocado.
+6. **`TEST_SUITE.md` + `golden-files/`** — **por último, sem exceção.** É o que verifica tudo acima; reescrever antes é retrabalho garantido. Inclui: formato do golden file e executor (`message` → `data`, D16), excluir `separation-conflict-sw-directional` (D10), reescrever `valid-baseline` (F10+F11) e `excessive-shared-kernel-warning` (F12), reordenar `role-conflict` (F17), ~14 casos novos, severidades reclassificadas.
+7. **`CLAUDE.md`** — ao final, refletindo o resultado real dos seis passos, não a intenção.
+
 ### Rodada 1 — fechada
 ~~Q1~~ ✅ → D1. ~~Q1b~~ ✅ → D2. ~~Q1c~~ ✅ → D3. ~~Q1d~~ ✅ → D4. ~~Q2~~ ✅ → D5. ~~Q2a~~ ✅ → D6. ~~Q2b~~ ✅ → D7. ~~Q2c~~ ✅ → D8. ~~Q3~~ ✅ → D9. ~~Q3a~~ ✅ → emenda a D9. ~~Q3b~~ ✅ → D10 + D11. ~~Q4~~ ✅ → D12 + D13 + D14 (e ampliação de D11). ~~Q4a~~ ✅. ~~Q5~~ ✅ → D15. ~~Q6~~ ✅ → D16. **Aberto: Q7** — ver §2.
 
