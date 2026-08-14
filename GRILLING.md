@@ -18,7 +18,23 @@ O objetivo é mapear a *árvore de decisões* do projeto: cada decisão fechada 
 
 ---
 
-## ▶️ Como retomar esta sessão
+## ✅ Sessão encerrada — propagação executada em 2026-08-14
+
+> **Este documento não tem mais trabalho pendente.** A passada final de propagação descrita em §4 foi executada por inteiro: as 25 decisões (D1–D25) estão refletidas em todos os artefatos, na ordem prescrita, um commit por etapa.
+>
+> **Leia este arquivo como registro do *porquê*, não como lista de tarefas.** Quando precisar do racional de uma decisão — por que `[SW]` saiu, por que `[BBM]` continuou tag, por que a mensagem deixou o contrato —, é aqui que ele está, com as alternativas que foram rejeitadas e o motivo. O *o quê* vale nos artefatos normativos, não aqui: onde este documento e um artefato divergirem, **o artefato está certo**.
+>
+> **O que a execução acrescentou ao que estava decidido** (registrado aqui para não se perder, e já escrito nos artefatos):
+> - **Novo:** `MESSAGES.md`, com 38 templates PT+EN e uma regra de integridade verificável por script (todo placeholder precisa existir nas chaves de `data` do code, e vice-versa).
+> - **Codes:** 19 novos (os 18 previstos + `REMOVED_CONSTRUCT`, o membro nomeado da "família de migração" de D20), totalizando **35**. Fase **6 (supressão)** criada para os dois codes de diretiva, aditivamente, sem reescrever a §3 que D19 já havia propagado.
+> - **Versão da linguagem:** nasce em **v0.1.0** já contendo as quebras de D6 e D10, então os exemplos que diziam *"`[SW]` foi removida na v0.2"* foram reconciliados para `0.1.0` — aquele número foi escrito em D20, antes de D22 fixar o nascimento em v0.1.
+> - **Quatro lacunas de especificação** encontradas ao escrever os golden files, e fechadas no `RULES.md` (detalhadas em `TEST_SUITE.md` §5.3): `UNMAPPED_CONTEXT` num arquivo sem `mapping`; `UNMAPPED_CONTEXT` e referências em linhas já invalidadas; `CONFORMIST_CORE` insistindo num `[ACL]` que o autor já aplicou; e o alcance da invalidação sobre os filhos de um elemento inválido.
+> - **Um achado sobre D7:** com o bloco `external` existindo, a aplicação-bandeira do princípio da autoria virou **estrutural** em vez de exceção nomeada — um contexto externo não tem tipo de subdomínio, então `GENERIC_WITHOUT_OHS` e as regras `CORE_*` não conseguem disparar contra ele. O princípio continua sendo o critério de admissão de toda regra nova; ele só não precisa mais de cláusula de isenção para essas.
+> - **Suíte:** 20 → **44 casos**, cobrindo os 35 codes. O `valid-baseline` agora é byte-a-byte idêntico ao exemplo canônico de `GRAMMAR.md` §4 — os dois arquivos que a §1 (F10/F11) acusava de ensinar o vocabulário errado.
+
+---
+
+## ▶️ Histórico: como a sessão foi retomada
 
 **Estado em 2026-08-12, fim da segunda sessão.**
 
@@ -32,6 +48,8 @@ O objetivo é mapear a *árvore de decisões* do projeto: cada decisão fechada 
 
 **Como retomar na prática:** peça "execute a passada final de propagação do `GRILLING.md`". Todo o contexto necessário está aqui — não é preciso reler a conversa.
 
+> ✅ *Foi exatamente isso que aconteceu em 2026-08-14. O parágrafo acima fica preservado como registro de que o handoff funcionou: a propagação foi executada a partir deste documento apenas, sem reler a conversa das rodadas.*
+
 **`DiagnosticCode` novos decididos** (todos ainda por escrever em `AST_SCHEMA.md`, cada um precisando de **fase** por D19) — **dezoito**:
 `MALFORMED_SUPPRESSION`, `UNUSED_SUPPRESSION` (D4) · `EXTERNAL_ONLY_RELATIONSHIP` (D8) · `MUTUAL_TAG_ON_DIRECTIONAL`, `POSITIONAL_TAG_ON_MUTUAL` (D12) · `INCOMPLETE_MUTUAL_TAG` (D14) · `SELF_RELATIONSHIP`, `DUPLICATE_RELATIONSHIP` (D15) · família de migração (D20) · `DUPLICATE_SUBDOMAIN`, `MUTUAL_TAG_WITH_EXTERNAL`, `CORE_UPSTREAM_OF_GENERIC`, `CORE_IN_SHARED_KERNEL`, `DOMAIN_WITHOUT_CORE`, `INCONSISTENT_BBM`, `INCOMPLETE_CUSTOMER_SUPPLIER`, `UNMAPPED_CONTEXT`, `EMPTY_SUBDOMAIN`, `PL_WITHOUT_OHS` (D23). Um code sai (`SW` deixa de existir, D10).
 
@@ -39,7 +57,9 @@ O objetivo é mapear a *árvore de decisões* do projeto: cada decisão fechada 
 
 ---
 
-**Status da sessão:** 🟢 **Fronteira vazia.** Rodadas 1, 2 e 3 fechadas (D1–D25). Próximo passo: **passada final de propagação**.
+**Status da sessão:** ✅ **Encerrada.** Rodadas 1, 2 e 3 fechadas (D1–D25) em 2026-08-12; passada final de propagação executada em 2026-08-14. Nada pendente.
+
+Os achados da §1 que restavam como execução foram todos resolvidos na passada: **F3** (seção obsoleta do `GRAMMAR.md` §7, encerrada), **F4** (`PRD.md` §4.6 reescrita), **F10** e **F11** (`valid-baseline` reescrito, e o odor de F11 virou a regra `CORE_UPSTREAM_OF_GENERIC`), **F17** (`role-conflict` reordenado pela regra de ordenação, com a inversão prevista confirmada).
 
 ---
 

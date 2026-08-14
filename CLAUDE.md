@@ -7,25 +7,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This repository currently contains **only specification documents** — no source code or build tooling exists yet. Before writing code, check whether that has changed (`ls`, `git status`) since this file may be stale relative to the actual state of the repo.
 
 - `PRD.md` — Product requirements for ODDS (Open Domain Driven Specification): a client-side, browser-only DSL and interactive "playground" for writing DDD (Domain-Driven Design) context maps as text and rendering them as diagrams.
-- `RULES-EN.md` / `RULES-PT.md` — The DDD conceptual reference (Team Relationships, Context Map Patterns), the Context Properties (metadata) reference, and the full semantic validation spec for the ODDS language, in English and Portuguese respectively. These two files are parallel translations — keep them in sync if either is edited.
-- `GRAMMAR.md` — The authoritative EBNF syntax for the ODDS language (lexical rules, block structure, Context Map syntax). This is the source of truth for anything about the *form* of a valid `.odds` file, as opposed to `RULES.md`, which covers *meaning*.
-- `AST_SCHEMA.md` — TypeScript interfaces for the Abstract Syntax Tree the parser must produce, derived 1:1 from `GRAMMAR.md`. This is the data contract between the parser, the semantic validator (Visitor), and the visualizer.
-- `TEST_SUITE.md` + `golden-files/` — A golden-file conformance suite (one `<case>/input.odds` + `<case>/expected.json` pair per `DiagnosticCode`, plus auxiliary cases). This is the executable spec: "make the parser/validator pass these N cases" instead of implementing prose rules from scratch. Keep in sync with `GRAMMAR.md`/`AST_SCHEMA.md` — any grammar or AST change should be checked against these cases (spans especially are a target spec, not yet verified against a real parser).
-- `GRILLING.md` — ⚠️ **Read this before treating any of the documents above as final.** It records a completed design-review session (25 decisions, D1–D25) that supersedes parts of every other spec file: `[SW]` is removed from the language, external systems become first-class, severity gains a third level, `message` leaves the `Diagnostic` contract, critical errors stop blocking rendering, and ~10 new lint rules are added. **Those decisions are not yet propagated** — by deliberate policy, everything accumulated in `GRILLING.md` and is applied in a single final pass (the only exception already applied is `RULES-EN.md`/`RULES-PT.md` §3). §3 of that file lists every decision with the artifacts it changes; §4 lists the propagation work by file and the order it must be executed in.
+- `RULES-EN.md` / `RULES-PT.md` — The *meaning* of the language: the conceptual model (§0), every validation rule with its code, severity, phase, scope and trigger (§1–§2), the validation pipeline (§3), suppression (§4), rendering (§5) and the compatibility policy (§6). These two files are parallel translations — **keep them in sync in the same pass if either is edited.**
+- `GRAMMAR.md` — The authoritative EBNF *form* of a valid `.odds` file (lexical rules, block structure, Context Map syntax).
+- `AST_SCHEMA.md` — TypeScript interfaces for the AST the parser must produce, derived 1:1 from `GRAMMAR.md`. §1.3 is the **normative catalogue of every `DiagnosticCode`**, with its phase, default severity and `data` keys — this is the data contract between parser, validator (Visitor) and visualizer.
+- `MESSAGES.md` — The message catalogue: one text template per code, PT + EN, with named placeholders. Message text is *not* part of the diagnostic contract; it is rendered from here.
+- `TEST_SUITE.md` + `golden-files/` — A golden-file conformance suite (44 cases, one per `DiagnosticCode` plus auxiliaries). This is the executable spec: "make the parser/validator pass these 44 cases" instead of implementing prose rules from scratch.
+- `CHANGELOG.md` — Two independent versioning axes: the **ODDS Language Version** (what a `.odds` file *means*, and what travels in the shareable URL) and the editorial version of each document. Do not conflate them.
+- `GRILLING.md` — Historical record of the design review that produced the current state (25 decisions, D1–D25). **Its decisions were fully propagated on 2026-08-14** — it is now a *why* document, not a to-do list. Read it when you need the rationale behind a decision; do not read it as pending work.
+
+**When adding a rule, the order is fixed:** `AST_SCHEMA.md` §1.3 first (code + phase + `data` keys), then `RULES.md` (both languages), then `MESSAGES.md` (both languages), then a golden file. A code without a phase has no defined position in the emitted array and cannot be tested.
 
 ## What ODDS is (read PRD.md and RULES-EN.md before implementing)
 
-ODDS is a declarative DSL for describing DDD strategic design: Domains → Subdomains (`core` | `supporting` | `generic`) → Bounded Contexts, plus a Context Map of relationships between contexts. The product is a **100% client-side** web playground (no backend, no data leaves the browser) that parses the DSL, renders it as a live diagram, and runs semantic validation against it.
+ODDS is a declarative DSL for describing DDD strategic design: Domains → Subdomains (`core` | `supporting` | `generic`) → Bounded Contexts, plus an `external { }` block for third-party systems, plus a Context Map of relationships between contexts. The product is a **100% client-side** web playground that parses the DSL, renders it as a live diagram, and runs semantic validation against it.
 
-Key design constraints from the PRD that should shape any implementation:
-- **No server-side execution or storage.** Parsing, validation, and rendering all happen locally in the browser. Sharing is done via a shareable URL with the design state encoded into it, not a backend.
-- Two diagram views are required: a relationship-flow view and a nested-containment view.
+Key design constraints from the PRD:
+- **No server-side execution or storage.** Parsing, validation, and rendering all happen locally in the browser. Sharing is a URL with the design state (and the language version) encoded into it, not a backend.
+- Two diagram views are required, with **deliberately different expressive power** (PRD §4.4): a relationship-flow view and a nested-containment view. `[BBM]` appears only in the flow view; the containment view draws the `external` block *outside* the domain boundary.
 - Auto-save of the current workspace and theme (light/dark) to local storage.
-- Export to high-resolution vector images.
+- Export to high-resolution vector images — **including the error markers** currently on the canvas.
 
 ### DSL grammar
 
-See `GRAMMAR.md` §2–3 for the authoritative, versioned EBNF (block structure, `context` properties, and the `mapping` block syntax) — don't duplicate it here; it drifts. `title` is optional at all three levels (`domain`/`subdomain`/`context`) and, when present, must be the first line of its block. `context` properties are all optional and order-free among themselves.
+See `GRAMMAR.md` §2–3 for the authoritative, versioned EBNF — don't duplicate it here; it drifts. Points worth knowing before you read it:
+- A `context` is only ever valid inside a `subdomain` or inside the single, anonymous `external { }` block, which sits between the subdomains and the `mapping`.
+- `title` is optional at all three levels and, when present, must be the first line of its block. `context` properties are all optional and order-free among themselves.
+- **Comments are not all discardable.** A line comment starting with `odds-disable-next-line` is a suppression directive and must survive to the validator.
 
 ### Relationship connectors (Context Map)
 
@@ -34,21 +41,32 @@ See `GRAMMAR.md` §2–3 for the authoritative, versioned EBNF (block structure,
 | `-->` | Upstream (left) → Downstream (right) |
 | `<--` | Downstream (left) ← Upstream (right) |
 | `<->` | Mutually Dependent |
-| `-x-` | Free (no link) |
+| `-x-` | Free / **Separate Ways** |
 
-### Context map pattern tags (bracketed on a relationship line)
+### Tags
 
-`OHS`, `PL`, `S` are **upstream-only** tags. `ACL`, `CF`, `C` are **downstream-only** tags. `SK` and `P` are mutual/symmetric (require `<->`). `SW` marks Separate Ways (must not co-occur with any integration tag). `BBM` flags a Big Ball of Mud system. Note: ODDS deliberately splits classic DDD's single Customer/Supplier pattern into two position-aware tags (`C` and `S`) so each side of a relationship can be validated independently — this is an intentional extension, not a reproduction of the literature.
+There are **nine** tags, in two different categories — the distinction is load-bearing, not cosmetic (`RULES.md` §0.2):
 
-### Validation model: Critical Errors vs. Design Warnings
+- **Eight Context Map Pattern tags**, each valid only on specific connectors and sides: `OHS`, `PL`, `S` are upstream-only on directional lines; `ACL`, `CF`, `C` are downstream-only on directional lines; `SK` and `P` are valid **only** on `<->` and **must be declared on both sides** (no inference — `INCOMPLETE_MUTUAL_TAG`). Any pattern tag on `-x-` is `SEPARATION_CONFLICT`.
+- **`BBM`**, which is *not* a pattern tag. It characterises the system rather than the contract, and is therefore the only annotation with no position rule and no conflict rule — legal on any connector, any side, including `-x-`.
 
-The spec (RULES-EN.md) is the authoritative source for exact error/warning strings and trigger conditions. Any parser/validator implementation must distinguish:
+Two things that no longer exist and should not be reintroduced: the `[SW]` tag (the `-x-` connector carries Separate Ways on its own; writing `[SW]` produces `REMOVED_CONSTRUCT`) and the `_WARNING` suffix on code names (severity is a field, never part of the name).
 
-- **Critical errors** (block rendering): orphan context (context outside a subdomain), orphan subdomain (subdomain outside a domain), phantom reference (relationship references an undeclared context), duplicate context declaration (same context name reused anywhere in the domain), invalid domain cardinality (a file must declare exactly one `domain`), invalid subdomain type (anything other than `core`/`supporting`/`generic`), misplaced tags (upstream-only tag on the downstream side or vice versa), separation conflict (integration tags combined with `-x-`/`SW`), role conflict (`C` and `S` on the same relationship), and CF+ACL mutual exclusivity.
-  - **Layering note (GRAMMAR.md §5.1 / v0.1.9):** orphan context/subdomain are *not* Visitor findings — the grammar stays structurally strict (a `context_decl` is only ever valid inside a `subdomain_decl`, and vice versa for `subdomain`/`domain`), so a misplaced one never becomes a real AST node. The **parser** must instead detect it via panic-mode error recovery (discard the malformed declaration, emit the diagnostic with its span, keep parsing the rest of the file) rather than aborting AST generation the way a plain `SYNTAX_ERROR` would. Invalid subdomain type, by contrast, *is* pure Visitor territory: `GRAMMAR.md` v0.1.8 opened `subdomain_type` to a free `identifier` specifically so the parser never rejects it — validating the value against `core`/`supporting`/`generic` is entirely the Visitor's job (`AST_SCHEMA.md` v0.1.1–0.1.2).
-- **Design warnings** (render but flag): a `core` subdomain context accepting `CF` or depending on `BBM` (should use `ACL` instead), generic subdomains acting as broad upstream without `OHS`, excessive use of `SK` across the architecture, and undocumented integration contracts (a relationship arrow with no pattern tag — this warning does **not** apply to `-x-` lines, where no tag is expected).
+Note: ODDS deliberately splits classic DDD's single Customer/Supplier pattern into two position-aware tags (`C` and `S`) so each side can be validated independently — an intentional extension, not a reproduction of the literature. That is also why declaring only one of them is a `warning`, while declaring only one side of `[SK]`/`[P]` is an `error`.
 
-The suggested implementation approach (RULES-EN.md, "Summary for AST Implementation") is a three-step visitor over the AST: Step 0, verify exactly one `Domain` node exists (stop and report if not); Step 1, traverse subdomains, collecting each declared context and its parent subdomain's type into a symbol table while flagging name collisions; Step 2, traverse relationship nodes to cross-reference existence against that table and validate positional/conflict rules on tags. `AST_SCHEMA.md` §1 is the authoritative list of stable `DiagnosticCode`s (syntax and semantic) — add a code there before adding a new rule to RULES.md.
+## Validation model
+
+`RULES-EN.md` is authoritative; `AST_SCHEMA.md` §1.3 is the code catalogue. The five things most likely to be got wrong:
+
+1. **Three severities, and none of them block rendering.** `error` (the model is incoherent) · `warning` (the design is risky) · `info` (hygiene). The diagram **degrades per element** — the offending element is drawn visibly marked. Only a pure `SYNTAX_ERROR` freezes the last good diagram, and that frozen diagram must be marked stale. Every intermediate keystroke is a syntax error, so strict blocking would blank the canvas as the user types.
+2. **Diagnostics carry `data`, not `message`.** A `Diagnostic` is `severity` + `code` + `span` + `data: Record<string, string>`. The sentence is rendered separately from `MESSAGES.md`. Never put a locale, an emoji, or a severity word inside the validator core.
+3. **Six phases, and the root-error principle.** All rules of the same phase run and report; an element that produced an `error` is recorded as *declared but invalid* and leaves every **later** phase — so no derived diagnostics, and fixing is iterative. Discarded declarations must still be registered (invalid) in the symbol table, or the `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` cascade comes back.
+4. **The emission order is normative** (`RULES.md` §3.3): phase → start line → start column → end column → code alphabetically. The golden files assert the whole array by structural equality.
+5. **Relationship identity is the unordered pair `{left, right}`.** One pair, one relationship, one edge — a second line for the same pair is `DUPLICATE_RELATIONSHIP` whether it repeats, contradicts, or splits tags. Aggregate rules count distinct relationships, never lines.
+
+Suppression (`RULES.md` §4) is line-scoped only, with a mandatory justification, lives in the file, silences one code (not the line), and never reaches an `error`.
+
+Two admission criteria are mandatory for any new rule (`RULES.md` §0.4): it must not presuppose that the user controls the system being judged (the authorship principle), and its fix must be distinct from every existing rule's fix. And one boundary must not be crossed: **tags are validatable contracts, context properties are documentation** — no property ever feeds a rule's trigger. That is the promise that lets a user fill in `team` without fear of being judged for it.
 
 ## Agent skills
 
@@ -62,4 +80,6 @@ Single-context layout — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs
 
 ## Working in this repo before code exists
 
-If asked to scaffold the implementation, confirm the target stack with the user rather than assuming one — the PRD specifies product behavior and constraints (client-side only, DSL grammar, validation rules) but not a framework, parser toolchain, or diagram-rendering library. Once real source and tooling exist, this file should be updated with actual build/lint/test commands and the real code architecture.
+If asked to scaffold the implementation, confirm the target stack with the user rather than assuming one — the specs define product behavior, grammar, AST and validation rules, but not a framework, parser toolchain, or diagram-rendering library. Once real source and tooling exist, this file should be updated with actual build/lint/test commands and the real code architecture.
+
+The suite in `golden-files/` is the natural first target: it is executable, it covers every diagnostic code, and its spans are a specification *target* that has never been checked against a real parser — expect to reconcile tokenization details, and fix the suite when the parser is right.

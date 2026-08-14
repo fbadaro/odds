@@ -472,3 +472,9 @@ Ao construir o seu *Visitor* (a função que percorre a árvore gerada pelo Pars
 5. **Passo 4 — supressão (fase 6).** Aplique as diretivas coletadas em `ProgramNode.suppressions` sobre o array produzido até aqui, emitindo `MALFORMED_SUPPRESSION` e `UNUSED_SUPPRESSION`.
 
 Por fim, ordene o array inteiro pelas chaves da §3.3. A ordem emitida faz parte do contrato.
+
+---
+
+## Changelog
+
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.2.0** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.
