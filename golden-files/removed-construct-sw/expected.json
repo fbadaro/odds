@@ -9,7 +9,7 @@
       "data": {
         "construct": "[SW]",
         "removedIn": "0.1.0",
-        "replacement": "`-x-` on its own"
+        "replacement": "-x-"
       },
       "span": {
         "start": {

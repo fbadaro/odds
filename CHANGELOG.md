@@ -27,6 +27,7 @@ Versão atual: **v0.1.0**.
 A URL guarda a versão cheia, mas **só divergência de MAJOR** aciona diagnóstico de migração — é isso que mantém o MAJOR raro e significativo. Rejeitado tratar toda mudança de saída como breaking: faria a versão girar a cada regra do catálogo e viraria ruído no campo da URL (e o argumento "linter em CI quebra o build" não se aplica: a ODDS é um playground client-side, sem CLI nem integração de build no escopo). Rejeitado também versionar apenas validade: apagaria justamente a informação que responde à dúvida que corrói a confiança num linter opinativo.
 
 - **v0.1.0** — nascimento da versão de linguagem. Corresponde ao estado dos documentos normativos após a passada de propagação do `GRILLING.md`. Duas quebras de compatibilidade decididas naquela sessão já entram **dentro** desta primeira versão, e não geram migração retroativa, porque não existia usuário nem URL publicada antes dela: a tag `[SW]` deixou de existir e `external` virou palavra reservada. `[SW]` fica registrada como o primeiro (e por ora único) membro da família `REMOVED_CONSTRUCT`, com `removedIn: "0.1.0"` — uma cortesia para rascunhos escritos durante o período pré-versionamento, não uma obrigação de compatibilidade. O primeiro MAJOR relevante será o da v1.0.0.
+  - **Correções editoriais posteriores absorvidas nesta mesma versão** (`AST_SCHEMA.md` v0.2.1 · `MESSAGES.md` v0.1.1 · `TEST_SUITE.md` v0.2.1 · `RULES` v0.2.1): a unidade de `column` e a proibição de prosa em `data` mudam o *payload* de dois diagnósticos e o texto de dois templates, o que pela tabela acima seria MINOR + PATCH. Não incrementam porque a v0.1.0 ainda não fechou — ela nasce com o estado propagado do `GRILLING.md`, e estas duas lacunas são do mesmo estado, encontradas na auditoria seguinte. Nenhum arquivo `.odds` muda de validade ou de significado, e não existe URL publicada para divergir. A partir da primeira publicação, a tabela vale sem exceção.
 
 ---
 
@@ -55,16 +56,17 @@ Fonte de verdade sintática (EBNF) da linguagem ODDS. Versão atual: **v0.2.0**.
 
 ## RULES-EN.md / RULES-PT.md
 
-Semântica da linguagem: gatilhos, severidades e escopo de cada regra. Os dois arquivos são traduções paralelas e **versionam juntos**. Versão atual: **v0.2.0**.
+Semântica da linguagem: gatilhos, severidades e escopo de cada regra. Os dois arquivos são traduções paralelas e **versionam juntos**. Versão atual: **v0.2.1**.
 
 - **v0.1.0** — versão inicial, retroativa. Estado dos dois arquivos antes do `GRILLING.md`: as duas tabelas conceituais (Team Relationships, Context Map Patterns), a tabela de Context Properties, 11 erros críticos, 4 avisos de lint, e o resumo para implementação do AST. Não eram versionados na época; o número é atribuído aqui para dar um ponto de partida ao histórico.
 - **v0.1.1** — adicionada a seção 3 (Pipeline de Validação: fases, princípio do erro-raiz e ordenação dos diagnósticos). Única exceção à política de propagação do `GRILLING.md`: escrita durante as rodadas, a pedido explícito, por ser aditiva e descrever arquitetura de pipeline em vez de texto de regra.
 - **v0.2.0** — passada de propagação do `GRILLING.md`. A maior mudança dos dois arquivos até aqui:
   - **Nova seção 0, o modelo conceitual**, da qual todas as regras passam a ser aplicação: linter opinativo com três severidades; as três categorias de anotação (conector / tag de padrão / caracterização do sistema) e por que `[SW]` pôde sair sem perda; escopo de relação para toda tag, sem exceção, preservando a fronteira "tag = contrato validável / propriedade = documentação"; os dois critérios obrigatórios de admissão de regra nova; e as limitações conhecidas, aceitas e nomeadas.
   - **Matriz normativa tag × conector × lado** (§1.C), com um code por conector para "tag errada aqui", de forma que os codes nunca se sobreponham.
-  - **14 regras novas** distribuídas entre §1 e §2, cada uma com code, severidade, fase, escopo, gatilho e resposta ao princípio da autoria. `UNDOCUMENTED_CONTRACT` e `EXCESSIVE_SHARED_KERNEL` caem para `info` (a segunda com limiar 3+).
+  - **17 regras novas** distribuídas entre §1 e §2 (15 → 32), cada uma com code, severidade, fase, escopo, gatilho e resposta ao princípio da autoria. `UNDOCUMENTED_CONTRACT` e `EXCESSIVE_SHARED_KERNEL` caem para `info` (a segunda com limiar 3+).
   - **As strings de mensagem saem** para o `MESSAGES.md`, junto com o `⚠️` que vinha embutido nelas. Estes arquivos ficam com gatilho, severidade e escopo — o que uma implementação precisa acertar.
   - **Três seções novas:** §4 supressão, §5 erros e renderização (a afirmação "bloqueia a compilação" acabou), §6 versão da linguagem e compatibilidade.
+- **v0.2.1** — só correção de contagem, nenhuma mudança de regra. A §0.4 dizia que o catálogo "saltou de 4 para 24 regras" e a §3.1 falava em "duas dúzias de regras da §2"; os números vinham do `GRILLING.md` D24/D18, onde eram estimativas feitas *durante* a sessão, e não foram reconferidos na propagação. Os valores verificados contra o catálogo: **34 regras** no total (os 35 codes de `AST_SCHEMA.md` §1.3 menos `SYNTAX_ERROR`, que não é regra), sendo 20 na §1, **12 na §2** e 2 na §4. A entrada da v0.2.0 acima também dizia "14 regras novas" e foi corrigida para 17.
 
 ---
 
@@ -82,24 +84,29 @@ Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualiza
   - **`ExternalBlockNode`** em `DomainNode`; `SymbolTableEntry` ganha `isExternal`, subdomínio opcional e `valid` (a marca de *declarado porém inválido* exigida pelo princípio do erro-raiz).
   - **`SuppressionDirective`** em `ProgramNode` — as diretivas precisam sobreviver até o validador.
   - **`PatternTag` 10 → 9**, e `astGenerated` deixa de ser proxy de "renderizável".
+- **v0.2.1** — duas lacunas do contrato fechadas antes de o parser existir, encontradas em auditoria mecânica da suíte contra o catálogo:
+  - **A unidade de `column` passa a ser normativa: unidades de código UTF-16** (§1, estilo LSP, coerente com o `end` exclusivo que a suíte já usava). Antes os documentos só diziam "1-indexed", o que deixava a escolha entre byte, code point e unidade UTF-16 a cargo de cada implementação. Não é detalhe acadêmico nesta linguagem: `GRAMMAR.md` §1 aceita identificadores acentuados e seis inputs da suíte são PT-BR — a linha 11 de `malformed-suppression-unknown-code` tem 85 unidades UTF-16 e 87 bytes. Nenhum span existente mudou (a suíte não tem caractere fora do BMP, então UTF-16 e code points coincidem nos 44 casos).
+  - **Regra de integridade semântica de `data`: nada de prosa** (§1.2). O contrato dizia que a mensagem não é contrato e que o núcleo validador não conhece locale, mas nada impedia que a frase voltasse *dentro* de um valor de `data` — e tinha voltado, em dois codes. Agora §1.3 fixa a forma de `REMOVED_CONSTRUCT.replacement` (token literal da substituta) e de `SYNTAX_ERROR.expected` (lista de tokens separados por `", "`), e o teste geral é "se o valor mudaria ao traduzir a mensagem, ele não pertence a `data`".
 
 ---
 
 ## MESSAGES.md
 
-Catálogo de mensagens de diagnóstico, PT + EN, com placeholders nomeados. Versão atual: **v0.1.0**.
+Catálogo de mensagens de diagnóstico, PT + EN, com placeholders nomeados. Versão atual: **v0.1.1**.
 
 - **v0.1.0** — artefato novo, criado na passada de propagação do `GRILLING.md` (D16). Recebe as strings que saíram de `RULES-EN.md`/`RULES-PT.md` quando `message` deixou o contrato do `Diagnostic`. 38 templates cobrindo os 35 codes (`CONFORMIST_CORE` e `MALFORMED_SUPPRESSION` declaram variantes explícitas, selecionadas por uma chave de `data`). Traz a regra de integridade verificável por script — todo placeholder precisa existir nas chaves de `data` do code, e vice-versa, nos dois idiomas — e o comportamento obrigatório de fallback, para que um template faltando nunca engula um diagnóstico real.
+- **v0.1.1** — fechada a brecha de locale que a §0 prometia e a §1 não checava: **nova §1.1, "`data` não carrega prosa"**. Dois templates absorveram a frase que estava vazando pelo dado — `SYNTAX_ERROR` passa a dizer "expected one of {expected}" / "esperava um de {expected}" sobre uma lista de tokens, e `REMOVED_CONSTRUCT` passa a marcar `` `{replacement}` `` como token. O sintoma era visível só no PT: com `replacement: "`-x-` on its own"`, a mensagem renderizava *"use `-x-` on its own no lugar"*. A checagem de placeholders da §1 não pegava isso, porque a chave existia dos dois lados — daí a regra nova ser semântica e não mecânica.
 
 ---
 
 ## TEST_SUITE.md
 
-Suíte de golden files (conformidade) para o parser e o validador semântico. Versão atual: **v0.2.0**.
+Suíte de golden files (conformidade) para o parser e o validador semântico. Versão atual: **v0.2.1**.
 
 - **v0.1.0** — versão inicial. 18 golden files cobrindo todos os `DiagnosticCode` de `AST_SCHEMA.md` v0.1.2 / `GRAMMAR.md` v0.1.9. Encontradas e corrigidas duas contradições estruturais na gramática durante o processo (ver `GRAMMAR.md` v0.1.8/v0.1.9 acima).
 - **v0.1.1** — formalizadas duas classes de lacuna encontradas em auditoria da suíte contra `RULES-EN.md`/`RULES-PT.md`: (1) gatilhos vagos de `GENERIC_WITHOUT_OHS_WARNING` e `EXCESSIVE_SHARED_KERNEL_WARNING` (escopo por relacionamento vs. agregado, limiar numérico) — só mudança de texto em `RULES.md`, nenhum golden file precisou mudar; (2) as tags `[SW]` e `[BBM]` não tinham nenhum golden file — adicionados os casos auxiliares `separation-conflict-sw-directional` e `conformist-core-warning-bbm`. Total de casos: 18 → 20.
 - **v0.2.0** — passada de propagação do `GRILLING.md`. Reescrita da suíte inteira: ver a entrada detalhada no próprio `TEST_SUITE.md` §7.
+- **v0.2.1** — sincronizada com `AST_SCHEMA.md` v0.2.1 e `MESSAGES.md` v0.1.1. Dois `expected.json` mudaram, ambos por prosa em inglês dentro de `data`: `syntax-error` (`expected` vira a lista de tokens `"-->, <--, <->, -x-"`) e `removed-construct-sw` (`replacement` vira `"-x-"`). A §4 passa a declarar a unidade de `column` (UTF-16), e as duas menções a "24 regras" viraram 34. Nenhum span, nenhuma severidade e nenhum code mudou — os 44 casos continuam cobrindo os 35 codes.
 
 ---
 

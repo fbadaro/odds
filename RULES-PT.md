@@ -58,7 +58,7 @@ Isso vale também para `[BBM]`, mesmo que `[BBM]` descreva o sistema em vez do c
 
 ### 0.4 Dois critérios de admissão para toda regra nova
 
-O catálogo saltou de 4 para 24 regras numa única passada de desenho, num produto que valida a cada tecla. Sem um freio explícito, um arquivo de 30 linhas vira oito diagnósticos e o usuário aprende a ignorar o painel inteiro. **Os dois critérios abaixo são obrigatórios para qualquer regra acrescentada daqui em diante**, e cada regra da §2 registra sua resposta ao primeiro.
+O catálogo saltou de 15 para 34 regras numa única passada de desenho, num produto que valida a cada tecla. Sem um freio explícito, um arquivo de 30 linhas vira oito diagnósticos e o usuário aprende a ignorar o painel inteiro. **Os dois critérios abaixo são obrigatórios para qualquer regra acrescentada daqui em diante**, e cada regra da §2 registra sua resposta ao primeiro.
 
 **1. Princípio da autoria — a regra pressupõe controle sobre o sistema?**
 Isenta-se o que pressupõe autoria; mantém-se o que descreve *a decisão de integração do próprio autor*. Você não desenha a API de um terceiro, então uma regra exigindo que ele publique um Open-Host Service é ruído inacionável. Mas *como você integra* com ele é decisão inteiramente sua, e é exatamente o que o mapa deveria documentar — mais ainda com um terceiro, não menos.
@@ -353,7 +353,7 @@ Um elemento que já produziu um **`error`** é registrado como *declarado porém
 
 O caso que motiva o princípio: um `context` declarado fora de um `subdomain` é descartado pelo panic-mode recovery do parser (`GRAMMAR.md` §5.1) e reportado como `ORPHAN_CONTEXT`. Sem o princípio, toda linha do `mapping` que referenciasse aquele contexto emitiria *também* `PHANTOM_REFERENCE` — um erro do usuário, dois diagnósticos, e o segundo falso: o contexto *foi* declarado, apenas no lugar errado. Por isso, declarações descartadas precisam mesmo assim ser registradas na tabela de símbolos, marcadas como inválidas, para que as fases seguintes as reconheçam sem voltar a reportá-las.
 
-A leitura é **larga**: um `error` remove o elemento do pipeline inteiro, não apenas das regras que consomem o que foi invalidado. A leitura estreita obrigaria cada uma das duas dúzias de regras da §2 a declarar de qual invalidação depende — o regime caso a caso que este princípio existe para evitar, fantasiado de arquitetura.
+A leitura é **larga**: um `error` remove o elemento do pipeline inteiro, não apenas das regras que consomem o que foi invalidado. A leitura estreita obrigaria cada uma das doze regras da §2 a declarar de qual invalidação depende — o regime caso a caso que este princípio existe para evitar, fantasiado de arquitetura.
 
 **Um elemento invalidado leva os filhos junto.** Um `subdomain` que produziu um `error` (`INVALID_SUBDOMAIN_TYPE`, `DUPLICATE_SUBDOMAIN`) sai do pipeline junto com os contextos declarados dentro dele, e um bloco `subdomain` descartado leva seus contextos também. Esses contextos continuam registrados como *declarados porém inválidos*, então não viram referências fantasma — mas também não são julgados por conta própria.
 
@@ -477,4 +477,4 @@ Por fim, ordene o array inteiro pelas chaves da §3.3. A ordem emitida faz parte
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.2.0** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.2.1** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.

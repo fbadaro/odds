@@ -8,12 +8,20 @@ Esta AST corresponde 1:1 à gramática **GRAMMAR.md v0.2.0**. Qualquer mudança 
 
 **Convenção:** cada nó carrega um campo `span` com a posição de início/fim no arquivo-fonte. Isso é o que viabiliza a navegação clique-a-clique do painel de validação (PRD §5.2 / GH-002) — tanto para erros sintáticos quanto semânticos.
 
+> ⚠️ **A unidade de `column` é normativa: unidades de código UTF-16, 1-indexed, `end` exclusivo.** Isso **não** é detalhe de implementação nesta linguagem em particular: `GRAMMAR.md` §1 aceita explicitamente letras acentuadas em `identifier`, e boa parte do conteúdo escrito em ODDS é PT-BR. Uma linha com `descrição` tem contagens diferentes em bytes UTF-8 e em UTF-16 — se a unidade não estiver fixada, dois parsers conformes produzem spans diferentes para o mesmo arquivo e `TEST_SUITE.md` não consegue asserir nenhum dos dois. UTF-16 foi escolhido por alinhamento com o LSP (o `end` exclusivo já segue a mesma convenção) e com `String.prototype.length` do JavaScript, que é o ambiente-alvo de um produto 100% client-side.
+
 ---
 
 ## 1. Tipos de suporte (posição e diagnósticos)
 
 ```typescript
-/** Posição de um caractere no arquivo-fonte (1-indexed, como a maioria dos editores). */
+/**
+ * Posição de um caractere no arquivo-fonte (1-indexed, como a maioria dos editores).
+ *
+ * `column` é contada em **unidades de código UTF-16**, como no Language Server
+ * Protocol — não em bytes e não em graphemes. Ver a nota abaixo: a unidade não é
+ * detalhe de implementação, porque a gramática aceita identificadores acentuados.
+ */
 interface Position {
   line: number;
   column: number;
@@ -82,6 +90,8 @@ Checkout <-- [BBM] OldBilling     // data: { context: "Checkout", trigger: "bbm"
 Sem `data`, os dois casos asseriam a mesma `severity`, o mesmo `code` e spans que diferem por uma única coluna acidental — uma implementação que dispare o gatilho errado passaria nos dois testes. Com `data`, eles divergem no campo que importa.
 
 **Regra de integridade mecânica:** todo placeholder de um template em `MESSAGES.md` precisa existir como chave em `data`, e vice-versa. Isso é verificável por script, sem rodar o validador.
+
+**Regra de integridade semântica — `data` não carrega prosa.** Todo valor é um nome declarado pelo usuário, um token literal da gramática, um número decimal em string, ou um dos valores fechados listados em §1.3. **Se o valor mudaria ao traduzir a mensagem, ele não pertence a `data`** — a frase inteira vive no template (`MESSAGES.md` §1.1). Sem essa regra, o locale volta pela porta dos fundos sem que checagem nenhuma reclame: um `replacement: "`-x-` on its own"` é um `Record<string, string>` perfeitamente válido, casa com o placeholder nos dois idiomas, e ainda assim faz o template PT renderizar *"use `-x-` on its own no lugar"*.
 
 ### 1.3 Catálogo de codes, com fase e chaves de `data`
 
@@ -192,6 +202,8 @@ A tabela abaixo é **normativa** e é a fonte de verdade de três coisas ao mesm
 - `INCOMPLETE_MUTUAL_TAG.declaredSide` e `INCOMPLETE_CUSTOMER_SUPPLIER` (`declared`/`missing`): `"left"`/`"right"` para o lado; `"C"`/`"S"` para a tag.
 - `MALFORMED_SUPPRESSION.reason`: `"unknown-code"` (o code nomeado não existe neste catálogo), `"missing-justification"` (a diretiva não traz `: <justificativa>`) ou `"not-suppressible"` (o code nomeado tem severidade `error`, que por D3 nunca é suprimível).
 - `REMOVED_CONSTRUCT.removedIn`: a `ODDS Language Version` em que a construção deixou de existir (ver `CHANGELOG.md`).
+- `REMOVED_CONSTRUCT.construct` e `REMOVED_CONSTRUCT.replacement`: **tokens literais da linguagem**, sem prosa em volta e sem crases — a construção removida como se escreve (`[SW]`) e a que ocupa seu lugar (`-x-`). A instrução de *como* usar a substituta é do template, não do dado.
+- `SYNTAX_ERROR.expected`: a **lista de tokens literais** aceitos naquela posição, separados por `", "` (ex.: `"-->, <--, <->, -x-"`). Nunca uma descrição em prosa da categoria esperada — a palavra "conector" que nomeia o conjunto vive no template. Um conjunto aberto é esperado aqui: ao contrário dos demais valores fechados desta lista, `expected` varia com a posição do parser, e por isso é a lista que é normativa, não os seus membros.
 - Chaves numéricas (`count`, `withBbm`, `withoutBbm`, `firstLine`) são **strings decimais** — `data` é `Record<string, string>`, sem exceção. Isso mantém o campo trivialmente serializável no golden file e no payload da URL.
 
 > 📝 Cada code desta tabela deve ter pelo menos um golden file associado (`TEST_SUITE.md`). Esta lista é a fonte de verdade de quais regras do `RULES.md` já têm um `code` estável — **uma regra nova entra aqui primeiro**, com fase e chaves de `data`, antes de ser escrita no `RULES.md` ou ganhar template em `MESSAGES.md`.
@@ -521,4 +533,4 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.2.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.2.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

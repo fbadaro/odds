@@ -56,7 +56,7 @@ That boundary is what answers, with no further argument, why `maturity: legacy` 
 
 ### 0.4 Two admission criteria for every new rule
 
-The catalogue went from 4 rules to 24 in a single design pass, in a product that validates on every keystroke. Without an explicit brake, a 30-line file turns into eight diagnostics and the user learns to ignore the whole panel. **Both criteria below are mandatory for any rule added from now on**, and each rule in §2 records its answer to the first one.
+The catalogue went from 15 rules to 34 in a single design pass, in a product that validates on every keystroke. Without an explicit brake, a 30-line file turns into eight diagnostics and the user learns to ignore the whole panel. **Both criteria below are mandatory for any rule added from now on**, and each rule in §2 records its answer to the first one.
 
 **1. The authorship principle — does the rule presuppose control over the system?**
 Exempt what presupposes authorship; keep what describes *the author's own integration decision*. You do not design a third party's API, so a rule demanding they publish an Open-Host Service is unactionable noise. But *how you integrate* with them is entirely your decision, and it is exactly what the map should document — more so with a third party, not less.
@@ -351,7 +351,7 @@ An element that has produced an **`error`** is recorded as *declared but invalid
 
 The motivating case: a `context` declared outside a `subdomain` is discarded by the parser's panic-mode recovery (`GRAMMAR.md` §5.1) and reported as `ORPHAN_CONTEXT`. Without this principle, every `mapping` line referencing that context would *also* emit `PHANTOM_REFERENCE` — one user mistake, two diagnostics, and the second one false: the context *was* declared, just in the wrong place. Discarded declarations must therefore still be registered in the symbol table, flagged as invalid, so that later phases can recognise them without re-reporting them.
 
-The reading is **broad**: an `error` removes the element from the pipeline entirely, not merely from the rules that consume whatever was invalidated. The narrow reading would force each of the two dozen rules in §2 to declare which invalidation it depends on — the case-by-case regime this principle exists to avoid, wearing an architecture costume.
+The reading is **broad**: an `error` removes the element from the pipeline entirely, not merely from the rules that consume whatever was invalidated. The narrow reading would force each of the twelve rules in §2 to declare which invalidation it depends on — the case-by-case regime this principle exists to avoid, wearing an architecture costume.
 
 **An invalidated element takes its children with it.** A `subdomain` that produced an `error` (`INVALID_SUBDOMAIN_TYPE`, `DUPLICATE_SUBDOMAIN`) leaves the pipeline together with the contexts declared inside it, and a discarded `subdomain` block takes its contexts too. Those contexts are still registered as *declared but invalid*, so they do not become phantom references — but they are not re-judged on their own account either.
 
@@ -475,4 +475,4 @@ Finally, sort the whole array by the keys in §3.3. The emitted order is part of
 
 ## Changelog
 
-Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## RULES-EN.md / RULES-PT.md`). Current version: **v0.2.0** — this file and `RULES-PT.md` version together. Any change here must get a new entry there, not here, and must be mirrored in the other language in the same pass.
+Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## RULES-EN.md / RULES-PT.md`). Current version: **v0.2.1** — this file and `RULES-PT.md` version together. Any change here must get a new entry there, not here, and must be mirrored in the other language in the same pass.

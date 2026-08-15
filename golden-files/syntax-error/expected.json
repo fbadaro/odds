@@ -7,7 +7,7 @@
       "code": "SYNTAX_ERROR",
       "data": {
         "found": "==>",
-        "expected": "a valid connector (-->, <--, <->, -x-)"
+        "expected": "-->, <--, <->, -x-"
       },
       "span": {
         "start": {

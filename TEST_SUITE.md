@@ -87,6 +87,7 @@ for (const caseDir of listGoldenFileCases()) {
 ## 4. Convenção de `span`
 
 - **1-indexed** em linha e coluna, consistente com `GRAMMAR.md`/`AST_SCHEMA.md`.
+- **`column` é contada em unidades de código UTF-16** (`AST_SCHEMA.md` §1), não em bytes. Seis inputs desta suíte têm acentuação PT-BR, então a diferença é observável: a linha 11 de `malformed-suppression-unknown-code` tem 85 unidades UTF-16 e 87 bytes UTF-8, e o span esperado usa a primeira contagem. Nenhum caractere fora do Plano Multilíngue Básico aparece na suíte, então as contagens em UTF-16 e em code points coincidem em todos os 44 casos — mas a normativa é UTF-16.
 - **`end` é exclusivo** (aponta um caractere depois do último caractere do trecho), estilo LSP — ex: a palavra `"OHS"` de 3 caracteres começando na coluna 5 tem `start.column: 5` e `end.column: 8`.
 - Erros ligados a um **token/nó específico** (uma tag, um identificador, uma declaração): `span` cobre exatamente esse trecho.
 - Erros de **relação inteira** (`SEPARATION_CONFLICT`, `DUPLICATE_RELATIONSHIP`, `SELF_RELATIONSHIP`, `EXTERNAL_ONLY_RELATIONSHIP`, e os avisos estratégicos por relacionamento): `span` cobre a linha de relacionamento inteira, do primeiro ao último caractere não-branco.
@@ -124,7 +125,7 @@ Esse é o comportamento desejado — o conserto é iterativo, e a contagem de di
 
 ### 5.3 Lacunas de especificação encontradas ao escrever esta versão da suíte
 
-Escrever os casos **é** uma auditoria da especificação: para saber a resposta exata de um arquivo, é preciso rodar todas as 24 regras contra ele mentalmente, e é aí que os buracos aparecem. Quatro foram encontrados e fechados no `RULES.md` durante esta reescrita:
+Escrever os casos **é** uma auditoria da especificação: para saber a resposta exata de um arquivo, é preciso rodar todas as 34 regras contra ele mentalmente, e é aí que os buracos aparecem. Quatro foram encontrados e fechados no `RULES.md` durante esta reescrita:
 
 1. **`UNMAPPED_CONTEXT` num arquivo sem `mapping`.** Como estava escrito, todo contexto de um arquivo sem bloco `mapping` era "não mapeado" — o que transformava metade dos casos da suíte num festival de `info`. A regra ficou inerte quando não há mapa nenhum: um modelo em que o mapeamento não começou é rascunho.
 2. **`UNMAPPED_CONTEXT` e referências em linhas inválidas.** Um contexto citado apenas numa linha que outra regra invalidou continua "referenciado" — reportá-lo seria um diagnóstico derivado de um erro, que o §3.1 proíbe.
@@ -188,7 +189,7 @@ Isso mantém a tradição da v0.1.0, em que escrever a suíte encontrou duas con
 
 **Casos que valem por mais do que o code que dão nome ao diretório:**
 
-- **`valid-baseline`** é o teste mais exigente da suíte, porque precisa passar por **todas** as 24 regras em silêncio. Ele é idêntico ao exemplo canônico de `GRAMMAR.md` §4, e os dois devem ser mantidos em sincronia.
+- **`valid-baseline`** é o teste mais exigente da suíte, porque precisa passar por **todas** as 34 regras em silêncio. Ele é idêntico ao exemplo canônico de `GRAMMAR.md` §4, e os dois devem ser mantidos em sincronia.
 - **`root-error-cascade`** e as notas de §5.2 verificam o princípio do erro-raiz, que não tem code próprio e por isso não apareceria numa suíte organizada só por code.
 - **`separation-conflict-bbm-exempt`** e **`suppression-valid`** verificam **ausências**: uma exceção de regra e uma supressão que funcionou. Um validador ansioso demais falha nos dois.
 - **`malformed-suppression-unknown-code`** verifica a chave primária da ordenação: um diagnóstico de fase 5 na linha 12 vem **antes** de um de fase 6 na linha 11.
@@ -216,4 +217,4 @@ Isso mantém a tradição da v0.1.0, em que escrever a suíte encontrou duas con
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## TEST_SUITE.md`). Versão atual: **v0.2.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## TEST_SUITE.md`). Versão atual: **v0.2.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

@@ -26,6 +26,14 @@ Três consequências que motivam a separação:
 
 É por isso que os placeholders são **nomeados**, e não posicionais. A checagem é mecânica, roda sem executar o validador, e pega os dois erros que essa separação poderia introduzir: um template que interpola dado que o diagnóstico não carrega (buraco em runtime), e um dado carregado que nenhuma mensagem usa (indício de regra mal desenhada ou de template desatualizado).
 
+### 1.1 Segunda regra de integridade: `data` não carrega prosa
+
+> **Nenhum valor de `data` pode conter texto de idioma nenhum.** Todo valor é um nome declarado pelo usuário, um token literal da gramática, um número decimal, ou um dos valores fechados de `AST_SCHEMA.md` §1.3. A prosa vive **inteira** no template — as duas colunas desta tabela são o único lugar do sistema onde uma frase existe.
+
+A regra parece redundante com a §0 ("o núcleo validador não conhece locale"), mas não é: ela fecha a porta pela qual o locale voltou na prática. Um `data` como `{ replacement: "`-x-` on its own" }` satisfaz o contrato estrutural (é `Record<string, string>`, o placeholder existe dos dois lados) e ainda assim faz o template PT renderizar *"use `-x-` on its own no lugar"* — meia frase em cada idioma, sem que checagem nenhuma reclame.
+
+O teste prático, para quem for escrever um code novo: **se o valor mudaria ao traduzir a mensagem, ele não pertence a `data`.** Um conjunto de tokens esperados (`SYNTAX_ERROR.expected`) é uma lista de literais da gramática, idêntica nos dois idiomas; a palavra "conector" que a descreve é do template. O mesmo vale para `REMOVED_CONSTRUCT.replacement`, que carrega a construção substituta (`-x-`) e não a instrução de como usá-la.
+
 **Variantes.** Dois codes têm mais de uma mensagem, selecionada por uma chave de `data` declarada explicitamente na coluna *Variante*. Nenhum outro code pode ganhar variantes sem que a chave seletora seja adicionada aqui e seus valores fechados sejam registrados em `AST_SCHEMA.md` §1.3 — variante implícita, escolhida no código da UI, reintroduziria pela porta dos fundos a mensagem como contrato.
 
 ---
@@ -34,10 +42,10 @@ Três consequências que motivam a separação:
 
 | Code | Variante | EN | PT |
 |---|---|---|---|
-| `SYNTAX_ERROR` | — | Unexpected token `{found}`: expected {expected}. | Token inesperado `{found}`: esperava {expected}. |
+| `SYNTAX_ERROR` | — | Unexpected token `{found}`: expected one of {expected}. | Token inesperado `{found}`: esperava um de {expected}. |
 | `ORPHAN_CONTEXT` | — | The context `{context}` must belong to a subdomain, or be declared inside the `external` block. | O contexto `{context}` precisa pertencer a um subdomínio, ou ser declarado dentro do bloco `external`. |
 | `ORPHAN_SUBDOMAIN` | — | The subdomain `{subdomain}` is declared outside the scope of a `domain`. | O subdomínio `{subdomain}` está declarado fora do escopo de um `domain`. |
-| `REMOVED_CONSTRUCT` | — | `{construct}` was removed in ODDS {removedIn} — use {replacement} instead. | `{construct}` foi removida na ODDS {removedIn} — use {replacement} no lugar. |
+| `REMOVED_CONSTRUCT` | — | `{construct}` was removed in ODDS {removedIn} — use `{replacement}` instead. | `{construct}` foi removida na ODDS {removedIn} — use `{replacement}` no lugar. |
 
 ---
 
@@ -139,4 +147,4 @@ Quando a implementação começar, este catálogo deve ser extraído para um `me
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
