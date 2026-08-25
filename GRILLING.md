@@ -22,6 +22,10 @@ O objetivo é mapear a *árvore de decisões* do projeto: cada decisão fechada 
 
 > **Este documento não tem mais trabalho pendente.** A passada final de propagação descrita em §4 foi executada por inteiro: as 25 decisões (D1–D25) estão refletidas em todos os artefatos, na ordem prescrita, um commit por etapa.
 >
+> **Onde cada decisão caiu:** `PROPAGATION-MAP.md` — o mapa D1–D25 → artefato/seção, conferido arquivo a arquivo. É lá que se responde *"isto foi mesmo propagado, e para onde?"*; aqui só se responde *"por quê?"*.
+>
+> **Vocabulário:** este arquivo usa termos que a execução depois trocou. A tabela logo abaixo do banner os lista.
+>
 > **Leia este arquivo como registro do *porquê*, não como lista de tarefas.** Quando precisar do racional de uma decisão — por que `[SW]` saiu, por que `[BBM]` continuou tag, por que a mensagem deixou o contrato —, é aqui que ele está, com as alternativas que foram rejeitadas e o motivo. O *o quê* vale nos artefatos normativos, não aqui: onde este documento e um artefato divergirem, **o artefato está certo**.
 >
 > **O que a execução acrescentou ao que estava decidido** (registrado aqui para não se perder, e já escrito nos artefatos):
@@ -31,6 +35,25 @@ O objetivo é mapear a *árvore de decisões* do projeto: cada decisão fechada 
 > - **Quatro lacunas de especificação** encontradas ao escrever os golden files, e fechadas no `RULES.md` (detalhadas em `TEST_SUITE.md` §5.3): `UNMAPPED_CONTEXT` num arquivo sem `mapping`; `UNMAPPED_CONTEXT` e referências em linhas já invalidadas; `CONFORMIST_CORE` insistindo num `[ACL]` que o autor já aplicou; e o alcance da invalidação sobre os filhos de um elemento inválido.
 > - **Um achado sobre D7:** com o bloco `external` existindo, a aplicação-bandeira do princípio da autoria virou **estrutural** em vez de exceção nomeada — um contexto externo não tem tipo de subdomínio, então `GENERIC_WITHOUT_OHS` e as regras `CORE_*` não conseguem disparar contra ele. O princípio continua sendo o critério de admissão de toda regra nova; ele só não precisa mais de cláusula de isenção para essas.
 > - **Suíte:** 20 → **44 casos**, cobrindo os 35 codes. O `valid-baseline` agora é byte-a-byte idêntico ao exemplo canônico de `GRAMMAR.md` §4 — os dois arquivos que a §1 (F10/F11) acusava de ensinar o vocabulário errado.
+
+---
+
+## 📕 Vocabulário superado neste arquivo
+
+> **Este arquivo usa nomes que a execução depois trocou.** Ele é registro histórico e **não foi reescrito** — corrigir o texto de uma sessão encerrada apagaria justamente o que ele existe para guardar: o que se pensava no momento da decisão. O preço disso é que um agente que leia o corpo do arquivo colhe termo morto sem perceber. A tabela abaixo é o antídoto, e vale para o arquivo inteiro.
+>
+> Onde este documento e um artefato normativo divergirem, **o artefato está certo** — inclusive no vocabulário.
+
+| Termo usado neste arquivo | O que vale hoje | Onde está a verdade |
+|---|---|---|
+| `ExternalContextNode` | **`ExternalBlockNode`** — o nó nomeia o *bloco*, não o contexto. Um contexto externo é um `ContextNode` comum; a externalidade vem da posição na árvore, e o que o Visitor consome é `SymbolTableEntry.isExternal` | `AST_SCHEMA.md` §3 e §5 |
+| `CONFORMIST_CORE_WARNING` | `CONFORMIST_CORE` | `AST_SCHEMA.md` §1.3 |
+| `GENERIC_WITHOUT_OHS_WARNING` | `GENERIC_WITHOUT_OHS` | `AST_SCHEMA.md` §1.3 |
+| `EXCESSIVE_SHARED_KERNEL_WARNING` | `EXCESSIVE_SHARED_KERNEL` — e hoje com severidade `info` e limiar 3, não `warning` e limiar 2 (D24) | `AST_SCHEMA.md` §1.3 · `RULES-EN.md`/`RULES-PT.md` §2 |
+| `UNDOCUMENTED_CONTRACT_WARNING` | `UNDOCUMENTED_CONTRACT` | `AST_SCHEMA.md` §1.3 |
+| *"`[SW]` foi removida na v0.2"* | Removida na **v0.1.0**. O número `0.2` foi escrito em D20, antes de D22 fixar o nascimento da linguagem | `CHANGELOG.md` |
+
+**Por que os quatro sufixos `_WARNING` caíram:** por D2, a severidade vive **apenas** no campo `severity` do diagnóstico. Um code com a severidade no nome mente sobre si mesmo assim que a regra é reclassificada — que foi exatamente o que aconteceu com `EXCESSIVE_SHARED_KERNEL`, hoje `info`. O `health_check.py` (C6, C7) falha se qualquer um desses nomes reaparecer num documento normativo; este arquivo é isento por ser registro, e é essa isenção que a tabela acima paga.
 
 ---
 

@@ -1,6 +1,6 @@
 # HEALTH
 
-Estado de saúde do modelo ODDS. Versão deste arquivo: **v0.3.3** · Última aferição: **2026-08-16** (`python3 .claude/skills/health-check/scripts/health_check.py`, 13/13 conformes).
+Estado de saúde do modelo ODDS. Versão deste arquivo: **v0.4.0** · Última aferição: **2026-08-24** (`python3 .claude/skills/health-check/scripts/health_check.py`, 15/15 conformes).
 
 Este repositório não tem código, nem build, nem CI — o produto, hoje, **é a especificação**. Então saúde aqui não pode ser cobertura de teste nem build verde: é *quão íntegro está o modelo*. Um repositório de spec adoece do mesmo jeito que um modelo de domínio adoece — a linguagem escorrega, dois documentos passam a afirmar coisas diferentes sobre o mesmo conceito, uma regra entra sem ancoragem, um número é afirmado em prosa e nunca reconferido. Este arquivo mede exatamente isso.
 
@@ -40,7 +40,7 @@ Escala **0–100**, ponderada em seis dimensões. Cada dimensão tem uma **natur
 
 ---
 
-## 2. Placar atual — **81 / 100** · *Sólido, com débito localizado*
+## 2. Placar atual — **83 / 100** · *Íntegro; o que falta é código*
 
 O placar é **derivado, não arbitrado**. Vale, em toda dimensão:
 
@@ -50,17 +50,17 @@ Numa dimensão de **integridade** a base é 100 por definição — ela não tem
 
 | # | Dimensão | Natureza | Peso | Base | Débitos | Nota | Contribuição |
 |---|---|---|---:|---:|---:|---:|---:|
-| 1 | Coerência Normativa | Integridade | 25 | 100 | −3 | 97 | 24,25 |
-| 2 | Língua Ubíqua | Integridade | 15 | 100 | −5 | 95 | 14,25 |
+| 1 | Coerência Normativa | Integridade | 25 | 100 | 0 | 100 | 25,00 |
+| 2 | Língua Ubíqua | Integridade | 15 | 100 | 0 | 100 | 15,00 |
 | 3 | Fidelidade Estratégica ao DDD | Construção | 20 | 75 | 0 | 75 | 15,00 |
 | 4 | Cobertura Executável | Construção | 20 | 80 | −20 | 60 | 12,00 |
 | 5 | Disciplina de Versionamento | Integridade | 10 | 100 | −4 | 96 | 9,60 |
 | 6 | Prontidão de Implementação | Construção | 10 | 60 | 0 | 60 | 6,00 |
-| | **Total** | | **100** | | **−32** | | **81,10** |
+| | **Total** | | **100** | | **−24** | | **82,60** |
 
 As bases das dimensões 3 e 6 são **alocadas por rubrica** (§9), não escolhidas: cada uma é a soma de critérios nomeados com teto e evidência.
 
-**Leitura em uma frase:** o modelo é coerente consigo mesmo e disciplinado no registro; o que falta é prova de que ele sobrevive ao contato com uma implementação. Toda a dívida está concentrada nas duas dimensões de construção que dependem de código existir — e nenhuma delas se resolve escrevendo mais spec.
+**Leitura em uma frase:** as duas dimensões de **integridade** que dependem só de disciplina documental estão em 100 — o modelo não se contradiz e não fala duas línguas. O que resta é dívida de **construção**: a suíte nunca rodou contra um parser (−20) e o fechamento de passe no `CHANGELOG.md` ainda é humano (−4). Nenhuma das duas se resolve escrevendo mais spec.
 
 ---
 
@@ -120,11 +120,11 @@ A linha "nota ajustada sem evento tipado" é o que mantém este arquivo honesto:
 | ID | Dimensão | Débito | Custo | Fecha quando |
 |---|---|---|---:|---|
 | **D-001** | 4 · Cobertura Executável | Os spans dos 44 golden files são um *alvo* de especificação: nunca foram conferidos contra um parser real. Detalhes de tokenização devem divergir | −20 | A suíte rodar ponta a ponta contra uma implementação e as divergências forem reconciliadas (corrigindo a suíte quando o parser estiver certo) |
-| **D-004** | 1 · Coerência Normativa | A propagação do `GRILLING.md` foi declarada completa em 2026-08-14, e **duas auditorias posteriores acharam lacunas** (unidade de `column`, prosa em `data`). Não existe evidência por decisão D1–D25 de que a propagação fechou | −3 | Existir um mapa D1–D25 → artefato/seção, conferido |
 | **D-005** | 5 · Disciplina de Versionamento | Nada verifica que um passe normativo fechou com entrada no `CHANGELOG.md` e incremento pela tabela. A disciplina é inteiramente humana, e o histórico mostra que ela já falhou uma vez em outro eixo (os números não reconferidos) | −4 | O `health_check.py` passar a cruzar o diff do passe com o `CHANGELOG.md` |
-| **D-006** | 2 · Língua Ubíqua | O `GRILLING.md` usa vocabulário pré-propagação — `ExternalContextNode` (o nome real é `ExternalBlockNode`), os quatro codes com sufixo `_WARNING`, "`[SW]` removida na v0.2" (foi na v0.1.0). É registro histórico e o `CLAUDE.md` já manda o artefato vencer na divergência, mas um agente que leia o arquivo colhe termo morto | −5 | Os termos mortos receberem marca de obsolescência no ponto de uso, ou o arquivo ganhar um cabeçalho de vocabulário superado |
 
-Ausência de código, de stack e de ferramenta **não** é débito — é nota baixa nas dimensões 4 e 6, que é o que elas existem para dizer. `health_check.py` verifica (C7) que esses termos mortos não vazaram do `GRILLING.md` para nenhum documento normativo.
+**Os dois débitos restantes são de coisas que não existem** — um parser e uma verificação de fechamento de passe —, não de coisas escritas errado. Ausência de código, de stack e de ferramenta **não** é débito: é nota baixa nas dimensões 4 e 6, que é o que elas existem para dizer.
+
+**Fechados** (a evidência de cada um está na linha correspondente da §7): D-002 e D-003 em 2026-08-16, D-004 e D-006 em 2026-08-24. O `GRILLING.md` continua isento da varredura de termo morto por ser registro histórico, e o preço dessa isenção passou a ser cobrado: C7 verifica que o vocabulário morto não vazou dele para nenhum documento normativo, e C15 verifica que o próprio arquivo avisa o leitor, num glossário, sobre cada termo que ele usa e que já não vale.
 
 ---
 
@@ -152,6 +152,7 @@ Ausência de código, de stack e de ferramenta **não** é débito — é nota b
 | 2026-08-16 | **`health_check.py` + skill `health-check`.** Dez checagens determinísticas, sem dependência externa. **Fecha D-002** (+5, dim 1): a checagem placeholder ↔ chaves de `data` que o `MESSAGES.md` §1 declarava "verificável por script" agora existe (C10) e passa nos 35 codes, nos dois idiomas. **Fecha D-003** (+5, dim 2): paridade EN/PT deixa de ser disciplina humana (C5 — seções e conjunto de termos). Evidência: 10/10 conformes | 1, 2 | +10 | **80** |
 | 2026-08-16 | **Rubricas para as dimensões de julgamento (§9) e script movido para dentro da skill.** As bases 3 e 6 eram números arbitrados por um modelo sem alocação nem evidência — a §4 penaliza isso quando o autor é humano, e não havia razão para o critério ser mais frouxo com o modelo. Cada uma passa a ser a soma de seis critérios com teto e artefato citado, e a checagem **C11** confere que os máximos somam 100 e que o total bate com a §2. **Reaferição sob rubrica**, não bonificação: dim 3 de 78 → **75** (o rastreio à literatura vale 4 de 15 — o `REFERENCES.md` é uma lista de URLs sem anotação) e dim 6 de 45 → **60** (a gramática está fechada e o contrato de dados é implementável; a lacuna real é stack, que vale 0 de 20) | 3, 6 | −3 / +15 | **81** |
 | 2026-08-16 | **Validação pela skill, com um defeito encontrado no próprio razão.** As duas linhas anteriores estavam fora de ordem cronológica: a das rubricas foi inserida antes da do script, deixando o razão a fechar em 80 enquanto a §2 declarava 81. O evento não existia na §4 — foi acrescentado lá antes de ser aplicado, como manda a §6.3 — e virou a checagem **C12**, para que a ordem do razão deixe de depender de quem edita. Débito aberto e fechado no mesmo passe: saldo zero, cicatriz registrada. Nenhuma nota se move, porque dimensão de integridade é limitada a 100 menos débito aberto e não há o que creditar | 1 | 0 | **81** |
+| 2026-08-24 | **Os dois débitos documentais fechados, com evidência.** **Fecha D-004** (+3, dim 1): nasce o `PROPAGATION-MAP.md`, o mapa D1–D25 → artefato/seção. As 25 decisões foram conferidas abrindo cada artefato nomeado na célula "Artefatos a atualizar" do `GRILLING.md` §3 — **nenhuma ausente**, e seis desvios de forma, endereço ou cronologia, em todos eles com a execução certa e a previsão envelhecida (o mais informativo é D23: os dois golden files reescritos não terminaram no resultado previsto porque D24, decidida depois na mesma rodada, revogou a versão da regra em que a previsão se apoiava). **Fecha D-006** (+5, dim 2): o `GRILLING.md` ganha glossário de vocabulário superado — os cinco termos mortos e a data errada da remoção de `[SW]`, cada um com o que vale hoje e onde. Duas checagens novas sustentam os fechamentos: **C14** (as 25 linhas existem e toda seção citada resolve para um cabeçalho real — pegou cinco referências erradas na primeira execução) e **C15** (todo termo morto que o `GRILLING.md` usa está no glossário). Nenhuma nota das dimensões de julgamento se move: o `PROPAGATION-MAP.md` melhora o *alcance* de uma decisão a partir do artefato, mas o que R3.6 desconta continua de pé — decisão nova ainda não tem onde morar, e `docs/adr/` segue vazio | 1, 2 | +8 | **83** |
 
 ---
 
@@ -183,8 +184,10 @@ Stdlib pura, sem dependência. Saída **0** = tudo conforme, **1** = ao menos um
 | **C11** | 1 | As rubricas da §9 fecham: máximos somam 100 por dimensão, nota de cada critério dentro do seu teto, e o somatório bate com a base declarada na §2 |
 | **C12** | 1 | O razão da §7 está em ordem cronológica e seu último total é o placar da §2 — o histórico é a origem do número, não um anexo dele |
 | **C13** | 1 | Esta tabela descreve exatamente as checagens que o script executa, com a mesma dimensão. Inclui a si mesma: é o ponto fixo que impede a §8 de mentir sobre a própria aferição |
+| **C14** | 1 | O `PROPAGATION-MAP.md` cobre D1–D25 sem lacuna, e toda seção que ele cita (`ARQUIVO.md §N`) resolve para um cabeçalho que existe naquele arquivo — uma seção renumerada derruba a aferição em vez de apodrecer o mapa em silêncio |
+| **C15** | 2 | Todo termo morto que o `GRILLING.md` usa está no glossário de vocabulário superado daquele arquivo, com o que vale hoje. É o preço da isenção que a C7 concede a ele |
 
-**C8, C9, C11, C12 e C13 são o que impede este arquivo de mentir.** As outras oito medem o repositório; estas cinco medem o próprio placar e a própria descrição dele, e falham se alguém ajustar uma nota sem mexer no que a sustenta. Todas as quatro são da **dimensão 1** — inclusive a C11, que confere as rubricas das dimensões 3 e 6 mas é checagem de coerência do placar, não de fidelidade ao DDD. O que ela verifica é a aritmética do julgamento, nunca o julgamento.
+**C8, C9, C11, C12 e C13 são o que impede este arquivo de mentir.** As outras dez medem o repositório; estas cinco medem o próprio placar e a própria descrição dele, e falham se alguém ajustar uma nota sem mexer no que a sustenta. Todas as cinco são da **dimensão 1** — inclusive a C11, que confere as rubricas das dimensões 3 e 6 mas é checagem de coerência do placar, não de fidelidade ao DDD. O que ela verifica é a aritmética do julgamento, nunca o julgamento.
 
 Com `-v`, cada checagem imprime a evidência que a sustenta — a distribuição de codes por fase, a conta de cada dimensão, cada débito do razão, cada linha do histórico. É o modo de auditar o placar sem abrir este arquivo.
 

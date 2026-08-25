@@ -17,7 +17,7 @@ python3 .claude/skills/health-check/scripts/health_check.py
 
 Saída 0 = conforme; 1 = falha. **Não leia o `HEALTH.md` inteiro antes disso** — o script já reporta o que interessa em ~15 linhas, e é para isso que ele existe. Use `-v` quando precisar da evidência por trás de cada checagem — a conta de cada dimensão, cada débito, cada linha do razão — sem abrir o `HEALTH.md`. Use `--json` para processar a saída: ela traz `score` e `failures` como campos.
 
-As treze checagens (C1–C13) e o que cada uma prova estão na §8 do `HEALTH.md`. C8, C9, C11, C12 e C13 verificam o próprio placar e a própria descrição dele: se elas falham, o arquivo está internamente inconsistente e isso vem antes de qualquer outra coisa.
+As quinze checagens (C1–C15) e o que cada uma prova estão na §8 do `HEALTH.md`. C8, C9, C11, C12 e C13 verificam o próprio placar e a própria descrição dele: se elas falham, o arquivo está internamente inconsistente e isso vem antes de qualquer outra coisa.
 
 ## 2. Se alguma checagem falhou
 
