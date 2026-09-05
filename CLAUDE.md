@@ -118,15 +118,21 @@ Invoke the `adr` skill; it owns the format, the allocator (`new_adr.py`) and the
 
 ## Implementation notes worth knowing before touching the parser
 
-**The harness exists and 7 of the 44 cases pass** — every case that is parser-scope. The other 37 are listed in `PENDING` in `packages/core/test/conformance.test.ts`, each with the validator phase it needs. That list asserts **both directions**: a case outside it must pass fully, and a case inside it must still fail — so when a validator phase lands, the suite fails until the newly-passing cases are removed from `PENDING`. The list cannot rot silently.
+**All 44 golden files pass** (debt D-001 closed). `PENDING` in `packages/core/test/conformance.test.ts` is empty and should stay that way; it asserts **both directions**, so a case listed there must still fail. Use it only to land a phase in stages.
 
-Their spans are a specification *target* (debt D-001); expect to reconcile, and **fix the suite when the parser is right**. One reconciliation has happened: `golden-files/syntax-error` expected `-->, <--, <->, -x-` and now also lists `[`, because a tag group is genuinely valid at that position. `SYNTAX_ERROR.data.expected` is no longer hand-written anywhere — it is derived from the grammar via `computeContentAssist`, which is why every token carries a `label` with its grammar literal.
+The suite is the spec, and it earned that: written when no parser existed, its spans were right in 43 of 44 cases. The one correction was `golden-files/syntax-error`, whose `expected` omitted `[` — a tag group is genuinely valid at that position. `SYNTAX_ERROR.data.expected` is no longer hand-written anywhere: it is derived from the grammar via `computeContentAssist`, which is why every token carries a `label` with its grammar literal.
+
+**Span anchors are load-bearing and easy to get wrong.** `ROLE_CONFLICT` and `PROTECTION_CONFLICT` anchor on the whole **tag group** (the conflict is the combination, not one tag); `PL_WITHOUT_OHS` on the tag; `MUTUAL_TAG_WITH_EXTERNAL` emits once per *relationship*, not per tag; `DOMAIN_WITHOUT_CORE` on the `domain` header; `EXCESSIVE_SHARED_KERNEL` on the `mapping` keyword; `INVALID_DOMAIN_CARDINALITY` with zero domains on the whole file. `TEST_SUITE.md` §4 is the convention, and the golden files are the arbiter.
 
 **Two Chevrotain behaviours were established by experiment, not assumption** — both are locked by tests in `packages/core/test/lexer.test.ts`:
 
 - Its `endColumn` is **inclusive**, while `AST_SCHEMA.md` §1 requires `end` exclusive. `spanOf()` in `lexer.ts` is the single place that converts; never read `startColumn`/`endColumn` off a token directly.
 - Chevrotain 11.2.0 **cannot match Unicode property escapes** (`\p{L}` with the `u` flag): tokenization fails silently with zero tokens. Since `GRAMMAR.md` §1 defines `identifier` as any Unicode letter, `Identifier` uses a custom pattern matcher. A Latin-1 range would pass PT-BR tests and narrow the grammar — don't.
 
-**The three recovery cases of `GRAMMAR.md` §5.1 are the main integration risk** named in ADR-0002: Chevrotain's generic recovery must be disabled or overridden there, or it will fire first and produce a span the golden file does not expect. Tackle them early, and remember step 3 — a discarded declaration still enters the symbol table as invalid.
+**The three recovery cases of `GRAMMAR.md` §5.1 are explicit productions of the implementation grammar** (ADR-0006), with Chevrotain's own recovery off. The language grammar stays strict; the implementation grammar recognises the wrong shape so it can explain it. Those three deviations are deliberate and are the only ones — if they grow, ADR-0002's whole argument (a grammar checkable production-by-production against the EBNF) weakens and deserves reopening.
+
+**Step 3 of §5.1 is not optional:** a discarded declaration still enters the symbol table as invalid (`ProgramNode.discarded`). Drop it and the `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` cascade comes back — one user mistake, two diagnostics, the second one false.
+
+**The root-error principle is read broadly** (`RULES-EN.md` §3.1): an element that produced an `error` leaves the *entire* pipeline, not just the rules consuming what it invalidated, and it takes its children with it.
 
 Which decisions are settled, and why, is in `docs/adr/`. Read it before proposing a different stack.

@@ -46,6 +46,12 @@ function unquote(token: IToken): string {
 
 export class OddsParser extends EmbeddedActionsParser {
   readonly diagnostics: Diagnostic[] = [];
+  /** Declarações descartadas pela recuperação da `GRAMMAR.md` §5.1 — §1.4 exige
+   *  que sobrevivam como inválidas em vez de sumirem. */
+  readonly discarded: { contexts: ContextNode[]; subdomains: SubdomainNode[] } = {
+    contexts: [],
+    subdomains: [],
+  };
 
   constructor() {
     super(t.allTokens, { recoveryEnabled: false });
@@ -55,6 +61,8 @@ export class OddsParser extends EmbeddedActionsParser {
   reset(): void {
     super.reset();
     this.diagnostics.length = 0;
+    this.discarded.contexts.length = 0;
+    this.discarded.subdomains.length = 0;
   }
 
   /** O diagnóstico é construído por thunk: na fase de gravação da gramática os
@@ -87,6 +95,7 @@ export class OddsParser extends EmbeddedActionsParser {
           // árvore, registrado como diagnóstico, parsing continua.
           ALT: () => {
             const orphan = this.SUBRULE(this.subdomainDecl);
+            this.ACTION(() => this.discarded.subdomains.push(orphan));
             this.report(() => ({
               severity: "error",
               code: "ORPHAN_SUBDOMAIN",
@@ -101,6 +110,7 @@ export class OddsParser extends EmbeddedActionsParser {
       kind: "Program",
       domains,
       suppressions: [],
+      discarded: { contexts: [], subdomains: [] },
       span: span ?? { start: { line: 1, column: 1 }, end: { line: 1, column: 1 } },
     };
   });
@@ -142,6 +152,7 @@ export class OddsParser extends EmbeddedActionsParser {
           // `GRAMMAR.md` §5.1: context solto direto no domain.
           ALT: () => {
             const orphan = this.SUBRULE(this.contextDecl);
+            this.ACTION(() => this.discarded.contexts.push(orphan));
             this.report(() => ({
               severity: "error",
               code: "ORPHAN_CONTEXT",
@@ -161,6 +172,7 @@ export class OddsParser extends EmbeddedActionsParser {
       subdomains,
       ...(external === undefined ? {} : { external }),
       ...(mapping === undefined ? {} : { mapping }),
+      headerSpan: spanBetween(spanOf(open), spanOf(name)),
       span: spanBetween(spanOf(open), spanOf(close)),
     };
   });
@@ -320,6 +332,7 @@ export class OddsParser extends EmbeddedActionsParser {
     return {
       kind: "Mapping",
       relationships,
+      keywordSpan: spanOf(open),
       span: spanBetween(spanOf(open), spanOf(close)),
     };
   });
@@ -327,7 +340,11 @@ export class OddsParser extends EmbeddedActionsParser {
   private relationshipDecl = this.RULE("relationshipDecl", (): RelationshipNode => {
     const left = this.CONSUME(t.Identifier);
     let leftTags: TaggedPattern[] = [];
-    this.OPTION(() => { leftTags = this.SUBRULE(this.tagGroup); });
+    let leftTagGroupSpan: SourceSpan | undefined;
+    this.OPTION(() => {
+      const group = this.SUBRULE(this.tagGroup);
+      this.ACTION(() => { leftTags = group.tags; leftTagGroupSpan = group.span; });
+    });
     const connector = this.OR([
       { ALT: () => this.CONSUME(t.UpstreamConnector) },
       { ALT: () => this.CONSUME(t.DownstreamConnector) },
@@ -335,25 +352,31 @@ export class OddsParser extends EmbeddedActionsParser {
       { ALT: () => this.CONSUME(t.SeparateConnector) },
     ]);
     let rightTags: TaggedPattern[] = [];
-    this.OPTION2(() => { rightTags = this.SUBRULE2(this.tagGroup); });
+    let rightTagGroupSpan: SourceSpan | undefined;
+    this.OPTION2(() => {
+      const group = this.SUBRULE2(this.tagGroup);
+      this.ACTION(() => { rightTags = group.tags; rightTagGroupSpan = group.span; });
+    });
     const right = this.CONSUME2(t.Identifier);
     return {
       kind: "Relationship",
       left: left.image,
       leftSpan: spanOf(left),
       leftTags,
+      ...(leftTagGroupSpan === undefined ? {} : { leftTagGroupSpan }),
       connector: connector.image as RelationshipNode["connector"],
       connectorSpan: spanOf(connector),
       rightTags,
+      ...(rightTagGroupSpan === undefined ? {} : { rightTagGroupSpan }),
       right: right.image,
       rightSpan: spanOf(right),
       span: spanBetween(spanOf(left), spanOf(right)),
     };
   });
 
-  private tagGroup = this.RULE("tagGroup", (): TaggedPattern[] => {
+  private tagGroup = this.RULE("tagGroup", (): { tags: TaggedPattern[]; span: SourceSpan } => {
     const tags: TaggedPattern[] = [];
-    this.CONSUME(t.LBracket);
+    const open = this.CONSUME(t.LBracket);
     this.AT_LEAST_ONE_SEP({
       SEP: t.Comma,
       DEF: () => {
@@ -385,8 +408,8 @@ export class OddsParser extends EmbeddedActionsParser {
         });
       },
     });
-    this.CONSUME(t.RBracket);
-    return tags;
+    const close = this.CONSUME(t.RBracket);
+    return { tags, span: spanBetween(spanOf(open), spanOf(close)) };
   });
 }
 

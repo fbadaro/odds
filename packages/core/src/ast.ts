@@ -34,6 +34,21 @@ export interface ProgramNode extends AstNode {
   readonly kind: "Program";
   readonly domains: DomainNode[];
   readonly suppressions: SuppressionDirective[];
+  /**
+   * Declarações que a recuperação da `GRAMMAR.md` §5.1 descartou da árvore.
+   *
+   * **Descartar não é esquecer.** Elas não são nós válidos, mas precisam entrar
+   * na tabela de símbolos marcadas como inválidas (`AST_SCHEMA.md` §1.4): sem
+   * isso, toda linha do `mapping` que as referencia passa a emitir
+   * `PHANTOM_REFERENCE` — um erro do usuário, dois diagnósticos, e o segundo
+   * falso, porque o contexto *foi* declarado, só que no lugar errado.
+   */
+  readonly discarded: DiscardedDeclarations;
+}
+
+export interface DiscardedDeclarations {
+  readonly contexts: ContextNode[];
+  readonly subdomains: SubdomainNode[];
 }
 
 export interface DomainNode extends AstNode {
@@ -43,6 +58,8 @@ export interface DomainNode extends AstNode {
   readonly subdomains: SubdomainNode[];
   readonly external?: ExternalBlockNode;
   readonly mapping?: MappingNode;
+  /** `domain Vendas`, sem o bloco — âncora de `DOMAIN_WITHOUT_CORE`. */
+  readonly headerSpan: SourceSpan;
 }
 
 export type SubdomainType = "core" | "supporting" | "generic";
@@ -98,6 +115,8 @@ export const PATTERN_TAGS: readonly PatternTag[] = [
 export interface MappingNode extends AstNode {
   readonly kind: "Mapping";
   readonly relationships: RelationshipNode[];
+  /** A palavra `mapping` — âncora dos diagnósticos agregados. */
+  readonly keywordSpan: SourceSpan;
 }
 
 /** Uma tag com o span dela — as regras de posição reportam sobre a tag, não a linha. */
@@ -111,9 +130,13 @@ export interface RelationshipNode extends AstNode {
   readonly left: string;
   readonly leftSpan: SourceSpan;
   readonly leftTags: TaggedPattern[];
+  /** O grupo inteiro, colchetes inclusive — âncora das regras de conflito, que
+   *  são sobre a combinação de tags e não sobre uma delas. */
+  readonly leftTagGroupSpan?: SourceSpan;
   readonly connector: ConnectorType;
   readonly connectorSpan: SourceSpan;
   readonly rightTags: TaggedPattern[];
+  readonly rightTagGroupSpan?: SourceSpan;
   readonly right: string;
   readonly rightSpan: SourceSpan;
 }

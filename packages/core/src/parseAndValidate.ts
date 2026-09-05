@@ -13,6 +13,7 @@ import { compareDiagnostics } from "./catalogue.js";
 import type { Diagnostic, SourceSpan } from "./diagnostics.js";
 import { SUPPRESSION_GROUP, oddsLexer, spanOf } from "./lexer.js";
 import { OddsParser, parseSuppressions } from "./parser.js";
+import { validate } from "./validator.js";
 
 export interface ParseResult {
   /**
@@ -26,6 +27,16 @@ export interface ParseResult {
 }
 
 const parser = new OddsParser();
+
+function wholeFileSpan(source: string): SourceSpan {
+  const lines = source.split("\n");
+  if (lines.length > 1 && lines[lines.length - 1] === "") lines.pop();
+  const last = lines[lines.length - 1] ?? "";
+  return {
+    start: { line: 1, column: 1 },
+    end: { line: lines.length, column: last.length + 1 },
+  };
+}
 
 /**
  * Os literais da gramática aceitos num ponto do arquivo, derivados da própria
@@ -96,9 +107,19 @@ export function parseAndValidate(source: string): ParseResult {
     };
   }
 
-  const diagnostics: Diagnostic[] = [...parser.diagnostics];
-  const suppressions = parseSuppressions(lexed.groups[SUPPRESSION_GROUP] ?? []);
+  const program: ProgramNode = {
+    ...ast,
+    // `TEST_SUITE.md` §4: sem nenhum `domain`, o diagnostico nao tem no ao qual
+    // apontar e ancora no arquivo inteiro.
+    span: wholeFileSpan(source),
+    suppressions: parseSuppressions(lexed.groups[SUPPRESSION_GROUP] ?? []),
+    discarded: {
+      contexts: [...parser.discarded.contexts],
+      subdomains: [...parser.discarded.subdomains],
+    },
+  };
+  const diagnostics = validate(program, parser.diagnostics);
   diagnostics.sort(compareDiagnostics);
 
-  return { astGenerated: true, diagnostics, ast: { ...ast, suppressions } };
+  return { astGenerated: true, diagnostics, ast: program };
 }

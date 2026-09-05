@@ -25,45 +25,7 @@ const GOLDEN_DIR = fileURLToPath(new URL("../../../golden-files/", import.meta.u
  * Casos que ainda não passam, com o motivo. Remova a entrada quando o caso
  * passar — a suíte cobra isso.
  */
-const PENDING: Record<string, string> = {
-  "conformist-core": "fase 5 — CONFORMIST_CORE",
-  "conformist-core-bbm": "fase 5 — CONFORMIST_CORE, UNDOCUMENTED_CONTRACT",
-  "core-in-shared-kernel": "fase 5 — CORE_IN_SHARED_KERNEL",
-  "core-upstream-of-generic": "fase 5 — CORE_UPSTREAM_OF_GENERIC",
-  "domain-without-core": "fase 5 — DOMAIN_WITHOUT_CORE",
-  "downstream-only-tag-misplaced": "fase 4 — DOWNSTREAM_ONLY_TAG_MISPLACED",
-  "duplicate-context": "fase 2 — DUPLICATE_CONTEXT",
-  "duplicate-context-external": "fase 2 — DUPLICATE_CONTEXT",
-  "duplicate-relationship": "fase 3 — DUPLICATE_RELATIONSHIP",
-  "duplicate-subdomain": "fase 2 — DUPLICATE_SUBDOMAIN",
-  "empty-subdomain": "fase 5 — EMPTY_SUBDOMAIN",
-  "excessive-shared-kernel": "fase 5 — EXCESSIVE_SHARED_KERNEL",
-  "external-only-relationship": "fase 3 — EXTERNAL_ONLY_RELATIONSHIP",
-  "generic-without-ohs": "fase 5 — GENERIC_WITHOUT_OHS",
-  "incomplete-customer-supplier": "fase 5 — INCOMPLETE_CUSTOMER_SUPPLIER",
-  "incomplete-mutual-tag": "fase 4 — INCOMPLETE_MUTUAL_TAG",
-  "inconsistent-bbm": "fase 5 — INCONSISTENT_BBM",
-  "invalid-domain-cardinality-multiple": "fase 2 — INVALID_DOMAIN_CARDINALITY",
-  "invalid-domain-cardinality-zero": "fase 2 — INVALID_DOMAIN_CARDINALITY",
-  "invalid-subdomain-type": "fase 2/5 — DOMAIN_WITHOUT_CORE, INVALID_SUBDOMAIN_TYPE",
-  "malformed-suppression-missing-justification": "fase 5/6 — MALFORMED_SUPPRESSION, UNDOCUMENTED_CONTRACT",
-  "malformed-suppression-not-suppressible": "fase 3/6 — MALFORMED_SUPPRESSION, PHANTOM_REFERENCE",
-  "malformed-suppression-unknown-code": "fase 5/6 — MALFORMED_SUPPRESSION, UNDOCUMENTED_CONTRACT",
-  "mutual-tag-on-directional": "fase 4 — MUTUAL_TAG_ON_DIRECTIONAL",
-  "mutual-tag-with-external": "fase 4 — MUTUAL_TAG_WITH_EXTERNAL",
-  "phantom-reference": "fase 3 — PHANTOM_REFERENCE",
-  "pl-without-ohs": "fase 5 — PL_WITHOUT_OHS",
-  "positional-tag-on-mutual": "fase 4 — POSITIONAL_TAG_ON_MUTUAL",
-  "protection-conflict": "fase 4 — PROTECTION_CONFLICT",
-  "role-conflict": "fase 4 — DOWNSTREAM_ONLY_TAG_MISPLACED, ROLE_CONFLICT",
-  "self-relationship": "fase 3 — SELF_RELATIONSHIP",
-  "separation-conflict": "fase 4 — SEPARATION_CONFLICT",
-  "suppression-valid": "fase 5 — GENERIC_WITHOUT_OHS",
-  "undocumented-contract": "fase 5 — UNDOCUMENTED_CONTRACT",
-  "unmapped-context": "fase 5 — UNMAPPED_CONTEXT",
-  "unused-suppression": "fase 6 — UNUSED_SUPPRESSION",
-  "upstream-only-tag-misplaced": "fase 4 — UPSTREAM_ONLY_TAG_MISPLACED",
-};
+const PENDING: Record<string, string> = {};
 
 interface Expectation {
   astGenerated: boolean;
