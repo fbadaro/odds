@@ -35,3 +35,5 @@ A skill `adr` governa o resto: quando um ADR é devido, quando não é, e como f
 | [ADR-0001](0001-decisoes-passam-a-ser-registradas-em-adrs-numerados-e-mecanicamente-conferidos.md) | Decisões passam a ser registradas em ADRs numerados e mecanicamente conferidos | accepted | 2026-09-05 |
 | [ADR-0002](0002-chevrotain-como-toolkit-de-parser.md) | Chevrotain como toolkit de parser | accepted | 2026-09-05 |
 | [ADR-0003](0003-o-odds-e-fonte-unica-o-diagrama-nunca-escreve-de-volta-no-texto.md) | O `.odds` é fonte única: o diagrama nunca escreve de volta no texto | accepted | 2026-09-05 |
+| [ADR-0004](0004-monorepo-em-packages-com-o-catalogo-de-mensagens-em-pacote-proprio.md) | Monorepo em packages/, com o catálogo de mensagens em pacote próprio | accepted | 2026-09-05 |
+| [ADR-0005](0005-npm-workspaces-typescript-e-vitest-como-ambiente-de-desenvolvimento.md) | npm workspaces, TypeScript e Vitest como ambiente de desenvolvimento | accepted | 2026-09-05 |

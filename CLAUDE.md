@@ -4,7 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This repository currently contains **only specification documents** — no source code or build tooling exists yet. Before writing code, check whether that has changed (`ls`, `git status`) since this file may be stale relative to the actual state of the repo.
+Specification is complete and coherent; **implementation has just begun**. The specs below are normative and were written first — the code is being made to conform to them, not the other way around. When code and spec disagree, that is a finding, not a licence to change the spec: see `TEST_SUITE.md` for the one case where the suite yields to the parser (span reconciliation, debt D-001).
+
+### Build, test, typecheck
+
+```bash
+npm install          # npm workspaces, no other package manager needed (ADR-0005)
+npm test             # vitest, all packages
+npm run test:watch   # the loop for reconciling golden-file spans
+npm run typecheck    # tsc --build across the project references
+npm run health       # the spec's own 16 checks — unrelated to the code, still Python/stdlib
+```
+
+There is deliberately **no linter yet** (ADR-0005): choosing rules before there is code to argue about would be deciding in a vacuum.
+
+### Code layout (ADR-0004)
+
+| Package | Owns | Must not know about |
+|---|---|---|
+| `@odds/core` | Lexer, parser, AST, validator, the six phases | Message text, locale — it has no dependency on `@odds/messages`, and that is the point |
+| `@odds/messages` | Rendering `Diagnostic` + locale → sentence, from `MESSAGES.md` | Anything about parsing |
+| `golden-files/` | Stays at the **root**: it is the spec's executable suite, governed by `TEST_SUITE.md`, not a package's fixtures |
+
+The `core`/`messages` split makes the "a `Diagnostic` never carries `message`" rule a module boundary instead of a promise. Do not add a `@odds/messages` dependency to `@odds/core` — that is the one import that would undo it.
 
 - `PRD.md` — Product requirements for ODDS (Open Domain Driven Specification): a client-side, browser-only DSL and interactive "playground" for writing DDD (Domain-Driven Design) context maps as text and rendering them as diagrams.
 - `RULES-EN.md` / `RULES-PT.md` — The *meaning* of the language: the conceptual model (§0), every validation rule with its code, severity, phase, scope and trigger (§1–§2), the validation pipeline (§3), suppression (§4), rendering (§5) and the compatibility policy (§6). These two files are parallel translations — **keep them in sync in the same pass if either is edited.**
@@ -94,8 +116,15 @@ Yes: stack, parser approach, repo structure, layout library, URL payload format,
 
 Invoke the `adr` skill; it owns the format, the allocator (`new_adr.py`) and the closing flow. `health_check.py` **C16** verifies the ledger's integrity — but it cannot detect a decision that was never written down, and that gap is judgment, named in ADR-0001.
 
-## Working in this repo before code exists
+## Implementation notes worth knowing before touching the parser
 
-If asked to scaffold the implementation, confirm the target stack with the user rather than assuming one — the specs define product behavior, grammar, AST and validation rules, but not a framework, parser toolchain, or diagram-rendering library. Once real source and tooling exist, this file should be updated with actual build/lint/test commands and the real code architecture.
+**The current target is the golden-file harness.** The suite covers every diagnostic code, and its spans are a specification *target* that has never been checked against a real parser (debt D-001). Expect to reconcile tokenization details, and **fix the suite when the parser is right** — one such divergence is already known: `golden-files/removed-construct-sw/expected.json` spans `SW` while its `data.construct` says `[SW]`.
 
-The suite in `golden-files/` is the natural first target: it is executable, it covers every diagnostic code, and its spans are a specification *target* that has never been checked against a real parser — expect to reconcile tokenization details, and fix the suite when the parser is right.
+**Two Chevrotain behaviours were established by experiment, not assumption** — both are locked by tests in `packages/core/test/lexer.test.ts`:
+
+- Its `endColumn` is **inclusive**, while `AST_SCHEMA.md` §1 requires `end` exclusive. `spanOf()` in `lexer.ts` is the single place that converts; never read `startColumn`/`endColumn` off a token directly.
+- Chevrotain 11.2.0 **cannot match Unicode property escapes** (`\p{L}` with the `u` flag): tokenization fails silently with zero tokens. Since `GRAMMAR.md` §1 defines `identifier` as any Unicode letter, `Identifier` uses a custom pattern matcher. A Latin-1 range would pass PT-BR tests and narrow the grammar — don't.
+
+**The three recovery cases of `GRAMMAR.md` §5.1 are the main integration risk** named in ADR-0002: Chevrotain's generic recovery must be disabled or overridden there, or it will fire first and produce a span the golden file does not expect. Tackle them early, and remember step 3 — a discarded declaration still enters the symbol table as invalid.
+
+Which decisions are settled, and why, is in `docs/adr/`. Read it before proposing a different stack.

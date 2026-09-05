@@ -1,0 +1,12 @@
+{
+  "name": "@odds/messages",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Renderiza Diagnostic + locale em frase, a partir do catálogo do MESSAGES.md. Único lugar do sistema onde texto de mensagem existe (ADR-0004).",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "scripts": { "build": "tsc --build" },
+  "dependencies": { "@odds/core": "*" }
+}
