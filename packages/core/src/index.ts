@@ -15,3 +15,7 @@ export type {
 } from "./diagnostics.js";
 
 export { oddsLexer, spanOf, allTokens, SUPPRESSION_GROUP } from "./lexer.js";
+export { CATALOGUE, compareDiagnostics } from "./catalogue.js";
+export { OddsParser } from "./parser.js";
+export { parseAndValidate, type ParseResult } from "./parseAndValidate.js";
+export type * from "./ast.js";

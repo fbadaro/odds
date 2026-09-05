@@ -118,7 +118,9 @@ Invoke the `adr` skill; it owns the format, the allocator (`new_adr.py`) and the
 
 ## Implementation notes worth knowing before touching the parser
 
-**The current target is the golden-file harness.** The suite covers every diagnostic code, and its spans are a specification *target* that has never been checked against a real parser (debt D-001). Expect to reconcile tokenization details, and **fix the suite when the parser is right** — one such divergence is already known: `golden-files/removed-construct-sw/expected.json` spans `SW` while its `data.construct` says `[SW]`.
+**The harness exists and 7 of the 44 cases pass** — every case that is parser-scope. The other 37 are listed in `PENDING` in `packages/core/test/conformance.test.ts`, each with the validator phase it needs. That list asserts **both directions**: a case outside it must pass fully, and a case inside it must still fail — so when a validator phase lands, the suite fails until the newly-passing cases are removed from `PENDING`. The list cannot rot silently.
+
+Their spans are a specification *target* (debt D-001); expect to reconcile, and **fix the suite when the parser is right**. One reconciliation has happened: `golden-files/syntax-error` expected `-->, <--, <->, -x-` and now also lists `[`, because a tag group is genuinely valid at that position. `SYNTAX_ERROR.data.expected` is no longer hand-written anywhere — it is derived from the grammar via `computeContentAssist`, which is why every token carries a `label` with its grammar literal.
 
 **Two Chevrotain behaviours were established by experiment, not assumption** — both are locked by tests in `packages/core/test/lexer.test.ts`:
 

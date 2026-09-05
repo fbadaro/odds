@@ -41,6 +41,7 @@ export const Identifier = createToken({
   name: "Identifier",
   pattern: matchIdentifier,
   line_breaks: false,
+  label: "identifier",
 });
 
 // --- Palavras reservadas ----------------------------------------------------
@@ -64,6 +65,7 @@ export const reservedTokens: Record<ReservedWord, TokenType> = Object.fromEntrie
       name: word.charAt(0).toUpperCase() + word.slice(1),
       pattern: new RegExp(word),
       longer_alt: Identifier,
+      label: word,
     }),
   ]),
 ) as Record<ReservedWord, TokenType>;
@@ -72,22 +74,23 @@ export const reservedTokens: Record<ReservedWord, TokenType> = Object.fromEntrie
 // Conectores vêm antes de tudo que possa prefixá-los. `-x-` e `<->` não colidem
 // entre si, mas a ordem é fixada explicitamente para não depender de acidente.
 
-export const MutualConnector = createToken({ name: "MutualConnector", pattern: /<->/ });
-export const UpstreamConnector = createToken({ name: "UpstreamConnector", pattern: /-->/ });
-export const DownstreamConnector = createToken({ name: "DownstreamConnector", pattern: /<--/ });
-export const SeparateConnector = createToken({ name: "SeparateConnector", pattern: /-x-/ });
+export const MutualConnector = createToken({ name: "MutualConnector", pattern: /<->/, label: "<->" });
+export const UpstreamConnector = createToken({ name: "UpstreamConnector", pattern: /-->/, label: "-->" });
+export const DownstreamConnector = createToken({ name: "DownstreamConnector", pattern: /<--/, label: "<--" });
+export const SeparateConnector = createToken({ name: "SeparateConnector", pattern: /-x-/, label: "-x-" });
 
-export const LBrace = createToken({ name: "LBrace", pattern: /\{/ });
-export const RBrace = createToken({ name: "RBrace", pattern: /\}/ });
-export const LBracket = createToken({ name: "LBracket", pattern: /\[/ });
-export const RBracket = createToken({ name: "RBracket", pattern: /\]/ });
-export const Colon = createToken({ name: "Colon", pattern: /:/ });
-export const Comma = createToken({ name: "Comma", pattern: /,/ });
+export const LBrace = createToken({ name: "LBrace", pattern: /\{/, label: "{" });
+export const RBrace = createToken({ name: "RBrace", pattern: /\}/, label: "}" });
+export const LBracket = createToken({ name: "LBracket", pattern: /\[/, label: "[" });
+export const RBracket = createToken({ name: "RBracket", pattern: /\]/, label: "]" });
+export const Colon = createToken({ name: "Colon", pattern: /:/, label: ":" });
+export const Comma = createToken({ name: "Comma", pattern: /,/, label: "," });
 
 /** `GRAMMAR.md` §1: só `\"` e `\\` são escapes; string não atravessa newline. */
 export const StringLiteral = createToken({
   name: "StringLiteral",
   pattern: /"(?:\\["\\]|[^"\\\n\r])*"/,
+  label: "string",
 });
 
 // --- Trivia -----------------------------------------------------------------
