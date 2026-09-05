@@ -420,6 +420,127 @@ def check_historical_glossary() -> Check:
 
 
 # --------------------------------------------------------------------------
+# Razão de decisões
+# --------------------------------------------------------------------------
+
+ADR_FILENAME = re.compile(r"^(\d{4})-[a-z0-9-]+\.md$")
+ADR_STATUSES = ("proposed", "accepted", "superseded", "deprecated", "reverted")
+ADR_SECTIONS = ("Contexto", "Decisão", "Alternativas consideradas", "Consequências", "Reversão")
+ADR_FIELDS = ("adr", "title", "status", "date", "supersedes", "superseded-by")
+ADR_INDEX_ROW = re.compile(r"^\|\s*\[ADR-(\d{4})\]\(([^)]+)\)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|")
+EMPTY = ("—", "-", "", "TBD")
+
+
+def adr_field(text: str, key: str) -> str:
+    m = re.search(rf"^{re.escape(key)}:\s*(.*)$", text, re.MULTILINE)
+    return m.group(1).strip() if m else ""
+
+
+def check_decision_ledger() -> Check:
+    """`docs/adr/` é o único lugar onde decisão nova mora (D1-D25 é conjunto fechado).
+
+    Um razão de decisões apodrece de três formas, todas silenciosas: um número
+    reusado, um par supersedes/superseded-by ligado só de um lado, e um índice
+    que para de bater com os arquivos. Nenhuma se anuncia na leitura.
+    """
+    c = Check("C16", 1, "razão de decisões (docs/adr/)")
+    adr_dir = ROOT / "docs" / "adr"
+    if not adr_dir.is_dir():
+        return c.fail("docs/adr/ não existe — decisão nova não tem onde morar")
+
+    files = {int(m.group(1)): path for path in sorted(adr_dir.glob("*.md"))
+             if (m := ADR_FILENAME.match(path.name))}
+    problems: list[str] = []
+    if not files:
+        problems.append("nenhum ADR — o mecanismo existe mas o razão está vazio")
+
+    texts = {n: path.read_text(encoding="utf-8") for n, path in files.items()}
+    for n in range(1, max(files, default=0) + 1):
+        if n not in files:
+            problems.append(f"ADR-{n:04d}: buraco na numeração — ADR não se apaga, se substitui")
+
+    links: dict[int, str] = {}
+    for n, text in sorted(texts.items()):
+        name = files[n].name
+        for key in ADR_FIELDS:
+            if not re.search(rf"^{re.escape(key)}:", text, re.MULTILINE):
+                problems.append(f"{name}: frontmatter sem `{key}`")
+        if adr_field(text, "adr") != f"{n:04d}":
+            problems.append(f"{name}: campo `adr: {adr_field(text, 'adr')}` diverge do nome do arquivo")
+        status = adr_field(text, "status")
+        if status not in ADR_STATUSES:
+            problems.append(f"{name}: status `{status}` fora de {'/'.join(ADR_STATUSES)}")
+        for section in ADR_SECTIONS:
+            if not re.search(rf"^## {re.escape(section)}\s*$", text, re.MULTILINE):
+                problems.append(f"{name}: sem a seção `## {section}`")
+        body = text.split("---", 2)[-1]
+        if re.search(r"^## Alternativas consideradas\s*$\n+(?=## |\Z)", body, re.MULTILINE):
+            problems.append(f"{name}: `Alternativas consideradas` vazia — afirma que não havia escolha")
+
+        superseded_by, supersedes = adr_field(text, "superseded-by"), adr_field(text, "supersedes")
+        if status in ("superseded", "reverted") and superseded_by in EMPTY:
+            problems.append(f"{name}: status `{status}` sem `superseded-by` — o par ficou solto")
+        if status in ("proposed", "accepted") and superseded_by not in EMPTY:
+            problems.append(f"{name}: status `{status}` mas `superseded-by` preenchido")
+        links[n] = superseded_by
+        for key, value in (("supersedes", supersedes), ("superseded-by", superseded_by)):
+            if value in EMPTY:
+                continue
+            if not value.isdigit() or int(value) not in files:
+                problems.append(f"{name}: `{key}: {value}` não resolve para um ADR existente")
+                continue
+            other = int(value)
+            reverse = "superseded-by" if key == "supersedes" else "supersedes"
+            if adr_field(texts[other], reverse).lstrip("0") != str(n):
+                problems.append(
+                    f"{name}: `{key}: {value}` sem o `{reverse}` recíproco em {files[other].name}"
+                )
+
+        group: list[str] = []
+        previous_end: int | None = None
+        for m in CITATION.finditer(text):
+            doc, section = m.group(1), m.group(2)
+            if doc:
+                glued = previous_end is not None and text[previous_end:m.start()] == "/"
+                group = group + [doc] if glued else [doc]
+                previous_end = m.end()
+                if not (ROOT / doc).is_file():
+                    problems.append(f"{name}: cita `{doc}`, que não existe no repositório")
+                continue
+            for target in group:
+                if (ROOT / target).is_file() and not has_heading(target, section):
+                    problems.append(f"{name}: `{target}` §{section} não corresponde a nenhum cabeçalho")
+
+    index_path = adr_dir / "README.md"
+    if not index_path.is_file():
+        problems.append("docs/adr/README.md não existe — o índice é a porta de entrada do razão")
+    else:
+        indexed = {int(m.group(1)): (m.group(2), m.group(3), m.group(4))
+                   for line in index_path.read_text(encoding="utf-8").splitlines()
+                   if (m := ADR_INDEX_ROW.match(line))}
+        for n in sorted(set(files) - set(indexed)):
+            problems.append(f"ADR-{n:04d}: existe como arquivo e falta no índice do README")
+        for n in sorted(set(indexed) - set(files)):
+            problems.append(f"ADR-{n:04d}: no índice do README mas não existe como arquivo")
+        for n in sorted(set(files) & set(indexed)):
+            link, title, status = indexed[n]
+            if link != files[n].name:
+                problems.append(f"ADR-{n:04d}: índice aponta para `{link}`, arquivo é `{files[n].name}`")
+            for label, shown, real in (("título", title, adr_field(texts[n], "title")),
+                                       ("status", status, adr_field(texts[n], "status"))):
+                if shown != real:
+                    problems.append(f"ADR-{n:04d}: {label} no índice (`{shown}`) diverge do arquivo (`{real}`)")
+
+    if problems:
+        return c.fail(f"{len(problems)} problema(s)", problems)
+    live = sum(1 for t in texts.values() if adr_field(t, "status") in ("proposed", "accepted"))
+    return c.passed(
+        f"{len(files)} ADRs numerados sem buraco, {live} vigente(s), índice conferido",
+        [f"ADR-{n:04d} · {adr_field(t, 'status')} · {adr_field(t, 'title')}" for n, t in sorted(texts.items())],
+    )
+
+
+# --------------------------------------------------------------------------
 # Placar
 # --------------------------------------------------------------------------
 
@@ -659,6 +780,7 @@ def run() -> list[Check]:
         check_history(history, headline),
         check_propagation_map(),
         check_historical_glossary(),
+        check_decision_ledger(),
     ]
 
 

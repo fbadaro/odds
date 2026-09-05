@@ -15,6 +15,7 @@ This repository currently contains **only specification documents** — no sourc
 - `CHANGELOG.md` — Two independent versioning axes: the **ODDS Language Version** (what a `.odds` file *means*, and what travels in the shareable URL) and the editorial version of each document. Do not conflate them.
 - `GRILLING.md` — Historical record of the design review that produced the current state (25 decisions, D1–D25). **Its decisions were fully propagated on 2026-08-14** — it is now a *why* document, not a to-do list. Read it when you need the rationale behind a decision; do not read it as pending work. It was deliberately *not* rewritten after propagation, so it still uses names the execution later changed — the glossary right below its closing banner translates every one of them, and the artifact always wins over this file.
 - `PROPAGATION-MAP.md` — The *where*, to `GRILLING.md`'s *why*: D1–D25 mapped to the artifact and section each decision actually landed in, verified file by file, plus the six places the plan and the execution diverged. Not normative — read it to answer "was this really propagated, and to where?", never as a source of behaviour. Decisions taken from now on go to `docs/adr/`, not into this table; D1–D25 is a closed set.
+- `docs/adr/` — the *why* of everything decided from 2026-09-05 on, one numbered, immutable file per decision, indexed in its `README.md`. Five mandatory sections; the two that carry the weight are **Alternativas consideradas** (what makes a decision reversible — whoever reopens it starts there) and **Reversão** (the signal that would indicate error, the cost of going back, what has been built on top). `ADR-0001` is the mechanism deciding itself. Never edited to change its mind and never deleted — superseded by a later ADR, with the pair linked both ways.
 - `HEALTH.md` — The health score of the model: six weighted dimensions (0–100), a typed catalogue of bonuses and penalties, and the open debts. It measures *coherence of the model*, not progress or volume — it is neither a version nor a changelog. **Update it in the same pass as any normative change**, per its §6 protocol. Run `python3 .claude/skills/health-check/scripts/health_check.py` (15 deterministic checks, stdlib only, ~18 lines of output; `-v` for the evidence behind each one, `--json` for `score`/`failures`) instead of reading the file to find out where things stand — the `health-check` skill owns the script and drives the whole flow. Dimensions 3 and 6 are not mechanizable and are scored by a model under the rubrics in §9, criterion by criterion with cited evidence. Five of the checks verify the scoreboard's own arithmetic — against the debt ledger, the rubrics, the history ledger, and the §8 table describing the checks themselves — so a hand-picked score fails.
 
 **When adding a rule, the order is fixed:** `AST_SCHEMA.md` §1.3 first (code + phase + `data` keys), then `RULES.md` (both languages), then `MESSAGES.md` (both languages), then a golden file. A code without a phase has no defined position in the emitted array and cannot be tested. The pass closes with two entries, never one: `CHANGELOG.md` (what changed) and `HEALTH.md` (what it did to the model).
@@ -79,6 +80,19 @@ Issues live in GitHub Issues (github.com/fbadaro/odds). See `docs/agents/issue-t
 ### Domain docs
 
 Single-context layout — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Registro de decisões — write ADRs without asking
+
+**Standing authorization (ADR-0001).** When you take a decision that meets all three tests below, write the ADR yourself, in the same pass, without asking permission. Announce it in one line; do not request approval. Asking each time puts friction on the mechanism, and a mechanism with friction stops being used — which is precisely how a decision record dies.
+
+The three tests, all of which must hold:
+1. **More than one plausible way out existed.** Applying what `GRAMMAR.md` already mandates is reading a requirement, not deciding.
+2. **Someone will reopen it** — or will look at the result in six months and ask "why like this?".
+3. **Undoing costs more than redoing.** A variable name is a `sed`; a toolchain is not.
+
+Yes: stack, parser approach, repo structure, layout library, URL payload format, adopting or refusing a dependency, changing a working protocol. No: bug fixes, renames, adding a rule through the fixed cycle above (that closes with `CHANGELOG.md` + `HEALTH.md`, not an ADR — unless the rule required a conceptual choice that `RULES.md` §0.4's two admission criteria don't settle on their own). **When in doubt, write it.**
+
+Invoke the `adr` skill; it owns the format, the allocator (`new_adr.py`) and the closing flow. `health_check.py` **C16** verifies the ledger's integrity — but it cannot detect a decision that was never written down, and that gap is judgment, named in ADR-0001.
 
 ## Working in this repo before code exists
 

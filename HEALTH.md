@@ -40,7 +40,7 @@ Escala **0–100**, ponderada em seis dimensões. Cada dimensão tem uma **natur
 
 ---
 
-## 2. Placar atual — **83 / 100** · *Íntegro; o que falta é código*
+## 2. Placar atual — **84 / 100** · *Íntegro; o que falta é código*
 
 O placar é **derivado, não arbitrado**. Vale, em toda dimensão:
 
@@ -52,11 +52,11 @@ Numa dimensão de **integridade** a base é 100 por definição — ela não tem
 |---|---|---|---:|---:|---:|---:|---:|
 | 1 | Coerência Normativa | Integridade | 25 | 100 | 0 | 100 | 25,00 |
 | 2 | Língua Ubíqua | Integridade | 15 | 100 | 0 | 100 | 15,00 |
-| 3 | Fidelidade Estratégica ao DDD | Construção | 20 | 75 | 0 | 75 | 15,00 |
+| 3 | Fidelidade Estratégica ao DDD | Construção | 20 | 77 | 0 | 77 | 15,40 |
 | 4 | Cobertura Executável | Construção | 20 | 80 | −20 | 60 | 12,00 |
 | 5 | Disciplina de Versionamento | Integridade | 10 | 100 | −4 | 96 | 9,60 |
-| 6 | Prontidão de Implementação | Construção | 10 | 60 | 0 | 60 | 6,00 |
-| | **Total** | | **100** | | **−24** | | **82,60** |
+| 6 | Prontidão de Implementação | Construção | 10 | 68 | 0 | 68 | 6,80 |
+| | **Total** | | **100** | | **−24** | | **83,80** |
 
 As bases das dimensões 3 e 6 são **alocadas por rubrica** (§9), não escolhidas: cada uma é a soma de critérios nomeados com teto e evidência.
 
@@ -153,6 +153,7 @@ A linha "nota ajustada sem evento tipado" é o que mantém este arquivo honesto:
 | 2026-08-16 | **Rubricas para as dimensões de julgamento (§9) e script movido para dentro da skill.** As bases 3 e 6 eram números arbitrados por um modelo sem alocação nem evidência — a §4 penaliza isso quando o autor é humano, e não havia razão para o critério ser mais frouxo com o modelo. Cada uma passa a ser a soma de seis critérios com teto e artefato citado, e a checagem **C11** confere que os máximos somam 100 e que o total bate com a §2. **Reaferição sob rubrica**, não bonificação: dim 3 de 78 → **75** (o rastreio à literatura vale 4 de 15 — o `REFERENCES.md` é uma lista de URLs sem anotação) e dim 6 de 45 → **60** (a gramática está fechada e o contrato de dados é implementável; a lacuna real é stack, que vale 0 de 20) | 3, 6 | −3 / +15 | **81** |
 | 2026-08-16 | **Validação pela skill, com um defeito encontrado no próprio razão.** As duas linhas anteriores estavam fora de ordem cronológica: a das rubricas foi inserida antes da do script, deixando o razão a fechar em 80 enquanto a §2 declarava 81. O evento não existia na §4 — foi acrescentado lá antes de ser aplicado, como manda a §6.3 — e virou a checagem **C12**, para que a ordem do razão deixe de depender de quem edita. Débito aberto e fechado no mesmo passe: saldo zero, cicatriz registrada. Nenhuma nota se move, porque dimensão de integridade é limitada a 100 menos débito aberto e não há o que creditar | 1 | 0 | **81** |
 | 2026-08-24 | **Os dois débitos documentais fechados, com evidência.** **Fecha D-004** (+3, dim 1): nasce o `PROPAGATION-MAP.md`, o mapa D1–D25 → artefato/seção. As 25 decisões foram conferidas abrindo cada artefato nomeado na célula "Artefatos a atualizar" do `GRILLING.md` §3 — **nenhuma ausente**, e seis desvios de forma, endereço ou cronologia, em todos eles com a execução certa e a previsão envelhecida (o mais informativo é D23: os dois golden files reescritos não terminaram no resultado previsto porque D24, decidida depois na mesma rodada, revogou a versão da regra em que a previsão se apoiava). **Fecha D-006** (+5, dim 2): o `GRILLING.md` ganha glossário de vocabulário superado — os cinco termos mortos e a data errada da remoção de `[SW]`, cada um com o que vale hoje e onde. Duas checagens novas sustentam os fechamentos: **C14** (as 25 linhas existem e toda seção citada resolve para um cabeçalho real — pegou cinco referências erradas na primeira execução) e **C15** (todo termo morto que o `GRILLING.md` usa está no glossário). Nenhuma nota das dimensões de julgamento se move: o `PROPAGATION-MAP.md` melhora o *alcance* de uma decisão a partir do artefato, mas o que R3.6 desconta continua de pé — decisão nova ainda não tem onde morar, e `docs/adr/` segue vazio | 1, 2 | +8 | **83** |
+| 2026-09-05 | **Nasce o razão de decisões (`docs/adr/`) e a C16.** Os dois registros de decisão do repositório estavam **fechados** — `GRILLING.md` (o porquê de D1–D25) e `PROPAGATION-MAP.md` (o onde) cobrem uma sessão que terminou em 2026-08-14 e não aceitam linha nova. Decisão tomada hoje não tinha endereço, que é literalmente o que R3.6 descontava. O mecanismo tem três partes porque cada uma resolve um problema diferente: **lugar e formato** (cinco seções, e duas delas — *Alternativas consideradas* e *Reversão* — existem para tornar a decisão reversível, não para documentá-la), **gerador e skill** (`new_adr.py` faz o mecânico, a skill `adr` faz o julgamento de o que merece ADR) e **checagem determinística** (**C16**: numeração sem buraco, pares `supersedes`/`superseded-by` recíprocos, índice batendo com os arquivos, citações resolvendo — as três formas silenciosas de um razão apodrecer). Hook foi considerado e rejeitado no `ADR-0001`: "uma decisão foi tomada" não é evento de ferramenta. A C16 já se pagou na estreia, pegando uma citação ambígua no próprio `ADR-0001`. Sob a rubrica, **R3.6 de 7 → 9** (dim 3, base 75 → 77): perde os 2 restantes porque o caminho inverso — da regra ao ADR que a decidiu — não existe. A C16 **não** confere que uma decisão tomada tenha virado ADR; isso não é mecanizável, e a lacuna está assumida no `ADR-0001` em vez de fingida | 3 | +2 | **83** || 2026-09-05 | **A primeira decisão de stack, e as três tensões do roadmap nomeadas.** `ADR-0002` escolhe **Chevrotain** como toolkit de parser; `ADR-0003` fecha a ambiguidade que decidia a arquitetura da árvore — o `.odds` é fonte única, o diagrama nunca escreve de volta, logo **não** é preciso árvore lossless. A recomendação da análise era parser à mão; a decisão foi outra, e o `ADR-0002` registra as razões das duas, porque quem reabrir precisa das que perderam. O argumento que venceu é de coerência: gramática declarativa é conferível produção a produção contra a EBNF da `GRAMMAR.md`, enquanto fluxo de controle esconde a deriva — incoerente num repo com quinze checagens mecânicas contra exatamente isso. Sob a rubrica, **R6.4 de 0 → 8** (dim 6, base 60 → 68): destrava escrever o parser, mas segue sem framework, biblioteca de render, estrutura de repositório ou test runner. **R6.6 não se move** — continua não havendo build, lint nem runner. Na mesma passada, as três famílias de construto do roadmap (linguagem ubíqua, referência de repositório, espaço do problema) viraram as issues #1, #2 e #3 em vez de gramática: duas mexem no modelo conceitual da `RULES-EN.md` §0 e uma na identidade do produto, e nenhuma delas é adição pela ordem fixa. Não é bonificação — nomear tensão não é fechá-la | 6 | +8 | **84** |
 
 ---
 
@@ -186,8 +187,9 @@ Stdlib pura, sem dependência. Saída **0** = tudo conforme, **1** = ao menos um
 | **C13** | 1 | Esta tabela descreve exatamente as checagens que o script executa, com a mesma dimensão. Inclui a si mesma: é o ponto fixo que impede a §8 de mentir sobre a própria aferição |
 | **C14** | 1 | O `PROPAGATION-MAP.md` cobre D1–D25 sem lacuna, e toda seção que ele cita (`ARQUIVO.md §N`) resolve para um cabeçalho que existe naquele arquivo — uma seção renumerada derruba a aferição em vez de apodrecer o mapa em silêncio |
 | **C15** | 2 | Todo termo morto que o `GRILLING.md` usa está no glossário de vocabulário superado daquele arquivo, com o que vale hoje. É o preço da isenção que a C7 concede a ele |
+| **C16** | 1 | O razão de decisões (`docs/adr/`) está íntegro: frontmatter tipado, número batendo com o arquivo, numeração sem buraco, `status` do conjunto fechado, as cinco seções presentes, pares `supersedes`/`superseded-by` recíprocos, índice do `README.md` batendo com os arquivos, e toda citação `ARQUIVO.md §N` resolvendo. Não confere que uma decisão tomada tenha virado ADR — isso não é mecanizável, e o ADR-0001 assume a lacuna |
 
-**C8, C9, C11, C12 e C13 são o que impede este arquivo de mentir.** As outras dez medem o repositório; estas cinco medem o próprio placar e a própria descrição dele, e falham se alguém ajustar uma nota sem mexer no que a sustenta. Todas as cinco são da **dimensão 1** — inclusive a C11, que confere as rubricas das dimensões 3 e 6 mas é checagem de coerência do placar, não de fidelidade ao DDD. O que ela verifica é a aritmética do julgamento, nunca o julgamento.
+**C8, C9, C11, C12 e C13 são o que impede este arquivo de mentir.** As outras onze medem o repositório; estas cinco medem o próprio placar e a própria descrição dele, e falham se alguém ajustar uma nota sem mexer no que a sustenta. Todas as cinco são da **dimensão 1** — inclusive a C11, que confere as rubricas das dimensões 3 e 6 mas é checagem de coerência do placar, não de fidelidade ao DDD. O que ela verifica é a aritmética do julgamento, nunca o julgamento.
 
 Com `-v`, cada checagem imprime a evidência que a sustenta — a distribuição de codes por fase, a conta de cada dimensão, cada débito do razão, cada linha do histórico. É o modo de auditar o placar sem abrir este arquivo.
 
@@ -203,7 +205,7 @@ As dimensões **3 (Fidelidade Estratégica ao DDD)** e **6 (Prontidão de Implem
 
 Três regras de uso, na §6.7.
 
-### 9.1 Dimensão 3 — Fidelidade Estratégica ao DDD · base **75**
+### 9.1 Dimensão 3 — Fidelidade Estratégica ao DDD · base **77**
 
 | Critério | Máx | Nota | Evidência |
 |---|---:|---:|---|
@@ -212,16 +214,16 @@ Três regras de uso, na §6.7.
 | **R3.3** Extensões conscientes declaradas **como** extensões, não como DDD canônico | 15 | 15 | O split `C`/`S` do Customer/Supplier clássico é afirmado como extensão intencional, com a consequência de severidade explicada (`RULES.md` §0.2, `CLAUDE.md`) |
 | **R3.4** Limitações conhecidas nomeadas e assumidas | 15 | 13 | `RULES-EN.md` §0.5 existe e é específica (repetição de `[BBM]` linha a linha, 1:1 de relacionamento). Perde ponto por não ter contraparte no `PRD.md`, onde o usuário do produto olharia |
 | **R3.5** Rastreio à literatura: cada conceito com fonte | 15 | 4 | `REFERENCES.md` é uma lista de dez URLs sem anotação, e o corpo normativo cita a literatura três vezes no total. O modelo é defensável, mas a ancoragem é implícita — quem discordar de uma regra não tem a que recorrer |
-| **R3.6** Decisão registrada com o *porquê*, alcançável a partir do artefato | 10 | 7 | `GRILLING.md` cobre D1–D25 com alternativas rejeitadas. Perde ponto porque é um documento histórico único de 138 KB: uma decisão tomada hoje não tem onde morar, e `docs/adr/` está vazio |
+| **R3.6** Decisão registrada com o *porquê*, alcançável a partir do artefato | 10 | 9 | Decisão nova passa a ter endereço: `docs/adr/` com formato de cinco seções, gerador (`new_adr.py`), skill `adr`, cláusula de escrita autônoma no `CLAUDE.md` e a checagem **C16**. O `ADR-0001` é o mecanismo decidindo a si mesmo, e traz *Alternativas consideradas* e *Reversão* — a rota de volta, que o formato ADR convencional não guarda. Perde ponto porque o caminho inverso não existe: de uma regra do `RULES-EN.md` ainda não se chega ao ADR que a decidiu, e D1–D25 seguem alcançáveis só pelo `PROPAGATION-MAP.md` |
 
-### 9.2 Dimensão 6 — Prontidão de Implementação · base **60**
+### 9.2 Dimensão 6 — Prontidão de Implementação · base **68**
 
 | Critério | Máx | Nota | Evidência |
 |---|---:|---:|---|
 | **R6.1** Gramática completa, sem pendência aberta | 20 | 20 | `GRAMMAR.md` §7 foi encerrada na v0.2.0 — todas as pendências originais resolvidas |
 | **R6.2** Contrato de dados sem ambiguidade para quem for implementar | 20 | 18 | `AST_SCHEMA.md` §1.3 fixa code, fase, severidade e chaves de `data`; a unidade de `column` virou normativa (UTF-16). Perde ponto porque a recuperação de erro da `GRAMMAR.md` §5.1 é descrita em prosa, não em regra verificável |
 | **R6.3** Contrato de execução da suíte definido | 20 | 12 | `TEST_SUITE.md` §3 traz o pseudocódigo do executor esperado e a ordem de emissão é normativa. Perde ponto porque continua pseudocódigo: não há harness, nem formato de invocação, nem definição de o que é uma falha |
-| **R6.4** Stack e toolchain decididos | 20 | 0 | Nada. Sem framework, sem parser toolchain, sem biblioteca de render, sem ADR. É a maior lacuna isolada do projeto inteiro |
+| **R6.4** Stack e toolchain decididos | 20 | 8 | O `ADR-0002` decide o toolkit de parser (Chevrotain, TypeScript) e o `ADR-0003` fecha a ambiguidade de round-trip que decidia a arquitetura da árvore. Ganha 8 porque é a peça que destrava escrever o parser — a decisão de maior alcance das quatro que a evidência anterior listava. Continua longe do teto: sem framework de UI, sem biblioteca de layout/render, sem estrutura de repositório e sem test runner decididos |
 | **R6.5** Requisitos de produto traduzíveis em componentes | 10 | 8 | `PRD.md` §4–§5 descreve as duas vistas, a renderização degradada, o payload da URL e o auto-save com detalhe suficiente para virar componente |
 | **R6.6** Ambiente de desenvolvimento definido | 10 | 2 | Só existe o `health_check.py`, que afere spec e não constrói nada. Sem build, sem lint, sem test runner, sem instrução de setup |
 
