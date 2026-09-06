@@ -128,6 +128,11 @@ export class OddsParser extends EmbeddedActionsParser {
     let external: ExternalBlockNode | undefined;
     let mapping: MappingNode | undefined;
 
+    // A ordem da `GRAMMAR.md` §2 e **fixa** — subdomains, depois `external`,
+    // depois `mapping` — e os dois ultimos sao opcionais e **no maximo um por
+    // domain**. Um `MANY`/`OR` unico sobre os tres aceitaria qualquer ordem e
+    // repeticao, com a segunda ocorrencia sobrescrevendo a primeira em
+    // silencio: arquivo invalido parseando como valido, e bloco perdido da AST.
     this.MANY(() => {
       this.OR([
         {
@@ -137,19 +142,9 @@ export class OddsParser extends EmbeddedActionsParser {
           },
         },
         {
-          ALT: () => {
-            const block = this.SUBRULE(this.externalDecl);
-            this.ACTION(() => { external = block; });
-          },
-        },
-        {
-          ALT: () => {
-            const map = this.SUBRULE(this.mappingDecl);
-            this.ACTION(() => { mapping = map; });
-          },
-        },
-        {
-          // `GRAMMAR.md` §5.1: context solto direto no domain.
+          // `GRAMMAR.md` §5.1: context solto direto no domain. Unica tolerancia
+          // desta producao, e ela fica na posicao onde o erro de fato acontece
+          // — quem esquece o `subdomain` escreve o `context` entre os outros.
           ALT: () => {
             const orphan = this.SUBRULE(this.contextDecl);
             this.ACTION(() => this.discarded.contexts.push(orphan));
@@ -162,6 +157,14 @@ export class OddsParser extends EmbeddedActionsParser {
           },
         },
       ]);
+    });
+    this.OPTION2(() => {
+      const block = this.SUBRULE(this.externalDecl);
+      this.ACTION(() => { external = block; });
+    });
+    this.OPTION3(() => {
+      const map = this.SUBRULE(this.mappingDecl);
+      this.ACTION(() => { mapping = map; });
     });
 
     const close = this.CONSUME(t.RBrace);
@@ -399,11 +402,15 @@ export class OddsParser extends EmbeddedActionsParser {
             tags.push({ tag: image as PatternTag, span: spanOf(token) });
             return;
           }
+          // `GRAMMAR.md` §3: `tag` e um conjunto fechado de nove literais, entao
+          // um nome desconhecido e erro sintatico puro. O template de
+          // `SYNTAX_ERROR` interpola `found` **e** `expected`; emitir so o
+          // primeiro deixaria `{expected}` cru na frase renderizada.
           this.diagnostics.push({
             severity: "error",
             code: "SYNTAX_ERROR",
             span: spanOf(token),
-            data: { found: image },
+            data: { found: image, expected: PATTERN_TAGS.join(", ") },
           });
         });
       },

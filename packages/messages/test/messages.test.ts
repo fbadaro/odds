@@ -1,8 +1,8 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-import { CATALOGUE, type DiagnosticCode } from "@odds/core";
+import { CATALOGUE, type DiagnosticCode, parseAndValidate } from "@odds/core";
 
 import { extract, serialize } from "../scripts/extract-messages.mjs";
 import { coveredCodes, render, renderMessage } from "../src/index.js";
@@ -126,6 +126,53 @@ describe("renderização", () => {
       }
       expect(renderMessage(code, data, locale), `${code}/${variant ?? "—"}/${locale}`)
         .not.toMatch(/\{[a-zA-Z]+\}/);
+    }
+  });
+});
+
+describe("renderização de diagnósticos que o validador de fato emite", () => {
+  // Esta suíte existe por causa de um bug que escapou de todas as outras. O
+  // teste acima sintetiza `data` **a partir do template**, então nunca vê um
+  // `data` real incompleto; e ler os `expected.json` não ajudaria, porque eles
+  // são completos por construção — é o que a suíte *deveria* produzir, não o
+  // que o código produz. Foi assim que `SYNTAX_ERROR` chegou a ser emitido só
+  // com `found`, deixando `{expected}` cru na frase.
+  //
+  // A única forma de pegar isso é rodar `parseAndValidate` e renderizar o que
+  // sair — inclusive sobre entradas malformadas, que são justamente as que não
+  // têm golden file.
+  const goldenDir = fileURLToPath(new URL("../../../golden-files/", import.meta.url));
+  const sources = readdirSync(goldenDir, { withFileTypes: true })
+    .filter((e) => e.isDirectory()).map((e) => e.name).sort()
+    .map((name) => ({ label: name, source: readFileSync(`${goldenDir}${name}/input.odds`, "utf8") }));
+
+  // Caminhos de emissão sem golden file correspondente.
+  const malformed = [
+    {
+      label: "tag desconhecida",
+      source: `domain T {\n  subdomain core S {\n    context A\n    context B\n  }\n  mapping {\n    A [XYZ] --> B\n  }\n}`,
+    },
+    { label: "conector inválido", source: `domain T {\n  subdomain core S {\n    context A\n    context B\n  }\n  mapping {\n    A ==> B\n  }\n}` },
+    { label: "bloco não fechado", source: `domain T {\n  subdomain core S {\n    context A\n` },
+  ];
+
+  const emitted = [...sources, ...malformed].flatMap(({ label, source }) =>
+    parseAndValidate(source).diagnostics.map((diagnostic) => ({ label, diagnostic })));
+
+  it("exercita todos os codes que a suíte alcança", () => {
+    const reached = new Set(emitted.map((e) => e.diagnostic.code));
+    expect(reached.size).toBeGreaterThanOrEqual(35);
+  });
+
+  it("renderiza cada um sem deixar placeholder cru, nos dois idiomas", () => {
+    for (const { label, diagnostic } of emitted) {
+      for (const locale of ["pt", "en"] as const) {
+        const text = render(diagnostic, locale);
+        const where = `${label} / ${diagnostic.code} / ${locale}`;
+        expect(text, where).not.toMatch(/\{[a-zA-Z]+\}/);
+        // Cair no fallback significa template ou variante faltando.
+        expect(text, where).not.toContain(diagnostic.code);
+      }
     }
   });
 });

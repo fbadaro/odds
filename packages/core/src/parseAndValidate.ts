@@ -107,6 +107,17 @@ export function parseAndValidate(source: string): ParseResult {
     };
   }
 
+  // Um `SYNTAX_ERROR` emitido pelo proprio parser — hoje so a tag desconhecida
+  // da `GRAMMAR.md` §3 — e tao terminal quanto os outros: a §5 manda o pipeline
+  // parar na fase 0, e sem isto a linha seguiria para o validador e produziria
+  // diagnostico derivado de um erro de sintaxe.
+  const syntaxFromParser = parser.diagnostics
+    .filter((d) => d.code === "SYNTAX_ERROR")
+    .sort(compareDiagnostics)[0];
+  if (syntaxFromParser !== undefined) {
+    return { astGenerated: false, diagnostics: [syntaxFromParser] };
+  }
+
   const program: ProgramNode = {
     ...ast,
     // `TEST_SUITE.md` §4: sem nenhum `domain`, o diagnostico nao tem no ao qual
