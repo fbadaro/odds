@@ -16,6 +16,7 @@
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = new URL("../../../", import.meta.url);
@@ -67,7 +68,7 @@ export function serialize(catalogue) {
   return `${JSON.stringify(catalogue, null, 2)}\n`;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const generated = serialize(extract(readFileSync(SOURCE, "utf8")));
   if (process.argv.includes("--check")) {
     const current = readFileSync(TARGET, "utf8");

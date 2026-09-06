@@ -108,15 +108,23 @@ class Validator {
 
   // --- Fase 2 · Declarativa ------------------------------------------------
 
+  /**
+   * Passo 0 do `RULES-EN.md` (Resumo para implementacao da AST): verificar que
+   * existe exatamente um `Domain`. Devolve `false` quando nao existe — e ai o
+   * pipeline **para**.
+   */
+  private checkDomainCardinality(): boolean {
+    const domains = this.program.domains;
+    if (domains.length === 1) return true;
+    // `TEST_SUITE.md` §4: o segundo `domain` quando ha varios; o arquivo
+    // inteiro quando nao ha nenhum.
+    const span = domains[1]?.headerSpan ?? this.program.span;
+    this.emit("INVALID_DOMAIN_CARDINALITY", span, { count: String(domains.length) });
+    return false;
+  }
+
   private phase2(): void {
     const domains = this.program.domains;
-    if (domains.length !== 1) {
-      // `TEST_SUITE.md` §4: o segundo `domain` quando ha varios; o arquivo
-      // inteiro quando nao ha nenhum.
-      const span = domains[1]?.headerSpan ?? this.program.span;
-      this.emit("INVALID_DOMAIN_CARDINALITY", span, { count: String(domains.length) });
-    }
-
     for (const domain of domains) {
       const seen = new Set<string>();
       for (const subdomain of domain.subdomains) {
@@ -475,6 +483,14 @@ class Validator {
   }
 
   run(): Diagnostic[] {
+    // **Passo 0 e terminal.** O `RULES-EN.md` manda reportar e *parar*: sem um
+    // domain valido unico nao ha o que percorrer, e tudo que viesse depois
+    // seria derivado de um erro — o que a §3.1 proibe. Vale inclusive para a
+    // fase 6: num arquivo sem domain, uma diretiva de supressao produziria
+    // `UNUSED_SUPPRESSION`, afirmando que a supressao esta obsoleta quando na
+    // verdade a regra nunca chegou a ser avaliada.
+    if (!this.checkDomainCardinality()) return this.diagnostics;
+
     this.phase2();
     this.phase3();
     this.phase4();
