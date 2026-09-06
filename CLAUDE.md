@@ -14,7 +14,10 @@ npm test             # vitest, all packages
 npm run test:watch   # the loop for reconciling golden-file spans
 npm run typecheck    # tsc --build across the project references
 npm run health       # the spec's own 16 checks — unrelated to the code, still Python/stdlib
+npm run generate:messages   # re-derive packages/messages/src/messages.json from MESSAGES.md
 ```
+
+`messages.json` is **generated, never hand-edited** (`MESSAGES.md` §8 specifies it). Edit the tables in `MESSAGES.md`, then regenerate; a test fails if the two drift.
 
 There is deliberately **no linter yet** (ADR-0005): choosing rules before there is code to argue about would be deciding in a vacuum.
 

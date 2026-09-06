@@ -2,13 +2,18 @@
   "name": "odds",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*"],
-  "engines": { "node": ">=20" },
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --build",
-    "health": "python3 .claude/skills/health-check/scripts/health_check.py"
+    "health": "python3 .claude/skills/health-check/scripts/health_check.py",
+    "generate:messages": "node packages/messages/scripts/extract-messages.mjs"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
