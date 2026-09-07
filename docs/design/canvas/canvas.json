@@ -71,8 +71,8 @@
     },
     {
       "id": "note-d",
-      "x": 4680,
-      "y": -250,
+      "x": 4682,
+      "y": -461,
       "w": 420,
       "text": "D · Trilho de quadrados (B + C)\n\nO canvas da B, o outline da C. Quatro quadrados isolados na borda esquerda governam os painéis: código, estrutura, modelos prontos, ajuda. Clicar num troca o painel aberto; clicar no mesmo fecha tudo e devolve a tela ao diagrama.\n\nDecidido em 2026-09-07: o diagnóstico NÃO é um quadrado — fica ancorado no rodapé, com os contadores sempre visíveis. A tese do produto é julgar sem ser convidado, e atrás de um toggle o linter deixa de fazer isso.\n\nOs quadrados de modelos e ajuda são candidatos do PRD (§9.3 fase 3, §5.1), não obrigações: saem sem custo."
     }
