@@ -52,10 +52,27 @@ Anotadas de propósito: o `REFERENCES.md` da raiz é uma lista de URLs sem anota
 | [Excalidraw](https://excalidraw.com) / [tldraw](https://tldraw.com) | O vocabulário de ilhas flutuantes sobre canvas que a variante B testa | O registro de rascunho à mão livre: briga com "linter que julga o seu design" |
 | Painel *Problems* do VS Code | Contadores por severidade, filtro, clique que leva à linha — o vocabulário que o usuário já tem | O tema escuro e a densidade de IDE |
 
+## Variante D — o trilho de quadrados
+
+A escolha do autor foi a **B**, com o outline da **C** dentro dela. A D é essa mistura, e acrescenta um mecanismo: **quatro quadrados isolados** na borda esquerda, um por funcionalidade — código, estrutura, modelos prontos, ajuda. Clicar num quadrado troca o painel aberto; clicar no mesmo quadrado fecha tudo e devolve a tela inteira ao diagrama. Um painel por vez, sempre.
+
+O que isso resolve: a C ganhava o outline pagando 250px permanentes de diagrama. Na D as duas áreas dividem o mesmo espaço e o custo só existe enquanto o painel está aberto — a H3 deixa de competir com a direção "diagrama dominante".
+
+**Uma opinião embutida, aberta a ser derrubada:** os diagnósticos não viraram quadrado. Eles são a H1 — a tese do produto é julgar sem ser convidado, e atrás de um toggle o linter deixa de fazer isso. A ilha do rodapé continua ancorada, com os contadores sempre à vista. Se a decisão for que diagnóstico também é painel do trilho, o desenho aceita, mas aí a H1 cai por escolha e não por acidente.
+
+Os quadrados de **modelos prontos** (`PRD.md` §9.3, fase 3) e **ajuda** (§5.1) são candidatos, não obrigações — saem do trilho sem custo nenhum.
+
+Hipótese nova que a D introduz:
+
+| # | Hipótese | O que a derruba |
+|---|---|---|
+| **H8** | Um painel por vez basta. Ninguém precisa de editor e estrutura abertos ao mesmo tempo, porque os dois dizem a mesma coisa em formatos diferentes | Uso real que exija olhar a árvore enquanto digita — por exemplo, escrever o bloco `mapping` conferindo os nomes declarados acima |
+
 ## Estado
 
 - [x] Direção fixada com o autor
 - [x] Três variantes de tela cheia no canvas
+- [x] Variante D: B + C, com trilho de quadrados isolados
 - [ ] Escolher uma variante (ou a mistura) e consolidar numa só
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler
