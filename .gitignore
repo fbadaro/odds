@@ -45,3 +45,7 @@ __pycache__/
 # Vitest
 .vitest-cache/
 *.tsbuildinfo
+
+# canvas de design: arquivo montado a partir dos .dc.html + canvas.json, regenerável
+docs/design/canvas/*.html
+!docs/design/canvas/*.dc.html
