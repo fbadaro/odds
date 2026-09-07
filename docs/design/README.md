@@ -82,7 +82,7 @@ Três, e cada um tem uma função. **A base nunca é alterada por uma proposta**
 | Canvas | Fonte | Papel |
 |---|---|---|
 | [Base do protótipo](https://claude.ai/code/artifact/648d3fae-b499-46b9-ad3b-8c65fd5976ab) | `canvas/` | A variante D, sem estilo aplicado. É para onde se volta |
-| [Landing v1](https://claude.ai/code/artifact/ae6c3f5b-4b65-4cbf-8d34-a1a0622d8571) | `canvas/landing/` | Primeira rodada, acento azul. Mantida para comparação |
+| [Landing v1](https://claude.ai/code/artifact/ae6c3f5b-4b65-4cbf-8d34-a1a0622d8571) | `canvas/landing-v1/` | Primeira rodada, acento azul. Mantida para comparação |
 | [Landing v2](https://claude.ai/code/artifact/a5fee108-0126-4a09-bad6-e595b3666644) | `canvas/landing-v2/` | Paleta roxa, manchas, herói animado, texto revisado |
 | [Playground estilizado](https://claude.ai/code/artifact/0d9f30b4-33d3-4754-aec5-a65fe13f1597) | `canvas/playground/` | A base vestida com o `DESIGN.md`, claro e escuro |
 
@@ -97,6 +97,7 @@ O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o
 - [x] Sistema visual extraído da referência e escrito no `DESIGN.md` da raiz (2026-09-07)
 - [x] Proposta da landing e da base vestida, em canvases próprios
 - [x] Landing v2: paleta roxa, atmosfera e arte de herói (2026-09-07)
+- [x] Landing v2 refeita com a referência **vista**, não só lida: prancheta em perspectiva, esteira de codes, respiro maior
 - [ ] Refazer o canvas do playground estilizado com a paleta nova — hoje ele mostra o acento antigo
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler

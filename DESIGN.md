@@ -119,7 +119,7 @@ Os neutros são **frios, com um sopro de violeta** (o cinza tem hue de roxo, nã
 
 1. **Acento nunca comunica severidade.** Azul é *ação e seleção*; erro, aviso e info têm as três cores funcionais e mais nada. Um botão azul dentro de uma linha de erro não vira "erro azul" — continua sendo um botão.
 2. **Severidade nunca depende só de cor.** Cada uma carrega ícone próprio — círculo com X, triângulo, círculo com i —, porque daltonismo e export em escala de cinza são reais, e o `PRD.md` §5.2 manda o export sair *com* os marcadores.
-3. **O gradiente é sempre azul → roxo**, na mesma ordem (`--c-azure` → `--c-accent`), e aparece no máximo **duas vezes por tela**: uma no botão primário, uma numa expressão do título de herói. A partir da terceira ele deixa de ser ênfase e vira textura. Gradiente nunca atravessa texto de leitura — só título de display e superfície de botão.
+3. **O gradiente é sempre roxo → azul**, na mesma ordem (`--c-accent` → `--c-azure`), e aparece no máximo **duas vezes por tela**: uma no botão primário, uma numa expressão do título de herói. A partir da terceira ele deixa de ser ênfase e vira textura. Gradiente nunca atravessa texto de leitura — só título de display e superfície de botão.
 
 ---
 
@@ -164,6 +164,12 @@ Regras que fazem a diferença entre atmosfera e borrão:
 - **Paleta pálida, dentro da família azul→roxo:** violeta claro, azul claro, ciano claro. Uma quarta mancha pode sair da família para dar variação, nunca duas — o fundo é atmosfera, não arco-íris.
 - **Nunca atrás de texto pequeno.** Manchas vivem no herói, no CTA final e nas bordas das seções; texto de leitura fica sobre superfície plana.
 - Em `prefers-reduced-motion: reduce` elas **param** — continuam ali, sem deriva.
+
+## 4.1.1 A prancheta em perspectiva
+
+O motivo gráfico da casa: uma **grade em perspectiva** que recua até o horizonte, atrás do herói e atrás do CTA final. É uma prancheta vista de lado — e para uma ferramenta que desenha arquitetura, ela diz mais do que qualquer ilustração.
+
+Feita sem imagem e sem biblioteca: um `div` com duas `linear-gradient` de 1px formando a malha, `transform: perspective(600px) rotateX(62deg)`, e um `mask-image` que dissolve a grade antes do horizonte. Linhas a ~8% do acento; mais que isso vira papel milimetrado.
 
 ## 4.2 Arte do herói
 
