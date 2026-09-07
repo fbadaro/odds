@@ -1,83 +1,29 @@
 {
   "artboards": [
-    {
-      "file": "Main.dc.html",
-      "x": 0,
-      "y": 0,
-      "w": 1440,
-      "h": 900,
-      "title": "A · Barra + gaveta"
-    },
-    {
-      "file": "VarianteB.dc.html",
-      "x": 1560,
-      "y": 0,
-      "w": 1440,
-      "h": 900,
-      "title": "B · Ilhas sobre o canvas"
-    },
-    {
-      "file": "VarianteC.dc.html",
-      "x": 3120,
-      "y": 0,
-      "w": 1440,
-      "h": 900,
-      "title": "C · Trilho de estrutura"
-    },
-    {
-      "file": "VarianteD.dc.html",
-      "x": 4680,
-      "y": 0,
-      "w": 1440,
-      "h": 900,
-      "title": "D · Trilho de quadrados (B + C)"
-    }
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Base do protótipo" }
   ],
   "annotations": [
     {
-      "id": "brief",
+      "id": "base",
       "x": 0,
-      "y": -250,
-      "w": 460,
-      "text": "Exploração de UI/UX do playground ODDS — só o chrome.\n\nDireção fixada: diagrama dominante, editor em painel, diagnósticos no rodapé, tema claro, densidade de ferramenta.\n\nA área do diagrama é wireframe neutro de propósito: o desenho do render depende da biblioteca, que ainda não foi escolhida."
-    },
-    {
-      "id": "note-a",
-      "x": 500,
-      "y": -250,
-      "w": 420,
-      "text": "A · Barra + gaveta\n\nAposta: chrome previsível. Uma barra superior carrega identidade, arquivo, troca de vista e ações; o editor é uma gaveta de 420px que colapsa; os diagnósticos são uma faixa de rodapé com contadores que filtram.\n\nTradeoff: com a gaveta aberta, o diagrama fica com ~1020px. É o arranjo mais conservador dos três."
-    },
-    {
-      "id": "note-b",
-      "x": 1560,
-      "y": -250,
-      "w": 420,
-      "text": "B · Ilhas sobre o canvas\n\nAposta: o diagrama é a tela inteira; toda a UI flutua sobre ele. Máxima área de desenho, e a leitura é de ferramenta de canvas.\n\nTradeoff: os diagnósticos deixam de ter lugar fixo. Num produto cuja tese é 'linter opinativo', esconder o painel atrás de uma pílula enfraquece justamente o que diferencia a ODDS do Context Mapper."
-    },
-    {
-      "id": "note-c",
-      "x": 3120,
-      "y": -250,
-      "w": 420,
-      "text": "C · Trilho de estrutura\n\nÉ o A mais uma terceira área: um outline navegável (domínio → subdomínios → contextos → relações) que responde ao PRD §5.3, 'domínios complexos'. Marcadores de severidade aparecem na árvore, e clicar navega.\n\nTradeoff: o diagrama cai para ~830px, e parte do outline é informação que o texto já dá. É o arranjo que mais briga com a direção 'diagrama dominante'."
+      "y": -300,
+      "w": 520,
+      "text": "Base do protótipo — variante D, fixada em 2026-09-07.\n\nCanvas da B com o outline da C: quatro quadrados isolados governam os painéis da esquerda (código, estrutura, modelos, ajuda), um painel por vez, e o mesmo quadrado fecha tudo. Diagnóstico ancorado no rodapé, sempre visível — decisão registrada, não default.\n\nToda hipótese nova é testada CONTRA esta base. Se nada convencer, o retorno é para cá.\n\nAs variantes A, B e C saíram do canvas e continuam versionadas no git, em docs/design/canvas/. Voltar qualquer uma é acrescentá-la ao seed."
     },
     {
       "id": "sistema",
       "x": 0,
       "y": 960,
       "w": 700,
-      "text": "Sistema usado nos três: IBM Plex Sans (UI) + IBM Plex Mono (editor, codes, spans).\nTexto #1B1B19 · secundário #6E6E67 · bordas #E6E6E1 · canvas #FAFAF8 com malha de pontos.\nAzul de planta #2B4C8C só para ação e seleção. Severidade nunca é o acento: erro #C0342B, aviso #A66A00, info #5B6B7C — três cores funcionais, com ícone próprio, para não depender de cor sozinha.\nRitmo: barra 48px, cabeçalhos de painel 36px, linhas de lista 34px, controles 30px."
+      "text": "IBM Plex Sans (UI) + IBM Plex Mono (editor, codes, spans).\nTexto #1B1B19 · secundário #6E6E67 · bordas #E6E6E1 · canvas #FAFAF8 com malha de pontos.\nAzul de planta #2B4C8C só para ação e seleção. Severidade nunca é o acento: erro #C0342B, aviso #A66A00, info #5B6B7C — três cores funcionais, cada uma com ícone próprio, para não depender de cor sozinha.\nRitmo: ilhas com raio 9px, quadrados do trilho 44px, cabeçalhos de painel 36px, linhas de lista 34px."
     },
     {
-      "id": "note-d",
-      "x": 4682,
-      "y": -461,
-      "w": 420,
-      "text": "D · Trilho de quadrados (B + C)\n\nO canvas da B, o outline da C. Quatro quadrados isolados na borda esquerda governam os painéis: código, estrutura, modelos prontos, ajuda. Clicar num troca o painel aberto; clicar no mesmo fecha tudo e devolve a tela ao diagrama.\n\nDecidido em 2026-09-07: o diagnóstico NÃO é um quadrado — fica ancorado no rodapé, com os contadores sempre visíveis. A tese do produto é julgar sem ser convidado, e atrás de um toggle o linter deixa de fazer isso.\n\nOs quadrados de modelos e ajuda são candidatos do PRD (§9.3 fase 3, §5.1), não obrigações: saem sem custo."
+      "id": "aberto",
+      "x": 760,
+      "y": 960,
+      "w": 520,
+      "text": "Ainda em aberto nesta base:\n\n· os quadrados de modelos prontos (PRD §9.3) e ajuda (§5.1) são candidatos, saem sem custo;\n· H8 — um painel por vez basta? o que derruba é escrever o bloco mapping conferindo nomes declarados acima;\n· os estados de degradação (PRD §5.2) e o desenho do render entram só depois da biblioteca escolhida."
     }
   ],
-  "launch": {
-    "view": "canvas"
-  }
+  "launch": { "view": "focused", "file": "Main.dc.html" }
 }

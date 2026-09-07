@@ -2,6 +2,8 @@
 
 **Branch:** `design/playground-ui-ux` · **Canvas:** https://claude.ai/code/artifact/648d3fae-b499-46b9-ad3b-8c65fd5976ab
 
+> **A base do protótipo é a variante D**, fixada em 2026-09-07. O canvas mostra só ela. Toda hipótese nova é testada *contra* esta base, e se nada convencer o retorno é para cá — é isso que uma base serve para garantir: nenhuma rodada de exploração pode terminar sem desenho.
+
 Este diretório existe para uma coisa só: **decidir a UI/UX do playground antes de escolher framework de UI e biblioteca de render**, e não o contrário. As três decisões de stack que faltam (`HEALTH.md` §9.2, R6.4) são caras de reverter; o desenho da tela é barato de jogar fora enquanto for HTML estático. Por isso a ordem é esta.
 
 O que está aqui **não é normativo**. O `PRD.md` continua sendo a fonte dos requisitos; onde um mock divergir dele, o PRD está certo e o mock está errado.
@@ -53,7 +55,7 @@ Anotadas de propósito: o `REFERENCES.md` da raiz é uma lista de URLs sem anota
 | [Excalidraw](https://excalidraw.com) / [tldraw](https://tldraw.com) | O vocabulário de ilhas flutuantes sobre canvas que a variante B testa | O registro de rascunho à mão livre: briga com "linter que julga o seu design" |
 | Painel *Problems* do VS Code | Contadores por severidade, filtro, clique que leva à linha — o vocabulário que o usuário já tem | O tema escuro e a densidade de IDE |
 
-## Variante D — o trilho de quadrados
+## A base: variante D, o trilho de quadrados
 
 A escolha do autor foi a **B**, com o outline da **C** dentro dela. A D é essa mistura, e acrescenta um mecanismo: **quatro quadrados isolados** na borda esquerda, um por funcionalidade — código, estrutura, modelos prontos, ajuda. Clicar num quadrado troca o painel aberto; clicar no mesmo quadrado fecha tudo e devolve a tela inteira ao diagrama. Um painel por vez, sempre.
 
@@ -62,6 +64,10 @@ O que isso resolve: a C ganhava o outline pagando 250px permanentes de diagrama.
 **Uma opinião embutida, aberta a ser derrubada:** os diagnósticos não viraram quadrado. Eles são a H1 — a tese do produto é julgar sem ser convidado, e atrás de um toggle o linter deixa de fazer isso. A ilha do rodapé continua ancorada, com os contadores sempre à vista. Se a decisão for que diagnóstico também é painel do trilho, o desenho aceita, mas aí a H1 cai por escolha e não por acidente.
 
 Os quadrados de **modelos prontos** (`PRD.md` §9.3, fase 3) e **ajuda** (§5.1) são candidatos, não obrigações — saem do trilho sem custo nenhum.
+
+### As outras três continuam existindo
+
+A, B e C saíram do **canvas**, não do repositório: estão em `docs/design/canvas/VarianteA.dc.html`, `VarianteB.dc.html` e `VarianteC.dc.html`, e voltam ao canvas acrescentando o arquivo ao seed. Apagá-las seria perder o registro de *por que* a base é o que é — cada uma carrega um tradeoff que foi recusado por escrito, e recusa sem registro volta como proposta daqui a seis meses.
 
 Hipótese nova que a D introduz:
 
@@ -74,6 +80,6 @@ Hipótese nova que a D introduz:
 - [x] Direção fixada com o autor
 - [x] Três variantes de tela cheia no canvas
 - [x] Variante D: B + C, com trilho de quadrados isolados
-- [ ] Escolher uma variante (ou a mistura) e consolidar numa só
+- [x] Base do protótipo fixada: variante D, sozinha no canvas (2026-09-07)
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler
