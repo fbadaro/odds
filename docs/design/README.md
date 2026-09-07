@@ -17,7 +17,7 @@ O que está aqui **não é normativo**. O `PRD.md` continua sendo a fonte dos re
 | Fork | Decisão |
 |---|---|
 | Arranjo | Diagrama dominante ocupando a tela; editor de texto em painel recolhível |
-| Diagnósticos | Painel de rodapé, faixa/aba, com contadores por severidade e clique que leva à linha |
+| Diagnósticos | Painel de rodapé, faixa/aba, com contadores por severidade e clique que leva à linha. **Lugar fixo, nunca atrás de um toggle** — decidido em 2026-09-07 ao fechar a variante D |
 | Registro | Densidade de ferramenta, **tema claro por padrão** — referência `mermaid.live`. *"É uma ferramenta de arquitetura, não de código."* |
 | Escopo do 1º canvas | Três variantes de tela cheia; só chrome: áreas, funcionalidades, tipografia, respiro |
 
@@ -25,11 +25,12 @@ Sistema visual usado nas três variantes: IBM Plex Sans (UI) + IBM Plex Mono (ed
 
 ## Hipóteses
 
-Cada uma é uma afirmação que pode estar errada, com o que a derrubaria. **Nenhuma foi validada ainda** — os mocks são o instrumento, não a evidência.
+Cada uma é uma afirmação que pode estar errada, com o que a derrubaria. Os mocks são o instrumento, não a evidência.
+
+**H1 foi fechada em 2026-09-07**, e virou linha da direção fixada acima: *o painel de diagnósticos tem lugar fixo no rodapé*. A variante D foi desenhada com a alternativa disponível — bastaria um quinto quadrado no trilho — e a decisão foi manter o rodapé ancorado. Fica registrada aqui a razão, que é a mesma que o `PRD.md` §2.4 usa para separar a ODDS do Context Mapper: o produto julga sem ser convidado, e o que está atrás de um toggle não julga.
 
 | # | Hipótese | O que a derruba |
 |---|---|---|
-| **H1** | O painel de diagnósticos precisa de **lugar fixo**. A tese do produto é ser um linter opinativo (`PRD.md` §2.4); esconder o veredito atrás de uma pílula enfraquece o que diferencia a ODDS do Context Mapper | Usuários preferindo a variante B com o painel colapsado na maior parte do tempo |
 | **H2** | O editor pode ficar **fechado** boa parte da sessão. O texto é a fonte única (`ADR-0003`), mas quem lê um mapa pronto não digita | Ver que toda edição real é iterativa — abre, digita, olha, digita — e o custo de abrir/fechar domina |
 | **H3** | Um **outline de estrutura** (variante C) resolve "domínios complexos" (`PRD.md` §5.3) melhor do que rolar o texto | O outline repetir o que o texto já mostra sem ganho de navegação, custando 250px do diagrama |
 | **H4** | **Contadores por severidade como filtro** bastam; não é preciso agrupar a lista por severidade | Listas longas ficarem ilegíveis sem cabeçalho de grupo — o caso da variante C |
@@ -66,7 +67,7 @@ Hipótese nova que a D introduz:
 
 | # | Hipótese | O que a derruba |
 |---|---|---|
-| **H8** | Um painel por vez basta. Ninguém precisa de editor e estrutura abertos ao mesmo tempo, porque os dois dizem a mesma coisa em formatos diferentes | Uso real que exija olhar a árvore enquanto digita — por exemplo, escrever o bloco `mapping` conferindo os nomes declarados acima |
+| **H8** | Um painel por vez basta (vale para o trilho; o rodapé é permanente e não entra na conta). Ninguém precisa de editor e estrutura abertos ao mesmo tempo, porque os dois dizem a mesma coisa em formatos diferentes | Uso real que exija olhar a árvore enquanto digita — por exemplo, escrever o bloco `mapping` conferindo os nomes declarados acima |
 
 ## Estado
 
