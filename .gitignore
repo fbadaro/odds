@@ -47,5 +47,5 @@ __pycache__/
 *.tsbuildinfo
 
 # canvas de design: arquivo montado a partir dos .dc.html + canvas.json, regenerável
-docs/design/canvas/*.html
-!docs/design/canvas/*.dc.html
+docs/design/canvas/**/*.html
+!docs/design/canvas/**/*.dc.html
