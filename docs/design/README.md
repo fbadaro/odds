@@ -75,11 +75,25 @@ Hipótese nova que a D introduz:
 |---|---|---|
 | **H8** | Um painel por vez basta (vale para o trilho; o rodapé é permanente e não entra na conta). Ninguém precisa de editor e estrutura abertos ao mesmo tempo, porque os dois dizem a mesma coisa em formatos diferentes | Uso real que exija olhar a árvore enquanto digita — por exemplo, escrever o bloco `mapping` conferindo os nomes declarados acima |
 
+## Canvases
+
+Três, e cada um tem uma função. **A base nunca é alterada por uma proposta** — proposta nova nasce em canvas novo.
+
+| Canvas | Fonte | Papel |
+|---|---|---|
+| [Base do protótipo](https://claude.ai/code/artifact/648d3fae-b499-46b9-ad3b-8c65fd5976ab) | `canvas/` | A variante D, sem estilo aplicado. É para onde se volta |
+| [Landing](https://claude.ai/code/artifact/ae6c3f5b-4b65-4cbf-8d34-a1a0622d8571) | `canvas/landing/` | Página de apresentação, desktop e 390px |
+| [Playground estilizado](https://claude.ai/code/artifact/0d9f30b4-33d3-4754-aec5-a65fe13f1597) | `canvas/playground/` | A base vestida com o `DESIGN.md`, claro e escuro |
+
+O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o que foi tomado da referência (método) e o que não foi (identidade).
+
 ## Estado
 
 - [x] Direção fixada com o autor
 - [x] Três variantes de tela cheia no canvas
 - [x] Variante D: B + C, com trilho de quadrados isolados
 - [x] Base do protótipo fixada: variante D, sozinha no canvas (2026-09-07)
+- [x] Sistema visual extraído da referência e escrito no `DESIGN.md` da raiz (2026-09-07)
+- [x] Proposta da landing e da base vestida, em canvases próprios
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler

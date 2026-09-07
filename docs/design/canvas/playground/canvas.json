@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Playground · claro" },
+    { "file": "Dark.dc.html", "x": 1560, "y": 0, "w": 1440, "h": 900, "title": "Playground · escuro" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -300, "w": 520, "text": "A base (variante D) vestida com o DESIGN.md. O layout não mudou uma linha — mudou o sistema visual.\n\nO que entrou: Inter no texto e JetBrains Mono em tudo que é dado literal (code, span, tag, nome de arquivo); ilhas com raio 16 e sombra de ilha; quadrados do trilho em raio 8; chip de code em raio 6; contadores de severidade como pills; botão primário com gradiente e sombra colorida.\n\nO que saiu: IBM Plex, os hexes soltos e o raio 9 de todas as ilhas." },
+    { "id": "dark", "x": 1560, "y": -300, "w": 460, "text": "O tema escuro do DESIGN.md §3, visto pela primeira vez. É neutro quente — a mesma família do claro invertida, não azul-acinzentado.\n\nO que muda além do fundo: acento e severidades clareiam (manter o mesmo hex é o erro clássico, e ele aparece como botão que some), e a sombra troca de base e sobe de força .14 para .5, senão desaparece.\n\nEstá aqui para testar os tokens, não porque a proposta exija dois temas nesta rodada — sai sem custo se preferir." },
+    { "id": "aberto", "x": 0, "y": 960, "w": 620, "text": "Continua fora desta rodada, por ADR-0007: o desenho da renderização do diagrama e os estados de degradação do PRD §5.2. A área do diagrama segue wireframe neutro.\n\nA fronteira que o DESIGN.md acrescenta e que vale conferir aqui: mono é sinal de dado literal, não de estilo. O code, o span L24:5, a tag [BBM] e o nome do arquivo são mono; toda frase sobre eles é Inter. É a mesma fronteira que o MESSAGES.md mantém entre `data` e prosa." }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}

@@ -1,0 +1,12 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 3560, "title": "Landing · desktop", "print": "flow" },
+    { "file": "Mobile.dc.html", "x": 1600, "y": 0, "w": 390, "h": 2320, "title": "Landing · 390px" }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -330, "w": 560, "text": "Proposta da página de apresentação, aplicando o DESIGN.md.\n\nDa referência veio o método, não a identidade: tokens de cor como triplas RGB, eyebrow mono de 11px com tracking .22em, pill mono, sombra colorida com espalhamento negativo, malha de 28px. A paleta é nossa — azul de planta, não o violeta da referência.\n\nTipografia: Bricolage Grotesque no display, Inter no texto, JetBrains Mono em tudo que é dado literal (code, span, tag, pill).\n\nNenhum diagrama desenhado: o que a landing mostra do produto é o par fonte + veredito, que é o laço central e não depende da biblioteca de render." },
+    { "id": "copy", "x": 620, "y": -330, "w": 480, "text": "Sobre o texto: tudo afirmado aqui sai do PRD.md e do RULES-EN.md — 35 codes, 9 tags, 4 conectores, 3 severidades, execução 100% no cliente, URL com o desenho codificado, export com os marcadores.\n\nNada de número inventado e nenhum depoimento fabricado. Onde caberia prova social, não há seção: o produto não tem usuários ainda, e uma seção de logos vazia é pior que a ausência dela." },
+    { "id": "mobile", "x": 1600, "y": -330, "w": 400, "text": "390px: a mesma página com a hierarquia mantida e três cortes — o par fonte+veredito vira card único empilhado, as severidades viram linhas em vez de cards, e as duas vistas saem (a explicação depende de comparação lado a lado).\n\nAlvos de toque em 48px, acima do mínimo de 44." }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}
