@@ -38,18 +38,20 @@ Três famílias, três trabalhos. Nenhuma faz o trabalho da outra.
 
 | Papel | Família | Onde |
 |---|---|---|
-| **Display** | **Bricolage Grotesque** | Título de herói, títulos de seção grandes. Só isso |
+| **Display** | **Montserrat** (a partir da v3) | Título de herói, títulos de seção grandes. Só isso |
 | **Sans** | **Inter** | Todo texto de interface e de leitura: corpo, botões, rótulos, painéis |
 | **Mono** | **JetBrains Mono** | Editor `.odds`, `DiagnosticCode`, spans (`L24:5`), pills, eyebrows, qualquer coisa que seja *dado* e não prosa |
 
-Fallbacks com métrica próxima, sempre: `"Bricolage Grotesque", "Inter", system-ui, sans-serif` · `"Inter", "Segoe UI", system-ui, sans-serif` · `"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace`.
+Fallbacks com métrica próxima, sempre: `"Montserrat", "Inter", system-ui, sans-serif` · `"Inter", "Segoe UI", system-ui, sans-serif` · `"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace`.
 
 ### Escala
 
 | Token | Tamanho / entrelinha | Peso | Ajuste | Uso |
 |---|---|---|---|---|
-| `display-hero` | 42px → 60px (≥640px) / 1.04 | 700 | `-0.025em` | Uma vez por página, no herói |
-| `display-section` | 30px → 34px / 1.12 | 700 | `-0.02em` | Abertura de seção |
+| `display-hero` | 42px → 62px (≥640px) / 1.05 | 800 | `-0.04em` | Uma vez por página, no herói |
+| `display-section` | 30px → 38px / 1.1 | 700 | `-0.03em` | Abertura de seção |
+
+**Por que o ajuste de tracking mudou junto com a face.** A Montserrat é geométrica e **larga**: as contraformas redondas (`o`, `e`, `a`) ocupam mais espaço horizontal que as da Bricolage no mesmo corpo. Sem apertar o tracking para `-0.04em` e sem baixar o herói de 68px para 62px, a mesma frase quebra em uma linha a mais e o bloco perde a densidade. Peso 800 no herói, não 700: a Montserrat em 700 lê mais leve do que a Bricolage no mesmo número.
 | `title` | 20px / 1.3 | 600 | `-0.01em` | Título de card |
 | `body-lg` | 18px / 1.65 | 400 | — | Subtítulo do herói, parágrafo de destaque |
 | `body` | 16px / 1.6 | 400 | — | Texto corrente |
@@ -84,6 +86,7 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
   --c-accent-lift:138  91 240; /* #8A5BF0  topo do gradiente do botão primário */
   --c-azure:      61 111 232;  /* #3D6FE8  ponta azul do gradiente azul→roxo */
   --c-pulse:      35 168 205;  /* #23A8CD  segundo acento, uso escasso */
+  --c-solar:     255 197  61;  /* #FFC53D  terceira cor: grafismo, nunca estado */
   --c-error:     192  52  43;  /* #C0342B */
   --c-warning:   166 106   0;  /* #A66A00 */
   --c-info:       91 107 124;  /* #5B6B7C */
@@ -106,6 +109,7 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
   --c-accent-lift:198 176 255; /* #C6B0FF */
   --c-azure:     125 163 255;  /* #7DA3FF */
   --c-pulse:      94 208 238;  /* #5ED0EE */
+  --c-solar:     255 209  99;  /* #FFD163 */
   --c-error:     224 121 111;  /* #E0796F */
   --c-warning:   217 164  65;  /* #D9A441 */
   --c-info:      147 163 179;  /* #93A3B3 */
@@ -114,6 +118,16 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
 ```
 
 Os neutros são **frios, com um sopro de violeta** (o cinza tem hue de roxo, não de bege): neutro quente ao lado de acento roxo lê como sujeira. O escuro é a mesma família invertida. Acento e pulse clareiam no escuro; manter o mesmo hex nos dois temas é o erro clássico, e ele aparece como um botão que some no fundo.
+
+### O amarelo, e a armadilha que ele traz
+
+`--c-solar` (#FFC53D) é a terceira cor, e existe para **descaracterizar**: roxo com azul é a assinatura de meio mundo, e o amarelo quebra a temperatura sem brigar com nenhum dos dois — ele é o complementar aproximado do violeta-azul, então soma contraste em vez de disputar.
+
+Ele traz uma armadilha, e ela precisa estar escrita: **amarelo já significa aviso** neste produto. A regra que resolve:
+
+- **`--c-solar` é grafismo, nunca estado.** Ele aparece em manchas, no traço do horizonte da prancheta, num sublinhado de destaque, num nó da ilustração, num numeral. Nunca em chip de severidade, nunca em ícone de diagnóstico, nunca como fundo de linha da lista.
+- **A única cor de aviso continua sendo `--c-warning` (#A66A00)** — bem mais escura e menos saturada. Postas lado a lado elas não se confundem: uma é luz, a outra é tinta.
+- **Amarelo nunca é texto.** #FFC53D sobre branco não passa em contraste nenhum. Ele é superfície, traço ou marca — e quando carrega texto, o texto é `--c-ink`.
 
 ### Três regras de cor, e elas não são estéticas
 

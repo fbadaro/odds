@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@700;800&family=Space+Grotesk:wght@600;700&family=Sora:wght@700;800&display=swap">
+  <style>
+    :root {
+      --c-bg: 250 250 254; --c-panel: 255 255 255; --c-border: 230 228 242;
+      --c-ink: 27 26 36; --c-dim: 107 104 128;
+      --c-accent: 108 64 217; --c-azure: 61 111 232; --c-pulse: 35 168 205; --c-solar: 255 197 61;
+    }
+    body { margin: 0; font-family: "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: rgb(var(--c-accent)); } a:hover { color: rgb(var(--c-azure)); }
+    .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+    .eyebrow { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .22em; color: rgb(var(--c-dim)); }
+    .grad { background: linear-gradient(105deg, rgb(var(--c-accent)) 10%, rgb(var(--c-azure)) 70%, rgb(var(--c-pulse))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .row { border: 1px solid rgb(var(--c-border) / .8); background: rgb(var(--c-panel)); border-radius: 20px; padding: 30px 32px; box-shadow: 0 10px 30px -12px rgb(27 26 36 / .1); }
+    .tag { display: inline-flex; align-items: center; gap: 8px; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11.5px; border: 1px solid rgb(var(--c-border)); border-radius: 999px; padding: 5px 12px; color: rgb(var(--c-dim)); }
+    .note { font-size: 13.5px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 0; }
+    .ok { color: rgb(var(--c-ink)); font-weight: 600; }
+  </style>
+</helmet>
+
+<div style="width: 1180px; background: rgb(var(--c-bg)); color: rgb(var(--c-ink)); padding: 44px 44px 52px;">
+
+  <span class="eyebrow">Teste de face · o mesmo herói em três</span>
+  <p style="font-size: 15.5px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 14px 0 32px; max-width: 780px;">
+    Mesmo corpo, mesmo tracking-alvo, mesmo texto. O que muda é só a face de display — o corpo continua Inter e o dado continua JetBrains Mono nos três.
+    A Montserrat é a que você pediu e é a que está aplicada na v3; as outras duas estão aqui para a decisão ser de olho, não de descrição.
+  </p>
+
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+
+    <!-- Montserrat -->
+    <div class="row" style="border-color: rgb(var(--c-accent) / .3); box-shadow: 0 18px 44px -22px rgb(var(--c-accent) / .38);">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 22px;">
+        <span class="tag" style="border-color: rgb(var(--c-accent) / .35); color: rgb(var(--c-accent));">Montserrat · aplicada na v3</span>
+        <span class="tag">geométrica · larga · 800</span>
+      </div>
+      <h1 style="font-family: 'Montserrat', Inter, sans-serif; font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: -.04em; margin: 0;">
+        O context map <span class="grad">aponta os erros</span> que você não vê.
+      </h1>
+      <div style="display: flex; align-items: baseline; gap: 26px; margin-top: 24px;">
+        <span style="font-family: 'Montserrat', Inter, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -.032em;">Sintaxe perfeita. Arquitetura cara.</span>
+        <span style="font-family: 'Montserrat', Inter, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.05em;">odds</span>
+      </div>
+      <p class="note" style="margin-top: 22px;">
+        <span class="ok">A favor:</span> descaracteriza de verdade — a geometria circular não tem nada a ver com a grotesca da referência; o peso 800 dá presença; é sólida em acento (ã, ç, õ), o que importa numa página em português.
+        <br><span class="ok">Contra:</span> é larga, então come linha — foi por isso que o herói caiu de 68px para 62px e o tracking apertou para −0,04em. E é onipresente: quem vê muito site reconhece na hora, o que trabalha contra "descaracterizar".
+      </p>
+    </div>
+
+    <!-- Space Grotesk -->
+    <div class="row">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 22px;">
+        <span class="tag">Space Grotesk · alternativa</span>
+        <span class="tag">grotesca técnica · estreita · 700</span>
+      </div>
+      <h1 style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 56px; font-weight: 700; line-height: 1.04; letter-spacing: -.03em; margin: 0;">
+        O context map <span class="grad">aponta os erros</span> que você não vê.
+      </h1>
+      <div style="display: flex; align-items: baseline; gap: 26px; margin-top: 24px;">
+        <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -.025em;">Sintaxe perfeita. Arquitetura cara.</span>
+        <span style="font-family: 'Space Grotesk', Inter, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.04em;">odds</span>
+      </div>
+      <p class="note" style="margin-top: 22px;">
+        <span class="ok">A favor:</span> mais estreita, cabe mais frase por linha; tem caráter técnico nos detalhes (o <span class="mono" style="font-size: 13px;">a</span>, o <span class="mono" style="font-size: 13px;">g</span>, o corte reto dos terminais) e conversa com a JetBrains Mono como se fossem da mesma casa — o que faz sentido num produto cujo assunto é código.
+        <br><span class="ok">Contra:</span> o caráter é forte e pode roubar a cena de uma página que já tem gradiente, prancheta e amarelo. Menos neutra que a Montserrat.
+      </p>
+    </div>
+
+    <!-- Sora -->
+    <div class="row">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 22px;">
+        <span class="tag">Sora · alternativa</span>
+        <span class="tag">geométrica sóbria · 800</span>
+      </div>
+      <h1 style="font-family: 'Sora', Inter, sans-serif; font-size: 56px; font-weight: 800; line-height: 1.05; letter-spacing: -.035em; margin: 0;">
+        O context map <span class="grad">aponta os erros</span> que você não vê.
+      </h1>
+      <div style="display: flex; align-items: baseline; gap: 26px; margin-top: 24px;">
+        <span style="font-family: 'Sora', Inter, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -.03em;">Sintaxe perfeita. Arquitetura cara.</span>
+        <span style="font-family: 'Sora', Inter, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.045em;">odds</span>
+      </div>
+      <p class="note" style="margin-top: 22px;">
+        <span class="ok">A favor:</span> geométrica como a Montserrat, mas mais fechada e menos vista — descaracteriza sem chamar atenção para si. Excelente em peso 800 e em corpos grandes.
+        <br><span class="ok">Contra:</span> em corpo pequeno perde personalidade e fica parecida com a Inter, então serve só para display mesmo. Acentuação um pouco mais tímida que a da Montserrat.
+      </p>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; border-left: 3px solid rgb(var(--c-solar)); padding: 4px 0 4px 18px;">
+    <p class="note" style="font-size: 14px;">
+      <span class="ok">Minha leitura, e é só isso:</span> a Montserrat cumpre o pedido e o resultado está bom — a v3 está com ela. Se o objetivo for descaracterizar ao máximo, a <span class="ok">Space Grotesk</span> vai mais longe, porque parece de outra família e ainda amarra com a mono do editor. Troco em um passe: é uma linha de <span class="mono" style="font-size: 13px;">font-family</span> e um ajuste de tracking.
+    </p>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
