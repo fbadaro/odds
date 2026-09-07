@@ -54,9 +54,40 @@ function runCase(name: string) {
   return { expected, actual, astGenerated: result.astGenerated };
 }
 
+/**
+ * Igualdade estrutural, a mesma de `toEqual`, devolvida como booleano: o
+ * caminho pendente precisa do *resultado* da comparação, não da falha.
+ */
+function matches(actual: unknown, expected: unknown): boolean {
+  try {
+    expect(actual).toEqual(expected);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 describe("golden files (TEST_SUITE.md §3)", () => {
   it("encontra os 44 casos da suíte", () => {
     expect(cases).toHaveLength(44);
+  });
+
+  it("a comparação de pendência é estrutural, não textual", () => {
+    const span = { start: { line: 1, column: 1 }, end: { line: 1, column: 2 } };
+    const a = [{ severity: "error", code: "X", data: {}, span }];
+    // Mesmo conteúdo, chaves em outra ordem — o que `JSON.stringify` não vê.
+    const b = [
+      {
+        code: "X",
+        severity: "error",
+        span: { end: { column: 2, line: 1 }, start: { column: 1, line: 1 } },
+        data: {},
+      },
+    ];
+
+    expect(JSON.stringify(a)).not.toBe(JSON.stringify(b));
+    expect(matches(a, b)).toBe(true);
+    expect(matches(a, [{ ...a[0], code: "Y" }])).toBe(false);
   });
 
   for (const name of cases) {
@@ -70,10 +101,14 @@ describe("golden files (TEST_SUITE.md §3)", () => {
         return;
       }
       // Pendente: precisa continuar divergindo. Se passou, saiu da pendência e
-      // a entrada em PENDING tem de ser removida.
+      // a entrada em PENDING tem de ser removida. A comparação é a mesma do
+      // caminho não pendente — `toEqual`, estrutural — para que "conforma"
+      // signifique exatamente o mesmo dos dois lados. Comparar texto JSON aqui
+      // diria "não conforma" só porque as chaves saíram em outra ordem, e o
+      // caso apodreceria em PENDING sem ninguém ser avisado.
       const conforms =
         astGenerated === expected.astGenerated &&
-        JSON.stringify(actual) === JSON.stringify(expected.diagnostics);
+        matches(actual, expected.diagnostics);
       expect(conforms, `${name} agora passa — remova de PENDING`).toBe(false);
     });
   }
