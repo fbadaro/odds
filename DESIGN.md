@@ -24,9 +24,11 @@ O vocabulário abaixo foi extraído de uma referência trazida pelo autor: <http
 | Sombra colorida com espalhamento negativo | `0 18px 44px -22px rgb(accent / .28)` — sombra que tinge em vez de escurecer |
 | Malha de fundo | Grade de 28px a ~7% do acento, atrás do herói e do canvas |
 
-**Não tomado, e é deliberado:** a paleta (violeta + ciano é a identidade *deles*), o nome, a marca, a estrutura das páginas, a ilustração e qualquer texto. Uma referência ensina como um sistema se organiza; copiar a identidade seria vestir a roupa de outro produto — e a ODDS tem uma tese própria para comunicar, a de um linter que julga desenho estratégico.
+**Também tomado, por decisão do autor em 2026-09-07 (segunda rodada):** a *direção* de paleta — **roxo como cor principal, com gradientes entre azul e roxo** — e o **fundo de manchas desfocadas**. A primeira versão deste arquivo dizia que a paleta não seria tomada e que o acento seria o azul de planta dos mocks; isso mudou por escolha explícita, e fica registrado aqui em vez de sumir. Os valores são nossos, harmonizados para esta interface — não os hexadecimais da referência.
 
-O acento da ODDS é o **azul de planta** que já vinha sendo usado nos mocks (`docs/design/README.md`), não o violeta da referência.
+**Não tomado, e segue não sendo:** o nome, a marca, a estrutura das páginas, a ilustração e qualquer texto. Uma referência ensina como um sistema se organiza e que temperatura ele tem; a identidade continua sendo coisa de cada produto — e a ODDS tem uma tese própria para comunicar, a de um linter que julga desenho estratégico.
+
+**Consequência a resolver:** o canvas do playground estilizado ainda mostra o acento antigo (azul de planta). Ele fica incoerente com este arquivo até ser refeito.
 
 ---
 
@@ -72,15 +74,16 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
 ```css
 :root {
   color-scheme: light;
-  --c-bg:        248 248 246;  /* #F8F8F6  fundo da página */
+  --c-bg:        250 250 253;  /* #FAFAFD  fundo da página */
   --c-panel:     255 255 255;  /* #FFFFFF  card, ilha, painel */
-  --c-panel2:    242 242 238;  /* #F2F2EE  faixa, trilho, estado inativo */
-  --c-border:    230 230 225;  /* #E6E6E1 */
-  --c-ink:        27  27  25;  /* #1B1B19  texto primário */
-  --c-dim:       110 110 103;  /* #6E6E67  texto secundário */
-  --c-accent:     43  76 140;  /* #2B4C8C  azul de planta: ação e seleção */
-  --c-accent-lift: 60 107 196; /* #3C6BC4  topo do gradiente do botão primário */
-  --c-pulse:      15 124 138;  /* #0F7C8A  segundo acento, uso escasso */
+  --c-panel2:    244 243 250;  /* #F4F3FA  faixa, trilho, estado inativo */
+  --c-border:    230 228 242;  /* #E6E4F2 */
+  --c-ink:        27  26  36;  /* #1B1A24  texto primário */
+  --c-dim:       107 104 128;  /* #6B6880  texto secundário */
+  --c-accent:    108  64 217;  /* #6C40D9  roxo: ação e seleção */
+  --c-accent-lift:138  91 240; /* #8A5BF0  topo do gradiente do botão primário */
+  --c-azure:      61 111 232;  /* #3D6FE8  ponta azul do gradiente azul→roxo */
+  --c-pulse:      35 168 205;  /* #23A8CD  segundo acento, uso escasso */
   --c-error:     192  52  43;  /* #C0342B */
   --c-warning:   166 106   0;  /* #A66A00 */
   --c-info:       91 107 124;  /* #5B6B7C */
@@ -93,15 +96,16 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
 ```css
 [data-theme="dark"] {
   color-scheme: dark;
-  --c-bg:         23  23  21;  /* #171715 */
-  --c-panel:      30  30  27;  /* #1E1E1B */
-  --c-panel2:     38  38  34;  /* #262622 */
-  --c-border:     51  51  45;  /* #33332D */
-  --c-ink:       242 241 236;  /* #F2F1EC */
-  --c-dim:       163 162 154;  /* #A3A29A */
-  --c-accent:    127 166 232;  /* #7FA6E8 */
-  --c-accent-lift: 157 189 242;/* #9DBDF2 */
-  --c-pulse:      79 200 214;  /* #4FC8D6 */
+  --c-bg:         18  17  26;  /* #12111A */
+  --c-panel:      26  25  38;  /* #1A1926 */
+  --c-panel2:     35  33  47;  /* #23212F */
+  --c-border:     50  47  69;  /* #322F45 */
+  --c-ink:       236 235 245;  /* #ECEBF5 */
+  --c-dim:       154 151 174;  /* #9A97AE */
+  --c-accent:    173 141 255;  /* #AD8DFF */
+  --c-accent-lift:198 176 255; /* #C6B0FF */
+  --c-azure:     125 163 255;  /* #7DA3FF */
+  --c-pulse:      94 208 238;  /* #5ED0EE */
   --c-error:     224 121 111;  /* #E0796F */
   --c-warning:   217 164  65;  /* #D9A441 */
   --c-info:      147 163 179;  /* #93A3B3 */
@@ -109,13 +113,13 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
 }
 ```
 
-O escuro é **neutro quente**, a mesma família do claro invertida — não azul-acinzentado. Acento e pulse clareiam no escuro; manter o mesmo hex nos dois temas é o erro clássico, e ele aparece como um botão que some no fundo.
+Os neutros são **frios, com um sopro de violeta** (o cinza tem hue de roxo, não de bege): neutro quente ao lado de acento roxo lê como sujeira. O escuro é a mesma família invertida. Acento e pulse clareiam no escuro; manter o mesmo hex nos dois temas é o erro clássico, e ele aparece como um botão que some no fundo.
 
 ### Três regras de cor, e elas não são estéticas
 
 1. **Acento nunca comunica severidade.** Azul é *ação e seleção*; erro, aviso e info têm as três cores funcionais e mais nada. Um botão azul dentro de uma linha de erro não vira "erro azul" — continua sendo um botão.
 2. **Severidade nunca depende só de cor.** Cada uma carrega ícone próprio — círculo com X, triângulo, círculo com i —, porque daltonismo e export em escala de cinza são reais, e o `PRD.md` §5.2 manda o export sair *com* os marcadores.
-3. **O gradiente aparece no máximo duas vezes por tela:** uma no botão primário, uma opcional numa expressão do título de herói. A partir da terceira, ele deixa de ser ênfase e vira textura.
+3. **O gradiente é sempre azul → roxo**, na mesma ordem (`--c-azure` → `--c-accent`), e aparece no máximo **duas vezes por tela**: uma no botão primário, uma numa expressão do título de herói. A partir da terceira ele deixa de ser ênfase e vira textura. Gradiente nunca atravessa texto de leitura — só título de display e superfície de botão.
 
 ---
 
@@ -136,6 +140,39 @@ Quatro níveis e nada mais: **repouso** (`sm`, borda de 1px faz o trabalho), **c
 Sombra nunca sai de cor funcional: não existe sombra vermelha em elemento com erro. O marcador comunica; a sombra é profundidade.
 
 ---
+
+## 4.1 Atmosfera: manchas desfocadas
+
+O fundo da landing não é chapado. Quatro a cinco **manchas** circulares, muito desfocadas e muito esmaecidas, ficam atrás de tudo e derivam devagar. É o que dá profundidade sem sujar nenhuma superfície de leitura.
+
+```css
+.blob { position: absolute; border-radius: 50%; filter: blur(64px);
+        background: radial-gradient(circle, <cor>, transparent 65%); }
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(3%, -4%) scale(1.06); }
+  66%      { transform: translate(-3%, 3%) scale(.97); }
+}
+/* 16s ease-in-out infinite, com delay NEGATIVO diferente em cada mancha */
+```
+
+Regras que fazem a diferença entre atmosfera e borrão:
+
+- **Tamanho grande, opacidade baixa:** 22–34rem de diâmetro, opacidade entre **0,28 e 0,50**. Mancha pequena e forte vira bola; grande e fraca vira luz.
+- **Blur de 64px, sempre.** Menos que isso deixa a borda visível e o efeito vira adesivo.
+- **Delay negativo por mancha** (`-5s`, `-9s`, `-12s`): sem isso as quatro pulsam em uníssono e o fundo respira como um bicho.
+- **Paleta pálida, dentro da família azul→roxo:** violeta claro, azul claro, ciano claro. Uma quarta mancha pode sair da família para dar variação, nunca duas — o fundo é atmosfera, não arco-íris.
+- **Nunca atrás de texto pequeno.** Manchas vivem no herói, no CTA final e nas bordas das seções; texto de leitura fica sobre superfície plana.
+- Em `prefers-reduced-motion: reduce` elas **param** — continuam ali, sem deriva.
+
+## 4.2 Arte do herói
+
+O herói leva um **SVG desenhado à mão, animado por traço** — arestas que se desenham com `stroke-dashoffset`, um nó que pulsa, um marcador de aviso que aparece por último. A animação é uma passada só, não um laço: ela conta *o que a ferramenta faz*, e depois sai da frente.
+
+Duas restrições, e a segunda importa mais do que parece:
+
+1. Sem dependência: SVG inline, animado em CSS. Nada de biblioteca de animação por causa de uma ilustração.
+2. **A arte do herói é ilustração, não especificação de render.** Ela é deliberadamente abstrata — sem rótulo de contexto, sem tag desenhada na linha — porque o desenho do diagrama de verdade espera a escolha da biblioteca (`ADR-0007`). Se a ilustração ficar fiel demais, ela decide por antecipação o que aquele ADR mantém em aberto.
 
 ## 5. Forma
 

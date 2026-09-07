@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --c-bg: 250 250 253; --c-panel: 255 255 255; --c-panel2: 244 243 250;
+      --c-border: 230 228 242; --c-ink: 27 26 36; --c-dim: 107 104 128;
+      --c-accent: 108 64 217; --c-accent-lift: 138 91 240; --c-azure: 61 111 232; --c-pulse: 35 168 205;
+      --c-error: 192 52 43; --c-warning: 166 106 0; --c-info: 91 107 124;
+    }
+    body { margin: 0; font-family: "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: rgb(var(--c-accent)); } a:hover { color: rgb(var(--c-accent-lift)); }
+    .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+    .eyebrow { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .22em; color: rgb(var(--c-dim)); }
+    .card { border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 16px; padding: 20px; box-shadow: 0 18px 44px -22px rgb(var(--c-accent) / .3); }
+    .grad { background: linear-gradient(100deg, rgb(var(--c-azure)), rgb(var(--c-accent))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel) / .9); border-radius: 999px; padding: 6px 12px; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11.5px; color: rgb(var(--c-dim)); }
+    .chip { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; border-radius: 6px; padding: 2px 6px; }
+    .btn1 { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: 12px; font-size: 15px; font-weight: 600; color: #FFFFFF; background: linear-gradient(120deg, rgb(var(--c-azure)), rgb(var(--c-accent))); box-shadow: 0 10px 30px -8px rgb(var(--c-accent) / .55); }
+    .btn2 { display: flex; align-items: center; justify-content: center; height: 50px; border-radius: 12px; font-size: 15px; font-weight: 600; background: rgb(var(--c-panel)); border: 1px solid rgb(var(--c-border)); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(64px); pointer-events: none; animation: blob 16s ease-in-out infinite; }
+    @keyframes blob { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(3%,-4%) scale(1.06); } 66% { transform: translate(-3%,3%) scale(.97); } }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes appear { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+    .edge { stroke-dasharray: 200; stroke-dashoffset: 200; animation: draw 1.1s cubic-bezier(.4,.8,.3,1) forwards; }
+    .node { opacity: 0; animation: appear .5s cubic-bezier(.2,.7,.2,1) forwards; }
+    .mark { opacity: 0; animation: appear .45s cubic-bezier(.2,.7,.2,1) 2.2s forwards; }
+    @media (prefers-reduced-motion: reduce) {
+      .blob { animation: none; }
+      .edge { stroke-dashoffset: 0; animation: none; }
+      .node, .mark { opacity: 1; animation: none; }
+    }
+  </style>
+</helmet>
+
+<div style="width: 390px; background: rgb(var(--c-bg)); color: rgb(var(--c-ink)); position: relative; overflow: hidden;">
+
+  <div class="blob" style="left: -140px; top: -120px; width: 22rem; height: 22rem; opacity: .5; background: radial-gradient(circle, #CDB8FF, transparent 65%);"></div>
+  <div class="blob" style="right: -130px; top: 60px; width: 20rem; height: 20rem; opacity: .4; background: radial-gradient(circle, #B7D2FF, transparent 65%); animation-delay: -6s;"></div>
+  <div class="blob" style="left: -80px; top: 1560px; width: 20rem; height: 20rem; opacity: .3; background: radial-gradient(circle, #A9E8F5, transparent 65%); animation-delay: -10s;"></div>
+
+  <div style="position: relative; height: 60px; border-bottom: 1px solid rgb(var(--c-border) / .7); background: rgb(var(--c-panel) / .6); backdrop-filter: blur(12px); display: flex; align-items: center; padding: 0 20px;">
+    <span class="mono" style="font-size: 16px; font-weight: 500; letter-spacing: -.03em;">odds</span>
+    <span style="flex-grow: 1;"></span>
+    <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: rgb(var(--c-dim));">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </div>
+  </div>
+
+  <div style="position: relative; padding: 36px 20px 32px;">
+    <span class="pill" style="color: rgb(var(--c-accent)); border-color: rgb(var(--c-accent) / .28);">
+      <span style="width: 6px; height: 6px; border-radius: 50%; background: rgb(var(--c-accent));"></span>DDD estratégico · 100% no navegador
+    </span>
+    <h1 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 37px; font-weight: 700; line-height: 1.06; letter-spacing: -.025em; margin: 18px 0 0;">
+      O context map que <span class="grad">aponta os próprios erros</span>.
+    </h1>
+    <p style="font-size: 16px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 16px 0 0;">Escreva domínios, subdomínios e bounded contexts em texto. O diagrama aparece enquanto você digita — e 35 regras dizem, na linha exata, onde o mapa se contradiz.</p>
+
+    <div style="display: flex; justify-content: center; margin: 24px 0 4px;">
+      <svg width="330" height="230" viewBox="0 0 520 360" fill="none" role="img" aria-label="Três contextos ligados por relações; uma delas recebe um marcador de aviso">
+        <defs>
+          <linearGradient id="mg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3D6FE8"/><stop offset="100%" stop-color="#6C40D9"/></linearGradient>
+          <radialGradient id="mglow"><stop offset="0%" stop-color="#6C40D9" stop-opacity=".16"/><stop offset="100%" stop-color="#6C40D9" stop-opacity="0"/></radialGradient>
+        </defs>
+        <circle cx="260" cy="180" r="180" fill="url(#mglow)"/>
+        <path class="edge" d="M150 108 H 330" stroke="url(#mg1)" stroke-width="2.4" stroke-linecap="round" style="animation-delay: .5s"/>
+        <path class="edge" d="M96 146 V 232 H 214" stroke="url(#mg1)" stroke-width="2.4" stroke-linecap="round" style="animation-delay: .9s"/>
+        <path d="M386 146 V 268 H 300" stroke="rgb(166 106 0)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="7 6" opacity=".9"/>
+        <g class="node" style="animation-delay: .1s">
+          <rect x="26" y="80" width="124" height="66" rx="14" fill="#FFFFFF" stroke="rgb(230 228 242)"/>
+          <rect x="44" y="100" width="58" height="7" rx="3.5" fill="rgb(108 64 217)" opacity=".75"/>
+          <rect x="44" y="116" width="84" height="6" rx="3" fill="rgb(107 104 128)" opacity=".3"/>
+        </g>
+        <g class="node" style="animation-delay: .35s">
+          <rect x="330" y="80" width="124" height="66" rx="14" fill="#FFFFFF" stroke="rgb(230 228 242)"/>
+          <rect x="348" y="100" width="48" height="7" rx="3.5" fill="rgb(61 111 232)" opacity=".75"/>
+          <rect x="348" y="116" width="80" height="6" rx="3" fill="rgb(107 104 128)" opacity=".3"/>
+        </g>
+        <g class="node" style="animation-delay: .7s">
+          <rect x="196" y="238" width="124" height="66" rx="14" fill="#FFFFFF" stroke="rgb(230 228 242)"/>
+          <rect x="214" y="258" width="54" height="7" rx="3.5" fill="rgb(35 168 205)" opacity=".8"/>
+          <rect x="214" y="274" width="76" height="6" rx="3" fill="rgb(107 104 128)" opacity=".3"/>
+        </g>
+        <g class="mark">
+          <circle cx="386" cy="96" r="15" fill="#FFFFFF" stroke="rgb(166 106 0)" stroke-width="2"/>
+          <path d="M386 89 l6.5 12 h-13 z" fill="rgb(166 106 0)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
+      <span class="btn1">Abrir o playground
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M12 5l7 7-7 7"/></svg>
+      </span>
+      <span class="btn2">Ver um exemplo pronto</span>
+    </div>
+    <p class="mono" style="font-size: 11.5px; color: rgb(var(--c-dim)); margin-top: 16px; line-height: 1.6;">sem conta · sem instalação · o que você escreve não sai do navegador</p>
+  </div>
+
+  <div style="position: relative; border-top: 1px solid rgb(var(--c-border) / .7); border-bottom: 1px solid rgb(var(--c-border) / .7); background: rgb(var(--c-panel) / .6); backdrop-filter: blur(12px); padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 8px;">
+    <span class="pill">35 regras</span><span class="pill">9 tags</span><span class="pill">44 casos verdes</span><span class="pill">0 servidores</span>
+  </div>
+
+  <div style="position: relative; padding: 36px 20px;">
+    <span class="eyebrow">Como funciona</span>
+    <h2 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 12px 0 0;">Três passos, e o terceiro é o que ninguém mais faz.</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+      <div class="card" style="padding: 18px;">
+        <span class="mono" style="font-size: 11.5px; font-weight: 500; color: rgb(var(--c-accent)); background: rgb(var(--c-accent) / .09); border-radius: 999px; padding: 3px 10px;">01</span>
+        <h3 style="font-size: 17px; font-weight: 600; margin: 12px 0 0;">Escreva</h3>
+        <p style="font-size: 14px; line-height: 1.55; color: rgb(var(--c-dim)); margin: 7px 0 0;">Um arquivo de texto que cabe num pull request.</p>
+      </div>
+      <div class="card" style="padding: 18px;">
+        <span class="mono" style="font-size: 11.5px; font-weight: 500; color: rgb(var(--c-accent)); background: rgb(var(--c-accent) / .09); border-radius: 999px; padding: 3px 10px;">02</span>
+        <h3 style="font-size: 17px; font-weight: 600; margin: 12px 0 0;">Veja</h3>
+        <p style="font-size: 14px; line-height: 1.55; color: rgb(var(--c-dim)); margin: 7px 0 0;">O diagrama se redesenha a cada tecla, em duas vistas. Sem arrastar caixa nenhuma.</p>
+      </div>
+      <div class="card" style="padding: 18px; border-color: rgb(var(--c-accent) / .3);">
+        <span class="mono" style="font-size: 11.5px; font-weight: 500; color: #FFFFFF; background: linear-gradient(120deg, rgb(var(--c-azure)), rgb(var(--c-accent))); border-radius: 999px; padding: 3px 10px;">03</span>
+        <h3 style="font-size: 17px; font-weight: 600; margin: 12px 0 0;">Ouça o que ele tem a dizer</h3>
+        <p style="font-size: 14px; line-height: 1.55; color: rgb(var(--c-dim)); margin: 7px 0 0;">Um Core Domain se conformando a um sistema legado não é erro de sintaxe — é uma decisão cara.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="position: relative; padding: 36px 20px; border-top: 1px solid rgb(var(--c-border) / .7); background: rgb(var(--c-panel) / .75);">
+    <span class="eyebrow">O que ele pega</span>
+    <h2 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 12px 0 18px;">Sintaxe perfeita, arquitetura cara.</h2>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="height: 36px; display: flex; align-items: center; padding: 0 14px; border-bottom: 1px solid rgb(var(--c-border));">
+        <span class="mono" style="font-size: 12px; color: rgb(var(--c-dim));">vendas.odds</span>
+      </div>
+      <div class="mono" style="font-size: 12px; line-height: 21px; padding: 12px 14px;">
+        <div><span style="color: rgb(var(--c-accent)); font-weight: 500;">subdomain core</span> Checkout <span style="color: rgb(var(--c-dim) / .7);">{</span></div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">context</span> Pagamento</div>
+        <div><span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+        <div><span style="color: rgb(var(--c-accent)); font-weight: 500;">mapping</span> <span style="color: rgb(var(--c-dim) / .7);">{</span></div>
+        <div style="background: rgb(var(--c-warning) / .09); margin: 0 -14px; padding: 0 12px; border-left: 2px solid rgb(var(--c-warning));">&nbsp;Pagamento <span style="background: rgb(var(--c-panel2)); border-radius: 4px; padding: 0 4px;">[CF]</span> &lt;-- ERPLegado</div>
+        <div><span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+      </div>
+      <div style="border-top: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel2) / .6); padding: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgb(166 106 0)" stroke-width="2.2" stroke-linejoin="round"><path d="M12 4l9 16H3z"/></svg>
+          <span class="chip" style="color: rgb(122 78 0); background: rgb(var(--c-warning) / .12);">CONFORMIST_CORE</span>
+          <span class="mono" style="font-size: 11px; color: rgb(var(--c-dim)); margin-left: auto;">L5:12</span>
+        </div>
+        <p style="font-size: 13.5px; line-height: 1.5; margin: 9px 0 0;">O contexto de Core Domain <span class="mono" style="font-size: 12px;">Pagamento</span> está se conformando ao modelo de outro sistema. Considere um <span class="mono" style="font-size: 12px;">[ACL]</span>.</p>
+      </div>
+    </div>
+    <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 16px 0 0;">O arquivo está <strong style="color: rgb(var(--c-ink)); font-weight: 600;">sintaticamente perfeito</strong>. O que a ODDS viu foi outra coisa — e é o tipo de leitura que um quadro branco não faz.</p>
+  </div>
+
+  <div style="position: relative; padding: 36px 20px;">
+    <span class="eyebrow">Três severidades</span>
+    <h2 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 12px 0 0;">Nenhuma delas apaga o seu diagrama.</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 18px;">
+      <div style="display: flex; align-items: center; gap: 10px; border: 1px solid rgb(var(--c-border)); border-radius: 12px; background: rgb(var(--c-panel)); padding: 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(192 52 43)" stroke-width="2.2" stroke-linecap="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <div><span style="font-size: 14px; font-weight: 600;">error</span><p style="font-size: 13px; color: rgb(var(--c-dim)); margin: 3px 0 0;">o modelo se contradiz</p></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; border: 1px solid rgb(var(--c-border)); border-radius: 12px; background: rgb(var(--c-panel)); padding: 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(166 106 0)" stroke-width="2.2" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 4l9 16H3z"/></svg>
+        <div><span style="font-size: 14px; font-weight: 600;">warning</span><p style="font-size: 13px; color: rgb(var(--c-dim)); margin: 3px 0 0;">o desenho é arriscado</p></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; border: 1px solid rgb(var(--c-border)); border-radius: 12px; background: rgb(var(--c-panel)); padding: 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(91 107 124)" stroke-width="2.2" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round"/></svg>
+        <div><span style="font-size: 14px; font-weight: 600;">info</span><p style="font-size: 13px; color: rgb(var(--c-dim)); margin: 3px 0 0;">higiene do mapa</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="position: relative; padding: 44px 20px 48px; border-top: 1px solid rgb(var(--c-border) / .7); text-align: center;">
+    <h2 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -.025em; line-height: 1.12; margin: 0;">Escreva nove linhas e veja <span class="grad">o que elas dizem de você</span>.</h2>
+    <p style="font-size: 15px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 14px 0 0;">O playground abre com um modelo pronto e roda inteiro no seu navegador.</p>
+    <span class="btn1" style="margin-top: 22px;">Abrir o playground</span>
+  </div>
+
+  <div style="position: relative; border-top: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); padding: 22px 20px; display: flex; align-items: center; gap: 12px;">
+    <span class="mono" style="font-size: 14px; font-weight: 500; letter-spacing: -.03em;">odds</span>
+    <span style="font-size: 12px; color: rgb(var(--c-dim));">Open Domain Driven Specification</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
