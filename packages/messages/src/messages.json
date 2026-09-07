@@ -1,0 +1,164 @@
+{
+  "CONFORMIST_CORE": {
+    "variantKey": "trigger",
+    "variants": {
+      "conformist": {
+        "en": "Strategic risk: the Core Domain context `{context}` is conforming to another system's model. Consider an `[ACL]` to protect your competitive advantage.",
+        "pt": "Risco estratégico: o contexto de Core Domain `{context}` está se conformando ao modelo de outro sistema. Considere um `[ACL]` para proteger sua vantagem competitiva."
+      },
+      "bbm": {
+        "en": "Strategic risk: the Core Domain context `{context}` depends on a Big Ball of Mud system. Consider an `[ACL]` to keep the mess from spreading.",
+        "pt": "Risco estratégico: o contexto de Core Domain `{context}` depende de um sistema Big Ball of Mud. Considere um `[ACL]` para impedir que a bagunça se propague."
+      }
+    }
+  },
+  "CORE_IN_SHARED_KERNEL": {
+    "en": "The Core Domain context `{core}` shares a kernel with `{other}`. A Shared Kernel is physical model coupling — your competitive advantage can no longer evolve on its own.",
+    "pt": "O contexto de Core Domain `{core}` compartilha um kernel com `{other}`. Um Shared Kernel é acoplamento físico de modelo — sua vantagem competitiva deixa de poder evoluir sozinha."
+  },
+  "CORE_UPSTREAM_OF_GENERIC": {
+    "en": "The Core Domain context `{core}` is Upstream of the generic context `{generic}`. Strategic design points the other way: the core consumes the generic, not the reverse.",
+    "pt": "O contexto de Core Domain `{core}` está Upstream do contexto genérico `{generic}`. O desenho estratégico aponta na direção oposta: o core consome o genérico, não o contrário."
+  },
+  "DOMAIN_WITHOUT_CORE": {
+    "en": "The domain `{domain}` declares no `core` subdomain. A strategic map should say where the competitive advantage lives.",
+    "pt": "O domain `{domain}` não declara nenhum subdomínio `core`. Um mapa estratégico deveria dizer onde vive a vantagem competitiva."
+  },
+  "DOWNSTREAM_ONLY_TAG_MISPLACED": {
+    "en": "`[{tag}]` can only be declared on the Downstream side of the integration — the side that consumes.",
+    "pt": "`[{tag}]` só pode ser declarada no lado Downstream da integração — o lado que consome."
+  },
+  "DUPLICATE_CONTEXT": {
+    "en": "The context `{context}` is declared more than once. Context names must be unique across the whole domain, including the `external` block.",
+    "pt": "O contexto `{context}` foi declarado mais de uma vez. Nomes de contexto devem ser únicos em todo o domain, inclusive no bloco `external`."
+  },
+  "DUPLICATE_RELATIONSHIP": {
+    "en": "`{left}` and `{right}` are already related on line {firstLine}. A pair of contexts has exactly one relationship — merge the two lines into one.",
+    "pt": "`{left}` e `{right}` já se relacionam na linha {firstLine}. Um par de contextos tem exatamente uma relação — junte as duas linhas em uma."
+  },
+  "DUPLICATE_SUBDOMAIN": {
+    "en": "The subdomain `{subdomain}` is declared more than once. Subdomain names must be unique within the domain.",
+    "pt": "O subdomínio `{subdomain}` foi declarado mais de uma vez. Nomes de subdomínio devem ser únicos dentro do domain."
+  },
+  "EMPTY_SUBDOMAIN": {
+    "en": "The subdomain `{subdomain}` declares no context.",
+    "pt": "O subdomínio `{subdomain}` não declara nenhum contexto."
+  },
+  "EXCESSIVE_SHARED_KERNEL": {
+    "en": "This file declares {count} shared kernels. Each one couples two teams physically; use them sparingly.",
+    "pt": "Este arquivo declara {count} shared kernels. Cada um acopla fisicamente dois times; use com parcimônia."
+  },
+  "EXTERNAL_ONLY_RELATIONSHIP": {
+    "en": "`{left}` and `{right}` are both external systems. A context map documents *your* integrations; how two third parties talk to each other is not your decision to record.",
+    "pt": "`{left}` e `{right}` são ambos sistemas externos. Um context map documenta as *suas* integrações; como dois terceiros conversam entre si não é decisão sua a registrar."
+  },
+  "GENERIC_WITHOUT_OHS": {
+    "en": "`{context}` is Upstream and belongs to the generic subdomain `{subdomain}`, but exposes no `[OHS]`. Generic solutions should provide well-defined services; without one, the coupling is hidden.",
+    "pt": "`{context}` está Upstream e pertence ao subdomínio genérico `{subdomain}`, mas não expõe nenhum `[OHS]`. Soluções genéricas deveriam fornecer serviços bem definidos; sem um, o acoplamento fica escondido."
+  },
+  "INCOMPLETE_CUSTOMER_SUPPLIER": {
+    "en": "`{context}` declares `[{declared}]`, but the other side does not declare `[{missing}]`. Customer/Supplier is a bilateral agreement, and half of it documents half a contract.",
+    "pt": "`{context}` declara `[{declared}]`, mas o outro lado não declara `[{missing}]`. Customer/Supplier é um acordo bilateral, e metade dele documenta meio contrato."
+  },
+  "INCOMPLETE_MUTUAL_TAG": {
+    "en": "`[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the {declaredSide} side.",
+    "pt": "`[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado {declaredSide}."
+  },
+  "INCONSISTENT_BBM": {
+    "en": "`{context}` carries `[BBM]` on {withBbm} relationship(s) and not on {withoutBbm}. `[BBM]` characterises the system, so it should appear on every relationship that touches it.",
+    "pt": "`{context}` carrega `[BBM]` em {withBbm} relação(ões) e não carrega em {withoutBbm}. `[BBM]` caracteriza o sistema, então deveria aparecer em toda relação que o toca."
+  },
+  "INVALID_DOMAIN_CARDINALITY": {
+    "en": "An ODDS file must declare exactly one `domain`; this one declares {count}.",
+    "pt": "Um arquivo ODDS deve declarar exatamente um `domain`; este declara {count}."
+  },
+  "INVALID_SUBDOMAIN_TYPE": {
+    "en": "`{value}` is not a valid subdomain type for `{subdomain}`. Use only `core`, `supporting` or `generic`.",
+    "pt": "`{value}` não é um tipo de subdomínio válido para `{subdomain}`. Use apenas `core`, `supporting` ou `generic`."
+  },
+  "MALFORMED_SUPPRESSION": {
+    "variantKey": "reason",
+    "variants": {
+      "unknown-code": {
+        "en": "`{code}` is not a known diagnostic code, so this directive suppresses nothing.",
+        "pt": "`{code}` não é um code de diagnóstico conhecido, então esta diretiva não suprime nada."
+      },
+      "missing-justification": {
+        "en": "The suppression of `{code}` has no justification. Write, after the colon, why the rule is being set aside.",
+        "pt": "A supressão de `{code}` está sem justificativa. Escreva, depois dos dois-pontos, por que a regra está sendo deixada de lado."
+      },
+      "not-suppressible": {
+        "en": "`{code}` is an error and can never be suppressed. An error says the model is incoherent, not that the tool disagrees with you.",
+        "pt": "`{code}` é um erro e nunca pode ser suprimido. Um erro diz que o modelo está incoerente, não que a ferramenta discorda de você."
+      }
+    }
+  },
+  "MUTUAL_TAG_ON_DIRECTIONAL": {
+    "en": "`[{tag}]` describes a mutual dependency and cannot be used with `{connector}`. Change the connector to `<->`.",
+    "pt": "`[{tag}]` descreve uma dependência mútua e não pode ser usada com `{connector}`. Troque o conector para `<->`."
+  },
+  "MUTUAL_TAG_WITH_EXTERNAL": {
+    "en": "`[{tag}]` cannot be used with `{external}`: there is no Shared Kernel or Partnership with a third-party system.",
+    "pt": "`[{tag}]` não pode ser usada com `{external}`: não existe Shared Kernel nem Partnership com um sistema de terceiros."
+  },
+  "ORPHAN_CONTEXT": {
+    "en": "The context `{context}` must belong to a subdomain, or be declared inside the `external` block.",
+    "pt": "O contexto `{context}` precisa pertencer a um subdomínio, ou ser declarado dentro do bloco `external`."
+  },
+  "ORPHAN_SUBDOMAIN": {
+    "en": "The subdomain `{subdomain}` is declared outside the scope of a `domain`.",
+    "pt": "O subdomínio `{subdomain}` está declarado fora do escopo de um `domain`."
+  },
+  "PHANTOM_REFERENCE": {
+    "en": "The context `{context}`, referenced in the Context Map, was not declared in any subdomain or in the `external` block.",
+    "pt": "O contexto `{context}`, referenciado no Context Map, não foi declarado em nenhum subdomínio nem no bloco `external`."
+  },
+  "PL_WITHOUT_OHS": {
+    "en": "`{context}` declares `[PL]` without `[OHS]` on the same side. A Published Language is usually published *through* an Open-Host Service.",
+    "pt": "`{context}` declara `[PL]` sem `[OHS]` no mesmo lado. Uma Published Language normalmente é publicada *através de* um Open-Host Service."
+  },
+  "POSITIONAL_TAG_ON_MUTUAL": {
+    "en": "`[{tag}]` is defined by an Upstream/Downstream position, and `<->` has neither.",
+    "pt": "`[{tag}]` é definida por uma posição Upstream/Downstream, e `<->` não tem nenhuma das duas."
+  },
+  "PROTECTION_CONFLICT": {
+    "en": "`{context}` cannot be a Conformist `[CF]` and have an Anti-Corruption Layer `[ACL]` for the same integration.",
+    "pt": "`{context}` não pode ser Conformist `[CF]` e ter uma Anti-Corruption Layer `[ACL]` para a mesma integração."
+  },
+  "REMOVED_CONSTRUCT": {
+    "en": "`{construct}` was removed in ODDS {removedIn} — use `{replacement}` instead.",
+    "pt": "`{construct}` foi removida na ODDS {removedIn} — use `{replacement}` no lugar."
+  },
+  "ROLE_CONFLICT": {
+    "en": "`{context}` cannot be Customer `[C]` and Supplier `[S]` at the same time in the same relationship.",
+    "pt": "`{context}` não pode ser Customer `[C]` e Supplier `[S]` ao mesmo tempo na mesma relação."
+  },
+  "SELF_RELATIONSHIP": {
+    "en": "`{context}` cannot be in a relationship with itself.",
+    "pt": "`{context}` não pode se relacionar consigo mesmo."
+  },
+  "SEPARATION_CONFLICT": {
+    "en": "The `-x-` connector means the absence of integration. Remove the tags {tags}, or change the connector.",
+    "pt": "O conector `-x-` significa ausência de integração. Remova as tags {tags}, ou troque o conector."
+  },
+  "SYNTAX_ERROR": {
+    "en": "Unexpected token `{found}`: expected one of {expected}.",
+    "pt": "Token inesperado `{found}`: esperava um de {expected}."
+  },
+  "UNDOCUMENTED_CONTRACT": {
+    "en": "The integration between `{left}` and `{right}` declares no Context Map pattern. An undeclared relationship hides the real coupling between the teams — add a tag such as `[OHS]`, `[ACL]` or `[CF]`.",
+    "pt": "A integração entre `{left}` e `{right}` não declara nenhum padrão de Context Map. Uma relação não declarada esconde o acoplamento real entre os times — adicione uma tag como `[OHS]`, `[ACL]` ou `[CF]`."
+  },
+  "UNMAPPED_CONTEXT": {
+    "en": "`{context}` is declared but never appears in the `mapping` block.",
+    "pt": "`{context}` está declarado mas nunca aparece no bloco `mapping`."
+  },
+  "UNUSED_SUPPRESSION": {
+    "en": "`{code}` did not fire on the following line — this suppression can be removed.",
+    "pt": "`{code}` não disparou na linha seguinte — esta supressão pode ser removida."
+  },
+  "UPSTREAM_ONLY_TAG_MISPLACED": {
+    "en": "`[{tag}]` can only be declared on the Upstream side of the integration — the side that supplies.",
+    "pt": "`[{tag}]` só pode ser declarada no lado Upstream da integração — o lado que fornece."
+  }
+}

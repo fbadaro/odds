@@ -1,5 +1,6 @@
 {
   "description": "Conector desconhecido ('==>' não é -->, <--, <-> ou -x-). Erro sintático puro: nenhuma AST válida deve ser gerada, e o pipeline para na fase 0 — nenhum outro diagnóstico é emitido, nem mesmo os de arquivo inteiro.",
+  "interpretationNote": "RECONCILIADO CONTRA PARSER REAL (2026-09-05, débito D-001). `expected` dizia '-->, <--, <->, -x-' e passou a incluir '[': naquela posição um tag_group é sintaticamente válido (`Checkout [OHS] --> PaymentGateway`, GRAMMAR.md §3), então omiti-lo afirmava menos do que a gramática permite. O valor não é mais escrito à mão — é derivado da própria gramática pelo parser, e a ordem é a das alternativas na produção. Este é o primeiro caso da suíte cujo `data` foi conferido contra uma implementação em vez de calculado.",
   "astGenerated": false,
   "diagnostics": [
     {
@@ -7,7 +8,7 @@
       "code": "SYNTAX_ERROR",
       "data": {
         "found": "==>",
-        "expected": "-->, <--, <->, -x-"
+        "expected": "[, -->, <--, <->, -x-"
       },
       "span": {
         "start": {

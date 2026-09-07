@@ -1,0 +1,12 @@
+{
+  "name": "@odds/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Lexer, parser, AST e validador da linguagem ODDS. Não conhece texto de mensagem nem locale (ADR-0004).",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "scripts": { "build": "tsc --build" },
+  "dependencies": { "chevrotain": "^11.0.3" }
+}

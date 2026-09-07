@@ -41,3 +41,7 @@ REFERENCES.md
 # Bytecode Python (o health_check.py roda direto da skill)
 __pycache__/
 *.py[cod]
+
+# Vitest
+.vitest-cache/
+*.tsbuildinfo
