@@ -85,6 +85,7 @@ Três, e cada um tem uma função. **A base nunca é alterada por uma proposta**
 | [Landing v1](https://claude.ai/code/artifact/ae6c3f5b-4b65-4cbf-8d34-a1a0622d8571) | `canvas/landing-v1/` | Primeira rodada, acento azul. Mantida para comparação |
 | [Landing v2](https://claude.ai/code/artifact/a5fee108-0126-4a09-bad6-e595b3666644) | `canvas/landing-v2/` | Paleta roxa, manchas, prancheta em perspectiva, texto revisado |
 | [Landing v3](https://claude.ai/code/artifact/033ed552-f039-4091-a3f8-101309f39933) | `canvas/landing-v3/` | Montserrat, amarelo solar, menos empréstimos — **a mais recente** |
+| [Animações do herói](https://claude.ai/code/artifact/17ab2b3e-5287-45b2-b908-d368d75ac4c8) | `canvas/hero-anim/` | Três animações, cada uma apostando numa promessa diferente |
 | [Playground estilizado](https://claude.ai/code/artifact/0d9f30b4-33d3-4754-aec5-a65fe13f1597) | `canvas/playground/` | A base vestida com o `DESIGN.md`, claro e escuro |
 
 O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o que foi tomado da referência (método) e o que não foi (identidade).
@@ -101,6 +102,7 @@ O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o
 - [x] Landing v2 refeita com a referência **vista**, não só lida: prancheta em perspectiva, esteira de codes, respiro maior
 - [x] Landing v3: descaracterização — Montserrat no display, `--c-solar` como terceira cor, pills emprestadas substituídas
 - [ ] Decidir a face de display: Montserrat (aplicada) ou Space Grotesk — quadro de comparação no canvas da v3
+- [ ] Escolher a animação do herói entre A, B e C e levá-la para a landing
 - [ ] Refazer o canvas do playground estilizado com a paleta nova — hoje ele mostra o acento antigo
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler

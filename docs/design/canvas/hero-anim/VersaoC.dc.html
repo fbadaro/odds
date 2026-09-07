@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --c-bg: 250 250 254; --c-panel: 255 255 255; --c-panel2: 244 243 250;
+      --c-border: 230 228 242; --c-ink: 27 26 36; --c-dim: 107 104 128;
+      --c-accent: 108 64 217; --c-azure: 61 111 232; --c-pulse: 35 168 205; --c-solar: 255 197 61;
+      --c-error: 192 52 43; --c-warning: 166 106 0; --c-info: 91 107 124;
+    }
+    body { margin: 0; font-family: "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: rgb(var(--c-accent)); } a:hover { color: rgb(var(--c-azure)); }
+    .cap { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .2em; color: rgb(var(--c-dim)); }
+    .plane { position: absolute; left: 50%; bottom: -70px; width: 1200px; height: 340px; transform: translateX(-50%) perspective(520px) rotateX(66deg); transform-origin: 50% 100%;
+      background-image: linear-gradient(rgb(var(--c-accent) / .14) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--c-accent) / .14) 1px, transparent 1px);
+      background-size: 58px 58px; -webkit-mask-image: linear-gradient(to top, #000 4%, transparent 60%); mask-image: linear-gradient(to top, #000 4%, transparent 60%); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+
+    .C { animation-duration: 13s; animation-timing-function: cubic-bezier(.65,0,.35,1); animation-iteration-count: infinite; }
+    @keyframes mvPag   { 0%,40%{transform:translate(0,0)} 52%,90%{transform:translate(26px,36px)} 100%{transform:translate(0,0)} }
+    @keyframes mvCar   { 0%,40%{transform:translate(0,0)} 52%,90%{transform:translate(-94px,-9px)} 100%{transform:translate(0,0)} }
+    @keyframes mvErp   { 0%,40%{transform:translate(0,0)} 52%,90%{transform:translate(68px,56px)} 100%{transform:translate(0,0)} }
+    @keyframes fadeFlow { 0%,40%{opacity:1} 48%,90%{opacity:0} 98%,100%{opacity:1} }
+    @keyframes fadeCont { 0%,44%{opacity:0} 54%,90%{opacity:1} 97%,100%{opacity:0} }
+    @keyframes chipFlow { 0%,40%{opacity:1;transform:translateY(0)} 46%,92%{opacity:0;transform:translateY(-4px)} 98%,100%{opacity:1;transform:translateY(0)} }
+    @keyframes chipCont { 0%,44%{opacity:0;transform:translateY(4px)} 52%,90%{opacity:1;transform:translateY(0)} 96%,100%{opacity:0;transform:translateY(4px)} }
+    @keyframes ants { to { stroke-dashoffset: -22; } }
+    .ants { animation: ants 1.2s linear infinite; }
+    @media (prefers-reduced-motion: reduce) { .C, .ants { animation: none !important; } }
+  </style>
+</helmet>
+
+<div style="width: 760px; height: 560px; background: rgb(var(--c-bg)); position: relative; overflow: hidden;">
+  <div class="blob" style="left: -120px; top: -110px; width: 22rem; height: 22rem; opacity: .38; background: radial-gradient(circle, #D9C8FF, transparent 66%);"></div>
+  <div class="blob" style="right: -140px; top: 190px; width: 20rem; height: 20rem; opacity: .28; background: radial-gradient(circle, #C3E9F5, transparent 66%);"></div>
+  <div class="plane"></div>
+
+  <div style="position: absolute; left: 26px; top: 22px; display: flex; align-items: center; gap: 9px;">
+    <span style="width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--c-pulse));"></span>
+    <span class="cap">C · as duas vistas</span>
+  </div>
+
+  <!-- alternador de vista, imitando o controle do playground -->
+  <div style="position: absolute; right: 26px; top: 18px; display: flex; padding: 3px; gap: 2px; background: rgb(var(--c-panel)); border: 1px solid rgb(var(--c-border)); border-radius: 12px; box-shadow: 0 2px 10px rgb(27 26 36 / .07);">
+    <span class="C" style="animation-name: chipFlow; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 12px; border-radius: 8px; background: rgb(var(--c-accent) / .1); color: rgb(var(--c-accent));">fluxo</span>
+    <span class="C" style="animation-name: chipCont; font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 12px; border-radius: 8px; background: rgb(var(--c-accent) / .1); color: rgb(var(--c-accent)); margin-left: -62px;">contenção</span>
+  </div>
+
+  <svg width="760" height="470" viewBox="0 0 760 470" fill="none" style="position: absolute; left: 0; top: 62px;" role="img" aria-label="O mesmo modelo alterna entre a vista de fluxo e a vista de contenção, com o bloco external fora da fronteira do domínio">
+    <defs>
+      <linearGradient id="gc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6C40D9"/><stop offset="100%" stop-color="#3D6FE8"/></linearGradient>
+      <radialGradient id="gglow3"><stop offset="0%" stop-color="#6C40D9" stop-opacity=".1"/><stop offset="100%" stop-color="#6C40D9" stop-opacity="0"/></radialGradient>
+    </defs>
+    <circle cx="380" cy="180" r="200" fill="url(#gglow3)"/>
+
+    <!-- fronteiras: só existem na contenção -->
+    <g class="C" style="animation-name: fadeCont">
+      <rect x="170" y="80" width="300" height="210" rx="18" fill="rgb(108 64 217)" fill-opacity=".035" stroke="rgb(108 64 217)" stroke-opacity=".45" stroke-width="1.4"/>
+      <text x="186" y="102" font-family="JetBrains Mono, monospace" font-size="9" fill="rgb(108 64 217)">Vendas · domain</text>
+      <rect x="190" y="124" width="260" height="146" rx="14" fill="#FFFFFF" fill-opacity=".55" stroke="rgb(230 228 242)" stroke-width="1.2"/>
+      <text x="204" y="142" font-family="JetBrains Mono, monospace" font-size="9" fill="rgb(107 104 128)">Checkout · core</text>
+      <rect x="486" y="150" width="140" height="76" rx="14" fill="rgb(61 111 232)" fill-opacity=".035" stroke="rgb(61 111 232)" stroke-opacity=".4" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="500" y="170" font-family="JetBrains Mono, monospace" font-size="9" fill="rgb(61 111 232)">external</text>
+      <path d="M470 186 H 486" stroke="rgb(61 111 232)" stroke-opacity=".4" stroke-width="1.4"/>
+    </g>
+
+    <!-- arestas e tag: só existem no fluxo -->
+    <g class="C" style="animation-name: fadeFlow">
+      <path class="ants" d="M292 132 H 430" stroke="url(#gc)" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 5"/>
+      <path d="M236 154 V 237 H 300" stroke="url(#gc)" stroke-width="2" stroke-linecap="round"/>
+      <g>
+        <rect x="330" y="118" width="46" height="18" rx="6" fill="#FFFFFF" stroke="rgb(230 228 242)"/>
+        <text x="353" y="131" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="rgb(107 104 128)">[BBM]</text>
+      </g>
+    </g>
+
+    <!-- os nós, que apenas mudam de lugar -->
+    <g class="C" style="animation-name: mvPag">
+      <rect x="180" y="110" width="112" height="44" rx="10" fill="rgb(108 64 217)" fill-opacity=".07" stroke="rgb(108 64 217)" stroke-width="1.2"/>
+      <text x="236" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgb(27 26 36)">Pagamento</text>
+      <text x="236" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="rgb(107 104 128)">core</text>
+    </g>
+    <g class="C" style="animation-name: mvCar">
+      <rect x="300" y="215" width="112" height="44" rx="10" fill="rgb(35 168 205)" fill-opacity=".08" stroke="rgb(35 168 205)" stroke-width="1.2"/>
+      <text x="356" y="235" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgb(27 26 36)">Carrinho</text>
+      <text x="356" y="248" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="rgb(107 104 128)">core</text>
+    </g>
+    <g class="C" style="animation-name: mvErp">
+      <rect x="430" y="110" width="112" height="44" rx="10" fill="rgb(61 111 232)" fill-opacity=".07" stroke="rgb(61 111 232)" stroke-width="1.2"/>
+      <text x="486" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgb(27 26 36)">ERP</text>
+      <text x="486" y="143" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="rgb(107 104 128)">external</text>
+    </g>
+
+    <!-- legenda do que a troca ensina -->
+    <g class="C" style="animation-name: fadeCont">
+      <rect x="196" y="322" width="392" height="30" rx="10" fill="#FFFFFF" stroke="rgb(230 228 242)"/>
+      <circle cx="214" cy="337" r="4" fill="rgb(61 111 232)"/>
+      <text x="226" y="341" font-family="Inter, sans-serif" font-size="10.5" fill="rgb(107 104 128)">o bloco <tspan font-family="JetBrains Mono, monospace" font-size="10" fill="rgb(27 26 36)">external</tspan> é desenhado fora da fronteira do domínio</text>
+    </g>
+    <g class="C" style="animation-name: fadeFlow">
+      <rect x="196" y="322" width="392" height="30" rx="10" fill="#FFFFFF" stroke="rgb(230 228 242)"/>
+      <circle cx="214" cy="337" r="4" fill="rgb(108 64 217)"/>
+      <text x="226" y="341" font-family="Inter, sans-serif" font-size="10.5" fill="rgb(107 104 128)"><tspan font-family="JetBrains Mono, monospace" font-size="10" fill="rgb(27 26 36)">[BBM]</tspan> só aparece aqui: a contenção não tem arestas</text>
+    </g>
+  </svg>
+</div>
+</x-dc>
+</body>
+</html>
