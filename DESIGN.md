@@ -86,7 +86,7 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
   --c-accent-lift:138  91 240; /* #8A5BF0  topo do gradiente do botão primário */
   --c-azure:      61 111 232;  /* #3D6FE8  ponta azul do gradiente azul→roxo */
   --c-pulse:      35 168 205;  /* #23A8CD  segundo acento, uso escasso */
-  --c-solar:     255 197  61;  /* #FFC53D  terceira cor: grafismo, nunca estado */
+  --c-solar:     255 197  61;  /* #FFC53D  terceira cor: superfície, nunca tinta */
   --c-error:     192  52  43;  /* #C0342B */
   --c-warning:   166 106   0;  /* #A66A00 */
   --c-info:       91 107 124;  /* #5B6B7C */
@@ -119,15 +119,23 @@ Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
 
 Os neutros são **frios, com um sopro de violeta** (o cinza tem hue de roxo, não de bege): neutro quente ao lado de acento roxo lê como sujeira. O escuro é a mesma família invertida. Acento e pulse clareiam no escuro; manter o mesmo hex nos dois temas é o erro clássico, e ele aparece como um botão que some no fundo.
 
-### O amarelo, e a armadilha que ele traz
+### O amarelo: superfície, nunca tinta
 
 `--c-solar` (#FFC53D) é a terceira cor, e existe para **descaracterizar**: roxo com azul é a assinatura de meio mundo, e o amarelo quebra a temperatura sem brigar com nenhum dos dois — ele é o complementar aproximado do violeta-azul, então soma contraste em vez de disputar.
 
-Ele traz uma armadilha, e ela precisa estar escrita: **amarelo já significa aviso** neste produto. A regra que resolve:
+A regra que governa o uso dele é uma divisão de papéis, e ela é mais estreita do que parece:
 
-- **`--c-solar` é grafismo, nunca estado.** Ele aparece em manchas, no traço do horizonte da prancheta, num sublinhado de destaque, num nó da ilustração, num numeral. Nunca em chip de severidade, nunca em ícone de diagnóstico, nunca como fundo de linha da lista.
-- **A única cor de aviso continua sendo `--c-warning` (#A66A00)** — bem mais escura e menos saturada. Postas lado a lado elas não se confundem: uma é luz, a outra é tinta.
-- **Amarelo nunca é texto.** #FFC53D sobre branco não passa em contraste nenhum. Ele é superfície, traço ou marca — e quando carrega texto, o texto é `--c-ink`.
+> **Roxo e azul são a tinta** — ação, seleção, arestas, gradiente. **Amarelo nunca é tinta: é o chão em que se desenha.** Bloco, faixa, painel, superfície de numeral. Quando carrega texto, o texto é `--c-ink`.
+
+O que essa fronteira resolve de uma vez:
+
+- **Amarelo nunca é texto.** #FFC53D sobre branco não passa em contraste nenhum, e a regra torna isso estrutural em vez de uma lembrança.
+- **A única cor de aviso continua sendo `--c-warning` (#A66A00)** — bem mais escura e menos saturada. E a confusão entre as duas só é possível na escala de chip: uma *faixa inteira* de cor nunca é lida como severidade. Amarelo grande é seguro; amarelo pequeno, ao lado de um diagnóstico, não é.
+- **Amarelo nunca fica atrás nem embaixo de texto.** Marca-texto, sublinhado, realce de trecho — são todos tinta, e estão todos fora.
+
+**O que a v3 tentou e por que caiu**, registrado aqui porque decisão de origem some primeiro: a redação anterior desta seção dizia apenas "grafismo, nunca estado", e por essa fresta passaram uma risca de marca-texto sob a última linha do título do herói e um fundo solar a 55% atrás dos numerais `01`/`02`/`03`. As duas foram recusadas na v4. O defeito não era a cor: era gastar em enfeite o gesto mais carregado deste produto — **marcar alguma coisa aqui é um veredito com severidade** —, numa cor a um passo do `--c-warning`.
+
+**Uma prova de que a regra fecha**, e é o motivo de a composição do herói ser o que é: o marcador de erro da ilustração é vermelho e viraria lama sobre amarelo. Por isso o mapa vive num painel branco *à frente* do bloco solar, nunca em cima dele. O amarelo é o espaço atrás; o veredito acontece no branco.
 
 ### Três regras de cor, e elas não são estéticas
 
@@ -187,12 +195,16 @@ Feita sem imagem e sem biblioteca: um `div` com duas `linear-gradient` de 1px fo
 
 ## 4.2 Arte do herói
 
-O herói leva um **SVG desenhado à mão, animado por traço** — arestas que se desenham com `stroke-dashoffset`, um nó que pulsa, um marcador de aviso que aparece por último. A animação é uma passada só, não um laço: ela conta *o que a ferramenta faz*, e depois sai da frente.
+O herói é um **editor e um mapa lado a lado, ligados por uma passada de animação de 3,4 s**. A cena, fixada na v4 e chamada *o lado da linha*: uma tag está do lado errado do conector — o que é `UPSTREAM_ONLY_TAG_MISPLACED`, fase 4, severidade `error` — e um único gesto a atravessa para o outro lado. O mapa se cura: a aresta costura de vermelho para roxo, o marcador recolhe, o contador rola `1 → 0`.
 
-Duas restrições, e a segunda importa mais do que parece:
+Ela conta *o que a ferramenta faz* e depois sai da frente: uma passada, nunca um laço.
+
+Quatro restrições, e as duas últimas importam mais do que parecem:
 
 1. Sem dependência: SVG inline, animado em CSS. Nada de biblioteca de animação por causa de uma ilustração.
 2. **A arte do herói é ilustração, não especificação de render.** Ela é deliberadamente abstrata — sem rótulo de contexto, sem tag desenhada na linha — porque o desenho do diagrama de verdade espera a escolha da biblioteca (`ADR-0007`). Se a ilustração ficar fiel demais, ela decide por antecipação o que aquele ADR mantém em aberto.
+3. **O que se move é o texto; o mapa reage.** A tag atravessa o conector *no editor*, não sobre a aresta. Isso mantém a restrição 2 ao pé da letra e diz, sem legenda, o que o `ADR-0003` defende: o texto é a fonte única e o diagrama nunca escreve de volta.
+4. **O estado natural do CSS é o mapa curado.** A animação parte do estado acusado e volta ao natural, em vez do contrário. Consequência prática: `prefers-reduced-motion: reduce` desliga tudo e sobra o frame final legível, sem nenhuma media query duplicando valores — e esse frame final é a composição do herói, que é o que a maioria das pessoas vai ver.
 
 ## 5. Forma
 

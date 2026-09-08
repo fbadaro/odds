@@ -1,7 +1,7 @@
 {
   "artboards": [
-    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 3840, "title": "Landing v3 · desktop", "print": "flow" },
-    { "file": "Mobile.dc.html", "x": 1600, "y": 0, "w": 390, "h": 2760, "title": "Landing v3 · 390px" },
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 4700, "title": "Landing v3 · desktop", "print": "flow" },
+    { "file": "Mobile.dc.html", "x": 1600, "y": 0, "w": 390, "h": 3400, "title": "Landing v3 · 390px" },
     { "file": "Tipografia.dc.html", "x": 2120, "y": 0, "w": 1180, "h": 1180, "title": "Teste de face" }
   ],
   "annotations": [
