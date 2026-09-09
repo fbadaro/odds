@@ -8,6 +8,20 @@ Este diretório existe para uma coisa só: **decidir a UI/UX do playground antes
 
 O que está aqui **não é normativo**. O `PRD.md` continua sendo a fonte dos requisitos; onde um mock divergir dele, o PRD está certo e o mock está errado.
 
+## Onde mora o quê
+
+Duas árvores, e a diferença não é organizacional — é o que decide se o arquivo sobrevive ao commit.
+
+| Árvore | O que é | Versionado? |
+|---|---|---|
+| `canvas/<rodada>/` | **Seeds do editor de canvas**: um `.dc.html` por artboard mais o `canvas.json` do layout | Sim. O `odds-*.html` da mesma pasta é o bundle montado a partir deles — regenerável, e **ignorado pelo git** |
+| `pages/` | **Páginas autônomas** escritas à mão, com `<script>`, publicadas como artifact | Sim, integralmente. Ficam fora de `canvas/` justamente porque a regra de ignore não as alcança ali |
+
+Duas consequências práticas, ambas já pagas caro nesta exploração:
+
+- **Página que precisa de JS não cabe em `canvas/`.** Nenhum `.dc.html` deste repositório usa `<script>` (só o `support.js` do próprio editor), e nunca foi testado se o canvas executa script. Tudo que depende de uma engine de animação nasce em `pages/`.
+- **Salvar dentro de `canvas/` é salvar em areia.** Um `.html` que não termine em `.dc.html` ali é apagado do versionamento sem aviso.
+
 ## Fora do escopo, deliberadamente
 
 - **O desenho da renderização do diagrama.** Nós, arestas, tags nas linhas, as duas vistas do §4.4 — tudo depende da biblioteca de layout, que ainda não foi escolhida. Nos mocks a área do diagrama é wireframe neutro. Desenhá-la agora seria decidir a biblioteca por tabela.
@@ -67,7 +81,7 @@ Os quadrados de **modelos prontos** (`PRD.md` §9.3, fase 3) e **ajuda** (§5.1)
 
 ### As outras três continuam existindo
 
-A, B e C saíram do **canvas**, não do repositório: estão em `docs/design/canvas/VarianteA.dc.html`, `VarianteB.dc.html` e `VarianteC.dc.html`, e voltam ao canvas acrescentando o arquivo ao seed. Apagá-las seria perder o registro de *por que* a base é o que é — cada uma carrega um tradeoff que foi recusado por escrito, e recusa sem registro volta como proposta daqui a seis meses.
+A, B e C saíram do **canvas**, não do repositório: estão em `canvas/playground-base/VarianteA.dc.html`, `VarianteB.dc.html` e `VarianteC.dc.html`, e voltam ao canvas acrescentando o arquivo ao seed. Apagá-las seria perder o registro de *por que* a base é o que é — cada uma carrega um tradeoff que foi recusado por escrito, e recusa sem registro volta como proposta daqui a seis meses.
 
 Hipótese nova que a D introduz:
 
@@ -81,7 +95,7 @@ Um por rodada, e cada um tem uma função. **A base nunca é alterada por uma pr
 
 | Canvas | Fonte | Papel |
 |---|---|---|
-| [Base do protótipo](https://claude.ai/code/artifact/648d3fae-b499-46b9-ad3b-8c65fd5976ab) | `canvas/` | A variante D, sem estilo aplicado. É para onde se volta |
+| [Base do protótipo](https://claude.ai/code/artifact/648d3fae-b499-46b9-ad3b-8c65fd5976ab) | `canvas/playground-base/` | A variante D, sem estilo aplicado. É para onde se volta |
 | [Landing v1](https://claude.ai/code/artifact/ae6c3f5b-4b65-4cbf-8d34-a1a0622d8571) | `canvas/landing-v1/` | Primeira rodada, acento azul. Mantida para comparação |
 | [Landing v2](https://claude.ai/code/artifact/a5fee108-0126-4a09-bad6-e595b3666644) | `canvas/landing-v2/` | Paleta roxa, manchas, prancheta em perspectiva, texto revisado |
 | [Landing v3](https://claude.ai/code/artifact/033ed552-f039-4091-a3f8-101309f39933) | `canvas/landing-v3/` | Montserrat, amarelo solar, menos empréstimos |
@@ -93,6 +107,16 @@ Um por rodada, e cada um tem uma função. **A base nunca é alterada por uma pr
 **Um detalhe operacional que custou caro:** o `h` de um artboard é moldura, não escala — o que passa dele é **cortado**, sem aviso. A v3 declarava `3840` e escondia o rodapé inteiro, que só aparecia no preview. Alturas agora nascem folgadas: sobra de moldura só pinta fundo, falta apaga conteúdo.
 
 O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o que foi tomado da referência (método) e o que não foi (identidade).
+
+## Páginas autônomas
+
+Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core, do cdnjs, sem plugin de clube). Cada uma é um artifact publicado; **o link é a identidade da peça**, não o caminho do arquivo — republicar de um caminho diferente cria um artifact novo em vez de atualizar o existente, então republique passando a URL.
+
+| Página | Fonte | O que é |
+|---|---|---|
+| [Bancada do Herói](https://claude.ai/code/artifact/4c8e80fb-022e-483b-b84d-ce7ddf870bf4) | `pages/bancada-heroi.html` | Cinco candidatas a animação de herói (B a F) lado a lado, cada uma com replay, scrub e tabela de beats |
+| [Mapa Vivo](https://claude.ai/code/artifact/f6b601e0-843f-492e-9985-05a460be3ab0) | `pages/mapa-vivo.html` | Estudo de render do Context Map: foco por vizinhança, e um botão que troca a forma do nó entre pill, arredondado e reto. **Encosta no `ADR-0007`** e diz isso na própria página |
+| [Landing v5](https://claude.ai/code/artifact/bf281738-84b3-4795-b4d0-c084a718ce01) | `pages/landing-v5.html` | A v4 inteira com o herói trocado pela opção F |
 
 ## Estado
 
@@ -107,6 +131,10 @@ O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o
 - [x] Landing v3: descaracterização — Montserrat no display, `--c-solar` como terceira cor, pills emprestadas substituídas
 - [x] Landing v4 (2026-09-07): amarelo passa a ser **superfície e nunca tinta**, faixa escura, fluxo em faixa contínua, seção "duas vistas", marquee em uma trilha, wordmark sozinho
 - [x] Animação do herói: **o lado da linha** — a tag atravessa o conector no editor e o mapa se cura. Conceito novo, no lugar das três recusadas
+- [x] Rodada de herói (2026-09-09): cinco candidatas na bancada — B (o mapa que não pisca), C (seis portões), D (a lama tem nome), E (o mapa responde) e F (E no formato do herói)
+- [x] Estudo de render do Context Map, com a ressalva do `ADR-0007` escrita na página
+- [x] Landing v5: a v4 com o herói da opção F
+- [ ] Escolher entre as cinco candidatas — e, se for E ou F, subir para o `DESIGN.md` §4.2 a exceção da tag sobre a aresta, fechando com o `CHANGELOG.md`
 - [ ] Decidir a face de display: Montserrat (aplicada) ou Space Grotesk — quadro de comparação no canvas da v3
 - [ ] Escolher a marca — a v4 tirou o cubo provisório e ficou só com o wordmark até haver decisão
 - [ ] Refazer o canvas do playground estilizado com a paleta nova — hoje ele mostra o acento antigo

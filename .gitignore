@@ -46,6 +46,15 @@ __pycache__/
 .vitest-cache/
 *.tsbuildinfo
 
-# canvas de design: arquivo montado a partir dos .dc.html + canvas.json, regenerável
+# Design: duas árvores, e a diferença decide o que sobrevive ao commit.
+#
+#   docs/design/canvas/  — seeds do editor de canvas. Os .dc.html e o canvas.json
+#                          são a fonte e ficam versionados; o odds-*.html de cada
+#                          pasta é o bundle montado a partir deles, regenerável,
+#                          e por isso ignorado.
+#   docs/design/pages/   — páginas autônomas escritas à mão (com <script>), que
+#                          NÃO são geradas por nada. Ficam fora de canvas/ de
+#                          propósito: aqui a regra abaixo não alcança, e elas
+#                          são versionadas normalmente.
 docs/design/canvas/**/*.html
 !docs/design/canvas/**/*.dc.html
