@@ -171,3 +171,13 @@ Para o documento não virar processo pelo processo:
 - Nunca foi testado se o editor de canvas executa `<script>`. É o que decide se uma peça animada pode voltar para `canvas/` ou fica em `pages/` para sempre.
 - O amarelo sumiu inteiro do herói da F. Nas outras candidatas ele aparece como chão; aqui, não.
 - `.claude/skills/gsap-core/` e `svg-animations/` seguem fora do versionamento. A `gsap-core` sustenta as cinco animações — num clone limpo, ela não vem junto.
+
+---
+
+## 8. Fechado em 2026-09-12: a olhada deixou de depender de permissão
+
+A §2.2 dizia que praticamente todo defeito daquela sessão foi achado por captura de tela, e a §5 nasceu para que a olhada não fosse gasta com defeito mecânico. O que faltava era pior do que isso: **em boa parte das sessões não havia como olhar.** O `claude-in-chrome` depende de permissão por site, e `claude.ai` e `127.0.0.1` costumam estar bloqueados — ou seja, quem escreve o artifact não consegue vê-lo.
+
+Resolvido pelo binário do Chrome em modo headless contra o arquivo local, e virou a skill **`page-shot`**. Ela carrega as três guardas que custaram para descobrir (o esqueleto do artifact, o headless que não encerra sozinho, o perfil descartável), a regra do `--expect` — ação sem verificação falha calada e você conclui coisas sobre a tela errada — e uma tabela V1–V5 dos defeitos que **só** a captura pega.
+
+A consequência de processo é a que interessa: **defeito achado de olho e mecanizável vira checagem nova na mesma passada**. Três nasceram assim já na primeira aplicação — nada fora do viewBox, marca d'água contra marca d'água, rótulo contra rótulo — e as três já tinham deixado passar defeito.

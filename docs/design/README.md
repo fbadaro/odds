@@ -100,9 +100,12 @@ Um por rodada, e cada um tem uma função. **A base nunca é alterada por uma pr
 | [Landing v2](https://claude.ai/code/artifact/a5fee108-0126-4a09-bad6-e595b3666644) | `canvas/landing-v2/` | Paleta roxa, manchas, prancheta em perspectiva, texto revisado |
 | [Landing v3](https://claude.ai/code/artifact/033ed552-f039-4091-a3f8-101309f39933) | `canvas/landing-v3/` | Montserrat, amarelo solar, menos empréstimos |
 | [Landing v4](https://claude.ai/code/artifact/40e79d06-638e-4c5a-b3d4-3bc3c14b1e44) | `canvas/landing-v4/` | Amarelo vira superfície, faixa escura, herói animado — **a mais recente** |
-| [Playground estilizado](https://claude.ai/code/artifact/0d9f30b4-33d3-4754-aec5-a65fe13f1597) | `canvas/playground/` | A base vestida com o `DESIGN.md`, claro e escuro |
+
+**O playground estilizado saiu em 2026-09-11, por decisão do autor.** Ele vestia a base com a *primeira* paleta do `DESIGN.md` — azul de planta, neutros quentes — e ficou incoerente quando a paleta virou roxa na v2. Refazê-lo teria sido vestir de novo uma tela cujo miolo, a área do diagrama, ainda é wireframe: gasto de estilo antes de haver o que estilizar. O canvas e o artifact foram apagados; **a base volta a ser o único ponto de partida do playground**, e é de lá que a rodada de render começa.
 
 **Duas rodadas saíram da tabela, e o motivo fica:** as três animações de herói e as três direções de marca foram **descartadas pelo autor em 2026-09-07**, por não convencerem — os `.dc.html` foram apagados no commit `6b9a946`, e é no histórico do git que eles vivem agora. A animação foi substituída por um conceito novo (*o lado da linha*, no canvas da v4); a marca segue em aberto, e até haver decisão a landing usa só o wordmark, sem pictograma provisório.
+
+**Como olhar o que você desenhou:** a extensão do navegador costuma estar bloqueada para `claude.ai`, então o artifact publicado fica invisível para quem o escreveu. A skill **`page-shot`** captura a página local em PNG com Chrome headless, nos dois temas, e com estado preparado por clique — use antes de dar qualquer rodada por encerrada.
 
 **Um detalhe operacional que custou caro:** o `h` de um artboard é moldura, não escala — o que passa dele é **cortado**, sem aviso. A v3 declarava `3840` e escondia o rodapé inteiro, que só aparecia no preview. Alturas agora nascem folgadas: sobra de moldura só pinta fundo, falta apaga conteúdo.
 
@@ -117,6 +120,8 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 | [Bancada do Herói](https://claude.ai/code/artifact/4c8e80fb-022e-483b-b84d-ce7ddf870bf4) | `pages/bancada-heroi.html` | Cinco candidatas a animação de herói (B a F) lado a lado, cada uma com replay, scrub e tabela de beats |
 | [Mapa Vivo](https://claude.ai/code/artifact/f6b601e0-843f-492e-9985-05a460be3ab0) | `pages/mapa-vivo.html` | Estudo de render do Context Map: foco por vizinhança, e um botão que troca a forma do nó entre pill, arredondado e reto. **Encosta no `ADR-0007`** e diz isso na própria página |
 | [Landing v5](https://claude.ai/code/artifact/bf281738-84b3-4795-b4d0-c084a718ce01) | `pages/landing-v5.html` | A v4 inteira com o herói trocado pela opção F |
+| [Colmeia v1](https://claude.ai/code/artifact/c05ad18e-1f40-4e01-8613-8b0f4803db71) | `pages/colmeia-v1.html` | **Congelada.** Ilha única = domínio, sub-região = subdomínio, ponto = contexto. Ver o mapa da ACME no Aplas corrigiu o átomo aqui: o hexágono é a silhueta da região, não o item |
+| [Colmeia v2](https://claude.ai/code/artifact/3ae26b8b-b961-414e-aceb-b71612374ca2) | `pages/colmeia-v2.html` | **A mais recente.** Uma massa de terra por **tipo de subdomínio**, separadas por mar; só o mesmo tipo se junta. Contexto volta a ser **hexágono clicável**, com ficha na seleção. O espaçamento mínimo entre peças é medido, não escolhido |
 
 ## Estado
 
@@ -125,7 +130,7 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] Variante D: B + C, com trilho de quadrados isolados
 - [x] Base do protótipo fixada: variante D, sozinha no canvas (2026-09-07)
 - [x] Sistema visual extraído da referência e escrito no `DESIGN.md` da raiz (2026-09-07)
-- [x] Proposta da landing e da base vestida, em canvases próprios
+- [x] Proposta da landing em canvas próprio (a da base vestida foi descartada em 2026-09-11)
 - [x] Landing v2: paleta roxa, atmosfera e arte de herói (2026-09-07)
 - [x] Landing v2 refeita com a referência **vista**, não só lida: prancheta em perspectiva, esteira de codes, respiro maior
 - [x] Landing v3: descaracterização — Montserrat no display, `--c-solar` como terceira cor, pills emprestadas substituídas
@@ -137,6 +142,11 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [ ] Escolher entre as cinco candidatas — e, se for E ou F, subir para o `DESIGN.md` §4.2 a exceção da tag sobre a aresta, fechando com o `CHANGELOG.md`
 - [ ] Decidir a face de display: Montserrat (aplicada) ou Space Grotesk — quadro de comparação no canvas da v3
 - [ ] Escolher a marca — a v4 tirou o cubo provisório e ficou só com o wordmark até haver decisão
-- [ ] Refazer o canvas do playground estilizado com a paleta nova — hoje ele mostra o acento antigo
+- [x] Apagar o playground estilizado, do repositório e do artifact (2026-09-11) — a base é o ponto de partida
+- [x] **Rodada de render aberta (2026-09-11)** — a colmeia do Aplas aplicada ao Context Map, partindo da base. A licença ao `ADR-0007` é esta rodada inteira, sob uma regra: o que sair daqui é **exigência**, não alvo visual, e a rodada fecha com ADR
+- [x] Colmeia v2 (2026-09-11): massas por tipo de subdomínio com mar entre elas, contexto como peça hexagonal, seleção com ficha
+- [ ] Decidir o fork do achado 4: a colmeia é **uma vista** (muda o `PRD.md` §4.4) ou é só a de contenção?
+- [ ] Decidir o fork do achado 2: posição derivada do texto, ou posição escolhida — e, se escolhida, onde ela mora sem quebrar o `ADR-0003`
+- [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler

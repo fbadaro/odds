@@ -28,7 +28,7 @@ O vocabulário abaixo foi extraído de uma referência trazida pelo autor: <http
 
 **Não tomado, e segue não sendo:** o nome, a marca, a estrutura das páginas, a ilustração e qualquer texto. Uma referência ensina como um sistema se organiza e que temperatura ele tem; a identidade continua sendo coisa de cada produto — e a ODDS tem uma tese própria para comunicar, a de um linter que julga desenho estratégico.
 
-**Consequência a resolver:** o canvas do playground estilizado ainda mostra o acento antigo (azul de planta). Ele fica incoerente com este arquivo até ser refeito.
+**Consequência, resolvida em 2026-09-11:** o canvas do playground estilizado mostrava o acento antigo (azul de planta) e ficou incoerente com este arquivo. Em vez de refazê-lo, ele foi **apagado** — vestir a tela de novo antes de a área do diagrama ter desenho seria gastar estilo no que ainda é wireframe. O playground volta a partir da base sem estilo (`docs/design/canvas/playground-base/`), e a cor entra junto com o render.
 
 ---
 
