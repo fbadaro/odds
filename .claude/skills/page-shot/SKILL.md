@@ -41,6 +41,8 @@ shot.sh --page ... --out ... \
   --expect 'data-v="many" aria-pressed="true"'
 ```
 
+Um caso concreto de por que isso não é zelo excessivo: `--click` num elemento **SVG** não funcionava, porque `click()` é método de `HTMLElement` e não existe em `SVGElement` — a captura saía perfeita, mostrando o estado inicial. O script passou a despachar um `MouseEvent`, que serve para os dois; e quem achou o defeito foi o `--expect`, não a olhada.
+
 Escolha uma string que **só possa existir depois da ação** — o `aria-pressed` do controle clicado é quase sempre a melhor. Evite palavra solta do vocabulário da página: ela pode estar num comentário de CSS e o teste passa sem provar nada.
 
 ## Três guardas, e o defeito que cada uma previne
@@ -74,6 +76,7 @@ Acrescente aqui o que aparecer. A lista é o valor acumulado da skill.
 | V3 | Rótulo dentro da área do desenho colide com o próprio conteúdo | Nome do domínio caía sobre o terreno, com uma aresta cruzando | Rótulo de identidade fica **fora** da região desenhada, não sobre ela |
 | V4 | Contornos de níveis diferentes com o mesmo peso fazem a hierarquia ler como plana | Fronteira de domínio indistinguível do contorno da massa | Cada nível precisa de peso próprio — e engrossar demais vira gaiola: ajuste **opacidade junto com espessura** |
 | V5 | Ajustar peso de obstáculo em empacotamento só **transfere** a colisão | Chips de tag: corrigir sobre-peça quebrava sobre-rótulo | Empacotamento apertado pede **passada de reparo iterativo** (cada item revendo a posição contra o estado final dos outros), não afinação de pesos |
+| V6 | `click()` não existe em `SVGElement`, só em `HTMLElement`: clique em nó de SVG falha calado | Selecionar um hexágono e um território para capturar o painel lateral | Sempre `dispatchEvent(new MouseEvent('click',{bubbles:true,…}))`. Já está no script — a entrada fica porque o mesmo vale para qualquer automação de SVG |
 
 ## O que esta skill não faz
 

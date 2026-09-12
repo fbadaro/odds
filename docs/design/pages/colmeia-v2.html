@@ -112,6 +112,55 @@ pre b{font-weight:inherit}
 .sel .rel .tg{color:rgb(var(--c-pulse))}
 .sel .rel .ro{display:block; font-family:"Inter",sans-serif; font-size:11px; color:rgb(var(--c-dim)); margin-top:2px}
 .sel .none{font-size:12px; color:rgb(var(--c-warning)); margin-top:8px}
+.sel .kind{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:rgb(var(--c-accent)); margin-bottom:3px}
+.sel .ti{font-size:12px; color:rgb(var(--c-dim))}
+.sel .ti.big{font-size:13px; color:rgb(var(--c-ink)); margin:2px 0 0}
+.sel .sect{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:rgb(var(--c-dim)); margin:14px 0 6px;
+  padding-top:9px; border-top:1px solid rgb(var(--c-border))}
+/* Propriedade e DADO LITERAL do arquivo, entao mono — a mesma fronteira que o
+   DESIGN.md mantem entre dado e prosa. A chave fica a esquerda, estreita. */
+.sel .prop{padding:5px 0; font-size:11.5px}
+.sel .pk{display:block; font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px;
+  letter-spacing:.1em; text-transform:uppercase; color:rgb(var(--c-dim)); margin-bottom:3px}
+.sel .pv{font-family:"JetBrains Mono",Menlo,monospace; font-size:11px;
+  color:rgb(var(--c-ink)); word-break:break-word}
+.sel .rlist{margin:0; padding-left:16px; font-family:"JetBrains Mono",Menlo,monospace;
+  font-size:10.5px; color:rgb(var(--c-ink)); line-height:1.5}
+.sel .rlist li{margin:0 0 1px}
+.sel .mat{display:inline-block; font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; border-radius:999px;
+  padding:2px 9px; border:1px solid rgb(var(--c-border)); background:rgb(var(--c-panel2));
+  color:rgb(var(--c-ink))}
+.sel .mat-mature{background:color-mix(in srgb, rgb(var(--c-azure)) 14%, rgb(var(--c-panel)))}
+.sel .mat-growing{background:color-mix(in srgb, rgb(var(--c-pulse)) 16%, rgb(var(--c-panel)))}
+.sel .mat-experimental{background:color-mix(in srgb, rgb(var(--c-solar)) 30%, rgb(var(--c-panel)))}
+.sel .mat-legacy{background:color-mix(in srgb, rgb(var(--c-dim)) 16%, rgb(var(--c-panel)))}
+.sel .nofill{font-size:11.5px; color:rgb(var(--c-dim)); line-height:1.5; margin:6px 0 0}
+.sel .nofill code{font-size:10.5px}
+.sel .tally{display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 10px}
+.sel .tally span{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px;
+  border:1px solid rgb(var(--c-border)); border-radius:999px; padding:3px 9px;
+  color:rgb(var(--c-dim)); background:rgb(var(--c-panel2))}
+.sel .ctxrow{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; align-items:baseline;
+  width:100%; text-align:left; appearance:none; cursor:pointer;
+  border:0; border-top:1px solid rgb(var(--c-border)); background:transparent;
+  padding:7px 0; font-family:inherit}
+.sel .ctxrow:hover{background:rgb(var(--c-accent) / .06)}
+.sel .ctxrow .nm{font-family:"JetBrains Mono",Menlo,monospace; font-size:11.5px;
+  color:rgb(var(--c-ink)); grid-column:1}
+.sel .ctxrow .ti{grid-column:1; font-size:10.5px}
+.sel .ctxrow .cnt{grid-row:1; grid-column:2; font-family:"JetBrains Mono",Menlo,monospace;
+  font-size:10px; color:rgb(var(--c-dim))}
+.sel .golink{appearance:none; border:0; background:transparent; cursor:pointer; padding:0;
+  font:inherit; font-weight:600; color:rgb(var(--c-accent)); text-decoration:underline;
+  text-decoration-color:rgb(var(--c-accent) / .35); text-underline-offset:2px}
+.sel .golink:hover{text-decoration-color:rgb(var(--c-accent))}
+.sel .fence{margin:14px 0 0; padding-top:10px; border-top:1px solid rgb(var(--c-border));
+  font-size:11.5px; line-height:1.5; color:rgb(var(--c-dim))}
+.sel .fence b{color:rgb(var(--c-ink)); font-weight:600}
+g.sub.on .subwash{fill:rgb(var(--c-accent) / .07)}
+g.sub.on .bsub{stroke:rgb(var(--c-accent)); stroke-width:2}
 
 .dregion{fill:rgb(var(--c-ink) / .034)}
 /* 2px e a unica excecao ao "borda sempre 1px" do DESIGN.md, e e deliberada:
@@ -127,7 +176,7 @@ pre b{font-weight:inherit}
   transition:stroke .14s, stroke-width .14s}
 /* o territorio inteiro e um alvo de hover: a lamina fica transparente ate acender */
 .subwash{fill:rgb(var(--c-accent) / 0); transition:fill .14s; pointer-events:all}
-g.sub.hot .subwash{fill:rgb(var(--c-accent) / .13)}
+g.sub.hot .subwash{fill:rgb(var(--c-accent) / .10)}
 g.sub.hot .bsub{stroke:rgb(var(--c-accent) / .8); stroke-width:1.8}
 g.sublab.subhot .snm{fill:rgb(var(--c-accent)); stroke-width:4px}
 g.node.subhot .tile{stroke:rgb(var(--c-accent)); stroke-width:2}
@@ -192,6 +241,8 @@ g.node.on .tile{stroke:rgb(var(--c-accent)); stroke-width:2.8}
 .chip text{font-family:"JetBrains Mono",Menlo,monospace; font-size:9px; font-weight:500;
   fill:rgb(var(--c-accent)); text-anchor:middle; dominant-baseline:central}
 g.fade{opacity:.12}
+text.cnm.fade{opacity:.12}
+text.cnm.on{fill:rgb(var(--c-accent)); font-weight:500}
 g.rel.lit .edge{stroke:rgb(var(--c-accent)); stroke-width:2.2}
 
 .notes{margin-top:52px; display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:16px}
@@ -213,6 +264,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
   <h1>Colmeia v2</h1>
   <p class="lede">Três mudanças sobre a v1. <b>As ilhas respiram:</b> cada tipo de subdomínio forma uma massa de terra própria, separada das outras por mar aberto. <b>Só o mesmo tipo se junta</b> — dois <code>core</code> compartilham chão e uma fronteira interna serrilhada; um <code>core</code> e um <code>generic</code>, nunca. E <b>o contexto voltou a ser hexágono</b>: uma peça com borda, que se pode passar o mouse em cima, clicar, e onde seta e tag têm onde ancorar.</p>
   <p class="lede">Cada domínio agora tem <b>fronteira própria</b>, desenhada na mesma grade — a linha acompanha o contorno dos hexágonos, e não uma bolha por cima. Passar o mouse sobre um território <b>acende o subdomínio inteiro</b>, terreno, nome e peças. E tudo foi aproximado: a leitura de quem entra é o <b>mapa da floresta</b>, não uma peça de cada vez.</p>
+  <p class="lede"><b>Clicar abre a ficha.</b> Num hexágono, ela traz as <b>seis propriedades</b> que a gramática permite num <code>context</code> — o subdomínio <code>Sales</code> está com todas preenchidas — mais o contrato de cada relação. Num território, traz o que um <code>subdomain</code> de fato declara, que é só <code>title</code>, com a contagem do que atravessa a sua fronteira e atalho para cada contexto.</p>
   <p class="lede">A geografia continua sendo função do texto: <code>core</code> no centro, <code>supporting</code> e <code>generic</code> em volta, <code>external</code> no mar de fora. Nenhuma biblioteca — SVG escrito à mão, e o <code>.odds</code> ao lado é gerado do mesmo modelo que desenha o mapa.</p>
 
   <div class="bar">
@@ -289,6 +341,13 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <h3>Uma grade só, e o mapa encolheu</h3>
       <p>A versão anterior tinha <b>duas grades</b>: terreno de 13px e peça de 25px. O efeito colateral era visível na borda — hexágonos pequenos serrilhando a ilha e hexágonos grandes no miolo, como se fossem coisas diferentes. Agora <b>a célula de terreno e a peça têm o mesmo tamanho</b>, e a silhueta da ilha é feita de hexágonos do tamanho das peças.</p>
       <p>O ganho foi medido e é contraintuitivo: a peça ficou <b>12% maior</b> (56px contra 50px), o espaçamento entre peças subiu para 84px, e mesmo assim o mapa ficou <b>26% menor em área</b> (1114×762 contra 1279×898). Duas grades desperdiçavam a margem que uma precisava manter da outra.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 7</span>
+      <h3>A ficha, e a fronteira que ela tem de respeitar</h3>
+      <p>Propriedade é coisa de <code>context</code>, e só dele: pelo <code>GRAMMAR.md</code> §2 o <code>subdomain</code> declara <b>apenas <code>title</code></b>. Então a ficha tem duas formas, e a do território diz isso em voz alta em vez de fingir que tem o que não tem — no lugar das propriedades ela mostra o que é <i>derivável</i>: quantos contextos, quantas relações são internas e <b>quantas atravessam a fronteira</b>, que é a pergunta de quem olha um subdomínio.</p>
+      <p>O rodapé da ficha de contexto carrega a fronteira do <code>CLAUDE.md</code>, porque é o tipo de coisa que se perde: <b>tag é contrato, propriedade é documentação</b>. Nenhuma propriedade alimenta o gatilho de uma regra — e é isso que deixa preencher <code>team</code> sem medo de ser julgado por causa disso. A ficha reforça a separação pelo desenho: <b>Propriedades</b> e <b>Contrato</b> são duas seções, nunca uma lista só.</p>
+      <p>Uma consequência de tipografia: o valor de uma propriedade é <b>dado literal do arquivo</b>, então vai em mono — a mesma fronteira que o <code>MESSAGES.md</code> mantém entre <code>data</code> e prosa. A frase <i>sobre</i> a propriedade vai em Inter.</p>
     </div>
     <div class="note">
       <span class="tagpill novo">passada de composição</span>
@@ -407,13 +466,39 @@ function unit(p,q){ var dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy)||1; retu
 function f(p){ return p[0].toFixed(1)+' '+p[1].toFixed(1); }
 
 /* ---------------- modelo ---------------- */
+/* Sales e a vitrine das propriedades: os quatro contextos com as seis chaves de
+   GRAMMAR.md secao 2 preenchidas. Compartilhado pelos dois modelos, senao clicar
+   numa peca no arquipelago nao mostraria nada. */
+var SALES = {id:'Sales', type:'core', title:'Vendas', contexts:[
+          {id:'Cart', title:'Carrinho',
+           type:'"aggregate"',
+           description:'"Itens escolhidos antes do fechamento, com reserva temporária"',
+           responsibilities:['"Manter itens e quantidades"','"Aplicar cupom"','"Expirar carrinho abandonado"'],
+           maturity:'mature', team:'"Vendas Squad"', technology:'"TypeScript, Redis"'},
+          {id:'Checkout', title:'Finalização de compra',
+           type:'"process"',
+           description:'"Orquestra endereço, frete, pagamento e confirmação do pedido"',
+           responsibilities:['"Validar endereço"','"Calcular frete"','"Autorizar pagamento"','"Emitir o pedido"'],
+           maturity:'growing', team:'"Vendas Squad"', technology:'"TypeScript, Temporal"'},
+          {id:'OrderManagement', title:'Gestão de pedidos',
+           type:'"aggregate"',
+           description:'"Ciclo de vida do pedido, da emissão à baixa"',
+           responsibilities:['"Manter o estado do pedido"','"Registrar eventos de fulfillment"','"Tratar cancelamento"'],
+           maturity:'mature', team:'"Pedidos Squad"', technology:'"Java, PostgreSQL"'},
+          {id:'Pricing', title:'Precificação',
+           type:'"policy"',
+           description:'"Preço final por item, com promoção, imposto e regra de canal"',
+           responsibilities:['"Resolver preço de lista"','"Aplicar promoção vigente"','"Compor imposto"'],
+           maturity:'experimental', team:'"Pricing Squad"', technology:'"Kotlin, Redis"'}
+        ]};
+
 var MODELS = {
   one: {
     file:'vendas.odds',
     domains:[{
       id:'ECommercePlatform', title:'E-Commerce Platform',
       subdomains:[
-        {id:'Sales', type:'core', title:'Vendas', contexts:['Cart','Checkout','OrderManagement','Pricing']},
+        SALES,
         {id:'Discovery', type:'core', contexts:['Search','Recommendations']},
         {id:'Fulfillment', type:'supporting', contexts:['Shipping','Inventory','Warehouse']},
         {id:'CustomerCare', type:'supporting', contexts:['Support','Returns']},
@@ -444,7 +529,7 @@ var MODELS = {
     domains:[
       { id:'ECommercePlatform', title:'E-Commerce Platform',
         subdomains:[
-          {id:'Sales', type:'core', title:'Vendas', contexts:['Cart','Checkout','OrderManagement','Pricing']},
+          SALES,
           {id:'Discovery', type:'core', contexts:['Search','Recommendations']},
           {id:'Payments', type:'generic', contexts:['PaymentGateway']}
         ],
@@ -483,13 +568,58 @@ var MODELS = {
   }
 };
 
+/* Um contexto pode vir como nome ou como objeto com propriedades. Normaliza para
+   objeto e guarda a lista de ids ao lado — a geometria so precisa dos ids, e o
+   painel precisa do objeto. As seis propriedades sao GRAMMAR.md secao 2, e valem
+   so em `context`: `subdomain` tem apenas `title`. */
+var PROP_ORDER = ['type','description','responsibilities','maturity','team','technology'];
+(function normalize(){
+  Object.keys(MODELS).forEach(function(k){
+    MODELS[k].domains.forEach(function(d){
+      d.subdomains.forEach(function(sd){
+        sd.contexts = sd.contexts.map(function(c){ return typeof c==='string' ? {id:c} : c; });
+        sd.ids = sd.contexts.map(function(c){ return c.id; });
+      });
+      if(d.external){
+        d.external = d.external.map(function(c){ return typeof c==='string' ? {id:c} : c; });
+        d.externalIds = d.external.map(function(c){ return c.id; });
+      }
+    });
+  });
+})();
+function ctxOf(m, id){
+  for(var i=0;i<m.domains.length;i++){
+    var d=m.domains[i], j;
+    for(j=0;j<d.subdomains.length;j++){
+      var f=d.subdomains[j].contexts.filter(function(c){ return c.id===id; })[0];
+      if(f) return f;
+    }
+    if(d.external){
+      var e=d.external.filter(function(c){ return c.id===id; })[0];
+      if(e) return e;
+    }
+  }
+  return null;
+}
+function subOf(m, key){
+  var parts=key.split('/'), domId=parts[0], sdId=parts[1];
+  for(var i=0;i<m.domains.length;i++){
+    var d=m.domains[i];
+    if(d.id!==domId) continue;
+    if(sdId==='external') return {dom:d, sd:{id:'external', type:'external', contexts:d.external||[], ids:d.externalIds||[]}};
+    var f=d.subdomains.filter(function(sd){ return sd.id===sdId; })[0];
+    if(f) return {dom:d, sd:f};
+  }
+  return null;
+}
+
 /* ---------------- fonte .odds gerada do modelo ---------------- */
 function pad(s,n){ while(s.length<n) s+=' '; return s; }
 function ownerDomain(m,ctx){
   for(var i=0;i<m.domains.length;i++){
     var d=m.domains[i];
-    for(var j=0;j<d.subdomains.length;j++) if(d.subdomains[j].contexts.indexOf(ctx)>=0) return d;
-    if(d.external && d.external.indexOf(ctx)>=0) return d;
+    for(var j=0;j<d.subdomains.length;j++) if(d.subdomains[j].ids.indexOf(ctx)>=0) return d;
+    if(d.externalIds && d.externalIds.indexOf(ctx)>=0) return d;
   }
   return null;
 }
@@ -511,13 +641,23 @@ function srcOf(m){
       out.push('');
       out.push('  subdomain '+sd.type+' '+sd.id+' {');
       if(sd.title) out.push('    title: "'+sd.title+'"');
-      sd.contexts.forEach(function(c){ out.push('    context '+c); });
+      sd.contexts.forEach(function(c){
+        var keys = PROP_ORDER.filter(function(k){ return c[k]!==undefined; });
+        if(!c.title && !keys.length){ out.push('    context '+c.id); return; }
+        out.push('    context '+c.id+' {');
+        if(c.title) out.push('      title: "'+c.title+'"');
+        keys.forEach(function(k){
+          var v = c[k];
+          out.push('      '+k+': '+(Array.isArray(v) ? '['+v.join(', ')+']' : v));
+        });
+        out.push('    }');
+      });
       out.push('  }');
     });
     if(d.external && d.external.length){
       out.push('');
       out.push('  external {');
-      d.external.forEach(function(c){ out.push('    context '+c); });
+      d.external.forEach(function(c){ out.push('    context '+c.id); });
       out.push('  }');
     }
     var mine = m.mapping.filter(function(rel){
@@ -571,7 +711,7 @@ function massesOf(dom){
     var gs = [];
     dom.subdomains.forEach(function(sd,i){
       if((sd.type===t) || (TYPES.indexOf(sd.type)<0 && t==='supporting'))
-        gs.push({sd:sd, i:i, n:cellsFor(sd.contexts.length)});
+        gs.push({sd:sd, i:i, n:cellsFor(sd.ids.length)});
     });
     if(!gs.length) return;
     var n = gs.reduce(function(a,g){ return a+g.n; },0);
@@ -579,10 +719,10 @@ function massesOf(dom){
     out.push({type:t, groups:gs, n:n, R:R0, Rcap:R0});
   });
   if(dom.external && dom.external.length){
-    var n2 = cellsFor(dom.external.length);
+    var n2 = cellsFor(dom.externalIds.length);
     var R1=Math.sqrt(n2*CELL_AREA/Math.PI)*1.14;
     out.push({type:'external', external:true, n:n2, R:R1, Rcap:R1,
-      groups:[{sd:{id:'external', type:'external', contexts:dom.external}, i:99, n:n2}]});
+      groups:[{sd:{id:'external', type:'external', contexts:dom.external, ids:dom.externalIds}, i:99, n:n2}]});
   }
   return out;
 }
@@ -843,7 +983,7 @@ function placeTilesForMass(mass){
   var out = {}, home = {}, taken = [];
   mass.groups.forEach(function(g){
     if(!g.cells.length) return;
-    var names = g.sd.contexts;
+    var names = g.sd.ids;
     var ctr = centroidOf(g.cells, mass.pos);
     var used = {}, mine = [];
     while(mine.length < names.length){
@@ -969,7 +1109,7 @@ function chip(p, text){
 }
 
 /* ---------------- render ---------------- */
-var state = {model:'one', edge:'bundle', tags:'on', labels:'ctx', sel:null};
+var state = {model:'one', edge:'bundle', tags:'on', labels:'ctx', sel:null, selSub:null};
 
 function build(){
   var m = MODELS[state.model];
@@ -1235,7 +1375,8 @@ function build(){
       mass.groups.forEach(function(g){
         if(!g.cells.length) return;
         var d = fillOf(g.cells, mass.pos);
-        s.push('<g class="sub" data-sub="'+esc(isl.dom.id+'/'+g.sd.id)+'">'+
+        var subKey = isl.dom.id+'/'+g.sd.id;
+        s.push('<g class="sub'+(state.selSub===subKey?' hot on':'')+'" data-sub="'+esc(subKey)+'">'+
                '<path class="comb" d="'+d+'"/>'+
                '<path class="subwash" d="'+d+'"/>'+
                '<path class="bsub" d="'+outline(g.cells, g.set, mass.pos)+'"/></g>');
@@ -1246,10 +1387,16 @@ function build(){
 
 
   /* 4. arestas */
+  var selSubIds = [];
+  if(state.selSub){
+    var sinfo = subOf(m, state.selSub);
+    if(sinfo) selSubIds = sinfo.sd.ids || [];
+  }
   rels.forEach(function(R,i){
     var rel=R.rel, pth=R.pts;
-    var lit = state.sel && (rel.l===state.sel || rel.r===state.sel);
-    var faded = state.sel && !lit;
+    var lit = (state.sel && (rel.l===state.sel || rel.r===state.sel)) ||
+              (state.selSub && (selSubIds.indexOf(rel.l)>=0 || selSubIds.indexOf(rel.r)>=0));
+    var faded = (state.sel || state.selSub) && !lit;
     var g='<g class="rel'+(lit?' lit':'')+(faded?' fade':'')+'" data-l="'+esc(rel.l)+'" data-r="'+esc(rel.r)+'">';
     var dPath = pathOf(pth);
     g += '<path class="ecase" d="'+dPath+'"/>';
@@ -1262,6 +1409,13 @@ function build(){
   });
 
   /* 5. pecas de contexto */
+  var selSubOf = {};
+  islands.forEach(function(isl){ isl.masses.forEach(function(mass){
+    mass.groups.forEach(function(g){
+      g.sd.ids.forEach(function(id){ selSubOf[id] = isl.dom.id+'/'+g.sd.id; });
+    });
+  }); });
+
   var near = {};
   if(state.sel){
     near[state.sel]=1;
@@ -1272,10 +1426,13 @@ function build(){
   }
   islands.forEach(function(isl){ isl.masses.forEach(function(mass){
     mass.groups.forEach(function(g){
-      g.sd.contexts.forEach(function(nm){
+      g.sd.ids.forEach(function(nm){
         var p = tiles[nm];
         if(!p) return;
-        var cls = 'node' + (state.sel===nm ? ' on' : '') + (state.sel && !near[nm] ? ' fade' : '');
+        var subKey2 = isl.dom.id+'/'+g.sd.id;
+        var inSel = state.selSub===subKey2;
+        var cls = 'node' + (state.sel===nm ? ' on' : '') + (inSel ? ' subhot' : '') +
+                  ((state.sel && !near[nm]) || (state.selSub && !inSel) ? ' fade' : '');
         s.push('<g class="'+cls+'" data-ctx="'+esc(nm)+'" data-sub="'+esc(isl.dom.id+'/'+g.sd.id)+'">'+
                '<path class="tile '+mass.type+'" d="'+hexPath(p[0],p[1],HR)+'"/>'+
                '<path class="hit" d="'+hexPath(p[0],p[1],HR-1)+'"/></g>');
@@ -1286,7 +1443,7 @@ function build(){
   /* 6. nome do territorio: por cima das pecas, com halo, no ponto mais livre */
   subSpots.forEach(function(sp){
     var size = state.labels==='sub' ? 14 : 10;
-    s.push('<g class="sublab" data-sub="'+esc(sp.sub)+'">'+
+    s.push('<g class="sublab'+(state.selSub===sp.sub?' subhot':'')+'" data-sub="'+esc(sp.sub)+'">'+
            '<text class="snm" style="font-size:'+size+'px" x="'+sp.p[0].toFixed(0)+'" y="'+(sp.p[1]+4).toFixed(0)+
            '">'+esc(sp.id.toUpperCase())+'</text></g>');
   });
@@ -1295,7 +1452,9 @@ function build(){
   if(state.labels==='ctx'){
     Object.keys(labels).forEach(function(nm){
       var L = labels[nm];
-      s.push('<text class="cnm" x="'+L.x.toFixed(1)+'" y="'+L.y.toFixed(1)+
+      var faded = (state.sel && !near[nm]) || (state.selSub && selSubOf[nm]!==state.selSub);
+      s.push('<text class="cnm'+(faded?' fade':'')+(state.sel===nm?' on':'')+
+             '" x="'+L.x.toFixed(1)+'" y="'+L.y.toFixed(1)+
              '" text-anchor="'+L.a+'">'+esc(nm)+'</text>');
     });
   }
@@ -1338,26 +1497,89 @@ function roleText(rel, sel){
   var other = selIsLeft ? rel.r : rel.l;
   return selIsUp ? 'upstream de '+other : 'downstream de '+other;
 }
+var PROP_LABEL = {type:'type', description:'description', responsibilities:'responsibilities',
+                  maturity:'maturity', team:'team', technology:'technology'};
+function unq(v){ return String(v).replace(/^"|"$/g,''); }
+function propRows(c){
+  var rows = [], any = false;
+  PROP_ORDER.forEach(function(k){
+    if(c[k]===undefined) return;
+    any = true;
+    var v = c[k], html;
+    if(Array.isArray(v)){
+      html = '<ul class="rlist">'+v.map(function(x){ return '<li>'+esc(unq(x))+'</li>'; }).join('')+'</ul>';
+    } else if(k==='maturity'){
+      html = '<span class="mat mat-'+esc(v)+'">'+esc(v)+'</span>';
+    } else {
+      html = '<span class="pv">'+esc(unq(v))+'</span>';
+    }
+    rows.push('<div class="prop"><span class="pk">'+esc(PROP_LABEL[k])+'</span>'+html+'</div>');
+  });
+  if(!any) return '<div class="nofill">Nenhuma propriedade declarada. As seis de '+
+    '<code>GRAMMAR.md</code> §2 são opcionais e valem só em <code>context</code>.</div>';
+  return rows.join('');
+}
 function selPanel(homeOf){
   var m = MODELS[state.model], box = document.getElementById('selBox');
-  if(!state.sel){
-    box.innerHTML = '<div class="sel-empty">Nada selecionado. Passe o mouse para acender a vizinhança; '+
-      'clique num hexágono para fixar a seleção e ver o contrato do contexto.</div>';
+
+  if(state.selSub){
+    var info = subOf(m, state.selSub);
+    if(!info){ box.innerHTML=''; return; }
+    var sd = info.sd, dom = info.dom;
+    var ids = sd.ids || [];
+    var inside = 0, crossing = 0;
+    m.mapping.forEach(function(r){
+      var a = ids.indexOf(r.l)>=0, b = ids.indexOf(r.r)>=0;
+      if(a && b) inside++;
+      else if(a || b) crossing++;
+    });
+    var h = '<div class="sel"><div class="kind">subdomain</div><h4>'+esc(sd.id)+'</h4>';
+    h += '<div class="meta"><b>'+esc(sd.type)+'</b>'+
+         (sd.title ? ' · <span class="pv">'+esc(sd.title)+'</span>' : '')+
+         '<br>'+esc(dom.title||dom.id)+'</div>';
+    h += '<div class="nofill">Um <code>subdomain</code> declara só <code>title</code>. '+
+         'As seis propriedades são do <code>context</code> — clique num hexágono.</div>';
+    h += '<div class="tally"><span>'+ids.length+' contexto'+(ids.length===1?'':'s')+'</span>'+
+         '<span>'+inside+' relaç'+(inside===1?'ão':'ões')+' interna'+(inside===1?'':'s')+'</span>'+
+         '<span>'+crossing+' atravessa'+(crossing===1?'':'m')+' a fronteira</span></div>';
+    h += ids.map(function(id){
+      var c = ctxOf(m, id) || {id:id};
+      var n = PROP_ORDER.filter(function(k){ return c[k]!==undefined; }).length;
+      return '<button class="ctxrow" data-go="'+esc(id)+'"><span class="nm">'+esc(id)+'</span>'+
+             (c.title ? '<span class="ti">'+esc(c.title)+'</span>' : '')+
+             '<span class="cnt">'+(n? n+'/6' : '—')+'</span></button>';
+    }).join('');
+    box.innerHTML = h+'</div>';
     return;
   }
-  var nm = state.sel, g = homeOf[nm], dom = ownerDomain(m, nm);
-  var rels = m.mapping.filter(function(r){ return r.l===nm || r.r===nm; });
-  var html = '<div class="sel"><h4>'+esc(nm)+'</h4><div class="meta">'+
-    '<b>'+esc(g.sd.id)+'</b> · '+esc(g.sd.type)+'<br>'+esc(dom.title||dom.id)+'</div>';
-  if(!rels.length){
+
+  if(!state.sel){
+    box.innerHTML = '<div class="sel-empty">Nada selecionado. Passe o mouse para acender a vizinhança; '+
+      'clique num <b>hexágono</b> para ver o contrato e as propriedades do contexto, '+
+      'ou no <b>terreno</b> para ver o subdomínio.</div>';
+    return;
+  }
+
+  var nm = state.sel, g = homeOf[nm], dom2 = ownerDomain(m, nm), c2 = ctxOf(m, nm) || {id:nm};
+  var rels2 = m.mapping.filter(function(r){ return r.l===nm || r.r===nm; });
+  var html = '<div class="sel"><div class="kind">context</div><h4>'+esc(nm)+'</h4>';
+  if(c2.title) html += '<div class="ti big">'+esc(c2.title)+'</div>';
+  html += '<div class="meta"><button class="golink" data-gosub="'+esc(dom2.id+'/'+g.sd.id)+'">'+
+          esc(g.sd.id)+'</button> · '+esc(g.sd.type)+'<br>'+esc(dom2.title||dom2.id)+'</div>';
+  html += '<div class="sect">Propriedades</div>'+propRows(c2);
+  html += '<div class="sect">Contrato</div>';
+  if(!rels2.length){
     html += '<div class="none">Nenhuma relação no mapping — candidato a <b>UNMAPPED_CONTEXT</b>.</div>';
   } else {
-    rels.forEach(function(r){
+    rels2.forEach(function(r){
       var line = esc(r.l)+' '+(r.lt.length?'<span class="tg">['+r.lt.join(', ')+']</span> ':'')+
         esc(r.c)+(r.rt.length?' <span class="tg">['+r.rt.join(', ')+']</span>':'')+' '+esc(r.r);
       html += '<div class="rel">'+line+'<span class="ro">'+esc(roleText(r,nm))+'</span></div>';
     });
   }
+  html += '<div class="fence">Propriedade é <b>documentação</b>, tag é <b>contrato</b>. '+
+          'Nenhuma propriedade alimenta o gatilho de uma regra — é o que deixa preencher '+
+          '<code>team</code> sem medo de ser julgado.</div>';
   box.innerHTML = html+'</div>';
 }
 
@@ -1371,12 +1593,21 @@ function render(){
       ev.stopPropagation();
       var id = g.getAttribute('data-ctx');
       state.sel = (state.sel===id) ? null : id;
+      state.selSub = null;
       render();
     });
   });
-  svg.addEventListener('click', function(){ if(state.sel){ state.sel=null; render(); } });
+  svg.addEventListener('click', function(){
+    if(state.sel || state.selSub){ state.sel=null; state.selSub=null; render(); }
+  });
   Array.prototype.forEach.call(svg.querySelectorAll('g.sub'), function(gg){
     var id = gg.getAttribute('data-sub');
+    gg.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      state.selSub = (state.selSub===id) ? null : id;
+      state.sel = null;
+      render();
+    });
     gg.addEventListener('mouseenter', function(){
       gg.classList.add('hot');
       Array.prototype.forEach.call(svg.querySelectorAll('g.node,g.sublab'), function(n){
@@ -1393,6 +1624,17 @@ function render(){
 
   var m = MODELS[state.model];
   selPanel(out.homeOf);
+  var selBox = document.getElementById('selBox');
+  Array.prototype.forEach.call(selBox.querySelectorAll('[data-go]'), function(b){
+    b.addEventListener('click', function(){
+      state.sel = b.getAttribute('data-go'); state.selSub = null; render();
+    });
+  });
+  Array.prototype.forEach.call(selBox.querySelectorAll('[data-gosub]'), function(b){
+    b.addEventListener('click', function(){
+      state.selSub = b.getAttribute('data-gosub'); state.sel = null; render();
+    });
+  });
   document.getElementById('src').innerHTML = hl(srcOf(m));
   document.getElementById('srcName').textContent = m.file;
   var rows=[];
@@ -1423,7 +1665,7 @@ function seg(id, key, fn){
     if(fn) fn(b.getAttribute('data-v')); else render();
   });
 }
-seg('segModel','model',function(v){ state.model=v; state.sel=null; render(); });
+seg('segModel','model',function(v){ state.model=v; state.sel=null; state.selSub=null; render(); });
 seg('segEdge','edge');
 seg('segTags','tags');
 seg('segLabels','labels');

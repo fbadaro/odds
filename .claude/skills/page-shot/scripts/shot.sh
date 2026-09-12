@@ -75,7 +75,9 @@ THEME_ATTR=""
     printf '<script>setTimeout(function(){try{'
     if [ -n "$CLICK" ]; then
       CLICK_ESC="${CLICK//\'/\\\'}"
-      printf "var _e=document.querySelector('%s');if(!_e)throw new Error('seletor nao encontrado: %s');_e.click();" \
+      # `click()` e metodo de HTMLElement: em alvo SVG ele nao existe e a acao
+      # falha calada. Despacha um MouseEvent, que serve para HTML e para SVG.
+      printf "var _e=document.querySelector('%s');if(!_e)throw new Error('seletor nao encontrado: %s');_e.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,view:window}));" \
         "$CLICK_ESC" "$CLICK_ESC"
     fi
     [ -n "$JS" ] && printf '%s;' "$JS"
