@@ -90,6 +90,7 @@ pre .ty{color:rgb(var(--c-azure)); font-weight:500}
 pre .tg{color:rgb(var(--c-pulse)); font-weight:500}
 pre .cn{color:rgb(var(--c-ink)); font-weight:500}
 pre .p{color:rgb(var(--c-dim))}
+pre .hyp{color:rgb(var(--c-accent)); font-weight:500}
 pre b{font-weight:inherit}
 
 .leg{display:flex; flex-direction:column; gap:10px; font-size:12.5px; color:rgb(var(--c-dim))}
@@ -156,6 +157,11 @@ pre b{font-weight:inherit}
   font:inherit; font-weight:600; color:rgb(var(--c-accent)); text-decoration:underline;
   text-decoration-color:rgb(var(--c-accent) / .35); text-underline-offset:2px}
 .sel .golink:hover{text-decoration-color:rgb(var(--c-accent))}
+.sel .hypbar{margin:10px 0 0; padding:7px 9px; border-radius:8px;
+  border:1px dashed rgb(var(--c-accent) / .45); background:rgb(var(--c-accent) / .06);
+  font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.06em;
+  text-transform:uppercase; color:rgb(var(--c-accent)); line-height:1.5}
+.sel .hypbar code{background:transparent; padding:0; font-size:9.5px; text-transform:none}
 .sel .fence{margin:14px 0 0; padding-top:10px; border-top:1px solid rgb(var(--c-border));
   font-size:11.5px; line-height:1.5; color:rgb(var(--c-dim))}
 .sel .fence b{color:rgb(var(--c-ink)); font-weight:600}
@@ -287,6 +293,12 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
         <button data-v="off" aria-pressed="false">ocultas</button>
       </div>
     </div>
+    <div class="grp"><span class="lbl">Subdomínio</span>
+      <div class="seg" id="segSub">
+        <button data-v="today" aria-pressed="true">só título</button>
+        <button data-v="rich" aria-pressed="false">+ propriedades</button>
+      </div>
+    </div>
     <div class="grp"><span class="lbl">Escala</span>
       <div class="seg" id="segLabels">
         <button data-v="ctx" aria-pressed="true">contexto</button>
@@ -349,6 +361,13 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <p>O rodapé da ficha de contexto carrega a fronteira do <code>CLAUDE.md</code>, porque é o tipo de coisa que se perde: <b>tag é contrato, propriedade é documentação</b>. Nenhuma propriedade alimenta o gatilho de uma regra — e é isso que deixa preencher <code>team</code> sem medo de ser julgado por causa disso. A ficha reforça a separação pelo desenho: <b>Propriedades</b> e <b>Contrato</b> são duas seções, nunca uma lista só.</p>
       <p>Uma consequência de tipografia: o valor de uma propriedade é <b>dado literal do arquivo</b>, então vai em mono — a mesma fronteira que o <code>MESSAGES.md</code> mantém entre <code>data</code> e prosa. A frase <i>sobre</i> a propriedade vai em Inter.</p>
       <p><b>Todos os contextos de subdomínio estão preenchidos</b> — 14 no domínio único, 15 no arquipélago, com as seis chaves cada e os quatro valores de <code>maturity</code> exercitados. O <code>external</code> é a exceção, e não por economia: ele recebe <b>só <code>description</code> e <code>technology</code></b>, que é a contenção que o exemplo canônico do <code>GRAMMAR.md</code> já pratica. Pelo princípio de autoria do <code>RULES</code> §0.4 você não controla o sistema de terceiro, e <code>team</code> ou <code>maturity</code> dele não são seus para declarar. A ficha diz isso quando você clica num deles.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">hipótese</span>
+      <h3><code>description</code> e <code>owner</code> num subdomínio</h3>
+      <p>Hoje o <code>GRAMMAR.md</code> §2 dá ao <code>subdomain</code> <b>só <code>title</code></b>. O controle <b>Subdomínio</b> acima liga a hipótese de duas chaves a mais, e a ficha marca isso com faixa tracejada — a fonte também, com <code>// proposta</code> em cada linha. A página não finge que hipótese é sintaxe.</p>
+      <p>Por que <i>essas</i> duas e não as seis do contexto: as seis são de <b>espaço de solução</b> — <code>technology</code>, <code>team</code>, <code>maturity</code> descrevem uma implementação, e subdomínio é espaço de <b>problema</b>. E há um teste mais fino: o <code>subdomain</code> já carrega <code>core | supporting | generic</code>, que <b>é contrato</b> e alimenta cinco regras. Qualquer chave nova nasce ao lado de um campo que julga — então ela não pode ser <b>contradizível</b>. <code>description</code> e <code>owner</code> são prosa: não contradizem o tipo nem os filhos. <code>maturity</code> ou <code>value</code> contradizem, e no instante em que contradizem alguém quer uma regra — e regra feita de propriedade quebra a promessa de preencher <code>team</code> sem ser julgado.</p>
+      <p>Daí o rótulo <b>Derivado</b> na ficha, acima dos contadores: eles não são declarados, são calculados. <code>maturity</code> de subdomínio pertenceria ali, não em Propriedades — e isso é razão suficiente para ela não entrar na gramática.</p>
     </div>
     <div class="note">
       <span class="tagpill novo">passada de composição</span>
@@ -586,12 +605,24 @@ var MODELS = {
     domains:[{
       id:'ECommercePlatform', title:'E-Commerce Platform',
       subdomains:[
-        {id:'Sales', type:'core', title:'Vendas', contexts:C_SALES},
-        {id:'Discovery', type:'core', title:'Descoberta', contexts:C_DISCOVERY},
-        {id:'Fulfillment', type:'supporting', title:'Entrega e estoque', contexts:C_FULFILLMENT},
-        {id:'CustomerCare', type:'supporting', title:'Atendimento', contexts:C_CARE},
-        {id:'Payments', type:'generic', title:'Pagamentos', contexts:C_PAYMENTS},
-        {id:'Identity', type:'generic', title:'Identidade', contexts:C_IDENTITY}
+        {id:'Sales', type:'core', title:'Vendas',
+         description:'"Converter intenção de compra em pedido pago"',
+         owner:'"Diretoria Comercial"', contexts:C_SALES},
+        {id:'Discovery', type:'core', title:'Descoberta',
+         description:'"Fazer o cliente encontrar o que ainda não sabe que quer"',
+         owner:'"Diretoria Comercial"', contexts:C_DISCOVERY},
+        {id:'Fulfillment', type:'supporting', title:'Entrega e estoque',
+         description:'"Entregar o que foi vendido, no prazo prometido"',
+         owner:'"Diretoria de Operações"', contexts:C_FULFILLMENT},
+        {id:'CustomerCare', type:'supporting', title:'Atendimento',
+         description:'"Resolver o que deu errado sem perder o cliente"',
+         owner:'"Gerência de Experiência"', contexts:C_CARE},
+        {id:'Payments', type:'generic', title:'Pagamentos',
+         description:'"Receber o dinheiro e provar que recebeu"',
+         owner:'"Diretoria Financeira"', contexts:C_PAYMENTS},
+        {id:'Identity', type:'generic', title:'Identidade',
+         description:'"Saber quem é quem, uma vez, para todo o resto"',
+         owner:'"Plataforma"', contexts:C_IDENTITY}
       ],
       external:[X_STRIPE, X_CORREIOS, X_ERP]
     }],
@@ -619,20 +650,32 @@ var MODELS = {
         subdomains:[
           {id:'Sales', type:'core', title:'Vendas', contexts:C_SALES},
           {id:'Discovery', type:'core', title:'Descoberta', contexts:C_DISCOVERY},
-          {id:'Payments', type:'generic', title:'Pagamentos', contexts:[C_PAYMENTS[0]]}
+          {id:'Payments', type:'generic', title:'Pagamentos',
+           description:'"Receber o dinheiro e provar que recebeu"',
+           owner:'"Diretoria Financeira"', contexts:[C_PAYMENTS[0]]}
         ],
         external:[X_STRIPE] },
       { id:'Logistics', title:'Logística',
         subdomains:[
-          {id:'Fulfillment', type:'core', title:'Entrega e estoque', contexts:C_FULFILLMENT},
-          {id:'Routing', type:'supporting', title:'Roteirização', contexts:C_ROUTING},
-          {id:'Fleet', type:'generic', title:'Frota', contexts:C_FLEET}
+          {id:'Fulfillment', type:'core', title:'Entrega e estoque',
+           description:'"Entregar o que foi vendido, no prazo prometido"',
+           owner:'"Diretoria de Operações"', contexts:C_FULFILLMENT},
+          {id:'Routing', type:'supporting', title:'Roteirização',
+           description:'"Decidir por onde e quando cada entrega passa"',
+           owner:'"Diretoria de Operações"', contexts:C_ROUTING},
+          {id:'Fleet', type:'generic', title:'Frota',
+           description:'"Ter veículo e motorista disponíveis"',
+           owner:'"Gerência de Frota"', contexts:C_FLEET}
         ],
         external:[X_CORREIOS] },
       { id:'Marketing', title:'Marketing',
         subdomains:[
-          {id:'Campaigns', type:'core', title:'Campanhas', contexts:C_CAMPAIGNS},
-          {id:'Comms', type:'supporting', title:'Comunicação', contexts:C_COMMS}
+          {id:'Campaigns', type:'core', title:'Campanhas',
+           description:'"Levar a oferta certa a quem tem chance de comprar"',
+           owner:'"Diretoria de Marketing"', contexts:C_CAMPAIGNS},
+          {id:'Comms', type:'supporting', title:'Comunicação',
+           description:'"Falar com o cliente sem virar spam"',
+           owner:'"Gerência de CRM"', contexts:C_COMMS}
         ],
         external:[X_ERP] }
     ],
@@ -744,6 +787,13 @@ function srcOf(m){
       out.push('');
       out.push('  subdomain '+sd.type+' '+sd.id+' {');
       if(sd.title) out.push('    title: "'+sd.title+'"');
+      /* description e owner num subdomain NAO EXISTEM na linguagem: GRAMMAR.md
+         secao 2 da a ele so title. Ficam marcados na fonte, como as ligacoes
+         entre dominios — a pagina nao finge que hipotese e sintaxe. */
+      if(state.sub==='rich'){
+        if(sd.description) out.push('    description: '+sd.description+'   // proposta');
+        if(sd.owner)       out.push('    owner: '+sd.owner+'   // proposta');
+      }
       sd.contexts.forEach(function(c){ ctxLines(c, out); });
       out.push('  }');
     });
@@ -774,6 +824,7 @@ function srcOf(m){
 function hl(s){
   return esc(s)
     .replace(/^(\/\/.*)$/gm,'<b class="p">$1</b>')
+    .replace(/(\/\/ proposta)/g,'<b class="hyp">$1</b>')
     .replace(/\b(domain|subdomain|context|external|mapping)\b/g,'<b class="k">$1</b>')
     .replace(/\b(core|supporting|generic)\b/g,'<b class="ty">$1</b>')
     .replace(/(\[[^\]]*\])/g,'<b class="tg">$1</b>')
@@ -1202,7 +1253,7 @@ function chip(p, text){
 }
 
 /* ---------------- render ---------------- */
-var state = {model:'one', edge:'bundle', tags:'on', labels:'ctx', sel:null, selSub:null};
+var state = {model:'one', edge:'bundle', tags:'on', labels:'ctx', sel:null, selSub:null, sub:'today'};
 
 function build(){
   var m = MODELS[state.model];
@@ -1630,11 +1681,27 @@ function selPanel(homeOf){
     h += '<div class="meta"><b>'+esc(sd.type)+'</b>'+
          (sd.title ? ' · <span class="pv">'+esc(sd.title)+'</span>' : '')+
          '<br>'+esc(dom.title||dom.id)+'</div>';
-    h += '<div class="nofill">Um <code>subdomain</code> declara só <code>title</code>. '+
-         'As seis propriedades são do <code>context</code> — clique num hexágono.</div>';
+    if(state.sub==='rich'){
+      h += '<div class="hypbar">hipótese de linguagem — <code>description</code> e '+
+           '<code>owner</code> não existem hoje num <code>subdomain</code></div>';
+      h += '<div class="sect">Propriedades</div>';
+      if(sd.description) h += '<div class="prop"><span class="pk">description</span>'+
+        '<span class="pv">'+esc(unq(sd.description))+'</span></div>';
+      if(sd.owner) h += '<div class="prop"><span class="pk">owner</span>'+
+        '<span class="pv">'+esc(unq(sd.owner))+'</span></div>';
+      h += '<div class="nofill">Duas chaves, ambas prosa. Nenhuma delas pode contradizer '+
+           '<code>'+esc(sd.type)+'</code> nem os contextos abaixo — é o que as separa de '+
+           '<code>maturity</code> ou <code>value</code>, que contradizem e por isso pedem regra.</div>';
+    } else {
+      h += '<div class="nofill">Um <code>subdomain</code> declara só <code>title</code>. '+
+           'As seis propriedades são do <code>context</code> — clique num hexágono. '+
+           'Ligue <b>+ propriedades</b> acima para ver a hipótese.</div>';
+    }
+    h += '<div class="sect">Derivado</div>';
     h += '<div class="tally"><span>'+ids.length+' contexto'+(ids.length===1?'':'s')+'</span>'+
          '<span>'+inside+' relaç'+(inside===1?'ão':'ões')+' interna'+(inside===1?'':'s')+'</span>'+
          '<span>'+crossing+' atravessa'+(crossing===1?'':'m')+' a fronteira</span></div>';
+    h += '<div class="sect">Contextos</div>';
     h += ids.map(function(id){
       var c = ctxOf(m, id) || {id:id};
       var n = PROP_ORDER.filter(function(k){ return c[k]!==undefined; }).length;
@@ -1768,6 +1835,7 @@ seg('segModel','model',function(v){ state.model=v; state.sel=null; state.selSub=
 seg('segEdge','edge');
 seg('segTags','tags');
 seg('segLabels','labels');
+seg('segSub','sub');
 seg('segTheme',null,function(v){
   if(v==='auto') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme', v);
