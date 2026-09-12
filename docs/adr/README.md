@@ -39,3 +39,4 @@ A skill `adr` governa o resto: quando um ADR é devido, quando não é, e como f
 | [ADR-0005](0005-npm-workspaces-typescript-e-vitest-como-ambiente-de-desenvolvimento.md) | npm workspaces, TypeScript e Vitest como ambiente de desenvolvimento | accepted | 2026-09-05 |
 | [ADR-0006](0006-recuperacao-da-5-1-codificada-na-gramatica-com-embeddedactionsparser-e-sem-camada-cst.md) | Recuperação da §5.1 codificada na gramática, com EmbeddedActionsParser e sem camada CST | accepted | 2026-09-05 |
 | [ADR-0007](0007-a-ui-ux-do-playground-e-explorada-em-mocks-descartaveis-antes-de-escolher-framework-e-biblioteca-de-render.md) | A UI/UX do playground é explorada em mocks descartáveis antes de escolher framework e biblioteca de render | accepted | 2026-09-07 |
+| [ADR-0008](0008-um-subdomain-declara-description-e-owner-e-nada-alem-disso.md) | Um subdomain declara description e owner, e nada além disso | accepted | 2026-09-12 |
