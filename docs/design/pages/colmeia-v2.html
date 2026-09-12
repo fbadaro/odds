@@ -348,6 +348,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <p>Propriedade é coisa de <code>context</code>, e só dele: pelo <code>GRAMMAR.md</code> §2 o <code>subdomain</code> declara <b>apenas <code>title</code></b>. Então a ficha tem duas formas, e a do território diz isso em voz alta em vez de fingir que tem o que não tem — no lugar das propriedades ela mostra o que é <i>derivável</i>: quantos contextos, quantas relações são internas e <b>quantas atravessam a fronteira</b>, que é a pergunta de quem olha um subdomínio.</p>
       <p>O rodapé da ficha de contexto carrega a fronteira do <code>CLAUDE.md</code>, porque é o tipo de coisa que se perde: <b>tag é contrato, propriedade é documentação</b>. Nenhuma propriedade alimenta o gatilho de uma regra — e é isso que deixa preencher <code>team</code> sem medo de ser julgado por causa disso. A ficha reforça a separação pelo desenho: <b>Propriedades</b> e <b>Contrato</b> são duas seções, nunca uma lista só.</p>
       <p>Uma consequência de tipografia: o valor de uma propriedade é <b>dado literal do arquivo</b>, então vai em mono — a mesma fronteira que o <code>MESSAGES.md</code> mantém entre <code>data</code> e prosa. A frase <i>sobre</i> a propriedade vai em Inter.</p>
+      <p><b>Todos os contextos de subdomínio estão preenchidos</b> — 14 no domínio único, 15 no arquipélago, com as seis chaves cada e os quatro valores de <code>maturity</code> exercitados. O <code>external</code> é a exceção, e não por economia: ele recebe <b>só <code>description</code> e <code>technology</code></b>, que é a contenção que o exemplo canônico do <code>GRAMMAR.md</code> já pratica. Pelo princípio de autoria do <code>RULES</code> §0.4 você não controla o sistema de terceiro, e <code>team</code> ou <code>maturity</code> dele não são seus para declarar. A ficha diz isso quando você clica num deles.</p>
     </div>
     <div class="note">
       <span class="tagpill novo">passada de composição</span>
@@ -466,31 +467,118 @@ function unit(p,q){ var dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy)||1; retu
 function f(p){ return p[0].toFixed(1)+' '+p[1].toFixed(1); }
 
 /* ---------------- modelo ---------------- */
-/* Sales e a vitrine das propriedades: os quatro contextos com as seis chaves de
-   GRAMMAR.md secao 2 preenchidas. Compartilhado pelos dois modelos, senao clicar
-   numa peca no arquipelago nao mostraria nada. */
-var SALES = {id:'Sales', type:'core', title:'Vendas', contexts:[
-          {id:'Cart', title:'Carrinho',
-           type:'"aggregate"',
-           description:'"Itens escolhidos antes do fechamento, com reserva temporária"',
-           responsibilities:['"Manter itens e quantidades"','"Aplicar cupom"','"Expirar carrinho abandonado"'],
-           maturity:'mature', team:'"Vendas Squad"', technology:'"TypeScript, Redis"'},
-          {id:'Checkout', title:'Finalização de compra',
-           type:'"process"',
-           description:'"Orquestra endereço, frete, pagamento e confirmação do pedido"',
-           responsibilities:['"Validar endereço"','"Calcular frete"','"Autorizar pagamento"','"Emitir o pedido"'],
-           maturity:'growing', team:'"Vendas Squad"', technology:'"TypeScript, Temporal"'},
-          {id:'OrderManagement', title:'Gestão de pedidos',
-           type:'"aggregate"',
-           description:'"Ciclo de vida do pedido, da emissão à baixa"',
-           responsibilities:['"Manter o estado do pedido"','"Registrar eventos de fulfillment"','"Tratar cancelamento"'],
-           maturity:'mature', team:'"Pedidos Squad"', technology:'"Java, PostgreSQL"'},
-          {id:'Pricing', title:'Precificação',
-           type:'"policy"',
-           description:'"Preço final por item, com promoção, imposto e regra de canal"',
-           responsibilities:['"Resolver preço de lista"','"Aplicar promoção vigente"','"Compor imposto"'],
-           maturity:'experimental', team:'"Pricing Squad"', technology:'"Kotlin, Redis"'}
-        ]};
+/* As definicoes de contexto ficam fora dos modelos porque `Fulfillment` aparece
+   nos dois com o MESMO conteudo e tipo diferente — supporting no dominio unico,
+   core em Logistica. Compartilhar o conteudo e variar o tipo evita duas verdades
+   sobre o mesmo contexto.
+
+   As seis propriedades sao GRAMMAR.md secao 2 e valem so em `context`. No bloco
+   `external` entram apenas `description` e `technology`, seguindo o exemplo
+   canonico da propria gramatica: pelo principio de autoria do RULES secao 0.4
+   voce nao controla o sistema de terceiro, e `team`/`maturity` dele nao sao
+   seus para declarar. */
+var C_SALES = [
+  {id:'Cart', title:'Carrinho', type:'"aggregate"',
+   description:'"Itens escolhidos antes do fechamento, com reserva temporária"',
+   responsibilities:['"Manter itens e quantidades"','"Aplicar cupom"','"Expirar carrinho abandonado"'],
+   maturity:'mature', team:'"Vendas Squad"', technology:'"TypeScript, Redis"'},
+  {id:'Checkout', title:'Finalização de compra', type:'"process"',
+   description:'"Orquestra endereço, frete, pagamento e confirmação do pedido"',
+   responsibilities:['"Validar endereço"','"Calcular frete"','"Autorizar pagamento"','"Emitir o pedido"'],
+   maturity:'growing', team:'"Vendas Squad"', technology:'"TypeScript, Temporal"'},
+  {id:'OrderManagement', title:'Gestão de pedidos', type:'"aggregate"',
+   description:'"Ciclo de vida do pedido, da emissão à baixa"',
+   responsibilities:['"Manter o estado do pedido"','"Registrar eventos de fulfillment"','"Tratar cancelamento"'],
+   maturity:'mature', team:'"Pedidos Squad"', technology:'"Java, PostgreSQL"'},
+  {id:'Pricing', title:'Precificação', type:'"policy"',
+   description:'"Preço final por item, com promoção, imposto e regra de canal"',
+   responsibilities:['"Resolver preço de lista"','"Aplicar promoção vigente"','"Compor imposto"'],
+   maturity:'experimental', team:'"Pricing Squad"', technology:'"Kotlin, Redis"'}
+];
+var C_DISCOVERY = [
+  {id:'Search', title:'Busca', type:'"read-model"',
+   description:'"Índice do catálogo, com filtro, ordenação e sinônimo"',
+   responsibilities:['"Indexar catálogo"','"Resolver consulta"','"Registrar termo sem resultado"'],
+   maturity:'growing', team:'"Discovery Squad"', technology:'"Go, OpenSearch"'},
+  {id:'Recommendations', title:'Recomendação', type:'"read-model"',
+   description:'"Vitrine derivada de comportamento e catálogo"',
+   responsibilities:['"Montar vitrine por perfil"','"Reordenar por afinidade"','"Excluir item indisponível"'],
+   maturity:'experimental', team:'"Discovery Squad"', technology:'"Python, Feature Store"'}
+];
+var C_FULFILLMENT = [
+  {id:'Shipping', title:'Expedição', type:'"process"',
+   description:'"Do pedido confirmado à entrega, com rastreio"',
+   responsibilities:['"Escolher transportadora"','"Emitir etiqueta"','"Atualizar rastreio"'],
+   maturity:'mature', team:'"Logística Squad"', technology:'"Java, Kafka"'},
+  {id:'Inventory', title:'Estoque', type:'"aggregate"',
+   description:'"Saldo disponível por item e local, com reserva"',
+   responsibilities:['"Manter saldo por local"','"Reservar e liberar"','"Registrar divergência"'],
+   maturity:'mature', team:'"Logística Squad"', technology:'"Java, PostgreSQL"'},
+  {id:'Warehouse', title:'Armazém', type:'"service"',
+   description:'"Operação física: separação, conferência e embalagem"',
+   responsibilities:['"Roteirizar separação"','"Conferir volume"','"Embalar e despachar"'],
+   maturity:'legacy', team:'"Operações"', technology:'"C#, SQL Server"'}
+];
+var C_CARE = [
+  {id:'Support', title:'Atendimento', type:'"service"',
+   description:'"Ticket, histórico do cliente e resposta"',
+   responsibilities:['"Abrir e encerrar ticket"','"Consultar histórico do pedido"','"Escalar para a squad dona"'],
+   maturity:'growing', team:'"Atendimento"', technology:'"TypeScript, Zendesk API"'},
+  {id:'Returns', title:'Devolução', type:'"process"',
+   description:'"Logística reversa, da solicitação ao reembolso"',
+   responsibilities:['"Autorizar devolução"','"Gerar etiqueta reversa"','"Disparar reembolso"'],
+   maturity:'growing', team:'"Atendimento"', technology:'"TypeScript, Temporal"'}
+];
+var C_PAYMENTS = [
+  {id:'PaymentGateway', title:'Gateway de Pagamentos', type:'"gateway"',
+   description:'"Fachada única sobre os provedores de pagamento"',
+   responsibilities:['"Autorizar e capturar"','"Tratar webhook do provedor"','"Conciliar transação"'],
+   maturity:'mature', team:'"Payments Squad"', technology:'"Node.js, Stripe SDK"'},
+  {id:'Invoicing', title:'Faturamento', type:'"service"',
+   description:'"Nota fiscal e documento de cobrança"',
+   responsibilities:['"Emitir nota"','"Transmitir à SEFAZ"','"Arquivar documento"'],
+   maturity:'mature', team:'"Fiscal"', technology:'"Java, SOAP"'}
+];
+var C_IDENTITY = [
+  {id:'Auth', title:'Identidade', type:'"gateway"',
+   description:'"Autenticação, sessão e escopo de acesso"',
+   responsibilities:['"Autenticar credencial"','"Emitir e renovar token"','"Resolver escopo"'],
+   maturity:'mature', team:'"Plataforma"', technology:'"Go, OIDC"'}
+];
+var C_ROUTING = [
+  {id:'Routes', title:'Roteirização', type:'"policy"',
+   description:'"Rota e janela de entrega por região"',
+   responsibilities:['"Calcular rota"','"Respeitar janela"','"Reagendar falha"'],
+   maturity:'growing', team:'"Logística Squad"', technology:'"Python, OR-Tools"'}
+];
+var C_FLEET = [
+  {id:'FleetOps', title:'Frota', type:'"service"',
+   description:'"Veículo, motorista e disponibilidade"',
+   responsibilities:['"Manter cadastro de frota"','"Alocar motorista"','"Registrar manutenção"'],
+   maturity:'legacy', team:'"Operações"', technology:'"C#, SQL Server"'}
+];
+var C_CAMPAIGNS = [
+  {id:'Campaigns', title:'Campanhas', type:'"aggregate"',
+   description:'"Peça, público e vigência de cada campanha"',
+   responsibilities:['"Definir público"','"Agendar vigência"','"Medir conversão"'],
+   maturity:'growing', team:'"Growth"', technology:'"TypeScript, BigQuery"'},
+  {id:'Segments', title:'Segmentos', type:'"read-model"',
+   description:'"Coortes derivadas de comportamento de compra"',
+   responsibilities:['"Derivar coorte"','"Atualizar por evento"','"Expor para campanha"'],
+   maturity:'experimental', team:'"Growth"', technology:'"Python, dbt"'}
+];
+var C_COMMS = [
+  {id:'Email', title:'E-mail transacional', type:'"service"',
+   description:'"Envio, template e status de entrega"',
+   responsibilities:['"Renderizar template"','"Enviar e repetir"','"Tratar bounce"'],
+   maturity:'mature', team:'"Plataforma"', technology:'"Node.js, SES"'}
+];
+var X_STRIPE   = {id:'StripeApi',   description:'"Provedor de pagamentos de terceiros"',
+                  technology:'"Stripe REST API"'};
+var X_CORREIOS = {id:'CorreiosApi', description:'"Cálculo de frete e rastreio do serviço postal"',
+                  technology:'"SOAP, Correios"'};
+var X_ERP      = {id:'ERPLegado',   description:'"ERP da holding, fonte do cadastro fiscal"',
+                  technology:'"SAP ECC, RFC"'};
 
 var MODELS = {
   one: {
@@ -498,14 +586,14 @@ var MODELS = {
     domains:[{
       id:'ECommercePlatform', title:'E-Commerce Platform',
       subdomains:[
-        SALES,
-        {id:'Discovery', type:'core', contexts:['Search','Recommendations']},
-        {id:'Fulfillment', type:'supporting', contexts:['Shipping','Inventory','Warehouse']},
-        {id:'CustomerCare', type:'supporting', contexts:['Support','Returns']},
-        {id:'Payments', type:'generic', contexts:['PaymentGateway','Invoicing']},
-        {id:'Identity', type:'generic', contexts:['Auth']}
+        {id:'Sales', type:'core', title:'Vendas', contexts:C_SALES},
+        {id:'Discovery', type:'core', title:'Descoberta', contexts:C_DISCOVERY},
+        {id:'Fulfillment', type:'supporting', title:'Entrega e estoque', contexts:C_FULFILLMENT},
+        {id:'CustomerCare', type:'supporting', title:'Atendimento', contexts:C_CARE},
+        {id:'Payments', type:'generic', title:'Pagamentos', contexts:C_PAYMENTS},
+        {id:'Identity', type:'generic', title:'Identidade', contexts:C_IDENTITY}
       ],
-      external:['StripeApi','CorreiosApi','ERPLegado']
+      external:[X_STRIPE, X_CORREIOS, X_ERP]
     }],
     mapping:[
       {l:'Cart',            lt:['OHS'], c:'-->', rt:['ACL'], r:'Checkout'},
@@ -529,24 +617,24 @@ var MODELS = {
     domains:[
       { id:'ECommercePlatform', title:'E-Commerce Platform',
         subdomains:[
-          SALES,
-          {id:'Discovery', type:'core', contexts:['Search','Recommendations']},
-          {id:'Payments', type:'generic', contexts:['PaymentGateway']}
+          {id:'Sales', type:'core', title:'Vendas', contexts:C_SALES},
+          {id:'Discovery', type:'core', title:'Descoberta', contexts:C_DISCOVERY},
+          {id:'Payments', type:'generic', title:'Pagamentos', contexts:[C_PAYMENTS[0]]}
         ],
-        external:['StripeApi'] },
+        external:[X_STRIPE] },
       { id:'Logistics', title:'Logística',
         subdomains:[
-          {id:'Fulfillment', type:'core', contexts:['Shipping','Inventory','Warehouse']},
-          {id:'Routing', type:'supporting', contexts:['Routes']},
-          {id:'Fleet', type:'generic', contexts:['FleetOps']}
+          {id:'Fulfillment', type:'core', title:'Entrega e estoque', contexts:C_FULFILLMENT},
+          {id:'Routing', type:'supporting', title:'Roteirização', contexts:C_ROUTING},
+          {id:'Fleet', type:'generic', title:'Frota', contexts:C_FLEET}
         ],
-        external:['CorreiosApi'] },
+        external:[X_CORREIOS] },
       { id:'Marketing', title:'Marketing',
         subdomains:[
-          {id:'Campaigns', type:'core', contexts:['Campaigns','Segments']},
-          {id:'Comms', type:'supporting', contexts:['Email']}
+          {id:'Campaigns', type:'core', title:'Campanhas', contexts:C_CAMPAIGNS},
+          {id:'Comms', type:'supporting', title:'Comunicação', contexts:C_COMMS}
         ],
-        external:['ERPLegado'] }
+        external:[X_ERP] }
     ],
     mapping:[
       {l:'Cart',            lt:['OHS'], c:'-->', rt:['ACL'], r:'Checkout'},
@@ -628,6 +716,21 @@ function relLine(rel){
             (rel.rt.length ? ' ['+rel.rt.join(', ')+']' : '');
   return pad(rel.l,16)+' '+pad(mid,22)+' '+rel.r;
 }
+/* Um so lugar emite context_decl, e ele serve tanto o subdomain quanto o
+   external — senao a fonte mostra propriedade num lugar e nao no outro, e o
+   texto deixa de corresponder ao desenho, que e a propriedade que esta pagina
+   existe para manter. */
+function ctxLines(c, out){
+  var keys = PROP_ORDER.filter(function(k){ return c[k]!==undefined; });
+  if(!c.title && !keys.length){ out.push('    context '+c.id); return; }
+  out.push('    context '+c.id+' {');
+  if(c.title) out.push('      title: "'+c.title+'"');
+  keys.forEach(function(k){
+    var v = c[k];
+    out.push('      '+k+': '+(Array.isArray(v) ? '['+v.join(', ')+']' : v));
+  });
+  out.push('    }');
+}
 function srcOf(m){
   var out=[], cross=[];
   m.mapping.forEach(function(rel){
@@ -641,23 +744,13 @@ function srcOf(m){
       out.push('');
       out.push('  subdomain '+sd.type+' '+sd.id+' {');
       if(sd.title) out.push('    title: "'+sd.title+'"');
-      sd.contexts.forEach(function(c){
-        var keys = PROP_ORDER.filter(function(k){ return c[k]!==undefined; });
-        if(!c.title && !keys.length){ out.push('    context '+c.id); return; }
-        out.push('    context '+c.id+' {');
-        if(c.title) out.push('      title: "'+c.title+'"');
-        keys.forEach(function(k){
-          var v = c[k];
-          out.push('      '+k+': '+(Array.isArray(v) ? '['+v.join(', ')+']' : v));
-        });
-        out.push('    }');
-      });
+      sd.contexts.forEach(function(c){ ctxLines(c, out); });
       out.push('  }');
     });
     if(d.external && d.external.length){
       out.push('');
       out.push('  external {');
-      d.external.forEach(function(c){ out.push('    context '+c.id); });
+      d.external.forEach(function(c){ ctxLines(c, out); });
       out.push('  }');
     }
     var mine = m.mapping.filter(function(rel){
@@ -1564,9 +1657,15 @@ function selPanel(homeOf){
   var rels2 = m.mapping.filter(function(r){ return r.l===nm || r.r===nm; });
   var html = '<div class="sel"><div class="kind">context</div><h4>'+esc(nm)+'</h4>';
   if(c2.title) html += '<div class="ti big">'+esc(c2.title)+'</div>';
+  var isExt = g.sd.type==='external';
   html += '<div class="meta"><button class="golink" data-gosub="'+esc(dom2.id+'/'+g.sd.id)+'">'+
-          esc(g.sd.id)+'</button> · '+esc(g.sd.type)+'<br>'+esc(dom2.title||dom2.id)+'</div>';
+          esc(g.sd.id)+'</button> · '+(isExt ? 'fora do domínio' : esc(g.sd.type))+
+          '<br>'+esc(dom2.title||dom2.id)+'</div>';
   html += '<div class="sect">Propriedades</div>'+propRows(c2);
+  if(isExt) html += '<div class="nofill">Só <code>description</code> e <code>technology</code>: '+
+    'pelo princípio de autoria do <code>RULES</code> §0.4 você não controla este sistema, '+
+    'e <code>team</code> ou <code>maturity</code> dele não são seus para declarar. '+
+    'É a contenção que o exemplo canônico do <code>GRAMMAR.md</code> já pratica.</div>';
   html += '<div class="sect">Contrato</div>';
   if(!rels2.length){
     html += '<div class="none">Nenhuma relação no mapping — candidato a <b>UNMAPPED_CONTEXT</b>.</div>';
