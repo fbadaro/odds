@@ -360,8 +360,8 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
     </div>
     <div class="grp"><span class="lbl">Tema</span>
       <div class="seg" id="segTheme">
-        <button data-v="auto" aria-pressed="true">sistema</button>
-        <button data-v="light" aria-pressed="false">claro</button>
+        <button data-v="auto" aria-pressed="false">sistema</button>
+        <button data-v="light" aria-pressed="true">claro</button>
         <button data-v="dark" aria-pressed="false">escuro</button>
       </div>
     </div>
@@ -411,7 +411,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <p>O critério de derrubada foi escrito <b>antes</b> de construir: a rodada falha se cruzamentos e arestas sobre peça alheia não caírem pelo menos à metade. O <code>colmeia-v3.check.mjs</code> mede os dois modelos a cada mudança.</p>
       <table>
         <tr><th></th><th>v2</th><th>v3</th></tr>
-        <tr><td>Cruzamentos, 1 domínio</td><td>13</td><td><b>2</b></td></tr>
+        <tr><td>Cruzamentos, 1 domínio</td><td>13</td><td><b>1</b></td></tr>
         <tr><td>Cruzamentos, arquipélago</td><td>7</td><td><b>1</b></td></tr>
         <tr><td>Aresta sobre peça alheia</td><td>7 e 7</td><td><b>0 e 0</b></td></tr>
         <tr><td>Maior desvio (rota ÷ reta)</td><td>—</td><td><b>1,15× e 1,44×</b></td></tr>
@@ -444,7 +444,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
     <div class="note">
       <span class="tagpill novo">mudança 2</span>
       <h3>A tag fica na porta</h3>
-      <p>Toda aresta sai pelo lado do hexágono mais alinhado com o caminho, e a tag fica <b>encostada nesse lado</b>. <code>[ACL]</code> deixa de ser um chip no meio da linha e passa a ficar do lado downstream, que é justamente o que <code>UPSTREAM_ONLY_TAG_MISPLACED</code> e <code>DOWNSTREAM_ONLY_TAG_MISPLACED</code> julgam. A ordem a partir da peça é fixa: <b>lado, chip, seta, linha</b>.</p>
+      <p>Toda aresta sai pelo lado do hexágono mais alinhado com o caminho, e a tag fica <b>encostada nesse lado</b>. <code>[ACL]</code> deixa de ser um chip no meio da linha e passa a ficar do lado downstream, que é justamente o que <code>UPSTREAM_ONLY_TAG_MISPLACED</code> e <code>DOWNSTREAM_ONLY_TAG_MISPLACED</code> julgam. A ordem a partir da peça é fixa: <b>lado, seta colada, respiro, chip, linha</b>. Na primeira versão a seta vinha depois do chip, a vários pixels do hexágono, e quando a rota virava logo adiante ela aparecia solta. Colada no lado, ela sempre aponta para a peça, e a tag vem depois com 6px de respiro.</p>
       <p>Um lado com tag é exclusivo. Se o chip encosta em outro chip, numa peça alheia ou no toco de saída de outra porta, ele primeiro se afasta até 12px e, se não bastar, troca de lado. Resultado medido: <b>zero portas disputadas</b> nos dois modelos. Uma ponta sem tag nunca divide lado com uma tag.</p>
       <p><code>[BBM]</code> entra no mesmo chip, em cinza, e sozinho ganha borda tracejada. Ele caracteriza o sistema, não o contrato, e o desenho mantém essa diferença (<code>RULES</code> §0.2).</p>
     </div>
@@ -457,7 +457,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
     <div class="note">
       <span class="tagpill novo">mudança 3</span>
       <h3>As setas andam pela colmeia</h3>
-      <p>A normal de cada lado do hexágono aponta exatamente para o centro da célula vizinha. Por isso a seta sai da porta pela própria grade e anda de centro em centro até a porta do outro lado. <b>Toda perna fica numa das seis direções da colmeia</b>, e os cantos são arredondados. A ordem a partir da peça continua sendo lado, chip, seta, linha, agora sobre a primeira perna.</p>
+      <p>A normal de cada lado do hexágono aponta exatamente para o centro da célula vizinha. Por isso a seta sai da porta pela própria grade e anda de centro em centro até a porta do outro lado. <b>Toda perna fica numa das seis direções da colmeia</b>, e os cantos são arredondados. A seta, o respiro e o chip ficam sobre a primeira perna.</p>
       <p>O A* anda sobre (célula, direção), e cada curva paga pedágio: 60° custa pouco, 120° mais, meia-volta muito (o trecho repetido some no corte de laços). A rota prefere poucas pernas longas a uma escada. Três regras só existem porque a grade as exige:</p>
       <ul>
         <li><b>Nunca dividir trecho com outra aresta.</b> Duas linhas no mesmo trecho da grade viram uma só.</li>
@@ -506,6 +506,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       </ul>
       <p>Os mecanizáveis viraram checagem no <code>colmeia-v3.check.mjs</code>: chip × chip, chip × peça alheia, chip × toco de outra porta, selo × chip e rótulo mais perto de peça alheia do que da própria. Esta última pegou na primeira execução um defeito que já estava na tela e ninguém tinha visto: <code>PaymentGateway</code>.</p>
       <p>A segunda passada (setas na grade, títulos maiores) acrescentou três: <b>desvio acima de 2×</b>, <b>trecho de grade dividido</b> entre duas arestas, e <b>título de subdomínio × peça ou chip</b>. O título cresceu de 10 para 13px (18px na escala <i>subdomínio</i>). Em território apertado ele procura também o ponto entre duas células antes de encolher um degrau.</p>
+      <p>A terceira passada colou a seta no hexágono e pôs a tag depois dela, com respiro, e trouxe mais uma checagem: <b>linha × chip de outra relação</b>. O primeiro remédio (fazer a rota pagar para atravessar chip) só trocou o defeito por outro: <code>Routes → Shipping</code> passou a dar uma volta de 2,3×, porque o chip de <code>Warehouse</code> estava plantado no corredor natural entre os dois. Agora o roteamento tem duas passadas. A primeira acha os corredores sem custo de chip, o chip atravessado se afasta ou troca de lado, e a segunda roteia com o custo. Quem sai do caminho é o chip, não a linha.</p>
     </div>
     <div class="note">
       <span class="tagpill">em aberto</span>
@@ -1356,7 +1357,7 @@ function layoutAt(cm, rank){
      parceiros SOMADA, contexto de grau alto fugia para a orla do territorio e o
      miolo ficava vazio. Agora ela e media (grau nao vira forca), celula de orla
      paga pedagio, e parceiro a duas celulas paga tambem — duas portas frente a
-     frente precisam de chip, seta e um pedaco de linha entre elas. */
+     frente precisam de seta, respiro, chip e um pedaco de linha entre elas. */
   var interiorOf={};
   groups.forEach(function(g){ interiorCells(g).forEach(function(c){ interiorOf[kk(c[0],c[1])]=1; }); });
   function place(cx){
@@ -1475,22 +1476,29 @@ function routeAll(geo){
     ends.forEach(function(e){ R[e.i][e.side==='l' ? 'endL' : 'endR'] = e; });
   });
 
-  /* geometria da porta: lado -> chip encostado -> ponta de seta -> saida */
+  /* geometria da porta: lado -> SETA COLADA -> respiro -> chip -> linha.
+     Ate a v3.2 a ordem era lado, chip, seta: a seta ficava depois do chip, a
+     varios px do hexagono, e quando a rota virava logo adiante ela aparecia
+     solta no canto — a seta "quebrava". Colada no lado, ela sempre aponta para
+     a peca e nunca depende de onde a linha vira. */
+  var ARROW_L=9, BREATH=6;
   function endGeom(E, e, id, arrowHere){
     var ctr=tiles[id], a=sideAng(e.k), n=[Math.cos(a), Math.sin(a)], t=[-n[1], n[0]];
     var P=add(ctr, n, HIN), chip=null;
     if(e.stack) P=add(P, t, (e.stack%2 ? 1 : -1)*Math.ceil(e.stack/2)*(e.tags.length ? 17 : 8));
-    var tip=add(P, n, 1.5), push=e.push||0;
+    var tip=add(P, n, 0.5), push=e.push||0;
+    var near=(arrowHere ? ARROW_L+0.5 : 0) + BREATH, far=near;
     if(e.tags.length){
       var w=chipW(e.tags), h=15, ext=Math.abs(n[0])*w+Math.abs(n[1])*h;
-      var t0=ext/2+1+push, cc=add(P, n, t0);
-      chip={c:cc, w:w, h:h, box:[cc[0]-w/2, cc[1]-h/2, w, h], tags:e.tags};
-      /* a ponta sai de onde o RAIO deixa a caixa, nao da projecao: nos lados
-         diagonais a projecao cai longe do chip e a seta ficava descolada */
+      /* o raio entra e sai da caixa a exitT do centro; nos lados diagonais uma
+         quina da caixa fica mais perto do hexagono do que o ponto de entrada,
+         entao o centro tambem respeita meia projecao — a caixa nunca invade o lado */
       var exitT = Math.min(Math.abs(n[0])>1e-6 ? (w/2)/Math.abs(n[0]) : Infinity, Math.abs(n[1])>1e-6 ? (h/2)/Math.abs(n[1]) : Infinity);
-      tip=add(P, n, t0+exitT+2);
+      var t0=Math.max(near+exitT, ext/2+(arrowHere ? ARROW_L : 0)+2)+push, cc=add(P, n, t0);
+      chip={c:cc, w:w, h:h, box:[cc[0]-w/2, cc[1]-h/2, w, h], tags:e.tags};
+      far=t0+exitT;
     }
-    var Q=add(tip, n, (arrowHere ? 9 : 0) + 5);
+    var Q=add(P, n, far+5);
     return {id:id, P:P, n:n, tip:tip, Q:Q, chip:chip, arrow:arrowHere, k:e.k};
   }
   R.forEach(function(E){
@@ -1565,6 +1573,7 @@ function routeAll(geo){
     if(!bad) break;
   }
 
+  function routeLattice(CHIP_COST){
   /* passada 2: PELA GRADE. A normal de cada lado do hexagono aponta exatamente
      para o centro da celula vizinha, entao a rota sai da porta pela propria
      grade e anda de centro em centro ate a celula vizinha da outra porta. Toda
@@ -1616,6 +1625,8 @@ function routeAll(geo){
   var TURN=[0, 0.5, 1.4, 2.5, 1.4, 0.5];
   function gridRoute(E){
     var A=E.L, B=E.Rr, own=[E.rel.l, E.rel.r];
+    var foreignChips=[];
+    R.forEach(function(F){ if(F!==E) [F.L,F.Rr].forEach(function(en){ if(en.chip) foreignChips.push(en.chip.box); }); });
     var sK=kk(A.start.cell[0],A.start.cell[1]), gK=kk(B.start.cell[0],B.start.cell[1]);
     var finalDir=(B.k+3)%6, goal=B.start.cell;
     var open=new Heap(), g={}, from={}, s0=sK+'#'+A.k, best=null;
@@ -1640,6 +1651,10 @@ function routeAll(geo){
         if(portCell[nk] && own.indexOf(portCell[nk])<0) cost += 6;
         if(usedCell[nk]) cost += 0.35;
         if(usedSeg[segKey(ck,nk)]) cost += 3;
+        /* passo que atravessa o chip de OUTRA relacao: o chip pode avancar
+           sobre o corredor entre celulas, e a reserva de celula nao o cobre */
+        var pa=px(c[0],c[1]), pb=px(q,r);
+        for(var ci=0; ci<foreignChips.length; ci++) if(segBox(pa, pb, foreignChips[ci])){ cost += CHIP_COST; break; }
         var ns=nk+'#'+j, ng=g[st]+cost;
         if(g[ns]===undefined || ng<g[ns]-1e-9){ g[ns]=ng; from[ns]=st; open.push([ng+hexDist([q,r],goal), ns]); }
       }
@@ -1664,6 +1679,41 @@ function routeAll(geo){
     out.push(pts[pts.length-1]);
     E.path=out; E.cells=all;
   });
+  }
+
+  /* Duas passadas. Rotear ja com custo para atravessar chip alheio fazia a
+     linha contornar o obstaculo: Routes -> Shipping dava volta de 2,3x so
+     porque o chip de Warehouse estava plantado no corredor natural entre os
+     dois. Quem deve sair do caminho e o chip, nao a linha. Entao: 1) rota
+     sem custo de chip, para achar os corredores naturais; 2) chip atravessado
+     por corredor alheio se afasta ou troca de lado; 3) rota de novo, agora
+     com o custo, que so pesa onde o chip nao teve para onde ir. */
+  routeLattice(0);
+  function linesOk(sl){
+    var en=geomOf(sl); if(!en.chip) return true;
+    for(var i=0;i<R.length;i++){
+      if(R[i]===sl.E) continue;
+      var pth=R[i].path;
+      for(var j=0;j<pth.length-1;j++) if(segBox(pth[j], pth[j+1], en.chip.box)) return false;
+    }
+    return true;
+  }
+  slots.forEach(function(sl){
+    if(!sl.e.tags.length || linesOk(sl)) return;
+    var e=sl.e, orig={k:e.k, push:e.push||0}, id=geomOf(sl).id, usedK={};
+    (byTile[id]||[]).forEach(function(o){ if(o!==e) usedK[o.k]=1; });
+    var tries=[];
+    [4,8,12].forEach(function(pu){ tries.push({k:orig.k, push:orig.push+pu}); });
+    [0,1,2,3,4,5].filter(function(k){ return k!==orig.k && !usedK[k]; })
+      .sort(function(a,b){ return angDiff(sideAng(a),e.ang)-angDiff(sideAng(b),e.ang) || a-b; })
+      .forEach(function(k){ if(angDiff(sideAng(k),e.ang)<=Math.PI*0.75) [0,4,8].forEach(function(pu){ tries.push({k:k, push:pu}); }); });
+    for(var t=0;t<tries.length;t++){
+      e.k=tries[t].k; e.push=tries[t].push; regen(sl);
+      if(ok(sl) && linesOk(sl)) return;
+    }
+    e.k=orig.k; e.push=orig.push; regen(sl);
+  });
+  routeLattice(8);
   geo.rels=R; geo.congested=congested;
 }
 function chipW(tags){ return tags.join(' ').length*6.0+12; }
@@ -1771,12 +1821,19 @@ function placeLabels(geo, opts){
           var k2=kk(c[0]+DIRS[j][0], c[1]+DIRS[j][1]);
           if(g.set[k2]){ var p2=mass.pos[k2]; spots.push({p:[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2], edge:!(inner[k1]&&inner[k2])}); }
         });
+        /* orla: meio dentro, meio fora da fronteira. So vale para territorio
+           minimo (uma peca em 7 celulas), onde os chips ocupam todo o miolo */
+        if(g.cells.length<=8) DIRS.forEach(function(d){
+          if(g.set[kk(c[0]+d[0], c[1]+d[1])]) return;
+          var q=px(c[0]+d[0], c[1]+d[1]);
+          spots.push({p:[(p1[0]+q[0])/2,(p1[1]+q[1])/2], edge:true, rim:true});
+        });
       });
       var ct=centroidOf(g.cells, mass.pos), best=null;
       [size, size*0.85].some(function(sz){
         var w2=txt.length*sz*0.80, h2=sz*1.5, bn=Infinity, bd=Infinity, cand=null;
         spots.forEach(function(sp){
-          var pp=sp.p, box=[pp[0]-w2/2, pp[1]-h2/2, w2, h2], n=sp.edge ? 1.5 : 0;
+          var pp=sp.p, box=[pp[0]-w2/2, pp[1]-h2/2, w2, h2], n=sp.rim ? 3 : sp.edge ? 1.5 : 0;
           busy.forEach(function(o){ if(boxHit(box,o)) n+=8; });
           segs.forEach(function(s){ if(segBox(s[0],s[1],box)) n+=1; });
           var d=dist(pp,ct);
@@ -2279,6 +2336,9 @@ seg('segModel','model',function(){ resetSel(); state.shuffle=0; state.extra=0; l
 seg('segView','view',function(){ state.selDiag=null; render(); });
 seg('segFile','file',function(){ state.selDiag=null; render(); });
 seg('segTags','tags'); seg('segLabels','labels'); seg('segSub','sub');
+/* tema claro por padrao (direcao fixada em 2026-09-07: "densidade de
+   ferramenta, tema claro por padrao"); sistema e escuro seguem a um clique */
+document.documentElement.setAttribute('data-theme', 'light');
 seg('segTheme',null,function(v){
   if(v==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', v);
 });

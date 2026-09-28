@@ -183,6 +183,11 @@ for (const model of ["one", "many"]) {
     for (const o of ids) if (hit(sp.box, tileBox(o))) problems.push(`título ${sp.id} × peça ${o}`);
     for (const c of chips) if (hit(sp.box, c.box)) problems.push(`título ${sp.id} × chip ${c.rk}:${c.id}`);
   }
+  /* linha × chip de outra relação (achado de captura: Routes → Shipping cortava o ACL BBM de Warehouse) */
+  geo.rels.forEach((E) => {
+    for (let i = 0; i < E.path.length - 1; i++)
+      for (const c of chips) if (c.rk !== E.rk && segHitsBox(E.path[i], E.path[i + 1], c.box)) problems.push(`linha ${E.rk} × chip ${c.rk}:${c.id}`);
+  });
   /* na grade, duas arestas no mesmo trecho viram uma linha só */
   const segOf = (E) => { const o = []; for (let i = 0; i < E.cells.length - 1; i++) { const a = E.cells[i], b = E.cells[i + 1]; o.push(a < b ? a + ">" + b : b + ">" + a); } return o; };
   const seen = {};

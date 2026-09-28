@@ -146,7 +146,7 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] Apagar o playground estilizado, do repositório e do artifact (2026-09-11) — a base é o ponto de partida
 - [x] **Rodada de render aberta (2026-09-11)** — a colmeia do Aplas aplicada ao Context Map, partindo da base. A licença ao `ADR-0007` é esta rodada inteira, sob uma regra: o que sair daqui é **exigência**, não alvo visual, e a rodada fecha com ADR
 - [x] Colmeia v2 (2026-09-11): massas por tipo de subdomínio com mar entre elas, contexto como peça hexagonal, seleção com ficha
-- [x] Colmeia v3 (2026-09-27): posição invariante à ordem, tag na porta, rotas que contornam peças, veredito real e duas vistas numa geografia. O critério de derrubada passa nos dois modelos (13 → 2 e 7 → 1 cruzamentos; 0 arestas sobre peça alheia; desvio máximo 1,44×)
+- [x] Colmeia v3 (2026-09-27): posição invariante à ordem, tag na porta, rotas que contornam peças, veredito real e duas vistas numa geografia. O critério de derrubada passa nos dois modelos (13 → 1 e 7 → 1 cruzamentos; 0 arestas sobre peça alheia; desvio máximo 1,44×)
 - [ ] Decidir o fork do achado 4: a colmeia é **uma vista** (muda o `PRD.md` §4.4) ou é só a de contenção?
 - [ ] Decidir o fork do achado 2: posição derivada do texto, ou posição escolhida — e, se escolhida, onde ela mora sem quebrar o `ADR-0003`
 - [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
