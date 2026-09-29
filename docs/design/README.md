@@ -123,6 +123,7 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 | [Colmeia v1](https://claude.ai/code/artifact/c05ad18e-1f40-4e01-8613-8b0f4803db71) | `pages/colmeia-v1.html` | **Congelada.** Ilha única = domínio, sub-região = subdomínio, ponto = contexto. Ver o mapa da ACME no Aplas corrigiu o átomo aqui: o hexágono é a silhueta da região, não o item |
 | [Colmeia v2](https://claude.ai/code/artifact/3ae26b8b-b961-414e-aceb-b71612374ca2) | `pages/colmeia-v2.html` | **Congelada.** Uma massa de terra por **tipo de subdomínio**, separadas por mar; só o mesmo tipo se junta. Contexto volta a ser **hexágono clicável**, com ficha na seleção. O espaçamento mínimo entre peças é medido, não escolhido |
 | [Colmeia v3](https://claude.ai/artifact/W6nHqSDRs2yBjbwf45avQD) | `pages/colmeia-v3.html` | **A mais recente.** Posição derivada do grafo numa ordem canônica, então embaralhar o arquivo move 0 peças. A tag fica na porta, as setas andam pela grade hexagonal (A* com custo de curva), e fluxo e contenção usam a mesma geografia. O veredito vem do `@odds/core` real, gerado e conferido por `pages/colmeia-v3.check.mjs`, que também mede a página com a régua da v2 |
+| [Colmeia ao vivo](https://claude.ai/artifact/JMBWefCBBGr3K8QR3tbWS6) | `pages/colmeia-ao-vivo.html` | **Protótipo do `ADR-0009`.** Editor + `@odds/core` real + o layout da v3 **sem cópia**, embutidos por `pages/colmeia-ao-vivo.build.mjs` (rode com `--write` depois de mexer na v3 ou no core; sem argumento, confere). Um robô digita quatro cenários e as três medidas do ADR ligam e desligam. Mediu que **acrescentar um contexto move 15–17 de 17 peças** — daí a exigência de localidade no ADR |
 
 ## Estado
 
@@ -147,6 +148,8 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] **Rodada de render aberta (2026-09-11)** — a colmeia do Aplas aplicada ao Context Map, partindo da base. A licença ao `ADR-0007` é esta rodada inteira, sob uma regra: o que sair daqui é **exigência**, não alvo visual, e a rodada fecha com ADR
 - [x] Colmeia v2 (2026-09-11): massas por tipo de subdomínio com mar entre elas, contexto como peça hexagonal, seleção com ficha
 - [x] Colmeia v3 (2026-09-27): posição invariante à ordem, tag na porta, rotas que contornam peças, veredito real e duas vistas numa geografia. O critério de derrubada passa nos dois modelos (13 → 1 e 7 → 1 cruzamentos; 0 arestas sobre peça alheia; desvio máximo 1,44×)
+- [x] `ADR-0009` proposto (2026-09-28): layout próprio em `@odds/layout`, SVG, bibliotecas só nas bordas — e o protótipo **colmeia ao vivo** que o testa. As medidas de edição funcionam; o que falhou foi a **localidade** do layout (+1 contexto refaz o mapa)
+- [ ] Layout com localidade: +1/−1 contexto só move peças do próprio subdomínio, renomear não move nenhuma — condição para o `ADR-0009` passar a `accepted`
 - [ ] Decidir o fork do achado 4: a colmeia é **uma vista** (muda o `PRD.md` §4.4) ou é só a de contenção?
 - [ ] Decidir o fork do achado 2: posição derivada do texto, ou posição escolhida — e, se escolhida, onde ela mora sem quebrar o `ADR-0003`
 - [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
