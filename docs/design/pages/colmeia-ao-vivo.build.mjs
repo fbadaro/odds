@@ -23,8 +23,8 @@
  * Três blocos, delimitados por marcadores dentro da página:
  *
  *   1. CORE   chevrotain + @odds/core (dist) + @odds/messages (dist, com o JSON inline)
- *   2. V3CSS  o <style> da colmeia-v3.html, inteiro — o protótipo veste a mesma pele
- *   3. V3SRC  o <script> da colmeia-v3.html, inteiro, rodado sem DOM — o MESMO layout
+ *   2. V3CSS  o <style> da colmeia-v4.html, inteiro — o protótipo veste a mesma pele
+ *   3. V3SRC  o <script> da colmeia-v4.html, inteiro, rodado sem DOM — o MESMO layout
  *
  * Exige o core compilado (`npm run typecheck`).
  */
@@ -36,7 +36,9 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../..");
 const pagePath = path.join(here, "colmeia-ao-vivo.html");
-const v3Path = path.join(here, "colmeia-v3.html");
+// a v4 é a v3 com localidade (ADR-0010); os marcadores V3CSS/V3SRC e o __v3 ficaram
+// com o nome antigo para não reescrever a página inteira por causa de um rótulo
+const v3Path = path.join(here, "colmeia-v4.html");
 const WRITE = process.argv.includes("--write");
 
 const read = (p) => fs.readFileSync(p, "utf8");

@@ -1,5 +1,5 @@
 <title>Colmeia ao vivo</title>
-<!--BUILD:13dcb819f327-->
+<!--BUILD:fcd7a9925313-->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <!--V3CSS--><style id="v3css">
@@ -314,7 +314,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style><!--/V3CSS-->
 <style>
-/* O resto é a pele da colmeia v3, embutida acima pelo build. Aqui só o que o
+/* O resto é a pele da colmeia v4, embutida acima pelo build. Aqui só o que o
    protótipo acrescenta: editor, mapa de altura fixa, estado congelado e a animação. */
 .wrap{max-width:1440px}
 .lv-stage{display:grid; grid-template-columns:minmax(0,440px) minmax(0,1fr); gap:16px; align-items:start; margin-top:14px}
@@ -388,7 +388,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 <div class="wrap">
   <div class="eyebrow">Protótipo · ADR-0009 · proposto</div>
   <h1>Colmeia ao vivo</h1>
-  <p class="lede">O texto à esquerda passa pelo <b><code>@odds/core</code> real</b> a cada tecla, e o mapa à direita é o <b>layout da colmeia v3, sem cópia</b> — o mesmo script, embutido pelo build. A pergunta é a do ADR-0009: dá para editar a DSL e ver este desenho acompanhar, sem perder o mapa de vista? As três medidas do ADR ligam e desligam aqui, para comparar com e sem.</p>
+  <p class="lede">O texto à esquerda passa pelo <b><code>@odds/core</code> real</b> a cada tecla, e o mapa à direita é o <b>layout da colmeia v4, sem cópia</b> — o mesmo script, embutido pelo build. A pergunta é a do ADR-0009: dá para editar a DSL e ver este desenho acompanhar, sem perder o mapa de vista? As três medidas do ADR ligam e desligam aqui, para comparar com e sem.</p>
 
   <div class="bar" role="toolbar" aria-label="Controles">
     <div class="grp"><span class="lbl">Medidas</span>
@@ -471,6 +471,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <h3>O que move o mapa é contexto, não relação</h3>
       <p>Medido sobre o modelo de vendas, peças que andam por edição: renomear um contexto <b>0–1 de 16</b>; trocar tag ou conector <b>0</b>; +1 relação <b>3–8 de 17</b>; <b>+1 contexto: 15–17 de 17</b> em quatro dos seis subdomínios, e <b>−1 contexto: 14–16 de 16</b> em três. A pausa e a animação fazem o que prometem — um relayout por nome digitado, e visível —, mas não impedem que a edição estrutural mais comum refaça o mapa inteiro.</p>
       <p>A causa é do layout, não do ciclo: o tamanho da massa é função direta do número de contextos, e toda massa se reposiciona quando uma cresce. A correção cabe numa função pura — <b>localidade</b>: acrescentar um contexto a um subdomínio só pode mover peças daquele subdomínio, como o embaralhar já não move nenhuma. Não pede layout grudento.</p>
+          <p><b>Resolvido na v4 (2026-10-06).</b> O build passou a embutir a <code>colmeia-v4.html</code>, que cumpre a localidade. O robô do “contexto novo” agora termina com <b>0 de 17 peças andaram, +1 nova</b>. A <code>colmeia-v4.check.mjs</code> confere a regra edição por edição nos dois modelos, e o ADR-0010 registra como. O que falta para o ADR-0009 sair de <i>proposto</i> é a outra metade: alguém digitar um mapa de tamanho real aqui.</p>
     </article>
   </div>
 </div>
@@ -479,7 +480,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 (function(){
 "use strict";
 /* Com __V3_HEADLESS a pagina nao toca o DOM: so expoe o modelo, o gerador de
-   fonte e o layout em globalThis.__v3. E por ai que colmeia-v3.check.mjs roda o
+   fonte e o layout em globalThis.__v3. E por ai que colmeia-v4.check.mjs roda o
    validador real sobre a fonte e mede a geometria em Node. */
 var HEADLESS = !!globalThis.__V3_HEADLESS;
 
@@ -533,16 +534,20 @@ function segBox(a,b,box){
   return false;
 }
 function cmp(a,b){ return a<b ? -1 : a>b ? 1 : 0; }
+/* v4: d menor que bd, e no empate (dentro do ruido de ponto flutuante) a celula
+   de menor coordenada RELATIVA a base da massa. Desempatar pela ordem de
+   varredura, ou deixar o ruido decidir, fazia um dominio transladado pela
+   prateleira trocar pecas simetricas de lugar: o ruido depende da posicao
+   absoluta, a coordenada relativa nao. A direcao (maior q, depois maior r) e
+   arbitraria; das quatro, foi a unica que passou a regua nos dois modelos. */
+function tieLess(d, c, bd, bc, base){
+  if(d < bd-1e-6) return true;
+  if(d > bd+1e-6 || !bc) return false;
+  var a0=c[0]-base[0], b0=bc[0]-base[0];
+  return a0>b0 || (a0===b0 && c[1]-base[1] > bc[1]-base[1]);
+}
 function pairKey(a,b){ return a<b ? a+'|'+b : b+'|'+a; }
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
-function perms(n){
-  if(n<=1) return [[0]];
-  var out=[];
-  perms(n-1).forEach(function(p){
-    for(var i=0;i<=p.length;i++){ var q=p.slice(); q.splice(i,0,n-1); out.push(q); }
-  });
-  return out.sort(function(a,b){ return cmp(a.join(),b.join()); });
-}
 function mulberry(seed){
   return function(){
     seed |= 0; seed = seed + 0x6D2B79F5 | 0;
@@ -971,7 +976,18 @@ function spiral(radius){
 }
 /* 4n+3, nao os 3n+3 da v2: la o contexto era ponto; aqui ele tem ate seis
    portas, e tres pecas com chip nao cabem em doze celulas sem encostar. */
-function cellsFor(nCtx){ return Math.max(Math.ceil(nCtx*4.0) + 3, 7); }
+/* v4, localidade: o territorio e dimensionado pelo DEGRAU, nao pela contagem.
+   Na v3 o tamanho era funcao direta de n, e um contexto a mais crescia a massa,
+   que empurrava as outras — 15-17 de 17 pecas andavam. Dentro de um degrau o
+   territorio nao muda de forma, e entao nada fora dele pode mudar. Cruzar o
+   degrau refaz o mapa, e isso e aceito: e raro, e a animacao mostra para onde
+   cada peca foi. Degraus moderados: a folga custa territorio vazio na tela. */
+var TIERS = [4, 8, 12, 20, 32, 48, 64];
+function tierOf(n){
+  for(var i=0;i<TIERS.length;i++) if(n<=TIERS[i]) return TIERS[i];
+  return Math.ceil(n/16)*16;
+}
+function cellsFor(nCtx){ return Math.max(Math.ceil(tierOf(nCtx)*4.0) + 3, 7); }
 function massesOf(dom){
   var out = [];
   TYPES.forEach(function(t){
@@ -1009,20 +1025,27 @@ function extAt(mass, ang){
   var N=mass.ext.length, i=Math.round((((ang%(Math.PI*2))+Math.PI*2)%(Math.PI*2))/(Math.PI*2)*N)%N;
   return mass.ext[i];
 }
+/* v4: em duas etapas. Primeiro as massas proprias se acomodam entre si, sem o
+   external; depois o external desce pelo raio do angulo dele e para na primeira
+   distancia em que nao encosta em ninguem. Na v3 todas se empurravam juntas, e
+   o external — fosse cedendo, fosse empurrando — ou movia massa alheia ao girar,
+   ou ficava preso entre duas e acabava dentro do core. */
 function layoutMasses(masses, extAng){
-  var ANG = {supporting:Math.PI, generic:0, external:extAng};
-  var hub = masses.filter(function(m){ return m.type==='core'; })[0] || masses[0];
+  var ANG = {supporting:Math.PI, generic:0};
+  var own = masses.filter(function(m){ return !m.external; });
+  var extM = masses.filter(function(m){ return m.external; })[0];
+  var hub = own.filter(function(m){ return m.type==='core'; })[0] || own[0] || extM;
   hub.c = [0,0];
-  masses.forEach(function(m,idx){
+  own.forEach(function(m,idx){
     if(m===hub) return;
     var ang = ANG[m.type]!==undefined ? ANG[m.type] : (-Math.PI/2 + idx*2.1);
-    var d = extAt(hub, ang) + GAP + extAt(m, ang+Math.PI) + (m.external ? 22 : 0);
+    var d = extAt(hub, ang) + GAP + extAt(m, ang+Math.PI);
     m.c = [Math.cos(ang)*d, Math.sin(ang)*d];
   });
   for(var it=0; it<80; it++){
     var moved=false;
-    for(var i=0;i<masses.length;i++) for(var j=i+1;j<masses.length;j++){
-      var A=masses[i], B=masses[j], dx=B.c[0]-A.c[0], dy=B.c[1]-A.c[1], d=Math.hypot(dx,dy)||1;
+    for(var i=0;i<own.length;i++) for(var j=i+1;j<own.length;j++){
+      var A=own[i], B=own[j], dx=B.c[0]-A.c[0], dy=B.c[1]-A.c[1], d=Math.hypot(dx,dy)||1;
       var ab=Math.atan2(dy,dx), need=extAt(A,ab)+extAt(B,ab+Math.PI)+GAP;
       if(d>=need) continue;
       moved=true;
@@ -1033,59 +1056,53 @@ function layoutMasses(masses, extAng){
     }
     if(!moved) break;
   }
+  if(extM && extM!==hub){
+    var u2=[Math.cos(extAng), Math.sin(extAng)];
+    var clear=function(c){ return own.every(function(m){
+      var dx=c[0]-m.c[0], dy=c[1]-m.c[1], ab=Math.atan2(dy,dx);
+      return Math.hypot(dx,dy) >= extAt(m,ab)+extAt(extM,ab+Math.PI)+GAP+22;
+    }); };
+    var dd = extAt(hub, extAng) + GAP + extAt(extM, extAng+Math.PI) + 22;
+    while(!clear([u2[0]*dd, u2[1]*dd])) dd += C;
+    extM.c = [u2[0]*dd, u2[1]*dd];
+  }
   var rad=0;
   masses.forEach(function(m){ var far=m.ext ? Math.max.apply(null,m.ext) : m.R; rad=Math.max(rad, Math.hypot(m.c[0],m.c[1])+far); });
   return rad;
 }
-/* Semente de cada territorio dentro da massa. Na v2 era o indice de declaracao
-   que escolhia o angulo; aqui testa rotacoes e permutacoes e fica com a que poe
-   cada territorio mais perto de quem ele conversa. `partnerAt` responde onde
-   esta o parceiro — ou null na passada de medida, e ai vale o arranjo neutro. */
-function packMass(mass, origin, occupied, partnerAt){
+/* Semente de cada territorio dentro da massa, e o crescimento de cada um a
+   partir dela. */
+function packMass(mass, origin, occupied){
   var ctr = [origin[0]+mass.c[0], origin[1]+mass.c[1]];
   var base = pixelToAxial(ctr[0], ctr[1]);
   var cap = mass.Rcap || mass.R, span = Math.ceil(cap/(C*1.5)) + 3;
   var cand = [], pos = {};
   spiral(span).forEach(function(c){
     var q=c[0]+base[0], r=c[1]+base[1], p=px(q,r);
-    if(Math.hypot(p[0]-ctr[0], p[1]-ctr[1]) > cap) return;
+    if(Math.hypot(p[0]-ctr[0], p[1]-ctr[1]) > cap+1e-6) return;
     cand.push([q,r]); pos[kk(q,r)] = p;
   });
-  mass.ctr = ctr; mass.pos = pos;
+  mass.ctr = ctr; mass.pos = pos; mass.base = base;
   var gs = mass.groups, R = cap*0.46;
-  if(gs.length===1) gs[0].seed = ctr;
-  else {
-    var best=null, bs=Infinity;
-    perms(gs.length).forEach(function(perm){
-      for(var rot=0; rot<(partnerAt ? 12 : 1); rot++){
-        var seeds = [];
-        perm.forEach(function(gi, slot){
-          var a = rot*Math.PI/6 + slot*2*Math.PI/gs.length - Math.PI/2;
-          seeds[gi] = [ctr[0]+Math.cos(a)*R, ctr[1]+Math.sin(a)*R];
-        });
-        var sc = 0;
-        if(partnerAt) gs.forEach(function(g, gi){
-          g.sd.ids.forEach(function(id){
-            partnerAt(id).forEach(function(pp){
-              if(pp.group===g) return;
-              var at = pp.group && pp.group.mass===mass ? seeds[gs.indexOf(pp.group)] : pp.at;
-              sc += dist(seeds[gi], at);
-            });
-          });
-        });
-        if(sc < bs-1e-6){ bs=sc; best=seeds; }
-      }
-      if(!partnerAt) return;
-    });
-    gs.forEach(function(g,gi){ g.seed = best[gi]; });
-  }
+  /* v4, localidade de relacao: o arranjo e FIXO — territorios em ordem de id,
+     o primeiro no alto, os outros em volta no sentido horario. A v3 testava
+     permutacoes e rotacoes e ficava com a que punha cada territorio mais perto
+     dos parceiros; era a principal fonte de movimento sob edicao: uma relacao
+     de Vendas virava a massa core e levava Descoberta junto. Medido: com o
+     arranjo fixo, nenhuma edicao de relacao mexe fora das duas pontas. A puxada
+     para o parceiro continua existindo, mas so dentro do territorio (passo 4). */
+  gs.forEach(function(g, slot){
+    if(gs.length===1){ g.seed = ctr; return; }
+    var a = slot*2*Math.PI/gs.length - Math.PI/2;
+    g.seed = [ctr[0]+Math.cos(a)*R, ctr[1]+Math.sin(a)*R];
+  });
   gs.forEach(function(g){
     var blob=[], set={}, seedCell=null, bd=Infinity;
     cand.forEach(function(c){
       var key=kk(c[0],c[1]);
       if(occupied[key]) return;
       var d=dist(pos[key], g.seed);
-      if(d<bd){ bd=d; seedCell=c; }
+      if(tieLess(d, c, bd, seedCell, base)){ bd=d; seedCell=c; }
     });
     if(!seedCell){ g.cells=[]; g.set={}; return; }
     occupied[kk(seedCell[0],seedCell[1])]=g; blob.push(seedCell); set[kk(seedCell[0],seedCell[1])]=1;
@@ -1095,7 +1112,7 @@ function packMass(mass, origin, occupied, partnerAt){
         var nq=blob[b][0]+DIRS[j][0], nr=blob[b][1]+DIRS[j][1], key=kk(nq,nr);
         if(occupied[key] || !(key in pos)) continue;
         var d2=dist(pos[key], g.seed);
-        if(d2<pd){ pd=d2; pick=[nq,nr]; }
+        if(tieLess(d2, [nq,nr], pd, pick, base)){ pd=d2; pick=[nq,nr]; }
       }
       if(!pick) break;
       occupied[kk(pick[0],pick[1])]=g; blob.push(pick); set[kk(pick[0],pick[1])]=1;
@@ -1137,7 +1154,8 @@ function fillMassHoles(mass){
   mass.groups.forEach(function(g){ g.cells.forEach(function(c){ union[kk(c[0],c[1])]=1; owner[kk(c[0],c[1])]=g; }); });
   if(!Object.keys(union).length) return;
   var filled = fillHoles(Object.assign({}, union));
-  Object.keys(filled).sort().forEach(function(k3){
+  /* ordem numerica, nao de string: "10,3" antes de "9,3" mudaria com uma translacao */
+  Object.keys(filled).map(unkk).sort(function(a,b){ return (a[0]-b[0]) || (a[1]-b[1]); }).map(function(c){ return kk(c[0],c[1]); }).forEach(function(k3){
     if(union[k3]) return;
     var c=unkk(k3), tally={}, bestG=null, bn=0;
     for(var j=0;j<6;j++){
@@ -1196,7 +1214,7 @@ var LAMBDA = 1.0;      /* puxada para o centro do territorio, contra a puxada do
 var EDGE_TOLL = 40;    /* pedagio de celula na orla do territorio, em px (~0,8 celula) */
 var CLOSE_TOLL = 150;  /* pedagio de parceiro a menos de tres celulas: abaixo disso, dois chips frente a frente nao cabem na grade */
 var CLR = HR + 3;      /* folga minima entre aresta e peca que nao e dela */
-function layoutAt(cm, rank){
+function layoutAt(cm){
   var rels = cm.mapping, partners = {}, deg = {};
   rels.forEach(function(rel){
     (partners[rel.l] = partners[rel.l] || []).push(rel.r);
@@ -1207,34 +1225,47 @@ function layoutAt(cm, rank){
 
   /* 1. cada dominio: massas, e o angulo do external escolhido pelo grafo */
   var prepared = cm.domains.map(function(dom){
-    var masses = massesOf(dom), extM = masses.filter(function(m){ return m.external; })[0];
+    var masses = massesOf(dom);
     var massOfCtx = {};
     masses.forEach(function(m){ m.groups.forEach(function(g){ g.sd.ids.forEach(function(id){ massOfCtx[id]=m; }); }); });
-    var cands = extM ? [0.5,0.33,0.67,0.17,0.83,1.5,1.33,1.67,1.17,1.83].map(function(x){ return x*Math.PI; }) : [0];
+    /* O angulo do external continua saindo do grafo, mas so das relacoes do
+       proprio external — e numa edicao dessas ele e uma das pontas, entao pode
+       andar. Tres coisas mudaram da v3 para que SO ele ande: a distancia vai
+       ate o TERRITORIO do parceiro (o arranjo agora e fixo, a massa inteira nao
+       diz mais onde ele esta); atravessar QUALQUER massa paga, nao so o core; e
+       o external e posto por ultimo, no raio dele, sem empurrar ninguem
+       (layoutMasses). Duas candidatas novas, 0 e PI, ao lado das massas. */
+    var extM = masses.filter(function(m){ return m.external; })[0];
+    var groupOfCtx = {};
+    masses.forEach(function(m){ m.groups.forEach(function(g){ g.sd.ids.forEach(function(id){ groupOfCtx[id]=g; }); }); });
+    var cands = extM ? [0.5,0.33,0.67,0.17,0.83,1.5,1.33,1.67,1.17,1.83,0,1].map(function(x){ return x*Math.PI; }) : [0.5*Math.PI];
     var scored=[];
-    cands.forEach(function(ang){
+    cands.forEach(function(ang, ci){
       masses.forEach(function(m){ m.ext=null; m.c=null; });
       layoutMasses(masses, ang);
       var tmp={};
-      masses.forEach(function(m){ packMass(m, [0,0], tmp, null); });
+      masses.forEach(function(m){ packMass(m, [0,0], tmp); });
       masses.forEach(function(m){ m.ext = extentFn(m); });
-      var rad = layoutMasses(masses, ang), sc = rad*0.35;
-      /* distancia ate o parceiro, mais um pedagio se a linha reta ate ele
-         atravessaria o core — e por ali que a aresta cruzaria todas as outras */
-      var hub = masses.filter(function(m){ return m.type==='core'; })[0];
+      var rad = layoutMasses(masses, ang);
+      masses.forEach(function(m){ var t={}; packMass(m, [0,0], t); });
+      var sc = rad*0.35;
       if(extM) rels.forEach(function(rel){
-        var a=massOfCtx[rel.l], b=massOfCtx[rel.r];
-        if(!a || !b || a===b) return;
-        if(a!==extM && b!==extM) return;
-        var other = a===extM ? b : a;
-        sc += dist(extM.c, other.c);
-        if(hub && other!==hub && distPS(hub.c, extM.c, other.c) < Math.min.apply(null, hub.ext)*0.9) sc += 2*Math.max.apply(null, hub.ext);
+        var a=groupOfCtx[rel.l], b=groupOfCtx[rel.r];
+        if(!a || !b || a.mass===b.mass) return;
+        if(a.mass!==extM && b.mass!==extM) return;
+        var other = a.mass===extM ? b : a;
+        var tgt = other.seed;
+        sc += dist(extM.c, tgt);
+        masses.forEach(function(m){
+          if(m===extM || m===other.mass) return;
+          var rr = Math.min.apply(null, m.ext);
+          if(distPS(m.c, extM.c, tgt) < rr*0.9) sc += 2*Math.max.apply(null, m.ext);
+        });
       });
-      scored.push({sc:sc, i:scored.length, ang:ang, snap:masses.map(function(m){ return {c:m.c.slice(), ext:m.ext.slice()}; })});
+      scored.push({sc:sc, i:ci, ang:ang, snap:masses.map(function(m){ return {c:m.c.slice(), ext:m.ext.slice()}; })});
     });
     scored.sort(function(a,b){ return (a.sc-b.sc) || (a.i-b.i); });
-    var best=scored[Math.min(rank, scored.length-1)];
-    masses.forEach(function(m,i){ m.c=best.snap[i].c; m.ext=best.snap[i].ext; });
+    masses.forEach(function(m,i){ m.c=scored[0].snap[i].c; m.ext=scored[0].snap[i].ext; });
     var bx={minX:Infinity, maxX:-Infinity, minY:Infinity, maxY:-Infinity};
     masses.forEach(function(m){
       bx.minX=Math.min(bx.minX, m.c[0]-extAt(m,Math.PI)); bx.maxX=Math.max(bx.maxX, m.c[0]+extAt(m,0));
@@ -1243,70 +1274,79 @@ function layoutAt(cm, rank){
     return {dom:dom, masses:masses, box:bx, massOfCtx:massOfCtx};
   });
 
-  /* 2. dominios em prateleira; a ordem sai das ligacoes entre eles, nao do arquivo */
+  /* 2. dominios em prateleira, em ordem de id; o numero de linhas sai da
+        proporcao da tela. v4: a v3 testava toda ordem de dominios pela
+        distancia das ligacoes entre eles — uma busca fatorial (8 dominios, um
+        segundo; 10, nao termina) e uma escolha discreta que uma relacao entre
+        dois dominios podia virar, levando o terceiro junto. */
   var HALO = C*SQ3, pitch = 2*HALO + 34;
   prepared.forEach(function(pr){ pr.w=(pr.box.maxX-pr.box.minX)+pitch; pr.h=(pr.box.maxY-pr.box.minY)+pitch; });
-  var domOfCtx = {};
-  prepared.forEach(function(pr,i){ Object.keys(pr.massOfCtx).forEach(function(id){ domOfCtx[id]=i; }); });
-  var bestOrg=null, bestSc=Infinity, rowsOrg=[];
-  perms(prepared.length).forEach(function(perm){
-    for(var k=1;k<=prepared.length;k++){
-      var per=Math.ceil(prepared.length/k), rows=[], i;
-      for(i=0;i<perm.length;i+=per) rows.push(perm.slice(i,i+per));
-      if(rows.length!==k) continue;
-      /* linha mais curta que a mais larga fica CENTRADA: encostada a esquerda
-         ela deixava um quadrante vazio e esticava as ligacoes entre dominios */
-      var org={}, yCur=0, W=0;
-      rows.forEach(function(row){ W=Math.max(W, row.reduce(function(a,ix){ return a+prepared[ix].w; },0)); });
-      rows.forEach(function(row){
-        var h=Math.max.apply(null,row.map(function(ix){ return prepared[ix].h; }));
-        var xCur=(W-row.reduce(function(a,ix){ return a+prepared[ix].w; },0))/2;
-        row.forEach(function(ix){ var pr=prepared[ix]; org[ix]=[xCur+pr.w/2, yCur+h/2]; xCur+=pr.w; });
-        yCur+=h;
-      });
-      rowsOrg.push(org);
-      /* distancia entre as MASSAS dos dois contextos, nao entre centros de
-         dominio: um dominio grande tem o core longe da propria borda */
-      var cross=0;
-      function at(id){
-        var ix=domOfCtx[id], pr=prepared[ix], m=pr.massOfCtx[id];
-        return [org[ix][0]-(pr.box.minX+pr.box.maxX)/2+m.c[0], org[ix][1]-(pr.box.minY+pr.box.maxY)/2+m.c[1]];
-      }
-      rels.forEach(function(rel){
-        var a=domOfCtx[rel.l], b=domOfCtx[rel.r];
-        if(a!==undefined && b!==undefined && a!==b) cross += dist(at(rel.l), at(rel.r));
-      });
-      var sc = Math.abs(Math.log((W/yCur)/1.4)) + 2.5*cross/(W+yCur);
-      if(sc < bestSc-1e-6){ bestSc=sc; bestOrg=org; }
-    }
-  });
+  var bestOrg=null, bestSc=Infinity, order=prepared.map(function(_,i){ return i; });
+  for(var k=1;k<=prepared.length;k++){
+    var per=Math.ceil(prepared.length/k), rows=[], i;
+    for(i=0;i<order.length;i+=per) rows.push(order.slice(i,i+per));
+    if(rows.length!==k) continue;
+    /* linha mais curta que a mais larga fica CENTRADA: encostada a esquerda
+       ela deixava um quadrante vazio e esticava as ligacoes entre dominios */
+    var org={}, yCur=0, W=0;
+    rows.forEach(function(row){ W=Math.max(W, row.reduce(function(a,ix){ return a+prepared[ix].w; },0)); });
+    rows.forEach(function(row){
+      var h=Math.max.apply(null,row.map(function(ix){ return prepared[ix].h; }));
+      var xCur=(W-row.reduce(function(a,ix){ return a+prepared[ix].w; },0))/2;
+      row.forEach(function(ix){ var pr=prepared[ix]; org[ix]=[xCur+pr.w/2, yCur+h/2]; xCur+=pr.w; });
+      yCur+=h;
+    });
+    var sc = Math.abs(Math.log((W/yCur)/1.4));
+    if(sc < bestSc-1e-6){ bestSc=sc; bestOrg=org; }
+  }
   prepared.forEach(function(pr, ix){
     var o=bestOrg[ix];
     pr.origin=[o[0]-(pr.box.minX+pr.box.maxX)/2, o[1]-(pr.box.minY+pr.box.maxY)/2];
   });
+  /* v4, localidade: o mapa e ancorado no hub do primeiro dominio, nao no canto
+     da caixa. Com a caixa como referencia, o external trocar de angulo
+     recentrava o dominio inteiro e todas as pecas "andavam" sem sair do lugar
+     relativo. Coordenada estavel e trabalho do layout; enquadrar e da camera. */
+  var anchor = prepared.length ? prepared[0].origin.slice() : [0,0];
+  /* e cada origem cai num ponto da grade: assim um dominio que a prateleira
+     desloca anda INTEIRO, sem ser reempacotado num encaixe diferente da grade */
+  prepared.forEach(function(pr){
+    var o=[pr.origin[0]-anchor[0], pr.origin[1]-anchor[1]], ax=pixelToAxial(o[0], o[1]);
+    pr.origin=px(ax[0], ax[1]);
+  });
 
-  /* 3. empacota de verdade, com a semente de cada territorio voltada para os parceiros */
-  var massAt = {};
-  prepared.forEach(function(pr){ Object.keys(pr.massOfCtx).forEach(function(id){
-    var m=pr.massOfCtx[id]; massAt[id]=[pr.origin[0]+m.c[0], pr.origin[1]+m.c[1]];
-  }); });
+  /* 3. empacota de verdade */
   var groupOf = {};
   prepared.forEach(function(pr){ pr.masses.forEach(function(m){ m.groups.forEach(function(g){ g.sd.ids.forEach(function(id){ groupOf[id]=g; }); }); }); });
-  function partnerAt(id){
-    return (partners[id]||[]).map(function(p){ return {group:groupOf[p], at:massAt[p]}; });
-  }
   var occupied = {}, groups = [];
   prepared.forEach(function(pr){
-    pr.masses.forEach(function(m){ packMass(m, pr.origin, occupied, partnerAt); fillMassHoles(m); });
+    pr.masses.forEach(function(m){ packMass(m, pr.origin, occupied); fillMassHoles(m); });
     pr.masses.forEach(function(m){ m.groups.forEach(function(g){ if(g.cells.length) groups.push(g); }); });
   });
 
   /* 4. pecas: cada contexto vai para a celula do proprio territorio que minimiza
-        a distancia aos parceiros, com a puxada LAMBDA para o centro. Ordem por
-        grau e depois por id; tres varreduras de reparo com os outros fixos. */
-  var ctxs=[];
+        a distancia aos parceiros, com a puxada LAMBDA para o centro. Tres
+        varreduras de reparo com os outros fixos.
+     v4, localidade: cada territorio se resolve SOZINHO. Na v3 a colocacao era
+     uma passada gulosa unica sobre o mapa inteiro — a ordem global, o
+     espacamento contra pecas de outro territorio e a puxada para a posicao
+     exata do parceiro faziam um contexto novo em Vendas mexer em Expedicao. Agora
+     uma peca so le o proprio territorio: parceiro de fora puxa para o CENTRO do
+     territorio dele (que so muda no degrau), e a distancia a peca alheia vira
+     regra de terreno — peca nao senta em celula vizinha de territorio alheio, o
+     que ja garante tres celulas entre portas de territorios diferentes. */
+  prepared.forEach(function(pr){ pr.masses.forEach(function(m){ m.groups.forEach(function(g){ g.key = pr.dom.id+'/'+g.sd.id; g.dom = pr.dom.id; }); }); });
+  var ctxs=[], sig={};
   groups.forEach(function(g){ g.sd.ids.forEach(function(id){ ctxs.push({id:id, g:g}); }); });
-  ctxs.sort(function(a,b){ return ((deg[b.id]||0)-(deg[a.id]||0)) || cmp(a.id,b.id); });
+  /* A ordem dentro do territorio decide quem escolhe celula primeiro. Grau,
+     depois a ASSINATURA (em que territorios estao os parceiros), e so entao o
+     nome. Renomear nao muda grau nem assinatura: so troca de lugar com um gemeo
+     estrutural, se houver — o empate que a ordem do arquivo nao pode desfazer,
+     porque embaralhar o arquivo nao pode mover nada. */
+  ctxs.forEach(function(cx){
+    sig[cx.id] = (partners[cx.id]||[]).map(function(q){ return groupOf[q] ? groupOf[q].key : '?'; }).sort().join(',');
+  });
+  ctxs.sort(function(a,b){ return ((deg[b.id]||0)-(deg[a.id]||0)) || cmp(sig[a.id], sig[b.id]) || cmp(a.id,b.id); });
   var pos={}, cellOf={};
   groups.forEach(function(g){ g.ct = centroidOf(g.cells, g.pos); });
   /* Tres termos, e a calibragem veio da primeira captura: com a puxada dos
@@ -1314,21 +1354,36 @@ function layoutAt(cm, rank){
      miolo ficava vazio. Agora ela e media (grau nao vira forca), celula de orla
      paga pedagio, e parceiro a duas celulas paga tambem — duas portas frente a
      frente precisam de seta, respiro, chip e um pedaco de linha entre elas. */
-  var interiorOf={};
-  groups.forEach(function(g){ interiorCells(g).forEach(function(c){ interiorOf[kk(c[0],c[1])]=1; }); });
+  var interiorOf={}, ownerOf={}, borderOf={};
+  groups.forEach(function(g){
+    interiorCells(g).forEach(function(c){ interiorOf[kk(c[0],c[1])]=1; });
+    g.cells.forEach(function(c){ ownerOf[kk(c[0],c[1])]=g; });
+  });
+  groups.forEach(function(g){ g.cells.forEach(function(c){
+    for(var j=0;j<6;j++){ var o=ownerOf[kk(c[0]+DIRS[j][0], c[1]+DIRS[j][1])]; if(o && o!==g){ borderOf[kk(c[0],c[1])]=1; break; } }
+  }); });
   function place(cx){
     var g=cx.g, bestC=null, bs=Infinity, fb=null, fs=-1, ps=partners[cx.id]||[];
     g.cells.forEach(function(c){
       var key=kk(c[0],c[1]), p=g.pos[key], dmin=Infinity;
-      for(var id in cellOf){ if(id===cx.id || groupOf[id].mass!==g.mass) continue; dmin=Math.min(dmin, hexDist(c, cellOf[id])); }
+      for(var id in cellOf){ if(id===cx.id || groupOf[id]!==g) continue; dmin=Math.min(dmin, hexDist(c, cellOf[id])); }
       var s = LAMBDA*dist(p, g.ct) + (interiorOf[key] ? 0 : EDGE_TOLL), pull=0;
+      /* Parceiro no external nao puxa: o external gira quando QUALQUER relacao
+         dele muda, e a puxada levaria junto quem conversa com ele por outra
+         relacao (remover Stripe → Pagamentos movia Expedicao). Parceiro em
+         OUTRO dominio tambem nao: a prateleira desloca dominios inteiros, e a
+         puxada reorganizaria o de dentro — com ela fora, o dominio anda rigido. */
+      var np=0;
       ps.forEach(function(q){
-        pull += dist(p, pos[q] || groupOf[q].ct);
-        if(cellOf[q] && hexDist(c, cellOf[q])<3) s += CLOSE_TOLL;
+        var mine = groupOf[q]===g;
+        if(!mine && (groupOf[q].mass.external && !g.mass.external || groupOf[q].dom!==g.dom)) return;
+        np++;
+        pull += dist(p, mine && pos[q] ? pos[q] : groupOf[q].ct);
+        if(mine && cellOf[q] && hexDist(c, cellOf[q])<3) s += CLOSE_TOLL;
       });
-      if(ps.length) s += pull/ps.length;
-      if(dmin>=MIN_STEP && s<bs-1e-6){ bs=s; bestC=c; }
-      if(dmin>fs){ fs=dmin; fb=c; }
+      if(np) s += pull/np;
+      if(!borderOf[key] && dmin>=MIN_STEP && tieLess(s, c, bs, bestC, g.mass.base)){ bs=s; bestC=c; }
+      if(tieLess(-dmin, c, -fs, fb, g.mass.base)){ fs=dmin; fb=c; }
     });
     var c = bestC || fb;
     cellOf[cx.id]=c; pos[cx.id]=g.pos[kk(c[0],c[1])];
@@ -1704,7 +1759,7 @@ function tilesMoved(a, b){
 }
 
 /* Fase de cada code, do AST_SCHEMA.md secao 1.3 via CATALOGUE do @odds/core. Gerado por
-   colmeia-v3.check.mjs --write, junto com os diagnosticos: nao editar a mao. */
+   colmeia-v4.check.mjs --write, junto com os diagnosticos: nao editar a mao. */
 var PHASE = /*PHASE*/{"SYNTAX_ERROR":0,"ORPHAN_CONTEXT":1,"ORPHAN_SUBDOMAIN":1,"REMOVED_CONSTRUCT":1,"INVALID_DOMAIN_CARDINALITY":2,"INVALID_SUBDOMAIN_TYPE":2,"DUPLICATE_CONTEXT":2,"DUPLICATE_SUBDOMAIN":2,"PHANTOM_REFERENCE":3,"SELF_RELATIONSHIP":3,"DUPLICATE_RELATIONSHIP":3,"EXTERNAL_ONLY_RELATIONSHIP":3,"UPSTREAM_ONLY_TAG_MISPLACED":4,"DOWNSTREAM_ONLY_TAG_MISPLACED":4,"MUTUAL_TAG_ON_DIRECTIONAL":4,"POSITIONAL_TAG_ON_MUTUAL":4,"INCOMPLETE_MUTUAL_TAG":4,"MUTUAL_TAG_WITH_EXTERNAL":4,"SEPARATION_CONFLICT":4,"ROLE_CONFLICT":4,"PROTECTION_CONFLICT":4,"CONFORMIST_CORE":5,"GENERIC_WITHOUT_OHS":5,"CORE_UPSTREAM_OF_GENERIC":5,"CORE_IN_SHARED_KERNEL":5,"DOMAIN_WITHOUT_CORE":5,"INCONSISTENT_BBM":5,"INCOMPLETE_CUSTOMER_SUPPLIER":5,"EXCESSIVE_SHARED_KERNEL":5,"UNDOCUMENTED_CONTRACT":5,"UNMAPPED_CONTEXT":5,"EMPTY_SUBDOMAIN":5,"PL_WITHOUT_OHS":5,"MALFORMED_SUPPRESSION":6,"UNUSED_SUPPRESSION":6}/*END*/;
 var DIAG = /*DIAG*/{"one:clean":{"hash":"fbeac7fe","items":[]},"one:broken":{"hash":"288e39b8","items":[{"code":"DOWNSTREAM_ONLY_TAG_MISPLACED","severity":"error","data":{"tag":"ACL"},"anchor":"tag:Cart|Checkout:Cart:ACL","msg":"`[ACL]` só pode ser declarada no lado Downstream da integração — o lado que consome."},{"code":"UPSTREAM_ONLY_TAG_MISPLACED","severity":"error","data":{"tag":"OHS"},"anchor":"tag:Cart|Checkout:Checkout:OHS","msg":"`[OHS]` só pode ser declarada no lado Upstream da integração — o lado que fornece."},{"code":"PROTECTION_CONFLICT","severity":"error","data":{"context":"Support"},"anchor":"grp:Auth|Support:Support","msg":"`Support` não pode ser Conformist `[CF]` e ter uma Anti-Corruption Layer `[ACL]` para a mesma integração."},{"code":"INCOMPLETE_CUSTOMER_SUPPLIER","severity":"warning","data":{"context":"Pricing","declared":"S","missing":"C"},"anchor":"rel:Checkout|Pricing","msg":"`Pricing` declara `[S]`, mas o outro lado não declara `[C]`. Customer/Supplier é um acordo bilateral, e metade dele documenta meio contrato."},{"code":"CONFORMIST_CORE","severity":"warning","data":{"context":"Checkout","trigger":"conformist"},"anchor":"rel:Checkout|PaymentGateway","msg":"Risco estratégico: o contexto de Core Domain `Checkout` está se conformando ao modelo de outro sistema. Considere um `[ACL]` para proteger sua vantagem competitiva."},{"code":"UNDOCUMENTED_CONTRACT","severity":"info","data":{"left":"Returns","right":"Shipping"},"anchor":"rel:Returns|Shipping","msg":"A integração entre `Returns` e `Shipping` não declara nenhum padrão de Context Map. Uma relação não declarada esconde o acoplamento real entre os times — adicione uma tag como `[OHS]`, `[ACL]` ou `[CF]`."}]},"many:clean":{"hash":"254b427e","items":[{"code":"INVALID_DOMAIN_CARDINALITY","severity":"error","data":{"count":"3"},"anchor":"domnth:2","msg":"Um arquivo ODDS deve declarar exatamente um `domain`; este declara 3."}]}}/*END*/;
 
@@ -1888,12 +1943,23 @@ function badgeSpot(E, geo, lab){
   }
   /* aresta curta demais: o selo sai para o lado da linha, ainda encostado nela */
   var m=along(core, L/2), u=unit(along(core, L/2-4), along(core, L/2+4)), nrm=[-u[1],u[0]];
-  var offs=[14,-14,22,-22,30,-30];
+  var offs=[14,-14,22,-22,30,-30,38,-38];
   for(var i=0;i<offs.length;i++){
     var p2=add(m,nrm,offs[i]), b2=[p2[0]-R, p2[1]-R, 2*R, 2*R];
     if(!obst.some(function(o){ return boxHit(b2,o); })) return p2;
   }
-  return m;
+  /* v4: nada livre (territorio fixo deixou Checkout e Pricing a duas celulas).
+     Fica o lugar que menos tampa — e tampar chip pesa mais que tampar peca,
+     porque o chip e o proprio veredito que o selo anuncia. */
+  var chips=[];
+  geo.rels.forEach(function(F){ [F.L,F.Rr].forEach(function(en){ if(en.chip) chips.push(en.chip.box); }); });
+  var best=m, bs=Infinity;
+  [0].concat(offs).forEach(function(o){
+    var p3=add(m,nrm,o), b3=[p3[0]-R, p3[1]-R, 2*R, 2*R];
+    var sc=obst.filter(function(x){ return boxHit(b3,x); }).length + 10*chips.filter(function(x){ return boxHit(b3,x); }).length + Math.abs(o)/100;
+    if(sc<bs){ bs=sc; best=p3; }
+  });
+  return best;
 }
 function arrowAt(en){
   var b=en.tip, u=[-en.n[0], -en.n[1]], n=[-u[1],u[0]], L=9, W=4.4;
@@ -2159,7 +2225,7 @@ function diagPanel(diags, key){
            '<span class="code '+d.severity+'">'+esc(d.code)+'</span><span class="msg">'+esc(d.msg)+'</span><span class="sp">L'+d.span.start.line+':'+d.span.start.column+'</span></button>';
   }).join('') : '<div class="dempty">'+(diags.length ? 'Tudo filtrado.' : 'Nenhum diagnóstico. O <code>@odds/core</code> rodou sobre esta fonte e não tem nada a dizer.')+'</div>';
   var notes=[];
-  if(state.shuffle || state.extra) notes.push('Spans recalculados sobre a fonte atual. O conjunto de diagnósticos é o do validador, conferido pelo <code>colmeia-v3.check.mjs</code> contra a fonte embaralhada.');
+  if(state.shuffle || state.extra) notes.push('Spans recalculados sobre a fonte atual. O conjunto de diagnósticos é o do validador, conferido pelo <code>colmeia-v4.check.mjs</code> contra a fonte embaralhada.');
   if(state.sub==='rich') notes.push('Com <b>+ propriedades</b> a fonte ganha linhas <code>// proposta</code> e o validador de hoje as recusaria. Os diagnósticos mostrados são os da fonte sem elas, com os spans ajustados.');
   if(state.model==='many') notes.push('Com a regra de hoje, o arquipélago <b>não passa da fase 2</b>: <code>INVALID_DOMAIN_CARDINALITY</code> é erro, e nada depois dele roda (<code>RULES-EN.md</code> §3.1).');
   if(state.view==='contain') notes.push('Na contenção não há aresta: o veredito de uma relação sobe para a peça da esquerda. A lista continua completa.');
@@ -2222,7 +2288,7 @@ function render(){
      tem de ser a mesma que o validador leu */
   var canonSrc=sourceOf(declared(state.model, state.file, 0, 0), 'today').text, set=DIAG[dg.key];
   var stale=document.getElementById('stale');
-  if(set && set.hash!==fnv(canonSrc)){ stale.className='stale on'; stale.textContent='Os diagnósticos embutidos não correspondem à fonte desta página. Rode node docs/design/pages/colmeia-v3.check.mjs --write.'; }
+  if(set && set.hash!==fnv(canonSrc)){ stale.className='stale on'; stale.textContent='Os diagnósticos embutidos não correspondem à fonte desta página. Rode node docs/design/pages/colmeia-v4.check.mjs --write.'; }
   else { stale.className='stale'; stale.textContent=''; }
 
   var mt=measure(cur.geo), b=baseline[state.model];
@@ -2273,7 +2339,7 @@ var focusCtx=null;
 
 if(HEADLESS){
   globalThis.__v3 = {MODELS:MODELS, BREAKS:BREAKS, EXTRA:EXTRA, declared:declared, canon:canon, sourceOf:sourceOf,
-    layout:layout, measure:measure, tilesMoved:tilesMoved, placeLabels:placeLabels, targetOf:targetOf, fnv:fnv,
+    layout:layout, measure:measure, tilesMoved:tilesMoved, tierOf:tierOf, placeLabels:placeLabels, targetOf:targetOf, fnv:fnv,
     DIAG:DIAG, PHASE:PHASE, state:state, build:build, diagsFor:diagsFor};
   return;
 }
