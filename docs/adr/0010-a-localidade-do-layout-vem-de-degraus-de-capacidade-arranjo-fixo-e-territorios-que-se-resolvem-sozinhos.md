@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0010 — A localidade do layout vem de degraus de capacidade, arranjo fixo e territórios que se resolvem sozinhos
 
+> **O ADR-0009 foi aceito em 2026-10-06**, depois do teste de digitação humana. O bloco abaixo descreve o estado em que este ADR foi escrito.
+
 > **Depende do ADR-0009, que segue `proposed`.** Este ADR decide *como* o layout próprio cumpre a primeira das duas condições de aceite daquele, a localidade. Ele não aceita o ADR-0009: falta a segunda condição, alguém digitar um mapa de tamanho real no `colmeia-ao-vivo` sem perder a peça que estava olhando. Se o ADR-0009 for revertido, este perde o objeto.
 
 ## Contexto

@@ -1,7 +1,7 @@
 ---
 adr: 0009
 title: O layout do diagrama é código próprio num pacote @odds/layout, com saída SVG e bibliotecas só nas bordas
-status: proposed
+status: accepted
 date: 2026-09-28
 deciders: Fabio Badaro, Claude
 tags: render, layout, playground, stack, desempenho
@@ -10,6 +10,8 @@ superseded-by: —
 ---
 
 # ADR-0009 — O layout do diagrama é código próprio num pacote @odds/layout, com saída SVG e bibliotecas só nas bordas
+
+> **Aceito em 2026-10-06.** As duas condições abaixo foram cumpridas. A localidade veio da colmeia v4 (`docs/design/pages/colmeia-v4.html`), pelos mecanismos do `ADR-0010`, e é conferida edição por edição pelo `colmeia-v4.check.mjs`. O teste de digitação humana foi feito pelo autor no `colmeia-ao-vivo` com a v4 embutida, e o resultado foi que *"funcionou bem"*: nenhum sinal da *Reversão* apareceu. Os dois blocos a seguir ficam como estavam, porque são o registro do que se sabia antes.
 
 > **Proposto, não aceito.** A decisão foi registrada antes do protótipo que a confirma porque a análise que a produziu, com os números abaixo, se perderia com a sessão. O protótipo existe desde o mesmo dia (`docs/design/pages/colmeia-ao-vivo.html`) e já acendeu metade do primeiro sinal da *Reversão* — ver *Consequências*, "O que o protótipo mediu". A passagem a `accepted` exige duas coisas: o layout cumprir a exigência de **localidade** que o protótipo fez nascer, e alguém digitar um mapa de tamanho real sem perder a peça que estava olhando. Enquanto estiver `proposed`, o R6.4 do `HEALTH.md` não se move.
 

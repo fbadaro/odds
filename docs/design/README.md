@@ -151,7 +151,7 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] Colmeia v3 (2026-09-27): posição invariante à ordem, tag na porta, rotas que contornam peças, veredito real e duas vistas numa geografia. O critério de derrubada passa nos dois modelos (13 → 1 e 7 → 1 cruzamentos; 0 arestas sobre peça alheia; desvio máximo 1,44×)
 - [x] `ADR-0009` proposto (2026-09-28): layout próprio em `@odds/layout`, SVG, bibliotecas só nas bordas — e o protótipo **colmeia ao vivo** que o testa. As medidas de edição funcionam; o que falhou foi a **localidade** do layout (+1 contexto refaz o mapa)
 - [x] Layout com localidade (2026-10-06, colmeia v4, `ADR-0010`): ±contexto e ±relação só movem os territórios envolvidos, e renomear move no máximo um gêmeo estrutural. É a primeira das duas condições do `ADR-0009`
-- [ ] Teste de digitação humana no `colmeia-ao-vivo`, com um mapa de tamanho real: a segunda condição para o `ADR-0009` passar a `accepted`
+- [x] Teste de digitação humana no `colmeia-ao-vivo` (2026-10-06): funcionou bem, e o `ADR-0009` passou a `accepted`
 - [ ] Decidir o fork do achado 4: a colmeia é **uma vista** (muda o `PRD.md` §4.4) ou é só a de contenção?
 - [ ] Decidir o fork do achado 2: posição derivada do texto, ou posição escolhida — e, se escolhida, onde ela mora sem quebrar o `ADR-0003`
 - [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
