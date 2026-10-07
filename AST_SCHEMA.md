@@ -304,6 +304,10 @@ interface SubdomainNode extends AstNode {
   subdomainType: string;
   name: string;
   title?: string;
+  /** Por que o subdomínio existe — prosa de negócio (GRAMMAR.md §2, ADR-0008). Ausente se não declarado. */
+  description?: string;
+  /** Quem responde pelo subdomínio — texto livre, nunca referência validada (ADR-0008). Ausente se não declarado. */
+  owner?: string;
   contexts: ContextNode[];
 }
 
@@ -343,6 +347,7 @@ interface ContextNode extends AstNode {
 **Notas de implementação:**
 - `DomainNode.name`, `SubdomainNode.name` e `ContextNode.name` são os identificadores técnicos (usados em `mapping` via `context_ref`) — **não** confundir com `title`, que é só um rótulo de exibição sem função de referência.
 - `ContextNode.properties` é `undefined` (não um objeto vazio) quando o `context` foi declarado sem bloco (`context Checkout`, sem `{ }`). Isso permite ao visualizador diferenciar "sem metadados" de "metadados declarados mas todos opcionais".
+- `SubdomainNode.description` e `SubdomainNode.owner` ficam **direto no nó**, e não num objeto `properties` como no `ContextNode`. O `context` tem seis chaves e a distinção "bloco declarado mas vazio" importa para o visualizador; o subdomínio sempre tem bloco (`{ }` é obrigatório na produção), então um objeto intermediário não diferenciaria nada. Os dois campos são `undefined` quando não declarados, nunca string vazia. Como toda propriedade, **nenhum dos dois alimenta o gatilho de regra alguma** (`RULES.md` §0.3).
 - A checagem `INVALID_SUBDOMAIN_TYPE` é responsabilidade exclusiva do Visitor. `subdomain_type` é um `identifier` livre na gramática (não um enum fechado de literais) — precisamente para que este code seja alcançável na prática, e não um caminho morto nunca disparado por um parser correto.
 - **Contexto externo usa o mesmo `ContextNode`**, sem tipo próprio e sem flag: a externalidade é dada pela **posição na árvore** (estar dentro de `ExternalBlockNode`), que é a representação com uma fonte de verdade só. O que o Visitor e o renderizador consomem é `SymbolTableEntry.isExternal` (§5), derivado dessa posição uma única vez.
 - **Contexto externo aceita as seis propriedades**, sem restrição. `responsibilities` e `team` são semanticamente estranhos num sistema que não é seu, mas continuam permitidos: propriedades são **documentação, nunca normativas** (`RULES.md` §0.3), e criar a primeira propriedade proibida abriria justamente a fronteira que a linguagem preserva de propósito. A estranheza é anotada no `RULES.md`, não policiada pelo validador.
@@ -533,4 +538,4 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.2.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

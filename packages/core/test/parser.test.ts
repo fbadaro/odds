@@ -172,3 +172,75 @@ describe("o arquivo bem formado continua bem formado", () => {
     expect(codes(VALID)).not.toContain("SYNTAX_ERROR");
   });
 });
+
+describe("propriedades de subdomain (GRAMMAR.md §2, ADR-0008)", () => {
+  const withProps = (body: string) => `domain Test {
+  subdomain core Sales {
+${body}
+  }
+}`;
+  const subdomain = (source: string) => parseAndValidate(source).ast?.domains[0]?.subdomains[0];
+
+  it("lê `description` e `owner` para o SubdomainNode, depois do title", () => {
+    const result = parseAndValidate(withProps(`    title: "Vendas"
+    description: "Converter intenção de compra em pedido pago"
+    owner: "Diretoria Comercial"
+    context Checkout`));
+    expect(result.diagnostics).toEqual([]);
+    expect(result.ast?.domains[0]?.subdomains[0]).toMatchObject({
+      title: "Vendas",
+      description: "Converter intenção de compra em pedido pago",
+      owner: "Diretoria Comercial",
+    });
+  });
+
+  it("aceita as duas em qualquer ordem entre si", () => {
+    expect(subdomain(withProps(`    owner: "Diretoria Comercial"
+    description: "Converter intenção de compra em pedido pago"
+    context Checkout`))).toMatchObject({ owner: "Diretoria Comercial", description: "Converter intenção de compra em pedido pago" });
+  });
+
+  it("deixa os campos ausentes, não vazios, quando não declarados", () => {
+    const sub = subdomain(withProps("    context Checkout"));
+    expect(sub).toBeDefined();
+    expect(sub && "description" in sub).toBe(false);
+    expect(sub && "owner" in sub).toBe(false);
+  });
+
+  it("rejeita propriedade depois de um context", () => {
+    expect(codes(withProps(`    context Checkout
+    owner: "Diretoria Comercial"`))).toEqual(["SYNTAX_ERROR"]);
+  });
+
+  it("rejeita propriedade antes do title, que é sempre a primeira linha", () => {
+    expect(codes(withProps(`    owner: "Diretoria Comercial"
+    title: "Vendas"
+    context Checkout`))).toEqual(["SYNTAX_ERROR"]);
+  });
+
+  it("não libera as chaves do context no subdomain", () => {
+    expect(codes(withProps(`    team: "Vendas Squad"
+    context Checkout`))).toEqual(["SYNTAX_ERROR"]);
+  });
+
+  it("não aceita `owner` dentro de um context", () => {
+    expect(codes(withProps(`    context Checkout {
+      owner: "Vendas Squad"
+    }`))).toEqual(["SYNTAX_ERROR"]);
+  });
+
+  it("aceita só string_literal: `owner` sem aspas é erro", () => {
+    expect(codes(withProps(`    owner: Diretoria
+    context Checkout`))).toEqual(["SYNTAX_ERROR"]);
+  });
+
+  it("torna `owner` reservada: um contexto com esse nome falha como qualquer palavra reservada", () => {
+    const result = parseAndValidate(withProps("    context owner"));
+    expect(result.diagnostics.map((d) => d.code)).toEqual(["SYNTAX_ERROR"]);
+    expect(result.diagnostics[0]?.data).toEqual({ found: "owner", expected: "identifier" });
+  });
+
+  it("não reserva prefixo: `ownership` continua sendo identifier", () => {
+    expect(codes(withProps("    context ownership"))).not.toContain("SYNTAX_ERROR");
+  });
+});

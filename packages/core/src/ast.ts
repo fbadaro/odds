@@ -72,6 +72,9 @@ export interface SubdomainNode extends AstNode {
   readonly subdomainTypeSpan: SourceSpan;
   readonly name: string;
   readonly title?: string;
+  /** `ADR-0008`: prosa, nunca gatilho de regra. Ausentes quando não declarados. */
+  readonly description?: string;
+  readonly owner?: string;
   readonly contexts: ContextNode[];
   /** Só o cabeçalho da declaração (`subdomain core Vendas`), sem o bloco.
    *  `TEST_SUITE.md` §4 ancora erro de declaração no trecho da declaração, e um

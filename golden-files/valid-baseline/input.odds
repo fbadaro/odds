@@ -3,6 +3,8 @@ domain ECommercePlatform {
 
   subdomain core Sales {
     title: "Vendas"
+    description: "Converter intenção de compra em pedido pago"
+    owner: "Diretoria Comercial"
     context OrderManagement
     context Checkout {
       description: "Fluxo de finalização de compra"

@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0008 — Um subdomain declara description e owner, e nada além disso
 
+> **Executado em 2026-10-06**, na `ODDS Language Version` 1.0.0 (`GRAMMAR.md` v0.3.0, `AST_SCHEMA.md` v0.3.0, `RULES` v0.3.0). A execução tomou uma escolha de forma que este ADR não tomou: `owner` passou a ser **palavra reservada**, como todas as chaves de propriedade. Isso torna inválido um nome `owner` e faz da mudança uma MAJOR. A alternativa, palavra contextual, manteria a mudança em MINOR e foi recusada. As duas saídas, e a ausência deliberada de diagnóstico de migração, estão no `CHANGELOG.md` (entrada v1.0.0). O texto abaixo é o da decisão, como foi tomada.
+
 ## Contexto
 
 A linguagem nasceu com as propriedades concentradas num único nível. O `GRAMMAR.md` §2 dá ao `context_block` um conjunto **fechado** de seis chaves — `type`, `description`, `responsibilities`, `maturity`, `team`, `technology` — e dá ao `subdomain_decl` apenas `title`, pela produção `title_decl` que os três níveis compartilham. Essa assimetria nunca foi decidida: ela é o que sobrou de as propriedades terem sido pensadas para descrever um bounded context, que é artefato de solução.

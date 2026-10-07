@@ -14,7 +14,7 @@ Dentro de cada seção, as entradas estão em ordem cronológica (mais antiga pr
 
 ## ODDS Language Version
 
-Versão atual: **v0.1.0**.
+Versão atual: **v1.0.0**.
 
 **Regra de incremento — SemVer com o corte na validade do arquivo:**
 
@@ -28,12 +28,13 @@ A URL guarda a versão cheia, mas **só divergência de MAJOR** aciona diagnóst
 
 - **v0.1.0** — nascimento da versão de linguagem. Corresponde ao estado dos documentos normativos após a passada de propagação do `GRILLING.md`. Duas quebras de compatibilidade decididas naquela sessão já entram **dentro** desta primeira versão, e não geram migração retroativa, porque não existia usuário nem URL publicada antes dela: a tag `[SW]` deixou de existir e `external` virou palavra reservada. `[SW]` fica registrada como o primeiro (e por ora único) membro da família `REMOVED_CONSTRUCT`, com `removedIn: "0.1.0"` — uma cortesia para rascunhos escritos durante o período pré-versionamento, não uma obrigação de compatibilidade. O primeiro MAJOR relevante será o da v1.0.0.
   - **Correções editoriais posteriores absorvidas nesta mesma versão** (`AST_SCHEMA.md` v0.2.1 · `MESSAGES.md` v0.1.1 · `TEST_SUITE.md` v0.2.1 · `RULES` v0.2.1): a unidade de `column` e a proibição de prosa em `data` mudam o *payload* de dois diagnósticos e o texto de dois templates, o que pela tabela acima seria MINOR + PATCH. Não incrementam porque a v0.1.0 ainda não fechou — ela nasce com o estado propagado do `GRILLING.md`, e estas duas lacunas são do mesmo estado, encontradas na auditoria seguinte. Nenhum arquivo `.odds` muda de validade ou de significado, e não existe URL publicada para divergir. A partir da primeira publicação, a tabela vale sem exceção.
+- **v1.0.0** — `subdomain` ganha duas propriedades, `description` e `owner` (`ADR-0008`), e `owner` passa a ser **palavra reservada**. É MAJOR pela tabela acima, sem exceção: um arquivo que hoje declare um nome `owner` (um `context owner`, por exemplo) deixa de ser válido. A alternativa de tratar `owner` como palavra contextual, que manteria a mudança em MINOR, foi considerada e recusada pelo autor, para que toda chave de propriedade continue sendo palavra reservada. **Esta MAJOR não tem diagnóstico de migração dedicado**, e isso é deliberado, não esquecimento. O `RULES-EN.md` §6 dá diagnóstico próprio a todo construto **removido**, e aqui nenhum foi removido: o `identifier` continua existindo, só uma grafia dele passou a ser reservada, e o conserto é renomear. Um nome `owner` recebe o mesmo `SYNTAX_ERROR` que qualquer das outras dezenove palavras reservadas usadas como nome, igual ao que aconteceu com `external` na v0.1.0. Dar diagnóstico próprio a palavra reservada usada como nome é melhoria possível, mas vale para as vinte palavras de uma vez e pede passada própria. Não existe URL de versão anterior publicada, então nenhuma migração dispara na prática. Documentos: `GRAMMAR.md` v0.3.0 · `AST_SCHEMA.md` v0.3.0 · `RULES` v0.3.0 · `TEST_SUITE.md` v0.2.2.
 
 ---
 
 ## GRAMMAR.md
 
-Fonte de verdade sintática (EBNF) da linguagem ODDS. Versão atual: **v0.2.0**.
+Fonte de verdade sintática (EBNF) da linguagem ODDS. Versão atual: **v0.3.0**.
 
 - **v0.1.0** — versão inicial, derivada de `RULES-EN.md` v1 e `PRD.md` v1.1.0. Pendências listadas na seção 7 ainda não resolvidas com o time.
 - **v0.1.1** — resolvida a pendência do bloco de relacionamentos: renomeado `context_map` → `mapping`; mantida delimitação por chaves `{ }` em vez de indentação ou palavra-chave de fechamento (`end`). Adicionado caso de teste candidato (contexto duplicado em dois subdomains) para a futura suíte de golden files.
@@ -51,12 +52,13 @@ Fonte de verdade sintática (EBNF) da linguagem ODDS. Versão atual: **v0.2.0**.
   - **Comentários deixam de ser universalmente descartáveis:** nova produção `suppression_directive`. A estrutura interna da diretiva é deliberadamente *não* parseada, para que uma diretiva quebrada vire `MALFORMED_SUPPRESSION` (`info`) e nunca derrube o parsing do arquivo.
   - **Panic-mode recovery ganha um passo obrigatório:** descartar não é esquecer. A declaração descartada precisa ser registrada como inválida, senão a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` reaparece.
   - **A afirmação "erro semântico crítico impede a renderização" foi removida** (seção 5), e o exemplo canônico da seção 4 foi reescrito para produzir zero diagnósticos — ele ensinava tag mal posicionada, vocabulário sobrecarregado (`type: "generic"` dentro de um `subdomain generic`) e um `core` dentro de um Shared Kernel. A seção 7 ("ação pendente fora desta gramática") foi encerrada: as duas regras que ela aguardava existem em `RULES.md` §1.A.
+- **v0.3.0** — passada normativa do `ADR-0008`. Nova produção `subdomain_property_decl`, com o conjunto fechado `subdomain_property_key = "description" | "owner"`, ambas `string_literal`, livres de ordem entre si, depois do `title_decl` e antes do primeiro `context_decl`. `owner` entra em `reserved_word`. A §2 ganha o teste de admissão para chaves futuras de subdomínio (não poder contradizer a classificação nem os filhos) e registra a consequência de reservar `owner`. O exemplo canônico da §4 passa a declarar as duas em `Sales`, e o golden file `valid-baseline` acompanha, idêntico.
 
 ---
 
 ## RULES-EN.md / RULES-PT.md
 
-Semântica da linguagem: gatilhos, severidades e escopo de cada regra. Os dois arquivos são traduções paralelas e **versionam juntos**. Versão atual: **v0.2.1**.
+Semântica da linguagem: gatilhos, severidades e escopo de cada regra. Os dois arquivos são traduções paralelas e **versionam juntos**. Versão atual: **v0.3.0**.
 
 - **v0.1.0** — versão inicial, retroativa. Estado dos dois arquivos antes do `GRILLING.md`: as duas tabelas conceituais (Team Relationships, Context Map Patterns), a tabela de Context Properties, 11 erros críticos, 4 avisos de lint, e o resumo para implementação do AST. Não eram versionados na época; o número é atribuído aqui para dar um ponto de partida ao histórico.
 - **v0.1.1** — adicionada a seção 3 (Pipeline de Validação: fases, princípio do erro-raiz e ordenação dos diagnósticos). Única exceção à política de propagação do `GRILLING.md`: escrita durante as rodadas, a pedido explícito, por ser aditiva e descrever arquitetura de pipeline em vez de texto de regra.
@@ -67,12 +69,13 @@ Semântica da linguagem: gatilhos, severidades e escopo de cada regra. Os dois a
   - **As strings de mensagem saem** para o `MESSAGES.md`, junto com o `⚠️` que vinha embutido nelas. Estes arquivos ficam com gatilho, severidade e escopo — o que uma implementação precisa acertar.
   - **Três seções novas:** §4 supressão, §5 erros e renderização (a afirmação "bloqueia a compilação" acabou), §6 versão da linguagem e compatibilidade.
 - **v0.2.1** — só correção de contagem, nenhuma mudança de regra. A §0.4 dizia que o catálogo "saltou de 4 para 24 regras" e a §3.1 falava em "duas dúzias de regras da §2"; os números vinham do `GRILLING.md` D24/D18, onde eram estimativas feitas *durante* a sessão, e não foram reconferidos na propagação. Os valores verificados contra o catálogo: **34 regras** no total (os 35 codes de `AST_SCHEMA.md` §1.3 menos `SYNTAX_ERROR`, que não é regra), sendo 20 na §1, **12 na §2** e 2 na §4. A entrada da v0.2.0 acima também dizia "14 regras novas" e foi corrigida para 17.
+- **v0.3.0** — nas duas línguas, a tabela de propriedades ganha `owner` (só em `subdomain`), e `description` passa a valer em `subdomain` e `context`, com o sentido que cada nível dá à palavra. Ganha também o parágrafo do teste de admissão do `ADR-0008`, que explica por que `maturity` não entrou no subdomínio. Nenhuma regra, code ou mensagem nova: propriedade continua não alimentando gatilho algum.
 
 ---
 
 ## AST_SCHEMA.md
 
-Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualizador. Versão atual: **v0.2.0**.
+Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualizador. Versão atual: **v0.3.0**.
 
 - **v0.1.0** — versão inicial, derivada de `GRAMMAR.md` v0.1.7 (todas as pendências da gramática já resolvidas nesse ponto). Define `ProgramNode`, `DomainNode`, `SubdomainNode`, `ContextNode`, `MappingNode`, `RelationshipNode`, a tabela de `DiagnosticCode` sincronizada com `RULES.md`, e a estrutura auxiliar `SymbolTable` usada pelo Visitor.
 - **v0.1.1** — sincronizado com `GRAMMAR.md` v0.1.8: `SubdomainNode.subdomainType` e `SymbolTableEntry.subdomainType` passaram de `SubdomainType` (union fechada) para `string` (valor bruto do parser), já que a gramática abriu `subdomain_type` para `identifier` livre. Isso torna `INVALID_SUBDOMAIN_TYPE` um code de fato alcançável pelo Visitor, corrigindo uma inconsistência encontrada ao desenhar a suíte de golden files.
@@ -87,6 +90,7 @@ Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualiza
 - **v0.2.1** — duas lacunas do contrato fechadas antes de o parser existir, encontradas em auditoria mecânica da suíte contra o catálogo:
   - **A unidade de `column` passa a ser normativa: unidades de código UTF-16** (§1, estilo LSP, coerente com o `end` exclusivo que a suíte já usava). Antes os documentos só diziam "1-indexed", o que deixava a escolha entre byte, code point e unidade UTF-16 a cargo de cada implementação. Não é detalhe acadêmico nesta linguagem: `GRAMMAR.md` §1 aceita identificadores acentuados e seis inputs da suíte são PT-BR — a linha 11 de `malformed-suppression-unknown-code` tem 85 unidades UTF-16 e 87 bytes. Nenhum span existente mudou (a suíte não tem caractere fora do BMP, então UTF-16 e code points coincidem nos 44 casos).
   - **Regra de integridade semântica de `data`: nada de prosa** (§1.2). O contrato dizia que a mensagem não é contrato e que o núcleo validador não conhece locale, mas nada impedia que a frase voltasse *dentro* de um valor de `data` — e tinha voltado, em dois codes. Agora §1.3 fixa a forma de `REMOVED_CONSTRUCT.replacement` (token literal da substituta) e de `SYNTAX_ERROR.expected` (lista de tokens separados por `", "`), e o teste geral é "se o valor mudaria ao traduzir a mensagem, ele não pertence a `data`".
+- **v0.3.0** — `SubdomainNode` ganha `description?: string` e `owner?: string` (`ADR-0008`), direto no nó e não num objeto `properties`, com a razão escrita na §3: o subdomínio sempre tem bloco, então o objeto intermediário não distinguiria nada. Ausentes quando não declarados, nunca vazios. (A linha de versão deste cabeçalho dizia v0.2.0 apesar da entrada v0.2.1 abaixo; corrigida junto.)
 
 ---
 
@@ -101,18 +105,19 @@ Catálogo de mensagens de diagnóstico, PT + EN, com placeholders nomeados. Vers
 
 ## TEST_SUITE.md
 
-Suíte de golden files (conformidade) para o parser e o validador semântico. Versão atual: **v0.2.1**.
+Suíte de golden files (conformidade) para o parser e o validador semântico. Versão atual: **v0.2.2**.
 
 - **v0.1.0** — versão inicial. 18 golden files cobrindo todos os `DiagnosticCode` de `AST_SCHEMA.md` v0.1.2 / `GRAMMAR.md` v0.1.9. Encontradas e corrigidas duas contradições estruturais na gramática durante o processo (ver `GRAMMAR.md` v0.1.8/v0.1.9 acima).
 - **v0.1.1** — formalizadas duas classes de lacuna encontradas em auditoria da suíte contra `RULES-EN.md`/`RULES-PT.md`: (1) gatilhos vagos de `GENERIC_WITHOUT_OHS_WARNING` e `EXCESSIVE_SHARED_KERNEL_WARNING` (escopo por relacionamento vs. agregado, limiar numérico) — só mudança de texto em `RULES.md`, nenhum golden file precisou mudar; (2) as tags `[SW]` e `[BBM]` não tinham nenhum golden file — adicionados os casos auxiliares `separation-conflict-sw-directional` e `conformist-core-warning-bbm`. Total de casos: 18 → 20.
 - **v0.2.0** — passada de propagação do `GRILLING.md`. Reescrita da suíte inteira: ver a entrada detalhada no próprio `TEST_SUITE.md` §7.
 - **v0.2.1** — sincronizada com `AST_SCHEMA.md` v0.2.1 e `MESSAGES.md` v0.1.1. Dois `expected.json` mudaram, ambos por prosa em inglês dentro de `data`: `syntax-error` (`expected` vira a lista de tokens `"-->, <--, <->, -x-"`) e `removed-construct-sw` (`replacement` vira `"-x-"`). A §4 passa a declarar a unidade de `column` (UTF-16), e as duas menções a "24 regras" viraram 34. Nenhum span, nenhuma severidade e nenhum code mudou — os 44 casos continuam cobrindo os 35 codes.
+- **v0.2.2** — sincronizada com `GRAMMAR.md` v0.3.0. Um único golden file muda: `valid-baseline`, cujo `input.odds` continua idêntico ao exemplo canônico e passa a declarar `description` e `owner` em `Sales`, com `diagnostics` vazio como antes. O número de casos não muda (44). A forma das duas chaves (posição, conjunto fechado, `owner` reservada) é coberta por dez testes em `packages/core/test/parser.test.ts`, porque o golden file só assere diagnósticos e uma regra de forma não produz code próprio.
 
 ---
 
 ## HEALTH.md
 
-Painel de saúde do modelo: seis dimensões ponderadas, catálogo de bonificações e penalizações, débitos abertos e aferição automatizada. Versão atual: **v0.6.4**.
+Painel de saúde do modelo: seis dimensões ponderadas, catálogo de bonificações e penalizações, débitos abertos e aferição automatizada. Versão atual: **v0.6.5**.
 
 - **v0.1.0** — artefato novo. Nasce com aferição inicial de **78/100** ("sólido, com débito localizado"), calculada após varredura mecânica: os 35 codes do catálogo estão presentes nos cinco artefatos normativos, os 44 golden files têm `input.odds` + `expected.json`, e `RULES-EN`/`RULES-PT` têm 18 seções cada. Quatro débitos abertos na mesma passada — spans da suíte nunca conferidos contra parser real (D-001), checagem de placeholders do `MESSAGES.md` declarada "verificável por script" sem script (D-002), paridade EN/PT mantida à mão (D-003) e ausência de evidência por decisão de que a propagação do `GRILLING.md` fechou (D-004). Duas escolhas de desenho definem o arquivo: dimensões de **integridade** nascem em 100 e só se recuperam por reparo (trabalho novo não compra ponto, para que volume não compense incoerência), e ausência de código ou de stack **não** é débito — é nota baixa nas dimensões que existem para dizer isso. Este arquivo não entra na `ODDS Language Version`: não muda a validade nem o significado de nenhum `.odds`.
 - **v0.2.0** — a aferição vira executável: `scripts/health_check.py` (dez checagens, stdlib pura) e a skill `health-check`. A §8 deixa de ser uma coleção de comandos shell e passa a documentar as checagens. Duas correções de modelo encontradas **ao escrever o script**, que é o argumento para tê-lo escrito:
@@ -139,6 +144,7 @@ Painel de saúde do modelo: seis dimensões ponderadas, catálogo de bonificaç�
 - **v0.6.2** — placar desce de novo, 90 → **89**. Segunda rodada de revisão da PR #4, duas divergências novas, **mesmo evento da §4 aplicado pela segunda vez** (−5 na base da dim 4, 80 → 75). Não é dupla cobrança do mesmo achado: o evento é definido por ocorrência, e o que a segunda mede é que a base ainda superestimava a cobertura. A causa ficou mais precisa: cada golden file **isola um problema num arquivo no mais bem formado possível**, então controle de fluxo entre fases só aparece quando dois problemas coexistem — e a suíte nunca os combina.
 - **v0.6.3** — 89 → **88**, e pela mesma linha da §4 pela terceira vez (−5 na base da dim 4, 75 → 70). A revisão apontou que a asserção do caminho **pendente** do harness compara texto JSON, enquanto o `TEST_SUITE.md` §3 manda comparar por **igualdade estrutural** — e é o que o caminho não pendente já faz. O defeito é latente (a lista `PENDING` está vazia desde o fechamento de D-001) e o catálogo não tem variante atenuada: o evento é por ocorrência. O que a terceira ocorrência acrescenta às duas anteriores é o *alvo*: a divergência agora é com a spec da própria suíte, e nada confere o executor contra o documento que ele executa. Este passe também acerta o cabeçalho do arquivo, que ainda dizia `v0.4.0` e `15/15` de 2026-08-24.
 - **v0.6.4** — reaferição sob rubrica, no aceite do `ADR-0009`. **R6.4 de 14 para 17** (§9.2; base da dim 6 de 88 → 91; total 87,80 → 88,10, placar arredondado segue **88**). A decisão de layout/render do diagrama, que a evidência do critério marcava como a mais pesada das três decisões de stack em aberto, foi tomada e aceita depois das duas condições do próprio ADR: localidade conferida edição por edição (`ADR-0010`, colmeia v4) e teste de digitação humana no `colmeia-ao-vivo`. Restam framework de UI e bundler. O `ADR-0010` não pontua à parte, porque é o *como* da mesma decisão.
+- **v0.6.5** — a primeira **reaferição completa** (§6.6), pedida pela mudança de `ODDS Language Version` para 1.0.0 (propriedades de `subdomain`, `ADR-0008`). As seis notas foram reconferidas do zero e o placar fica em **88**. Só a evidência do R6.1 muda de texto: agora afirma propagada a única decisão de forma que estava aceita e não executada.
 
 ---
 
