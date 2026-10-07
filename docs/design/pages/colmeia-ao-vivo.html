@@ -1,5 +1,5 @@
 <title>Colmeia ao vivo</title>
-<!--BUILD:fcd7a9925313-->
+<!--BUILD:a710f72998cf-->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <!--V3CSS--><style id="v3css">
@@ -931,11 +931,12 @@ function sourceOf(m, sub){
       src.begin('sub:'+dk).t('  ').o('subhead:'+dk).t('subdomain','subkw:'+dk).t(' ').t(sd.type,'subtype:'+dk)
          .t(' ').t(sd.id,'subname:'+dk).c('subhead:'+dk).t(' {').done();
       if(sd.title) src.plain('    title: "'+sd.title+'"');
-      /* description e owner num subdomain NAO EXISTEM na linguagem ainda: o
-         ADR-0008 aceitou a decisao, a passada normativa nao foi feita. */
+      /* description e owner num subdomain: ADR-0008, na linguagem desde a
+         ODDS 1.0.0 (GRAMMAR.md v0.3.0). O controle "+ propriedades" continua
+         existindo para comparar a ficha com e sem elas. */
       if(sub==='rich'){
-        if(sd.description) src.plain('    description: '+sd.description+'   // proposta');
-        if(sd.owner)       src.plain('    owner: '+sd.owner+'   // proposta');
+        if(sd.description) src.plain('    description: '+sd.description);
+        if(sd.owner)       src.plain('    owner: '+sd.owner);
       }
       sd.contexts.forEach(function(c){ ctxLines(src, c); });
       src.plain('  }');
@@ -2179,11 +2180,11 @@ function selPanel(m, diags){
     var h='<div class="sel"><div class="kind">subdomain</div><h4>'+esc(sd.id)+'</h4><div class="meta"><b>'+esc(sd.type)+'</b>'+
           (sd.title?' · <span class="pv">'+esc(sd.title)+'</span>':'')+'<br>'+esc(dom.title||dom.id)+'</div>';
     if(state.sub==='rich' && sd.type!=='external'){
-      h+='<div class="hypbar">Aceito no <code>ADR-0008</code>, ainda sem passada normativa: <code>description</code> e <code>owner</code></div><div class="sect">Propriedades</div>';
+      h+='<div class="hypbar">Desde a ODDS 1.0.0 (<code>ADR-0008</code>): <code>description</code> e <code>owner</code></div><div class="sect">Propriedades</div>';
       if(sd.description) h+='<div class="prop"><span class="pk">description</span><span class="pv">'+esc(unq(sd.description))+'</span></div>';
       if(sd.owner) h+='<div class="prop"><span class="pk">owner</span><span class="pv">'+esc(unq(sd.owner))+'</span></div>';
     } else if(sd.type!=='external'){
-      h+='<div class="nofill">Hoje o <code>GRAMMAR.md</code> dá ao <code>subdomain</code> só <code>title</code>. Ligue <b>+ propriedades</b> para ver o que o <code>ADR-0008</code> aceitou.</div>';
+      h+='<div class="nofill">Este subdomínio não declara <code>description</code> nem <code>owner</code>. Ligue <b>+ propriedades</b> para ver a ficha com as duas, que a linguagem aceita desde a 1.0.0.</div>';
     }
     h+='<div class="sect">Derivado</div><div class="tally"><span>'+ids.length+' contexto'+(ids.length===1?'':'s')+'</span><span>'+inside+' interna'+(inside===1?'':'s')+
        '</span><span>'+crossing+' atravessa'+(crossing===1?'':'m')+' a fronteira</span></div><div class="sect">Contextos</div>';
@@ -2226,7 +2227,7 @@ function diagPanel(diags, key){
   }).join('') : '<div class="dempty">'+(diags.length ? 'Tudo filtrado.' : 'Nenhum diagnóstico. O <code>@odds/core</code> rodou sobre esta fonte e não tem nada a dizer.')+'</div>';
   var notes=[];
   if(state.shuffle || state.extra) notes.push('Spans recalculados sobre a fonte atual. O conjunto de diagnósticos é o do validador, conferido pelo <code>colmeia-v4.check.mjs</code> contra a fonte embaralhada.');
-  if(state.sub==='rich') notes.push('Com <b>+ propriedades</b> a fonte ganha linhas <code>// proposta</code> e o validador de hoje as recusaria. Os diagnósticos mostrados são os da fonte sem elas, com os spans ajustados.');
+  if(state.sub==='rich') notes.push('Com <b>+ propriedades</b> a fonte ganha as linhas de <code>description</code> e <code>owner</code> dos subdomínios. Elas não mudam o veredito (propriedade não julga), então os diagnósticos são os mesmos, com os spans ajustados.');
   if(state.model==='many') notes.push('Com a regra de hoje, o arquipélago <b>não passa da fase 2</b>: <code>INVALID_DOMAIN_CARDINALITY</code> é erro, e nada depois dele roda (<code>RULES-EN.md</code> §3.1).');
   if(state.view==='contain') notes.push('Na contenção não há aresta: o veredito de uma relação sobe para a peça da esquerda. A lista continua completa.');
   document.getElementById('dlist').innerHTML=html+(notes.length ? '<div class="dnote">'+notes.join(' ')+'</div>' : '');
@@ -2715,6 +2716,7 @@ const RESERVED_WORDS = [
     "domain", "subdomain", "context", "mapping", "external",
     "core", "supporting", "generic",
     "title", "type", "description", "responsibilities", "maturity", "team", "technology",
+    "owner",
     "experimental", "growing", "mature", "legacy",
 ];
 const reservedTokens = Object.fromEntries(RESERVED_WORDS.map((word) => [
@@ -2995,8 +2997,15 @@ class OddsParser extends EmbeddedActionsParser {
         this.CONSUME(t.LBrace);
         let title;
         this.OPTION(() => { title = this.SUBRULE(this.titleDecl); });
-        const contexts = [];
+        // `GRAMMAR.md` §2 (`ADR-0008`): description e owner, livres de ordem entre
+        // si, depois do title e antes do primeiro context.
+        const properties = {};
         this.MANY(() => {
+            const property = this.SUBRULE(this.subdomainPropertyDecl);
+            this.ACTION(() => { properties[property[0]] = property[1]; });
+        });
+        const contexts = [];
+        this.MANY2(() => {
             const context = this.SUBRULE(this.contextDecl);
             this.ACTION(() => contexts.push(context));
         });
@@ -3007,10 +3016,20 @@ class OddsParser extends EmbeddedActionsParser {
             subdomainTypeSpan: spanOf(type),
             name: name.image,
             ...(title === undefined ? {} : { title }),
+            ...properties,
             contexts,
             headerSpan: spanBetween(spanOf(open), spanOf(name)),
             span: spanBetween(spanOf(open), spanOf(close)),
         };
+    });
+    subdomainPropertyDecl = this.RULE("subdomainPropertyDecl", () => {
+        const key = this.OR([
+            { ALT: () => this.CONSUME(t.reservedTokens.description) },
+            { ALT: () => this.CONSUME(t.reservedTokens.owner) },
+        ]);
+        this.CONSUME(t.Colon);
+        const value = this.CONSUME(t.StringLiteral);
+        return this.ACTION(() => [key.image, unquote(value)]);
     });
     externalDecl = this.RULE("externalDecl", () => {
         const open = this.CONSUME(t.reservedTokens.external);
