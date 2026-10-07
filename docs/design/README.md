@@ -153,7 +153,7 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] Layout com localidade (2026-10-06, colmeia v4, `ADR-0010`): ±contexto e ±relação só movem os territórios envolvidos, e renomear move no máximo um gêmeo estrutural. É a primeira das duas condições do `ADR-0009`
 - [x] Teste de digitação humana no `colmeia-ao-vivo` (2026-10-06): funcionou bem, e o `ADR-0009` passou a `accepted`
 - [ ] Decidir o fork do achado 4: a colmeia é **uma vista** (muda o `PRD.md` §4.4) ou é só a de contenção?
-- [ ] Decidir o fork do achado 2: posição derivada do texto, ou posição escolhida — e, se escolhida, onde ela mora sem quebrar o `ADR-0003`
+- [x] Fork do achado 2 fechado (2026-10-07): **posição derivada do texto**. O problema que o abriu, o mapa se refazendo a cada edição, foi resolvido pela localidade da v4 (`ADR-0010`) e confirmado no teste de digitação humana que aceitou o `ADR-0009`
 - [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
 - [ ] Só então: ADRs de framework, biblioteca de layout e bundler
