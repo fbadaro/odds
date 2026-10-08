@@ -153,7 +153,9 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] `ADR-0009` proposto (2026-09-28): layout próprio em `@odds/layout`, SVG, bibliotecas só nas bordas — e o protótipo **colmeia ao vivo** que o testa. As medidas de edição funcionam; o que falhou foi a **localidade** do layout (+1 contexto refaz o mapa)
 - [x] Layout com localidade (2026-10-06, colmeia v4, `ADR-0010`): ±contexto e ±relação só movem os territórios envolvidos, e renomear move no máximo um gêmeo estrutural. É a primeira das duas condições do `ADR-0009`
 - [x] Teste de digitação humana no `colmeia-ao-vivo` (2026-10-06): funcionou bem, e o `ADR-0009` passou a `accepted`
-- [ ] Decidir o fork do achado 4: a colmeia é **uma vista** (muda o `PRD.md` §4.4) ou é só a de contenção? — medido em 2026-10-07 com `colmeia-50`: a contenção escala, o fluxo vira espaguete aos 50 contextos (120 cruzamentos)
+- [x] Fork do achado 4 fechado (2026-10-07, `ADR-0011`): **a colmeia é a vista principal**, e fluxo e contenção são dois modos da mesma geografia (com e sem ligações). O fluxo de 50 contextos visto inteiro é ilegível (`colmeia-50`), e quem o torna utilizável são as ferramentas de navegação
+- [ ] Rodada de navegação, que é condição do `ADR-0011`: zoom e pan, foco num contexto, marcação ao clicar (foco e marcação já existem na v4)
+- [ ] Desempenho do layout aos 50 contextos: 2,4 s, 70% no roteamento A* (`gridRoute`)
 - [x] Fork do achado 2 fechado (2026-10-07): **posição derivada do texto**. O problema que o abriu, o mapa se refazendo a cada edição, foi resolvido pela localidade da v4 (`ADR-0010`) e confirmado no teste de digitação humana que aceitou o `ADR-0009`
 - [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
