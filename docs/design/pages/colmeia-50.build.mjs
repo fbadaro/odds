@@ -171,7 +171,7 @@ const page = `<title>Colmeia 50</title>
       <p>A <b>contenção</b> lê bem com 50 contextos: doze territórios distintos, os três tipos separados, o <code>external</code> fora do domínio. É a pergunta "como isto está organizado", e a colmeia responde.</p>
       <p>O <b>fluxo</b> desaba: ${report.cruzamentos} cruzamentos contra 1 nos modelos pequenos, arestas que contornam o mapa inteiro (a mais longa tem ${report.arestaMaisLonga} células) e ${report.colisoes} colisões entre linha e chip. A causa é a mesma premissa que faz a contenção funcionar: a posição é subordinada à hierarquia, então dois contextos que conversam muito mas moram em territórios opostos ficam longe, e a linha atravessa tudo no caminho.</p>
       <p><b>Não é custo do arranjo fixo do <code>ADR-0010</code>.</b> A colmeia v3, que virava os territórios para os parceiros, dá 125 cruzamentos no mesmo modelo. É da geografia.</p>
-      <p>E o layout leva ${(report.layoutMs / 1000).toFixed(1)} s, dos quais ~70% são o roteamento A* das arestas (<code>gridRoute</code>), o mesmo na v3 e na v4. A estimativa do ADR-0009, de folga até ~50 contextos, não se confirma neste modelo.</p>
+      <p>E o layout leva ${report.layoutMs.toFixed(0)} ms. Na primeira medição eram 2,4 s, dos quais ~70% no roteamento A* das arestas (<code>gridRoute</code>): a cada passo, ele testava o segmento contra todos os chips do mapa e andava por estados em string. Com o teste memorizado por passo e o A* em inteiros (2026-10-10), o tempo caiu umas quinze vezes e a geometria saiu idêntica, conferida em 29 modelos. A estimativa do ADR-0009, de folga até ~50 contextos, volta a valer.</p>
     </div>
   </div>
 

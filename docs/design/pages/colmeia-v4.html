@@ -1700,45 +1700,94 @@ function routeAll(geo){
      ponto de virar, proibi-la obrigava a rota a contornar a propria peca. O
      trecho repetido some no corte de lacos, logo abaixo. */
   var TURN=[0, 0.5, 1.4, 2.5, 1.4, 0.5];
+  /* Desempenho (2026-10-10): o teste "este passo atravessa o chip de outra
+     relacao?" rodava contra todos os chips do mapa a cada passo de cada A*, e era
+     o grosso do tempo do layout. Os chips nao mudam durante uma passada, entao o
+     resultado de cada passo e memorizado: quais relacoes tem chip atravessado por
+     ele, na ordem de R. Com CHIP_COST zero o teste nem roda, porque somar zero nao
+     muda custo nenhum. A geometria sai identica, byte a byte. */
+  var chipBoxes=[];
+  R.forEach(function(F, fi){ [F.L,F.Rr].forEach(function(en){ if(en.chip) chipBoxes.push([fi, en.chip.box]); }); });
+  var stepHits={};
+  function hitsOf(stepKey, pa, pb){
+    var h=stepHits[stepKey];
+    if(h===undefined){
+      h=[];
+      for(var ci=0; ci<chipBoxes.length; ci++) if(segBox(pa, pb, chipBoxes[ci][1])) h.push(chipBoxes[ci][0]);
+      stepHits[stepKey]=h;
+    }
+    return h;
+  }
+  /* O A* anda por inteiros (2026-10-10): cada celula visitada ganha um numero, e
+     o estado e celula*6 + direcao. A versao anterior usava a string 'q,r#d' e a
+     quebrava com split a cada passo. Os custos sao somados na mesma ordem e o heap
+     recebe os mesmos itens na mesma ordem, entao a rota e a mesma. O que depende so
+     da celula (vizinhos, terra, chip e porta) e calculado uma vez por passada. */
+  var cid={}, cQ=[], cR=[], cKey=[], cNb=[], cLand=[], cSeg=[];
+  function cellId(q, r){
+    var key=kk(q,r), id=cid[key];
+    if(id===undefined){
+      id=cQ.length; cid[key]=id; cQ.push(q); cR.push(r); cKey.push(key);
+      cLand.push(land[key] ? 1.12 : 1.0);
+      for(var j=0;j<6;j++){ cNb.push(-2); cSeg.push(null); }
+    }
+    return id;
+  }
+  /* vizinho j da celula: -1 se fora da grade ou ocupado por peca; -2 e "ainda
+     nao calculado" */
+  function nbOf(id, j){
+    var v=cNb[id*6+j];
+    if(v===-2){
+      var q=cQ[id]+DIRS[j][0], r=cR[id]+DIRS[j][1];
+      v=(!inGrid(q,r) || tileAt[kk(q,r)]) ? -1 : cellId(q,r);
+      cNb[id*6+j]=v;
+      if(v>=0) cSeg[id*6+j]=segKey(cKey[id], cKey[v]);
+    }
+    return v;
+  }
   function gridRoute(E){
-    var A=E.L, B=E.Rr, own=[E.rel.l, E.rel.r];
-    var foreignChips=[];
-    R.forEach(function(F){ if(F!==E) [F.L,F.Rr].forEach(function(en){ if(en.chip) foreignChips.push(en.chip.box); }); });
+    var A=E.L, B=E.Rr, own=[E.rel.l, E.rel.r], ei=R.indexOf(E);
     var sK=kk(A.start.cell[0],A.start.cell[1]), gK=kk(B.start.cell[0],B.start.cell[1]);
-    var finalDir=(B.k+3)%6, goal=B.start.cell;
-    var open=new Heap(), g={}, from={}, s0=sK+'#'+A.k, best=null;
-    g[s0]=0; open.push([hexDist(A.start.cell,goal), s0]);
+    var finalDir=(B.k+3)%6, gq=B.start.cell[0], gr=B.start.cell[1];
+    var gId=cellId(gq, gr);
+    function h(id){ var dq=cQ[id]-gq, dr=cR[id]-gr; return (Math.abs(dq)+Math.abs(dq+dr)+Math.abs(dr))/2; }
+    var open=new Heap(), g=new Map(), from=new Map(), s0=cellId(A.start.cell[0],A.start.cell[1])*6+A.k, best=null;
+    g.set(s0, 0); open.push([h(s0/6|0), s0]);
     while(open.a.length){
       var top=open.pop(), st=top[1];
-      if(st==='END') break;
-      var parts=st.split('#'), ck=parts[0], d=+parts[1], c=unkk(ck);
-      if(top[0] > g[st] + hexDist(c,goal) + 1e-9) continue;
-      if(ck===gK){
-        var fin=g[st]+TURN[(finalDir-d+6)%6];
-        if(best===null || fin<best.cost-1e-9){ best={cost:fin, st:st}; open.push([fin,'END']); }
+      if(st===-1) break;
+      var cc=st/6|0, d=st-cc*6, gs=g.get(st);
+      if(top[0] > gs + h(cc) + 1e-9) continue;
+      if(cc===gId){
+        var fin=gs+TURN[(finalDir-d+6)%6];
+        if(best===null || fin<best.cost-1e-9){ best={cost:fin, st:st}; open.push([fin,-1]); }
         continue;
       }
       for(var j=0;j<6;j++){
         var tc=TURN[(j-d+6)%6];
-        var q=c[0]+DIRS[j][0], r=c[1]+DIRS[j][1], nk=kk(q,r);
-        if(!inGrid(q,r) || tileAt[nk]) continue;
-        var cost=(land[nk] ? 1.12 : 1.0) + tc;
-        if(near[nk] && near[nk].some(function(id){ return own.indexOf(id)<0; })) cost += 0.6;
+        var n=nbOf(cc, j);
+        if(n<0) continue;
+        var nk=cKey[n];
+        var cost=cLand[n] + tc;
+        var nn=near[nk];
+        if(nn){ for(var ni=0; ni<nn.length; ni++) if(own.indexOf(nn[ni])<0){ cost += 0.6; break; } }
         if(chipCell[nk] && own.indexOf(chipCell[nk])<0) cost += 5;
         if(portCell[nk] && own.indexOf(portCell[nk])<0) cost += 6;
         if(usedCell[nk]) cost += 0.35;
-        if(usedSeg[segKey(ck,nk)]) cost += 3;
+        if(usedSeg[cSeg[cc*6+j]]) cost += 3;
         /* passo que atravessa o chip de OUTRA relacao: o chip pode avancar
            sobre o corredor entre celulas, e a reserva de celula nao o cobre */
-        var pa=px(c[0],c[1]), pb=px(q,r);
-        for(var ci=0; ci<foreignChips.length; ci++) if(segBox(pa, pb, foreignChips[ci])){ cost += CHIP_COST; break; }
-        var ns=nk+'#'+j, ng=g[st]+cost;
-        if(g[ns]===undefined || ng<g[ns]-1e-9){ g[ns]=ng; from[ns]=st; open.push([ng+hexDist([q,r],goal), ns]); }
+        if(CHIP_COST){
+          var hs=hitsOf(cc*6+j, px(cQ[cc],cR[cc]), px(cQ[n],cR[n]));
+          for(var hi=0; hi<hs.length; hi++) if(hs[hi]!==ei){ cost += CHIP_COST; break; }
+        }
+        var ns=n*6+j, ng=gs+cost, old=g.get(ns);
+        if(old===undefined || ng<old-1e-9){ g.set(ns, ng); from.set(ns, st); open.push([ng+h(n), ns]); }
       }
     }
     if(!best) return [sK, gK];
     var cells=[], k=best.st;
-    while(k){ cells.push(k.split('#')[0]); k=from[k]; }
+    while(k!==undefined){ cells.push(cKey[k/6|0]); k=from.get(k); }
     return cells.reverse();
   }
   function collinear(a,b,c){ return Math.abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])) < 1e-3*dist(a,c)*dist(a,c) + 0.5; }

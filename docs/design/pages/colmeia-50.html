@@ -330,7 +330,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <span class="tagpill novo">a régua</span>
       <h3>Os números, medidos pelo <code>colmeia-50.build.mjs</code></h3>
       <table class="rep">
-        <tr><td>Layout</td><td><b>2387.6 ms</b></td><td>mediana de 7 execuções em Node</td></tr>
+        <tr><td>Layout</td><td><b>170.1 ms</b></td><td>mediana de 7 execuções em Node</td></tr>
         <tr><td>Cruzamentos</td><td><b>120</b></td><td>os modelos de 17 e 24 contextos dão 1 cada</td></tr>
         <tr><td>Aresta sobre peça alheia</td><td><b>0</b></td><td></td></tr>
         <tr><td>Portas disputadas</td><td><b>4</b></td><td></td></tr>
@@ -351,7 +351,7 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
       <p>A <b>contenção</b> lê bem com 50 contextos: doze territórios distintos, os três tipos separados, o <code>external</code> fora do domínio. É a pergunta "como isto está organizado", e a colmeia responde.</p>
       <p>O <b>fluxo</b> desaba: 120 cruzamentos contra 1 nos modelos pequenos, arestas que contornam o mapa inteiro (a mais longa tem 43 células) e 18 colisões entre linha e chip. A causa é a mesma premissa que faz a contenção funcionar: a posição é subordinada à hierarquia, então dois contextos que conversam muito mas moram em territórios opostos ficam longe, e a linha atravessa tudo no caminho.</p>
       <p><b>Não é custo do arranjo fixo do <code>ADR-0010</code>.</b> A colmeia v3, que virava os territórios para os parceiros, dá 125 cruzamentos no mesmo modelo. É da geografia.</p>
-      <p>E o layout leva 2.4 s, dos quais ~70% são o roteamento A* das arestas (<code>gridRoute</code>), o mesmo na v3 e na v4. A estimativa do ADR-0009, de folga até ~50 contextos, não se confirma neste modelo.</p>
+      <p>E o layout leva 170 ms. Na primeira medição eram 2,4 s, dos quais ~70% no roteamento A* das arestas (<code>gridRoute</code>): a cada passo, ele testava o segmento contra todos os chips do mapa e andava por estados em string. Com o teste memorizado por passo e o A* em inteiros (2026-10-10), o tempo caiu umas quinze vezes e a geometria saiu idêntica, conferida em 29 modelos. A estimativa do ADR-0009, de folga até ~50 contextos, volta a valer.</p>
     </div>
   </div>
 
