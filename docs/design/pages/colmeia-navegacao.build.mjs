@@ -132,11 +132,21 @@ const SUBS = {};
 geo.islands.forEach((isl) => isl.masses.forEach((mass) => mass.groups.forEach((g) => {
   if (!g.cells.length) return;
   SUBS[isl.dom.id + "/" + g.sd.id] = {
-    title: subTitle[g.sd.id] || g.sd.id, ids: g.sd.ids.slice().sort(),
+    title: subTitle[g.sd.id] || g.sd.id, type: g.sd.type, ids: g.sd.ids.slice().sort(),
     cells: g.cells.map((c) => mass.pos[c[0] + "," + c[1]].map((x) => +x.toFixed(1))),
   };
 })));
 const subKeys = Object.keys(SUBS).sort();
+/* A cor do mapa vem do tipo do subdomínio (pedido do autor, 2026-10-09): o build
+   escreve `data-type` em peça, nome, território e rótulo, e o CSS escolhe o tom. */
+const typeOfSub = Object.fromEntries(subKeys.map((k) => [k, SUBS[k].type]));
+const typeOfCtx = {};
+subKeys.forEach((k) => SUBS[k].ids.forEach((id) => (typeOfCtx[id] = SUBS[k].type)));
+const typed = (svg) => svg
+  .replace(/data-ctx="([^"]+)" data-sub="([^"]+)"/g, (m, c, k) => `${m} data-type="${typeOfSub[k]}"`)
+  .replace(/(<g class="sub(?:lab)?[^"]*" data-sub="([^"]+)")/g, (m, head, k) => `${head} data-type="${typeOfSub[k]}"`)
+  .replace(/<text class="cnm([^"]*)"([^>]*)>([^<]+)<\/text>/g, (m, cls, rest, name) => `<text class="cnm${cls}" data-type="${typeOfCtx[name]}"${rest}>${name}</text>`);
+for (const view of ["flow", "contain"]) for (const file of ["clean", "broken"]) SV[view][file].svg = typed(SV[view][file].svg);
 
 /* ---------------- o enquadramento: uma função, dois lugares ---------------- */
 /* Roda na página (stringificada) e aqui, na checagem 1. `aspect` é largura÷altura do
@@ -201,6 +211,15 @@ const marked = (svg) => [...svg.matchAll(/<g class="rel invalid" data-rk="([^"]+
 const wantInvalid = PLANTED.map((b) => rkOf(b.l, b.r)).sort().join(", ");
 if (marked(SV.flow.broken.svg) !== wantInvalid) fails.push(`inválidas marcadas [${marked(SV.flow.broken.svg)}], esperadas [${wantInvalid}]`);
 if (marked(SV.flow.clean.svg)) fails.push(`o arquivo limpo marca relação inválida: ${marked(SV.flow.clean.svg)}`);
+
+/* 1e. toda peça, nome e território tem tipo, nos quatro desenhos */
+for (const view of ["flow", "contain"]) for (const file of ["clean", "broken"]) {
+  const svg = SV[view][file].svg;
+  const n = (re) => (svg.match(re) || []).length;
+  if (n(/<g class="node[^"]*" data-ctx="[^"]+" data-sub="[^"]+" data-type="(core|supporting|generic|external)"/g) !== ids.length) fails.push(`${view}/${file}: peça sem tipo`);
+  if (n(/<text class="cnm[^"]*" data-type="(core|supporting|generic|external)"/g) !== ids.length) fails.push(`${view}/${file}: nome sem tipo`);
+  if (n(/<g class="sub" data-sub="[^"]+" data-type="(core|supporting|generic|external)"/g) !== subKeys.length) fails.push(`${view}/${file}: território sem tipo`);
+}
 
 /* 2. trocar de vista move 0 peças: o mesmo hexágono, no mesmo lugar, nas duas */
 const hexes = (svg) => Object.fromEntries([...svg.matchAll(/data-ctx="([^"]+)"[^>]*>\s*<path class="tile [^"]*" d="([^"]+)"/g)].map((m) => [m[1], m[2]]));
@@ -523,6 +542,32 @@ const page = `<title>Colmeia navegação</title>
 /* Detalhe por zoom: longe demais para ler uma tag, ela só faz ruído. A relação acesa
    mostra as suas em qualquer zoom, porque é para ler aquela que se clicou. */
 .nav svg.far g.rel:not(.lit) .port{display:none}
+/* Cor por tipo de subdomínio (2026-10-09). O roxo sai do mapa e fica só na
+   interface. Linha é cinza; acesa, quase tinta. Peça e território tomam o tom do
+   próprio tipo, escurecido para ler como borda sobre o chão claro (e clareado no
+   escuro). A inválida segue vermelha: é a única cor forte numa linha. */
+:root{ --c-core-ink:176 120 0; --c-sup-ink:61 111 232; --c-gen-ink:84 82 102; --c-edge:128 125 146; --c-edge-lit:52 50 66; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; } }
+:root[data-theme="dark"]{ --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; }
+.nav [data-type="core"]{--t:var(--c-core-ink)}
+.nav [data-type="supporting"]{--t:var(--c-sup-ink)}
+.nav [data-type="generic"], .nav [data-type="external"]{--t:var(--c-gen-ink)}
+.nav .edge{stroke:rgb(var(--c-edge))}
+.nav .head{fill:rgb(var(--c-edge))}
+.nav g.rel.lit .edge{stroke:rgb(var(--c-edge-lit)); stroke-width:2}
+.nav g.rel.lit .head{fill:rgb(var(--c-edge-lit))}
+.nav .port:not([class*="sev-"]) rect{stroke:rgb(var(--c-edge) / .75)}
+.nav .port:not([class*="sev-"]) text{fill:rgb(var(--c-ink) / .82)}
+.nav g.node:hover .tile, .nav g.node.subhot .tile{stroke:rgb(var(--t))}
+.nav g.node:focus-visible .tile, .nav g.node.on .tile{stroke:rgb(var(--t))}
+.nav text.cnm.on{fill:rgb(var(--t))}
+.nav g.sub.hot .subwash{fill:rgb(var(--t) / .12)}
+.nav g.sub.hot .bsub{stroke:rgb(var(--t) / .85)}
+.nav g.sub.on .subwash{fill:rgb(var(--t) / .10)}
+.nav g.sub.on .bsub{stroke:rgb(var(--t))}
+.nav g.sublab.subhot .snm{fill:rgb(var(--t))}
+.nav g.rel.invalid.lit .head{fill:rgb(var(--c-error))}
 /* Linha (ADR-0012). Em repouso, a relação válida é sólida. Acesa, vira tracejado
    correndo do upstream para o downstream; a mútua fica tracejada e parada, porque
    não tem sentido de dependência. A inválida (diagnóstico 'error') é tracejado
