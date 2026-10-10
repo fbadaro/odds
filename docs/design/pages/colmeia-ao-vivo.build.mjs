@@ -25,13 +25,17 @@
  *   1. CORE   chevrotain + @odds/core (dist) + @odds/messages (dist, com o JSON inline)
  *   2. V3CSS  o <style> da colmeia-v4.html, inteiro — o protótipo veste a mesma pele
  *   3. V3SRC  o <script> da colmeia-v4.html, inteiro, rodado sem DOM — o MESMO layout
+ *   4. M50    o marketplace de 50 contextos do colmeia-50, com a documentação do
+ *             colmeia-navegacao.docs.mjs, como texto .odds: o texto inicial da bancada
  *
  * Exige o core compilado (`npm run typecheck`).
  */
 import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { MODEL as BARE } from "./colmeia-50.model.mjs";
+import { documented } from "./colmeia-navegacao.docs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../..");
@@ -119,12 +123,28 @@ const scripts = [...v3.matchAll(/<script>([\s\S]*?)<\/script>/g)];
 const v3Src = scripts[scripts.length - 1][1];
 if (/<\/script/i.test(v3Src)) throw new Error("o script da v3 contém </script");
 
+/* ---- 4. o marketplace de 50, como texto ---- */
+/* A fonte sai do mesmo gerador da v4 (modo "rich", com description e owner de
+   subdomínio), sobre o modelo documentado. Tem de validar limpa: a bancada começa
+   sem erro, e os erros são os que quem testa digitar. */
+globalThis.__V3_HEADLESS = true;
+new Function(v3Src)();
+delete globalThis.__V3_HEADLESS;
+const v4 = globalThis.__v3;
+const { model: M50, undocumented } = documented(BARE, v4.MODELS);
+if (undocumented.length) throw new Error(`contextos sem documentação: ${undocumented.join(", ")}`);
+const m50Text = v4.sourceOf(v4.canon(M50), "rich").text + "\n";
+const core = await import(pathToFileURL(path.join(root, "packages/core/dist/index.js")).href);
+const m50Diags = core.parseAndValidate(m50Text).diagnostics;
+if (m50Diags.length) throw new Error(`o marketplace deveria validar limpo: ${m50Diags.map((d) => d.code).join(", ")}`);
+
 /* ---- montagem ---- */
 const blocks = {
   CORE: `<script>\n${coreScript}\n</script>`,
   V3CSS: `<style id="v3css">${v3Css}</style>`,
   // a v3 olha __V3_HEADLESS ao começar: com ele, não toca o DOM e só expõe globalThis.__v3
   V3SRC: `<script>globalThis.__V3_HEADLESS = true;</script><script>${v3Src}</script><script>delete globalThis.__V3_HEADLESS;</script>`,
+  M50: `<script>globalThis.__M50 = ${JSON.stringify({ file: M50.file, text: m50Text })};</script>`,
 };
 const hash = createHash("sha256").update(Object.values(blocks).join("\n")).digest("hex").slice(0, 12);
 

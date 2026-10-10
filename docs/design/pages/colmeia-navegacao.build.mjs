@@ -21,7 +21,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { MODEL as BARE } from "./colmeia-50.model.mjs";
-import { CTX_DOCS, SUB_DOCS } from "./colmeia-navegacao.docs.mjs";
+import { documented } from "./colmeia-navegacao.docs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../..");
@@ -39,34 +39,9 @@ const v = globalThis.__v3;
 
 /* ---------------- a documentação preenchida ---------------- */
 /* Para a ficha da relação (pedido do autor, 2026-10-10): cada contexto e subdomínio
-   ganha as propriedades que a linguagem tem. O que os modelos da v4 já documentam,
-   com os mesmos nomes, vem de lá; o resto, do colmeia-navegacao.docs.mjs. Os valores
-   da v4 já trazem as aspas da fonte; os daqui ganham agora. Propriedade não alimenta
-   regra (RULES §0.2) nem move peça; a checagem 0 confere as duas coisas. */
-const q = (t) => '"' + t + '"';
-const fromV4 = { ctx: {}, sub: {} };
-for (const k of Object.keys(v.MODELS)) for (const d of v.MODELS[k].domains) {
-  for (const sd of d.subdomains) {
-    if (sd.description && !fromV4.sub[sd.id]) fromV4.sub[sd.id] = { description: sd.description, owner: sd.owner };
-    for (const c of sd.contexts) if (Object.keys(c).length > 1 && !fromV4.ctx[c.id]) fromV4.ctx[c.id] = c;
-  }
-  for (const c of d.external) if (Object.keys(c).length > 1 && !fromV4.ctx[c.id]) fromV4.ctx[c.id] = c;
-}
-const quoted = (doc) => Object.fromEntries(Object.entries(doc).map(([k, val]) =>
-  [k, k === "title" || k === "maturity" ? val : Array.isArray(val) ? val.map(q) : q(val)]));
-const MODEL = JSON.parse(JSON.stringify(BARE));
-const undocumented = [];
-for (const sd of MODEL.domains[0].subdomains) {
-  Object.assign(sd, fromV4.sub[sd.id] || (SUB_DOCS[sd.id] && quoted(SUB_DOCS[sd.id])) || {});
-  for (const c of sd.contexts) {
-    const doc = fromV4.ctx[c.id] || (CTX_DOCS[c.id] && quoted(CTX_DOCS[c.id]));
-    if (doc) Object.assign(c, doc, { id: c.id }); else undocumented.push(c.id);
-  }
-}
-for (const c of MODEL.domains[0].external) {
-  const doc = fromV4.ctx[c.id] || (CTX_DOCS[c.id] && quoted(CTX_DOCS[c.id]));
-  if (doc) Object.assign(c, doc, { id: c.id }); else undocumented.push(c.id);
-}
+   ganha as propriedades que a linguagem tem (colmeia-navegacao.docs.mjs). Propriedade
+   não alimenta regra (RULES §0.2) nem move peça; a checagem 0 confere as duas coisas. */
+const { model: MODEL, undocumented } = documented(BARE, v.MODELS);
 
 /* ---------------- modelo, veredito e layout ---------------- */
 const cm = v.canon(MODEL);

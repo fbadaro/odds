@@ -68,3 +68,34 @@ export const CTX_DOCS = {
   ClearSaleApi: { description: "Análise de fraude de terceiros", technology: "ClearSale REST API" },
   SegmentCdp: { description: "Coleta de eventos de navegação", technology: "Segment" },
 };
+
+/* O marketplace documentado: o modelo nu do colmeia-50 com as propriedades de cada
+   contexto e subdomínio. O que os modelos da v4 já documentam, com os mesmos nomes,
+   vem de lá (`v4models` é o MODELS do __v3); o resto, das tabelas acima. Os valores
+   da v4 já trazem as aspas da fonte; os daqui ganham agora. Dois builds usam isto, o
+   do colmeia-navegacao e o do colmeia-ao-vivo, para documentarem o mesmo mapa. */
+export function documented(bare, v4models) {
+  const q = (t) => '"' + t + '"';
+  const fromV4 = { ctx: {}, sub: {} };
+  for (const k of Object.keys(v4models)) for (const d of v4models[k].domains) {
+    for (const sd of d.subdomains) {
+      if (sd.description && !fromV4.sub[sd.id]) fromV4.sub[sd.id] = { description: sd.description, owner: sd.owner };
+      for (const c of sd.contexts) if (Object.keys(c).length > 1 && !fromV4.ctx[c.id]) fromV4.ctx[c.id] = c;
+    }
+    for (const c of d.external) if (Object.keys(c).length > 1 && !fromV4.ctx[c.id]) fromV4.ctx[c.id] = c;
+  }
+  const quoted = (doc) => Object.fromEntries(Object.entries(doc).map(([k, val]) =>
+    [k, k === "title" || k === "maturity" ? val : Array.isArray(val) ? val.map(q) : q(val)]));
+  const model = JSON.parse(JSON.stringify(bare));
+  const undocumented = [];
+  const docCtx = (c) => {
+    const doc = fromV4.ctx[c.id] || (CTX_DOCS[c.id] && quoted(CTX_DOCS[c.id]));
+    if (doc) Object.assign(c, doc, { id: c.id }); else undocumented.push(c.id);
+  };
+  for (const sd of model.domains[0].subdomains) {
+    Object.assign(sd, fromV4.sub[sd.id] || (SUB_DOCS[sd.id] && quoted(SUB_DOCS[sd.id])) || {});
+    sd.contexts.forEach(docCtx);
+  }
+  model.domains[0].external.forEach(docCtx);
+  return { model, undocumented };
+}

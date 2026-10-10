@@ -1,5 +1,5 @@
 <title>Colmeia ao vivo</title>
-<!--BUILD:1c00b37e2231-->
+<!--BUILD:14b41cd9b27e-->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <!--V3CSS--><style id="v3css">
@@ -314,16 +314,24 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
 </style><!--/V3CSS-->
 <style>
-/* O resto é a pele da colmeia v4, embutida acima pelo build. Aqui só o que o
-   protótipo acrescenta: editor, mapa de altura fixa, estado congelado e a animação. */
-.wrap{max-width:1440px}
-.lv-stage{display:grid; grid-template-columns:minmax(0,440px) minmax(0,1fr); gap:16px; align-items:start; margin-top:14px}
-@media (max-width:980px){ .lv-stage{grid-template-columns:minmax(0,1fr)} }
+/* O resto é a pele da colmeia v4, embutida acima pelo build. Aqui o que a bancada
+   acrescenta: editor, estado congelado, a animação da troca e, desde 2026-10-10, tudo
+   o que a colmeia-navegacao validou (câmera, foco, uma relação por vez, cor por tipo,
+   a linha do ADR-0012 e a ficha), para que o teste aconteça num lugar só. */
+.wrap{max-width:1760px}
+.lv-stage{display:grid; grid-template-columns:minmax(0,380px) minmax(0,1fr) 330px; gap:16px; align-items:start; margin-top:10px}
+.lv-stage.noed{grid-template-columns:minmax(0,1fr) 330px}
+.lv-stage.noed .lv-edcol{display:none}
+@media (max-width:1280px){
+  .lv-stage{grid-template-columns:minmax(0,1fr) 330px}
+  .lv-stage .lv-edcol{grid-column:1 / -1}
+  .lv-stage .lv-ed{height:300px}
+}
+@media (max-width:900px){ .lv-stage, .lv-stage.noed{grid-template-columns:minmax(0,1fr)} }
 .lv-col{display:flex; flex-direction:column; gap:12px; min-width:0}
 
-.lv-ed{position:relative; display:grid; grid-template-columns:44px minmax(0,1fr); height:640px;
+.lv-ed{position:relative; display:grid; grid-template-columns:44px minmax(0,1fr); height:min(76vh,760px); min-height:420px;
   font-family:"JetBrains Mono",ui-monospace,Menlo,monospace; font-size:12px; line-height:19px}
-@media (max-width:980px){ .lv-ed{height:340px} }
 .lv-gut{overflow:hidden; padding:10px 0; background:rgb(var(--c-panel2)); border-right:1px solid rgb(var(--c-border));
   color:rgb(var(--c-dim) / .7); text-align:right; user-select:none}
 .lv-gut div{position:relative; padding-right:9px; height:19px}
@@ -338,9 +346,10 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 .lv-ta:focus-visible{box-shadow:inset 0 0 0 2px rgb(var(--c-accent) / .5)}
 .lv-ta.robot{caret-color:rgb(var(--c-pulse))}
 
-.lv-map{height:640px}
-@media (max-width:980px){ .lv-map{height:460px} }
-.lv-map svg{width:100%; height:100%}
+/* o mapa é o palco da navegação: só o viewBox (a câmera) e as classes mudam nele */
+.lv-map{position:relative; height:min(76vh,760px); min-height:420px; overflow:hidden; touch-action:none; cursor:grab; outline:none;
+  background-color:rgb(var(--c-panel)); background-image:none}
+.lv-map svg{display:block; width:100%; height:100%; max-height:none}
 .lv-map.frozen svg{opacity:.42; filter:saturate(.2)}
 .lv-map.frozen{background-image:repeating-linear-gradient(135deg, rgb(var(--c-ink) / .045) 0 10px, transparent 10px 20px)}
 .lv-flag{position:absolute; left:12px; top:12px; right:12px; display:none; gap:10px; align-items:center;
@@ -355,6 +364,8 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 .lv-wait .dot{width:7px; height:7px; border-radius:50%; background:rgb(var(--c-pulse)); align-self:center;
   animation:lvpulse 1s ease-in-out infinite}
 @keyframes lvpulse{50%{opacity:.25}}
+.lv-cap{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px; min-height:20px; font-size:12.5px; color:rgb(var(--c-dim))}
+.lv-cap b{color:rgb(var(--c-accent)); font-weight:600; font-family:"JetBrains Mono",Menlo,monospace}
 
 /* FLIP: as pecas deslizam da posicao antiga para a nova; o chao e as linhas
    chegam depois, por fade. Sem a classe .lv-anim nada disto roda. */
@@ -383,28 +394,162 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 .lv-log .k-relayout{color:rgb(var(--c-accent))}
 .lv-log .k-frozen{color:rgb(var(--c-error))}
 .lv-log .k-route{color:rgb(var(--c-pulse))}
+.nav .side #selBox{max-height:min(70vh,680px); overflow:auto}
+.nav .sel .lnk{appearance:none; border:0; background:transparent; padding:0; cursor:pointer; font:inherit; color:inherit;
+  text-decoration:underline; text-decoration-color:rgb(var(--c-dim) / .4); text-underline-offset:2px}
+.nav .sel .lnk:hover{color:rgb(var(--c-accent))}
+.nav .hint{position:absolute; left:12px; bottom:10px; font-size:11.5px; color:rgb(var(--c-dim)); z-index:1;
+  background:rgb(var(--c-panel) / .88); border:1px solid rgb(var(--c-border)); border-radius:10px; padding:5px 10px; pointer-events:none}
+.nav .bar + .bar{margin-top:0}
+</style>
+<style id="navcss">
+.nav .sevdot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-top:4px; flex:none}
+.nav .sevdot.error{background:rgb(var(--c-error))}
+.nav .sevdot.warning{background:rgb(var(--c-warning))}
+.nav .sevdot.info{background:rgb(var(--c-info))}
+.nav .src .gut .sevdot{margin:0 4px 0 0; width:7px; height:7px}
+.nav .sel .golink.plain{font-weight:500; color:rgb(var(--c-ink)); text-decoration-color:rgb(var(--c-ink) / .3)}
+.nav .side #selBox{max-height:min(60vh,560px); overflow:auto}
+.nav #zoomOut{font-family:"JetBrains Mono",Menlo,monospace; font-size:11.5px; color:rgb(var(--c-dim)); min-width:44px; text-align:right}
+.nav #selCap{font-size:12.5px; color:rgb(var(--c-dim))}
+.nav #selCap b{color:rgb(var(--c-accent)); font-weight:600; font-family:"JetBrains Mono",Menlo,monospace}
+.nav kbd{font-family:"JetBrains Mono",Menlo,monospace; font-size:10.5px; border:1px solid rgb(var(--c-border));
+  border-bottom-width:2px; border-radius:5px; padding:0 5px; background:rgb(var(--c-panel2)); color:rgb(var(--c-ink))}
+.nav .lv-map:focus-visible{box-shadow:0 0 0 2px rgb(var(--c-accent))}
+.nav .lv-map.dragging{cursor:grabbing}
+/* Detalhe por zoom: longe demais para ler uma tag, ela só faz ruído. A relação acesa
+   mostra as suas em qualquer zoom, porque é para ler aquela que se clicou. */
+.nav svg.far g.rel:not(.lit) .port{display:none}
+/* Legibilidade em qualquer zoom (2026-10-09).
+   Traço: espessura fixa na tela. Sem isso, no mapa inteiro (~0,7 px por unidade) o
+   contorno de destaque e a linha inválida somem, e a 4× ficam grossos.
+   Rótulo: de longe, nome de contexto (7 px na tela) é ruído; ele some, e o nome do
+   subdomínio cresce para o mapa se ler como territórios. Com algo selecionado, os
+   nomes que a seleção deixa acesos voltam, em tamanho fixo na tela. */
+.nav .lv-map svg :is(path, rect, line, polyline, circle){vector-effect:non-scaling-stroke}
+.nav svg.far text.cnm{display:none}
+.nav svg.far.sel-on text.cnm:not(.fade){display:inline; font-size:calc(var(--k) * 11px); stroke-width:calc(var(--k) * 3.5px)}
+.nav svg.far g.sublab:not(.far-lab), .nav svg:not(.far) g.far-lab{display:none}
+.nav svg.far g.far-lab .snm{fill:rgb(var(--c-ink) / .58); stroke-width:5px}
+.nav svg.far g.far-lab.subhot .snm{fill:rgb(var(--t))}
+/* de longe a linha afina: com traço fixo na tela, 64 linhas de 1,6 px e halo de 5 px
+   pesavam mais que os territórios */
+.nav svg.far .edge{stroke-width:1}
+.nav svg.far .ecase{stroke-width:2.6}
+.nav svg.far g.rel.lit .edge{stroke-width:1.8}
+/* Cor por tipo de subdomínio (2026-10-09). O roxo sai do mapa e fica só na
+   interface. Linha é cinza; acesa, quase tinta. Peça e território tomam o tom do
+   próprio tipo, escurecido para ler como borda sobre o chão claro (e clareado no
+   escuro). A inválida segue vermelha: é a única cor forte numa linha. */
+:root{ --c-core-ink:176 120 0; --c-sup-ink:61 111 232; --c-gen-ink:84 82 102; --c-edge:128 125 146; --c-edge-lit:52 50 66; --c-edge-far:204 202 216; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; --c-edge-far:64 62 82; } }
+:root[data-theme="dark"]{ --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; --c-edge-far:64 62 82; }
+.nav [data-type="core"]{--t:var(--c-core-ink)}
+.nav [data-type="supporting"]{--t:var(--c-sup-ink)}
+.nav [data-type="generic"], .nav [data-type="external"]{--t:var(--c-gen-ink)}
+.nav .edge{stroke:rgb(var(--c-edge))}
+.nav .head{fill:rgb(var(--c-edge))}
+.nav g.rel.lit .edge{stroke:rgb(var(--c-edge-lit)); stroke-width:2}
+.nav g.rel.lit .head{fill:rgb(var(--c-edge-lit))}
+.nav .port:not([class*="sev-"]) rect{stroke:rgb(var(--c-edge) / .75)}
+.nav .port:not([class*="sev-"]) text{fill:rgb(var(--c-ink) / .82)}
+.nav g.node:hover .tile, .nav g.node.subhot .tile{stroke:rgb(var(--t))}
+.nav g.node:focus-visible .tile, .nav g.node.on .tile{stroke:rgb(var(--t))}
+.nav text.cnm.on{fill:rgb(var(--t))}
+.nav g.sub.hot .subwash{fill:rgb(var(--t) / .12)}
+.nav g.sub.hot .bsub{stroke:rgb(var(--t) / .85)}
+.nav g.sub.on .subwash{fill:rgb(var(--t) / .10)}
+.nav g.sub.on .bsub{stroke:rgb(var(--t))}
+.nav g.sublab.subhot .snm{fill:rgb(var(--t))}
+.nav g.rel.invalid.lit .head{fill:rgb(var(--c-error))}
+/* de longe, a linha em repouso é um cinza clarinho (pedido do autor, 2026-10-09):
+   o todo se lê pelos territórios, e as linhas só sugerem a trama */
+.nav svg.far g.rel:not(.lit):not(.invalid) .edge{stroke:rgb(var(--c-edge-far))}
+.nav svg.far g.rel:not(.lit):not(.invalid) .head{fill:rgb(var(--c-edge-far))}
+.nav svg.far g.rel.invalid .edge{stroke-width:1.6}
+/* Linha (ADR-0012). Em repouso, a relação válida é sólida. Acesa, vira tracejado
+   correndo do upstream para o downstream; a mútua fica tracejada e parada, porque
+   não tem sentido de dependência. A inválida (diagnóstico 'error') é tracejado
+   vermelho e parado, SEMPRE, acesa ou não: é a marca do RULES-EN.md §5, e movimento
+   ficou reservado para o que funciona. */
+.nav g.rel.lit .edge:not(.sep){stroke-dasharray:7 5; animation:dash-run .7s linear infinite}
+.nav g.rel.lit[data-flow="rev"] .edge{animation-direction:reverse}
+.nav g.rel.lit[data-flow="both"] .edge{animation:none}
+@keyframes dash-run{to{stroke-dashoffset:-12}}
+.nav g.rel.invalid .edge, .nav g.rel.invalid.lit .edge{stroke:rgb(var(--c-error)); stroke-width:1.8;
+  stroke-dasharray:6 4; animation:none}
+.nav g.rel.invalid .head{fill:rgb(var(--c-error))}
+@media (prefers-reduced-motion: reduce){ .nav g.rel .edge{animation:none !important} }
+/* Uma relação por vez (pedido do autor, 2026-10-10). A linha é clicável por um traço
+   invisível de 12 px na tela; sob o mouse, ela escurece. Com uma relação em foco, ela
+   fica mais grossa e escura, com as tags em qualquer zoom; as outras do contexto de
+   onde se veio continuam acesas e correndo, num cinza mais claro, para seguirem
+   clicáveis e mostrando o sentido. */
+.nav g.rel .rhit{fill:none; stroke:transparent; stroke-width:12px; pointer-events:stroke; cursor:pointer}
+.nav g.rel:hover .edge{stroke:rgb(var(--c-edge-lit))}
+.nav g.rel:hover .head{fill:rgb(var(--c-edge-lit))}
+.nav g.rel.focus .edge, .nav svg.far g.rel.focus .edge{stroke-width:3}
+.nav g.rel.lit.mute:not(.invalid) .edge{stroke:rgb(var(--c-edge) / .6); stroke-width:1.6}
+.nav g.rel.lit.mute:not(.invalid) .head{fill:rgb(var(--c-edge) / .6)}
+.nav g.rel.lit.mute .port{opacity:.6}
+.nav svg.far g.rel.mute .port{display:none}
+.nav g.rel.fade .rhit{cursor:pointer}
+/* a ficha da relação */
+.nav .sel .relgo{appearance:none; border:0; background:transparent; padding:0; cursor:pointer; text-align:left;
+  font-family:"Inter",sans-serif; font-size:11px; color:rgb(var(--c-accent)); margin-top:2px; display:block}
+.nav .sel .relgo:hover{text-decoration:underline}
+.nav .sel .back{font-size:11.5px; font-weight:500; text-decoration:none; margin:0 0 10px; display:block}
+.nav .sel .relsrc{font-family:"JetBrains Mono",Menlo,monospace; font-size:11px; line-height:1.5; color:rgb(var(--c-ink));
+  background:rgb(var(--c-panel2)); border:1px solid rgb(var(--c-border)); border-radius:8px; padding:7px 9px; word-break:break-word}
+.nav .sel .relsrc .tg{color:rgb(var(--c-pulse))}
+.nav .sel .relsrc .c{display:block; font-size:10px; color:rgb(var(--c-dim)); margin-top:3px}
+.nav .sel .rside{border:1px solid rgb(var(--c-border)); border-left:3px solid rgb(var(--t, var(--c-dim))); border-radius:8px;
+  padding:9px 11px; margin:0 0 8px}
+.nav .sel .rs-head{display:flex; align-items:baseline; gap:8px; font-family:"JetBrains Mono",Menlo,monospace; font-size:12.5px}
+.nav .sel .rs-head .golink{color:rgb(var(--c-ink)); text-decoration-color:rgb(var(--c-ink) / .3)}
+.nav .sel .role{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:rgb(var(--t, var(--c-dim)))}
+.nav .sel .rs-meta{font-size:11.5px; color:rgb(var(--c-dim)); margin:3px 0 6px}
+.nav .sel .tagrow{display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; align-items:baseline;
+  font-size:11.5px; line-height:1.45; color:rgb(var(--c-dim)); padding:4px 0}
+.nav .sel .tagrow b{color:rgb(var(--c-ink)); font-weight:600}
+.nav .sel .tgchip{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; border:1px solid rgb(var(--c-edge) / .75);
+  border-radius:6px; padding:1px 6px; color:rgb(var(--c-ink)); background:rgb(var(--c-panel))}
+.nav .sel .rs-doc{margin-top:4px; padding-top:4px; border-top:1px dashed rgb(var(--c-border))}
 </style>
 
-<div class="wrap">
-  <div class="eyebrow">Protótipo · ADR-0009 · proposto</div>
+<div class="wrap nav">
+  <div class="eyebrow">Bancada · ADR-0009 · ADR-0011 · ADR-0012 · 2026-10-10</div>
   <h1>Colmeia ao vivo</h1>
-  <p class="lede">O texto à esquerda passa pelo <b><code>@odds/core</code> real</b> a cada tecla, e o mapa à direita é o <b>layout da colmeia v4, sem cópia</b> — o mesmo script, embutido pelo build. A pergunta é a do ADR-0009: dá para editar a DSL e ver este desenho acompanhar, sem perder o mapa de vista? As três medidas do ADR ligam e desligam aqui, para comparar com e sem.</p>
+  <p class="lede">A bancada única da colmeia. O texto à esquerda passa pelo <b><code>@odds/core</code> real</b> a cada tecla; o mapa ao centro é o <b>layout da colmeia v4, sem cópia</b>; a ficha à direita lê a <b>documentação do próprio texto</b>. Tudo o que a <code>colmeia-navegacao</code> validou está aqui, sobre o mapa vivo: zoom e pan, clique que acende e enquadra, foco no subdomínio, <b>uma relação por vez</b>, cor por tipo e a linha do <code>ADR-0012</code>. O texto inicial é o <b>marketplace de 50 contextos</b>, documentado. A pergunta que falta é a do <code>ADR-0009</code>: dá para digitar num mapa deste tamanho e ver o desenho acompanhar, sem perder o lugar?</p>
 
   <div class="bar" role="toolbar" aria-label="Controles">
-    <div class="grp"><span class="lbl">Medidas</span>
-      <label class="lv-tog"><input type="checkbox" id="mSplit" checked> topologia × repintura</label>
-      <label class="lv-tog"><input type="checkbox" id="mPause" checked> esperar a pausa <small>300 ms</small></label>
-      <label class="lv-tog"><input type="checkbox" id="mAnim" checked> animar a troca</label>
+    <div class="grp"><span class="lbl">Modelo</span>
+      <div class="seg" id="segModel"><button data-v="m50" aria-pressed="true">marketplace · 50</button><button data-v="m17" aria-pressed="false">vendas · 17</button></div>
     </div>
     <div class="grp"><span class="lbl">Vista</span>
       <div class="seg" id="segView"><button data-v="flow" aria-pressed="true">fluxo</button><button data-v="contain" aria-pressed="false">contenção</button></div>
+    </div>
+    <div class="grp"><span class="lbl">Zoom</span>
+      <button class="act" id="zOutBtn" aria-label="afastar">−</button>
+      <button class="act" id="zIn" aria-label="aproximar">+</button>
+      <button class="act" id="zFit">mapa inteiro</button>
+      <span id="zoomOut">100%</span>
+    </div>
+    <div class="grp"><span class="lbl">Editor</span>
+      <div class="seg" id="segEditor"><button data-v="on" aria-pressed="true">à vista</button><button data-v="off" aria-pressed="false">recolhido</button></div>
     </div>
     <div class="grp"><span class="lbl">Tema</span>
       <div class="seg" id="segTheme"><button data-v="light" aria-pressed="true">claro</button><button data-v="dark" aria-pressed="false">escuro</button><button data-v="auto" aria-pressed="false">sistema</button></div>
     </div>
   </div>
 
-  <div class="bar" role="toolbar" aria-label="Robô de digitação" style="margin-top:0">
+  <div class="bar" role="toolbar" aria-label="Medidas e robô">
+    <div class="grp"><span class="lbl">Medidas</span>
+      <label class="lv-tog"><input type="checkbox" id="mSplit" checked> topologia × repintura</label>
+      <label class="lv-tog"><input type="checkbox" id="mPause" checked> esperar a pausa <small>300 ms</small></label>
+      <label class="lv-tog"><input type="checkbox" id="mAnim" checked> animar a troca</label>
+    </div>
     <div class="grp"><span class="lbl">Robô digita</span>
       <button class="act" data-robot="ctx">contexto novo</button>
       <button class="act" data-robot="rel">relação nova</button>
@@ -420,19 +565,21 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
 
   <div class="probe" id="metrics" aria-live="polite"></div>
 
-  <div class="lv-stage">
-    <div class="lv-col">
+  <div class="lv-stage" id="stageGrid">
+    <div class="lv-col lv-edcol">
       <section class="card">
-        <header><span class="eyebrow" id="fileName">vendas.odds</span><span class="eyebrow" id="caret"></span></header>
+        <header><span class="eyebrow" id="fileName">marketplace.odds</span><span class="eyebrow" id="caret"></span></header>
         <div class="lv-ed"><div class="lv-gut" id="gut" aria-hidden="true"></div>
           <textarea class="lv-ta" id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Fonte .odds"></textarea></div>
       </section>
     </div>
     <div class="lv-col">
-      <div class="map lv-map" id="map">
+      <div class="lv-cap" id="selCap" aria-live="polite"><b id="selName"></b><span id="selRest"></span></div>
+      <div class="map lv-map" id="map" tabindex="0" aria-label="Mapa: arraste para mover, roda ou pinça para aproximar, setas e + − 0 no teclado">
         <div class="lv-flag" role="status"><span><b>Diagrama congelado.</b> <span id="flagMsg"></span></span></div>
         <div class="lv-wait"><span class="pill"><span class="dot"></span>topologia mudou · layout na pausa</span></div>
         <div id="svgHost" style="height:100%"></div>
+        <div class="hint">roda ou pinça: zoom · arrastar: mover · peça: relações · linha: só ela · território: subdomínio · <kbd>0</kbd> mapa inteiro</div>
       </div>
       <section class="card diag lv-diag">
         <header><span class="eyebrow">Diagnósticos</span><div class="counts" id="dcounts"></div></header>
@@ -443,35 +590,47 @@ hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
         <pre class="lv-log" id="log"></pre>
       </section>
     </div>
+    <div class="lv-col side">
+      <div class="card">
+        <header><span class="eyebrow">Seleção</span><span class="mono" style="font-size:10px;color:rgb(var(--c-dim))">clique ou Tab</span></header>
+        <div class="body" id="selBox"></div>
+      </div>
+      <div class="card">
+        <header><span class="eyebrow">Como ler</span></header>
+        <div class="body leg" id="legend"></div>
+      </div>
+    </div>
   </div>
 
   <div class="notes">
     <article class="note">
-      <div class="eyebrow">Como ler</div>
-      <h3>Quatro destinos para uma tecla</h3>
-      <p><b>Repintura</b> — a topologia e as tags não mudaram (uma descrição, um título, um diagnóstico novo): o SVG é remontado sobre a geometria anterior, sem layout. <b>Rerrota</b> — só tag ou conector mudou: o layout roda, mas nenhuma peça pode andar, porque a posição não depende de tag. <b>Relayout</b> — a topologia mudou (contexto, subdomínio, par de relação): peças podem andar, e é aí que a pausa e a animação trabalham. <b>Congelado</b> — erro de sintaxe: o mapa fica, marcado como obsoleto (<code>PRD.md</code> §5.2).</p>
-    </article>
-    <article class="note">
-      <div class="eyebrow">O experimento</div>
-      <h3>Rode cada robô com e sem as medidas</h3>
+      <span class="tagpill novo">o teste</span>
+      <h3>Digite no marketplace e diga se o mapa acompanha</h3>
+      <p>É a condição de aceite que falta ao <code>ADR-0009</code>: uma pessoa editando um mapa de tamanho real. Algumas edições para tentar, sem roteiro fixo:</p>
       <ul>
-        <li><b>contexto novo</b>: cada letra do nome é uma topologia diferente (<code>L</code>, <code>Lo</code>, <code>Loy</code>…). Sem a pausa, o mapa se refaz a cada letra.</li>
-        <li><b>relação nova</b>: o mapa congela enquanto a linha está incompleta e se refaz uma vez, quando o segundo nome resolve.</li>
-        <li><b>editar descrição</b>: só repintura. Nenhuma peça pode andar.</li>
-        <li><b>tag no lado errado</b>: rerrota, e o marcador cai na porta da tag.</li>
+        <li>acrescente um contexto a um subdomínio e ligue-o a dois outros;</li>
+        <li>renomeie um contexto que tem muitas relações (<code>OrderManagement</code>, <code>Checkout</code>);</li>
+        <li>escreva uma tag no lado errado e ache o erro pelo mapa, não pelo texto;</li>
+        <li>selecione um contexto, edite o texto, e veja se a seleção e a câmera continuam onde estavam.</li>
       </ul>
+      <p>O que anotar: se em algum momento você <b>perdeu a peça que estava olhando</b>, e se a espera da pausa incomodou.</p>
     </article>
     <article class="note">
-      <div class="eyebrow">O que derruba o ADR-0009</div>
+      <span class="tagpill">como ler</span>
+      <h3>Quatro destinos para uma tecla</h3>
+      <p><b>Repintura</b>: a topologia e as tags não mudaram (uma descrição, um título, um diagnóstico novo). O SVG é remontado sobre a geometria anterior, sem layout. <b>Rerrota</b>: só tag ou conector mudou. O layout roda, mas nenhuma peça anda, porque a posição não depende de tag. <b>Relayout</b>: a topologia mudou (contexto, subdomínio, par de relação), e peças podem andar; é aí que a pausa e a animação trabalham. <b>Congelado</b>: erro de sintaxe. O mapa fica, marcado como obsoleto (<code>PRD.md</code> §5.2).</p>
+      <p>A câmera e a seleção sobrevivem às quatro. Se você não mexeu na câmera, ela acompanha o mapa inteiro quando ele cresce; se mexeu, ela fica onde você a deixou.</p>
+    </article>
+    <article class="note">
+      <span class="tagpill front">o que derruba o ADR-0009</span>
       <h3>Os sinais da Reversão</h3>
-      <p>Perder a peça que se estava olhando <b>mesmo com a animação</b> depois de uma relação nova; layout ilegível num mapa real de 40–60 contextos; ou decidir que a colmeia é só a vista de contenção. O contador “peças andaram” no topo mede o primeiro sinal; o segundo e o terceiro são julgamento.</p>
+      <p>Perder a peça que se estava olhando <b>mesmo com a animação</b> depois de uma edição; layout ilegível num mapa real de 40 a 60 contextos; ou decidir que a colmeia é só a vista de contenção. O contador "peças andaram" no topo mede o primeiro sinal; o segundo e o terceiro são julgamento.</p>
+      <p>O layout do marketplace leva cerca de 170 ms (eram 2,4 s até 2026-10-10), então a pausa de 300 ms ainda é o que mais pesa entre a tecla e o mapa.</p>
     </article>
     <article class="note">
-      <div class="eyebrow">O que o protótipo já mostrou · 2026-09-28</div>
-      <h3>O que move o mapa é contexto, não relação</h3>
-      <p>Medido sobre o modelo de vendas, peças que andam por edição: renomear um contexto <b>0–1 de 16</b>; trocar tag ou conector <b>0</b>; +1 relação <b>3–8 de 17</b>; <b>+1 contexto: 15–17 de 17</b> em quatro dos seis subdomínios, e <b>−1 contexto: 14–16 de 16</b> em três. A pausa e a animação fazem o que prometem — um relayout por nome digitado, e visível —, mas não impedem que a edição estrutural mais comum refaça o mapa inteiro.</p>
-      <p>A causa é do layout, não do ciclo: o tamanho da massa é função direta do número de contextos, e toda massa se reposiciona quando uma cresce. A correção cabe numa função pura — <b>localidade</b>: acrescentar um contexto a um subdomínio só pode mover peças daquele subdomínio, como o embaralhar já não move nenhuma. Não pede layout grudento.</p>
-          <p><b>Resolvido na v4 (2026-10-06).</b> O build passou a embutir a <code>colmeia-v4.html</code>, que cumpre a localidade. O robô do “contexto novo” agora termina com <b>0 de 17 peças andaram, +1 nova</b>. A <code>colmeia-v4.check.mjs</code> confere a regra edição por edição nos dois modelos, e o ADR-0010 registra como. O que falta para o ADR-0009 sair de <i>proposto</i> é a outra metade: alguém digitar um mapa de tamanho real aqui.</p>
+      <span class="tagpill">histórico</span>
+      <h3>O que o protótipo já mostrou</h3>
+      <p><b>2026-09-28</b>, com a v3: acrescentar um contexto movia 15 a 17 de 17 peças, e daí veio a exigência de localidade. <b>2026-10-06</b>, com a v4: o mesmo robô mede 0 de 17. <b>2026-10-10</b>: a <code>colmeia-navegacao</code> foi testada pelo autor e aprovada ("ficou muito bom, mesmo com uma quantidade grande de contextos"); tudo dela passou para cá, e esta passou a ser a bancada única.</p>
     </article>
   </div>
 </div>
@@ -4151,11 +4310,13 @@ function coveredCodes() {
 __exp.renderMessage = renderMessage; __exp.render = render; __exp.coveredCodes = coveredCodes;
 })(__odds["odds-messages/index.js"] = {});
 </script><!--/CORE-->
+<!--M50--><script>globalThis.__M50 = {"file":"marketplace.odds","text":"domain RetailMarketplace {\n  title: \"Retail Marketplace\"\n\n  subdomain generic Analytics {\n    title: \"Analytics\"\n    description: \"Transformar evento em decisão\"\n    owner: \"Diretoria de Dados\"\n    context DataLake {\n      title: \"Data lake\"\n      description: \"Eventos brutos de todo o marketplace, particionados por dia\"\n      maturity: mature\n      team: \"Dados\"\n      technology: \"S3, Iceberg\"\n    }\n    context Experiments {\n      title: \"Experimentos\"\n      description: \"Teste A/B e o cálculo de significância\"\n      maturity: experimental\n      team: \"Dados\"\n      technology: \"Python\"\n    }\n    context Reporting {\n      title: \"Relatórios\"\n      type: \"read-model\"\n      description: \"Painéis de venda e operação para a diretoria\"\n      maturity: mature\n      team: \"Dados\"\n      technology: \"dbt, Metabase\"\n    }\n  }\n\n  subdomain supporting Content {\n    title: \"Conteúdo\"\n    description: \"Texto e imagem que vendem sem um vendedor\"\n    owner: \"Gerência de Conteúdo\"\n    context CMS {\n      title: \"Gestão de conteúdo\"\n      description: \"Página, banner e texto editorial\"\n      team: \"Conteúdo\"\n      technology: \"Headless CMS\"\n    }\n    context MediaAssets {\n      title: \"Mídia\"\n      type: \"service\"\n      description: \"Imagem e vídeo de produto, redimensionados e servidos por CDN\"\n      maturity: mature\n      team: \"Conteúdo\"\n      technology: \"Go, S3, CDN\"\n    }\n  }\n\n  subdomain supporting CustomerCare {\n    title: \"Atendimento\"\n    description: \"Resolver o que deu errado sem perder o cliente\"\n    owner: \"Gerência de Experiência\"\n    context Chatbot {\n      title: \"Assistente\"\n      description: \"Primeiro atendimento automático, que escala para o humano\"\n      maturity: experimental\n      team: \"Atendimento Squad\"\n      technology: \"Python, LLM\"\n    }\n    context Disputes {\n      title: \"Disputas\"\n      type: \"process\"\n      description: \"Contestação entre comprador e vendedor, até o reembolso ou a recusa\"\n      maturity: growing\n      team: \"Atendimento Squad\"\n    }\n    context Support {\n      title: \"Atendimento\"\n      type: \"service\"\n      description: \"Ticket, histórico do cliente e resposta\"\n      responsibilities: [\"Abrir e encerrar ticket\", \"Consultar histórico do pedido\", \"Escalar para a squad dona\"]\n      maturity: growing\n      team: \"Atendimento\"\n      technology: \"TypeScript, Zendesk API\"\n    }\n  }\n\n  subdomain core Discovery {\n    title: \"Descoberta\"\n    description: \"Fazer o cliente encontrar o que ainda não sabe que quer\"\n    owner: \"Diretoria Comercial\"\n    context Catalog {\n      title: \"Catálogo\"\n      type: \"aggregate\"\n      description: \"Produto, variação e atributo, a fonte única do que se vende\"\n      responsibilities: [\"Manter produto\", \"Publicar variação\", \"Versionar atributo\"]\n      maturity: mature\n      team: \"Descoberta Squad\"\n      technology: \"Java, PostgreSQL\"\n    }\n    context Recommendations {\n      title: \"Recomendação\"\n      type: \"read-model\"\n      description: \"Vitrine derivada de comportamento e catálogo\"\n      responsibilities: [\"Montar vitrine por perfil\", \"Reordenar por afinidade\", \"Excluir item indisponível\"]\n      maturity: experimental\n      team: \"Discovery Squad\"\n      technology: \"Python, Feature Store\"\n    }\n    context Reviews {\n      title: \"Avaliações\"\n      description: \"Nota e comentário do comprador, com moderação\"\n      maturity: growing\n      team: \"Descoberta Squad\"\n    }\n    context Search {\n      title: \"Busca\"\n      type: \"read-model\"\n      description: \"Índice do catálogo, com filtro, ordenação e sinônimo\"\n      responsibilities: [\"Indexar catálogo\", \"Resolver consulta\", \"Registrar termo sem resultado\"]\n      maturity: growing\n      team: \"Discovery Squad\"\n      technology: \"Go, OpenSearch\"\n    }\n  }\n\n  subdomain supporting Fulfillment {\n    title: \"Entrega e estoque\"\n    description: \"Entregar o que foi vendido, no prazo prometido\"\n    owner: \"Diretoria de Operações\"\n    context Inventory {\n      title: \"Estoque\"\n      type: \"aggregate\"\n      description: \"Saldo disponível por item e local, com reserva\"\n      responsibilities: [\"Manter saldo por local\", \"Reservar e liberar\", \"Registrar divergência\"]\n      maturity: mature\n      team: \"Logística Squad\"\n      technology: \"Java, PostgreSQL\"\n    }\n    context Returns {\n      title: \"Devolução\"\n      type: \"process\"\n      description: \"Logística reversa, da solicitação ao reembolso\"\n      responsibilities: [\"Autorizar devolução\", \"Gerar etiqueta reversa\", \"Disparar reembolso\"]\n      maturity: growing\n      team: \"Atendimento\"\n      technology: \"TypeScript, Temporal\"\n    }\n    context Shipping {\n      title: \"Expedição\"\n      type: \"process\"\n      description: \"Do pedido confirmado à entrega, com rastreio\"\n      responsibilities: [\"Escolher transportadora\", \"Emitir etiqueta\", \"Atualizar rastreio\"]\n      maturity: mature\n      team: \"Logística Squad\"\n      technology: \"Java, Kafka\"\n    }\n    context Warehouse {\n      title: \"Armazém\"\n      type: \"service\"\n      description: \"Operação física: separação, conferência e embalagem\"\n      responsibilities: [\"Roteirizar separação\", \"Conferir volume\", \"Embalar e despachar\"]\n      maturity: legacy\n      team: \"Operações\"\n      technology: \"C#, SQL Server\"\n    }\n  }\n\n  subdomain generic Identity {\n    title: \"Identidade\"\n    description: \"Saber quem é quem, uma vez, para todo o resto\"\n    owner: \"Plataforma\"\n    context Auth {\n      title: \"Identidade\"\n      type: \"gateway\"\n      description: \"Autenticação, sessão e escopo de acesso\"\n      responsibilities: [\"Autenticar credencial\", \"Emitir e renovar token\", \"Resolver escopo\"]\n      maturity: mature\n      team: \"Plataforma\"\n      technology: \"Go, OIDC\"\n    }\n    context Consent {\n      title: \"Consentimento\"\n      type: \"policy\"\n      description: \"O que o cliente autorizou, por finalidade, com histórico (LGPD)\"\n      responsibilities: [\"Registrar consentimento\", \"Revogar por finalidade\", \"Responder auditoria\"]\n      maturity: growing\n      team: \"Plataforma\"\n      technology: \"Go\"\n    }\n    context Profiles {\n      title: \"Perfis\"\n      type: \"aggregate\"\n      description: \"Dados cadastrais e endereços do cliente\"\n      maturity: mature\n      team: \"Plataforma\"\n      technology: \"Go, PostgreSQL\"\n    }\n  }\n\n  subdomain supporting Logistics {\n    title: \"Logística\"\n    description: \"Levar o pacote do galpão até a porta\"\n    owner: \"Diretoria de Operações\"\n    context Carriers {\n      title: \"Transportadoras\"\n      type: \"service\"\n      description: \"Cotação e contratação de transportadora por entrega\"\n      responsibilities: [\"Cotar frete\", \"Emitir etiqueta\", \"Receber rastreio\"]\n      maturity: mature\n      team: \"Logística Squad\"\n      technology: \"Go\"\n    }\n    context FleetOps {\n      title: \"Frota\"\n      type: \"service\"\n      description: \"Veículo, motorista e disponibilidade\"\n      responsibilities: [\"Manter cadastro de frota\", \"Alocar motorista\", \"Registrar manutenção\"]\n      maturity: legacy\n      team: \"Operações\"\n      technology: \"C#, SQL Server\"\n    }\n    context Routes {\n      title: \"Roteirização\"\n      type: \"policy\"\n      description: \"Rota e janela de entrega por região\"\n      responsibilities: [\"Calcular rota\", \"Respeitar janela\", \"Reagendar falha\"]\n      maturity: growing\n      team: \"Logística Squad\"\n      technology: \"Python, OR-Tools\"\n    }\n  }\n\n  subdomain supporting Marketing {\n    title: \"Marketing\"\n    description: \"Trazer o cliente de volta, e trazer um novo\"\n    owner: \"Diretoria de Marketing\"\n    context Affiliates {\n      title: \"Afiliados\"\n      description: \"Link de parceiro e comissão por conversão\"\n      maturity: experimental\n      team: \"Growth\"\n    }\n    context Campaigns {\n      title: \"Campanhas\"\n      type: \"aggregate\"\n      description: \"Peça, público e vigência de cada campanha\"\n      responsibilities: [\"Definir público\", \"Agendar vigência\", \"Medir conversão\"]\n      maturity: growing\n      team: \"Growth\"\n      technology: \"TypeScript, BigQuery\"\n    }\n    context Loyalty {\n      title: \"Fidelidade\"\n      description: \"Pontos por compra e resgate\"\n      maturity: growing\n      team: \"Growth\"\n      technology: \"TypeScript\"\n    }\n    context Segments {\n      title: \"Segmentos\"\n      type: \"read-model\"\n      description: \"Coortes derivadas de comportamento de compra\"\n      responsibilities: [\"Derivar coorte\", \"Atualizar por evento\", \"Expor para campanha\"]\n      maturity: experimental\n      team: \"Growth\"\n      technology: \"Python, dbt\"\n    }\n  }\n\n  subdomain core Marketplace {\n    title: \"Marketplace\"\n    description: \"Abrir a vitrine para vendedores de fora sem perder o controle\"\n    owner: \"Diretoria de Marketplace\"\n    context Commissions {\n      title: \"Comissões\"\n      type: \"policy\"\n      description: \"Quanto o marketplace retém de cada venda de terceiro\"\n      maturity: growing\n      team: \"Marketplace Squad\"\n      technology: \"Kotlin\"\n    }\n    context SellerCatalog {\n      title: \"Catálogo do vendedor\"\n      description: \"Oferta do vendedor antes de virar produto do catálogo\"\n      responsibilities: [\"Receber oferta\", \"Casar com produto existente\"]\n      maturity: experimental\n      team: \"Marketplace Squad\"\n      technology: \"TypeScript\"\n    }\n    context SellerOnboarding {\n      title: \"Cadastro de vendedor\"\n      type: \"process\"\n      description: \"Aceite, KYC e contrato do vendedor de fora\"\n      responsibilities: [\"Verificar documentos\", \"Assinar contrato\", \"Liberar a loja\"]\n      maturity: growing\n      team: \"Marketplace Squad\"\n      technology: \"TypeScript, Temporal\"\n    }\n    context SellerPayouts {\n      title: \"Repasses\"\n      type: \"process\"\n      description: \"Liquidação do saldo do vendedor, descontada a comissão\"\n      responsibilities: [\"Apurar saldo\", \"Agendar repasse\", \"Conciliar com o gateway\"]\n      maturity: experimental\n      team: \"Marketplace Squad\"\n      technology: \"Kotlin\"\n    }\n  }\n\n  subdomain generic Notifications {\n    title: \"Notificações\"\n    description: \"Avisar o cliente pelo canal certo, uma vez\"\n    owner: \"Plataforma\"\n    context Email {\n      title: \"E-mail transacional\"\n      type: \"service\"\n      description: \"Envio, template e status de entrega\"\n      responsibilities: [\"Renderizar template\", \"Enviar e repetir\", \"Tratar bounce\"]\n      maturity: mature\n      team: \"Plataforma\"\n      technology: \"Node.js, SES\"\n    }\n    context Push {\n      title: \"Push\"\n      type: \"service\"\n      description: \"Notificação no aplicativo\"\n      maturity: growing\n      team: \"Plataforma\"\n      technology: \"Firebase\"\n    }\n    context SMS {\n      title: \"SMS\"\n      type: \"service\"\n      description: \"Envio de SMS transacional\"\n      maturity: mature\n      team: \"Plataforma\"\n    }\n  }\n\n  subdomain generic Payments {\n    title: \"Pagamentos\"\n    description: \"Receber o dinheiro e provar que recebeu\"\n    owner: \"Diretoria Financeira\"\n    context FraudCheck {\n      title: \"Antifraude\"\n      type: \"policy\"\n      description: \"Score de risco de cada transação antes da captura\"\n      responsibilities: [\"Pontuar transação\", \"Aplicar regra de bloqueio\"]\n      maturity: mature\n      team: \"Payments Squad\"\n      technology: \"Python\"\n    }\n    context Invoicing {\n      title: \"Faturamento\"\n      type: \"service\"\n      description: \"Nota fiscal e documento de cobrança\"\n      responsibilities: [\"Emitir nota\", \"Transmitir à SEFAZ\", \"Arquivar documento\"]\n      maturity: mature\n      team: \"Fiscal\"\n      technology: \"Java, SOAP\"\n    }\n    context PaymentGateway {\n      title: \"Gateway de Pagamentos\"\n      type: \"gateway\"\n      description: \"Fachada única sobre os provedores de pagamento\"\n      responsibilities: [\"Autorizar e capturar\", \"Tratar webhook do provedor\", \"Conciliar transação\"]\n      maturity: mature\n      team: \"Payments Squad\"\n      technology: \"Node.js, Stripe SDK\"\n    }\n    context Refunds {\n      title: \"Reembolsos\"\n      type: \"process\"\n      description: \"Estorno total ou parcial ao comprador\"\n      maturity: growing\n      team: \"Payments Squad\"\n      technology: \"Node.js\"\n    }\n  }\n\n  subdomain core Sales {\n    title: \"Vendas\"\n    description: \"Converter intenção de compra em pedido pago\"\n    owner: \"Diretoria Comercial\"\n    context Cart {\n      title: \"Carrinho\"\n      type: \"aggregate\"\n      description: \"Itens escolhidos antes do fechamento, com reserva temporária\"\n      responsibilities: [\"Manter itens e quantidades\", \"Aplicar cupom\", \"Expirar carrinho abandonado\"]\n      maturity: mature\n      team: \"Vendas Squad\"\n      technology: \"TypeScript, Redis\"\n    }\n    context Checkout {\n      title: \"Finalização de compra\"\n      type: \"process\"\n      description: \"Orquestra endereço, frete, pagamento e confirmação do pedido\"\n      responsibilities: [\"Validar endereço\", \"Calcular frete\", \"Autorizar pagamento\", \"Emitir o pedido\"]\n      maturity: growing\n      team: \"Vendas Squad\"\n      technology: \"TypeScript, Temporal\"\n    }\n    context OrderManagement {\n      title: \"Gestão de pedidos\"\n      type: \"aggregate\"\n      description: \"Ciclo de vida do pedido, da emissão à baixa\"\n      responsibilities: [\"Manter o estado do pedido\", \"Registrar eventos de fulfillment\", \"Tratar cancelamento\"]\n      maturity: mature\n      team: \"Pedidos Squad\"\n      technology: \"Java, PostgreSQL\"\n    }\n    context Pricing {\n      title: \"Precificação\"\n      type: \"policy\"\n      description: \"Preço final por item, com promoção, imposto e regra de canal\"\n      responsibilities: [\"Resolver preço de lista\", \"Aplicar promoção vigente\", \"Compor imposto\"]\n      maturity: experimental\n      team: \"Pricing Squad\"\n      technology: \"Kotlin, Redis\"\n    }\n    context Promotions {\n      title: \"Promoções\"\n      type: \"policy\"\n      description: \"Regras de desconto, cupom e vigência\"\n      responsibilities: [\"Validar cupom\", \"Combinar descontos\", \"Encerrar vigência\"]\n      maturity: growing\n      team: \"Vendas Squad\"\n      technology: \"Kotlin\"\n    }\n  }\n\n  external {\n    context ClearSaleApi {\n      description: \"Análise de fraude de terceiros\"\n      technology: \"ClearSale REST API\"\n    }\n    context CorreiosApi {\n      description: \"Cálculo de frete e rastreio do serviço postal\"\n      technology: \"SOAP, Correios\"\n    }\n    context ERPLegado {\n      description: \"ERP da holding, fonte do cadastro fiscal\"\n      technology: \"SAP ECC, RFC\"\n    }\n    context GoogleAds {\n      description: \"Compra de mídia paga\"\n      technology: \"Google Ads API\"\n    }\n    context SegmentCdp {\n      description: \"Coleta de eventos de navegação\"\n      technology: \"Segment\"\n    }\n    context SendGrid {\n      description: \"Envio de e-mail de terceiros\"\n      technology: \"SendGrid API\"\n    }\n    context StripeApi {\n      description: \"Provedor de pagamentos de terceiros\"\n      technology: \"Stripe REST API\"\n    }\n    context TwilioApi {\n      description: \"Envio de SMS de terceiros\"\n      technology: \"Twilio REST API\"\n    }\n  }\n\n  mapping {\n    Affiliates       [ACL] <-- [OHS]        Campaigns\n    Auth             [OHS] --> [ACL]        Checkout\n    Auth             [OHS] --> [ACL]        Profiles\n    Auth             [OHS] --> [ACL]        Support\n    CMS              [OHS] --> [ACL]        Campaigns\n    CMS              [ACL] <-- [OHS]        MediaAssets\n    Campaigns        [ACL] <-- [OHS]        Email\n    Campaigns        [ACL] <--              GoogleAds\n    Campaigns        [OHS] --> [ACL]        Promotions\n    Campaigns        [ACL] <-- [OHS]        Segments\n    Carriers         [ACL] <--              CorreiosApi\n    Carriers         [OHS] --> [ACL]        Shipping\n    Cart             [ACL] <-- [OHS]        Catalog\n    Cart             [OHS] --> [ACL]        Checkout\n    Cart             [ACL] <-- [OHS]        Pricing\n    Catalog          [ACL] <-- [OHS]        MediaAssets\n    Catalog          [OHS] --> [ACL]        Recommendations\n    Catalog          [OHS] --> [ACL]        Reviews\n    Catalog          [OHS] --> [ACL]        Search\n    Catalog          [ACL] <-- [OHS]        SellerCatalog\n    Chatbot          [ACL] <-- [OHS]        Support\n    Checkout         [OHS] --> [ACL]        OrderManagement\n    Checkout         [ACL] <-- [OHS]        PaymentGateway\n    Checkout         [ACL] <-- [OHS]        Pricing\n    ClearSaleApi     --> [ACL]              FraudCheck\n    Commissions      [ACL] <-- [OHS]        OrderManagement\n    Commissions      [OHS] --> [ACL]        SellerPayouts\n    Consent          [OHS] --> [ACL]        Email\n    Consent          [ACL] <-- [OHS]        Profiles\n    Consent          [OHS] --> [ACL]        Segments\n    DataLake         [OHS] --> [ACL]        Experiments\n    DataLake         [OHS] --> [ACL]        Reporting\n    DataLake         [ACL] <--              SegmentCdp\n    Disputes         [ACL] <-- [OHS]        Refunds\n    Disputes         [ACL] <-- [OHS]        Support\n    ERPLegado        --> [ACL]              Invoicing\n    ERPLegado        -x- [BBM]              Warehouse\n    Email            [OHS] --> [ACL]        OrderManagement\n    Email            [ACL] <--              SendGrid\n    Experiments      [OHS] --> [ACL]        Recommendations\n    FleetOps         [ACL] <-- [OHS]        Routes\n    FraudCheck       [OHS] --> [ACL]        PaymentGateway\n    Inventory        [ACL] <-- [OHS]        SellerCatalog\n    Inventory        [SK] <-> [SK]          Shipping\n    Inventory        [OHS] --> [ACL, BBM]   Warehouse\n    Invoicing        [ACL] <-- [OHS]        PaymentGateway\n    Loyalty          [ACL] <-- [OHS]        OrderManagement\n    OrderManagement  [OHS] --> [ACL]        Returns\n    OrderManagement  [OHS] --> [ACL]        Segments\n    OrderManagement  [OHS] --> [ACL]        Shipping\n    OrderManagement  [OHS] --> [ACL]        Support\n    PaymentGateway   [OHS] --> [ACL]        Refunds\n    PaymentGateway   [OHS] --> [ACL]        SellerPayouts\n    PaymentGateway   [ACL] <--              StripeApi\n    Pricing          [ACL] <-- [OHS]        Promotions\n    Profiles         [OHS] --> [ACL]        Support\n    Push             [OHS] --> [ACL]        Shipping\n    Recommendations  [ACL] <-- [OHS]        Search\n    Refunds          [OHS] --> [ACL]        Returns\n    Returns          [ACL] <-- [OHS]        Shipping\n    Routes           [ACL] <-- [OHS]        Shipping\n    SMS              [OHS] --> [ACL]        Support\n    SMS              [ACL] <--              TwilioApi\n    SellerCatalog    [ACL] <-- [OHS]        SellerOnboarding\n  }\n}\n"};</script><!--/M50-->
 <script>
 (function () {
 "use strict";
-/* O core e o layout da v3 já rodaram nos dois blocos acima, como scripts
-   clássicos: o core deixou os módulos em __odds, a v3 deixou o layout em __v3. */
+/* O core e o layout da v4 já rodaram nos blocos acima, como scripts clássicos: o
+   core deixou os módulos em __odds, a v4 deixou o layout em __v3, e o build deixou o
+   marketplace documentado em __M50. */
 const { parseAndValidate } = globalThis.__odds["odds-core/index.js"];
 const { render: sentence } = globalThis.__odds["odds-messages/index.js"];
 const v3 = globalThis.__v3;
@@ -4164,7 +4325,32 @@ Object.assign(v3.state, { view: "flow", tags: "on", labels: "ctx", sel: null, se
 const TYPES = ["core", "supporting", "generic"];
 const TAG_ORDER = ["OHS", "PL", "S", "ACL", "CF", "C", "SK", "P", "BBM"];
 const PAUSE_MS = 300;
-const INITIAL = v3.sourceOf(v3.declared("one", "clean", 0, 0), "today").text + "\n";
+
+/* Os dois textos da bancada. Cada um com o próprio robô: os cenários acham o ponto
+   no texto, e no marketplace `Loyalty` e `Returns <-- OrderManagement` já existem. */
+const AFTER_SUB_HEAD = "(?:\\s*(?:title|description|owner):[^\\n]*\\n)*";
+const MODELS = {
+  m50: {
+    file: globalThis.__M50.file, text: globalThis.__M50.text,
+    robot: {
+      ctx: { find: new RegExp("subdomain core Sales \\{\\n" + AFTER_SUB_HEAD), type: "    context Wishlist\n" },
+      rel: { find: /mapping \{\n/, type: "    Chatbot          [ACL] <-- [OHS]        Catalog\n" },
+      desc: { find: /description: "Itens escolhidos antes do fechamento, com reserva temporária/, type: " e cupom aplicado" },
+      tag: { find: /Cart\s+\[OHS\] --> \[ACL\]/, erase: "OHS", type: "ACL" },
+    },
+  },
+  m17: {
+    file: "vendas.odds", text: v3.sourceOf(v3.declared("one", "clean", 0, 0), "rich").text + "\n",
+    robot: {
+      ctx: { find: new RegExp("subdomain supporting CustomerCare \\{\\n" + AFTER_SUB_HEAD), type: "    context Loyalty\n" },
+      rel: { find: /mapping \{\n/, type: "    Returns          [ACL] <-- [OHS]        OrderManagement\n" },
+      desc: { find: /description: "Itens escolhidos antes do fechamento, com reserva temporária/, type: " e cupom aplicado" },
+      // `Cart [OHS] --> ...` vira `Cart [ACL] --> ...`: ACL no lado upstream
+      tag: { find: /Cart\s+\[OHS\] --> \[ACL\]/, erase: "OHS", type: "ACL" },
+    },
+  },
+};
+let modelKey = "m50";
 
 const $ = (id) => document.getElementById(id);
 const ta = $("ta"), gut = $("gut"), host = $("svgHost"), mapEl = $("map");
@@ -4172,14 +4358,16 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const pairKey = (a, b) => (a < b ? a + "|" + b : b + "|" + a);
 const ms = (t) => (t < 10 ? t.toFixed(1) : t.toFixed(0)) + " ms";
+const each = (list, fn) => Array.prototype.forEach.call(list, fn);
 
 const measures = { split: true, pause: true, anim: true };
 const counters = { keys: 0, repaint: 0, route: 0, relayout: 0, frozen: 0 };
 const timing = { parse: 0, layout: 0, svg: 0 };
-let cur = null;            // o que está desenhado: {geo, topo, full}
+let cur = null;            // o que está desenhado: {geo, topo, full, nav}
 let pending = null;        // modelo esperando a pausa
 let pauseTimer = null;
 let lastDiags = [];        // diagnósticos do último texto com árvore
+let fic = null;            // a ficha do último texto com árvore: relações, documentação, linhas
 let lastMove = null;       // {moved, born, gone, of}
 let layoutError = null;
 const lastType = new Map(); // tipo válido mais recente de cada subdomínio
@@ -4223,7 +4411,28 @@ function toModel(ast) {
     pairs.add(rk);
     mapping.push({ l: r.left, lt: r.leftTags.map((t) => t.tag), c: r.connector, rt: r.rightTags.map((t) => t.tag), r: r.right });
   }
-  return { file: "vendas.odds", domains, mapping };
+  return { file: MODELS[modelKey].file, domains, mapping };
+}
+
+/* A ficha lê o texto, não o mapa: a documentação é a que está escrita agora, e a
+   relação aparece como o usuário a escreveu (lado esquerdo e direito do texto). Só
+   a primeira linha de cada par conta, como no desenho (AST_SCHEMA §4). */
+function fichaOf(ast) {
+  const rels = {}, ctx = {}, sub = {};
+  for (const d of ast.domains) {
+    for (const sd of d.subdomains) {
+      sub[d.name + "/" + sd.name] = { description: sd.description, owner: sd.owner, title: sd.title, line: sd.span.start.line };
+      for (const c of sd.contexts) if (!ctx[c.name]) ctx[c.name] = { ...(c.properties || {}), title: c.title, line: c.span.start.line };
+    }
+    for (const c of d.external?.contexts ?? []) if (!ctx[c.name]) ctx[c.name] = { ...(c.properties || {}), title: c.title, line: c.span.start.line };
+    for (const r of d.mapping?.relationships ?? []) {
+      const rk = pairKey(r.left, r.right);
+      if (rels[rk] || r.left === r.right) continue;
+      rels[rk] = { rk, l: r.left, lt: r.leftTags.map((t) => t.tag), c: r.connector, rt: r.rightTags.map((t) => t.tag), r: r.right, line: r.span.start.line };
+    }
+  }
+  const dom = ast.domains[0] ? (ast.domains[0].title || ast.domains[0].name) : "";
+  return { rels, ctx, sub, dom };
 }
 
 /* A chave de topologia é exatamente o que move peça: quais contextos, em que
@@ -4282,6 +4491,60 @@ function targetOf(diag, anchors) {
   return inside.length ? inside[0].target : { kind: "file" };
 }
 
+/* ---------------- o que a navegação precisa saber do mapa ---------------- */
+/* Na colmeia-navegacao isto rodava uma vez, no build. Aqui o mapa muda com o texto,
+   então sai de novo a cada layout: vizinhos, territórios (as células do chão, para
+   enquadrar o subdomínio), o sentido de cada linha e os rótulos de longe. */
+function navOf(geo) {
+  const tiles = geo.tiles, rels = [], near = {}, subs = {}, ctxSub = {}, relOf = {};
+  Object.keys(tiles).forEach((id) => { near[id] = []; });
+  geo.rels.forEach((E) => {
+    const r = [E.rk, E.rel.l, E.rel.r];
+    rels.push(r); relOf[E.rk] = r;
+    near[E.rel.l].push(E.rel.r); near[E.rel.r].push(E.rel.l);
+  });
+  Object.values(near).forEach((l) => l.sort());
+  geo.islands.forEach((isl) => isl.masses.forEach((mass) => mass.groups.forEach((g) => {
+    if (!g.cells.length) return;
+    const key = isl.dom.id + "/" + g.sd.id;
+    subs[key] = { title: g.sd.title || g.sd.id, type: g.sd.type, ids: g.sd.ids.slice().sort(),
+      cells: g.cells.map((c) => mass.pos[c[0] + "," + c[1]]) };
+    g.sd.ids.forEach((id) => { ctxSub[id] = key; });
+  })));
+  /* data-flow: o sentido do upstream para o downstream, relativo ao traçado do
+     caminho, que é o sentido em que o tracejado da relação acesa corre (ADR-0012) */
+  const d2 = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]), flow = {};
+  geo.rels.forEach((E) => {
+    const r = E.rel, startsAtL = d2(E.path[0], tiles[r.l]) < d2(E.path[0], tiles[r.r]);
+    const up = r.c === "<--" ? r.r : r.c === "-->" ? r.l : null;
+    flow[E.rk] = r.c === "-x-" ? "none" : r.c === "<->" ? "both" : (up === r.l) === startsAtL ? "fwd" : "rev";
+  });
+  /* Rótulos de longe: com o nome de contexto escondido, o do subdomínio cresce para
+     18 unidades, reposicionado pelo placeLabels da v4 para não atropelar vizinhos. */
+  const far = v3.placeLabels(geo, { edges: false, tags: false, ctxLabels: false, subLabels: true, subSize: 18 });
+  const farSvg = far.subSpots.map((sp) =>
+    `<g class="sublab far-lab" data-sub="${esc(sp.sub)}"><text class="snm" style="font-size:${sp.size}px" x="${sp.p[0].toFixed(0)}" y="${(sp.p[1] + sp.size * 0.36).toFixed(0)}">${esc(sp.id.toUpperCase())}</text></g>`).join("");
+  const typeOfCtx = {};
+  Object.keys(subs).forEach((k) => subs[k].ids.forEach((id) => { typeOfCtx[id] = subs[k].type; }));
+  return { tiles, rels, relOf, near, subs, ctxSub, flow, farSvg, typeOfCtx, fit: null };
+}
+/* O que o build da navegação injetava no SVG pronto, agora a cada desenho: a camada
+   de rótulos de longe, o sentido e a invalidez de cada linha, a área de clique da
+   linha, e o tipo do subdomínio em peça, nome, território e rótulo (a cor). */
+function decorate(svg, nav) {
+  svg = svg.replace(/<\/svg>\s*$/, nav.farSvg + "</svg>");
+  if (v3.state.view === "flow") {
+    const bad = new Set(lastDiags.filter((d) => d.severity === "error" && d.target.rk).map((d) => d.target.rk));
+    svg = svg.replace(/<g class="rel" data-rk="([^"]+)"><path class="ecase" d="([^"]+)"\/>/g, (m, rk, d) =>
+      `<g class="rel${bad.has(rk) ? " invalid" : ""}" data-rk="${rk}" data-flow="${nav.flow[rk] || "none"}"><path class="ecase" d="${d}"/><path class="rhit" d="${d}"/>`);
+  }
+  const typeOfSub = (k) => (nav.subs[k] ? nav.subs[k].type : "external");
+  return svg
+    .replace(/data-ctx="([^"]+)" data-sub="([^"]+)"/g, (m, c, k) => `${m} data-type="${typeOfSub(k)}"`)
+    .replace(/(<g class="sub(?:lab)?[^"]*" data-sub="([^"]+)")/g, (m, head, k) => `${head} data-type="${typeOfSub(k)}"`)
+    .replace(/<text class="cnm([^"]*)"([^>]*)>([^<]+)<\/text>/g, (m, cls, rest, name) => `<text class="cnm${cls}" data-type="${nav.typeOfCtx[name] || "external"}"${rest}>${name}</text>`);
+}
+
 /* ---------------- layout e desenho ---------------- */
 function runLayout(model) {
   v3.MODELS.__live = model;
@@ -4290,20 +4553,26 @@ function runLayout(model) {
   timing.layout = performance.now() - t0;
   return geo;
 }
-function paint(geo, prevTiles, prevBox, animate) {
+function svgEl() { return host.querySelector("svg"); }
+function paint(geo, prevTiles, animate) {
   const t0 = performance.now();
   const diags = lastDiags.map((d) => ({ ...d }));
-  host.innerHTML = v3.build(geo, diags, null);
+  host.innerHTML = decorate(v3.build(geo, diags, null), cur.nav);
   timing.svg = performance.now() - t0;
-  const svg = host.querySelector("svg");
+  const svg = svgEl();
   svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-  if (!animate || !prevTiles) return;
-  flip(svg, geo, prevTiles, prevBox);
+  /* o enquadramento "mapa inteiro" é o do fluxo, que contém o da contenção: câmera
+     igual nas duas vistas é o que deixa a troca sem mover nada na tela */
+  if (v3.state.view === "flow" || !cur.nav.fit) cur.nav.fit = geo.viewBox.slice();
+  if (!cam || camAuto) cam = fitCam();
+  apply(clampCam(cam));
+  paintSel();
+  if (animate && prevTiles) flip(svg, geo, prevTiles);
 }
-/* FLIP: cada peça nasce na posição antiga (transform) e desliza até a nova; o
-   viewBox anda junto, senão a mesma coordenada cai em outro ponto da tela e a
-   animação mente. */
-function flip(svg, geo, prevTiles, prevBox) {
+/* FLIP: cada peça nasce na posição antiga (transform) e desliza até a nova. A
+   câmera não anda junto: ela é de quem navega (se ainda acompanha o mapa inteiro,
+   o relayout a leva até o enquadramento novo, com a mesma duração). */
+function flip(svg, geo, prevTiles) {
   svg.classList.add("lv-anim", "lv-enter");
   const dxy = {};
   svg.querySelectorAll("g.node").forEach((g) => {
@@ -4316,18 +4585,10 @@ function flip(svg, geo, prevTiles, prevBox) {
     const d = dxy[t.textContent];
     if (d) t.style.transform = `translate(${d[0]}px,${d[1]}px)`;
   });
-  const to = geo.viewBox.slice(), from = prevBox || to;
-  svg.setAttribute("viewBox", from.join(" "));
   svg.getBoundingClientRect();
   requestAnimationFrame(() => {
     svg.classList.remove("lv-enter");
     svg.querySelectorAll("g.node, text.cnm").forEach((el) => { el.style.transform = ""; });
-    const T = 460, t0 = performance.now(), ease = (x) => 1 - Math.pow(1 - x, 3);
-    (function step(now) {
-      const k = ease(Math.min(1, (now - t0) / T));
-      svg.setAttribute("viewBox", from.map((v, i) => (v + (to[i] - v) * k).toFixed(1)).join(" "));
-      if (k < 1) requestAnimationFrame(step);
-    })(t0);
   });
 }
 function moveStats(prev, next) {
@@ -4336,16 +4597,329 @@ function moveStats(prev, next) {
     born: Object.keys(next).filter((id) => !prev[id]).length, gone: ids.filter((id) => !next[id]).length };
 }
 
+/* ---------------- câmera ---------------- */
+/* Só o viewBox muda. 'camAuto' quer dizer "quem navega ainda não mexeu": enquanto
+   for verdade, a câmera acompanha o mapa inteiro quando ele cresce; o primeiro zoom,
+   arrasto ou enquadramento a solta, e 'mapa inteiro' (ou a tecla 0) a prende de novo. */
+const LIM = { pad: 78, maxFrame: 3, maxZoom: 5, tagPx: 1.15 };
+let cam = null, camAuto = true, anim = null;
+const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* a mesma da colmeia-navegacao, conferida lá pela checagem 1 */
+function frameOf(pts, fit, aspect, lim) {
+  var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+  var x0 = Math.min.apply(null, xs) - lim.pad, x1 = Math.max.apply(null, xs) + lim.pad;
+  var y0 = Math.min.apply(null, ys) - lim.pad, y1 = Math.max.apply(null, ys) + lim.pad;
+  var cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = x1 - x0, h = y1 - y0;
+  if (w / h < aspect) w = h * aspect; else h = w / aspect;
+  var fitW = Math.max(fit[2], fit[3] * aspect);
+  var minW = fitW / lim.maxFrame;
+  if (w < minW) { w = minW; h = w / aspect; }
+  if (w > fitW) { w = fitW; h = w / aspect; }
+  return [cx - w / 2, cy - h / 2, w, h];
+}
+function aspect() { return Math.max(mapEl.clientWidth, 1) / Math.max(mapEl.clientHeight, 1); }
+function fitCam() {
+  const a = aspect(), f = cur && cur.nav.fit ? cur.nav.fit : [0, 0, 100, 100], w = Math.max(f[2], f[3] * a), h = w / a;
+  return [f[0] + f[2] / 2 - w / 2, f[1] + f[3] / 2 - h / 2, w, h];
+}
+function fitW() { return fitCam()[2]; }
+function pxPerUnit(c) { return mapEl.clientWidth / c[2]; }
+function clampCam(c) {
+  const a = aspect(), w = Math.min(Math.max(c[2], fitW() / LIM.maxZoom), fitW() * 1.4), h = w / a, f = fitCam();
+  let cx = c[0] + c[2] / 2, cy = c[1] + c[3] / 2;
+  /* o centro nunca sai do mapa: dá para olhar a borda, não para se perder no vazio */
+  cx = Math.min(Math.max(cx, f[0]), f[0] + f[2]); cy = Math.min(Math.max(cy, f[1]), f[1] + f[3]);
+  return [cx - w / 2, cy - h / 2, w, h];
+}
+function apply(c) {
+  cam = c;
+  const svg = svgEl(); if (!svg) return;
+  svg.setAttribute("viewBox", c.map((x) => x.toFixed(2)).join(" "));
+  /* longe: abaixo do limiar em que uma tag de 9 unidades fica legível; '--k' é
+     quantas unidades do SVG cabem num pixel, para o texto que continua visível de
+     longe ter tamanho fixo na tela */
+  mapEl.style.setProperty("--k", (1 / pxPerUnit(c)).toFixed(4));
+  svg.classList.toggle("far", pxPerUnit(c) < LIM.tagPx);
+  $("zoomOut").textContent = Math.round(fitW() / c[2] * 100) + "%";
+}
+const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+function go(target, msDur) {
+  target = clampCam(target);
+  if (anim) cancelAnimationFrame(anim), anim = null;
+  if (reduce || !msDur || !cam) return apply(target);
+  const from = cam.slice(), t0 = performance.now();
+  (function step(now) {
+    const t = Math.min(1, (now - t0) / msDur), k = ease(t);
+    apply(from.map((x, i) => x + (target[i] - x) * k));
+    anim = t < 1 ? requestAnimationFrame(step) : null;
+  })(t0);
+}
+function zoomAt(factor, px, py) {
+  camAuto = false;
+  const c = cam; let w = c[2] / factor;
+  w = Math.min(Math.max(w, fitW() / LIM.maxZoom), fitW() * 1.4);
+  const k = w / c[2], ux = c[0] + px / mapEl.clientWidth * c[2], uy = c[1] + py / mapEl.clientHeight * c[3];
+  go([ux - (ux - c[0]) * k, uy - (uy - c[1]) * k, w, w / aspect()], 0);
+}
+function pan(dxPx, dyPx) {
+  camAuto = false;
+  const s = cam[2] / mapEl.clientWidth;
+  go([cam[0] - dxPx * s, cam[1] - dyPx * s, cam[2], cam[3]], 0);
+}
+function frameTo(pts) { camAuto = false; go(frameOf(pts, cur.nav.fit, aspect(), LIM), 420); }
+function toFit() { camAuto = true; go(fitCam(), 380); }
+
+/* ---------------- seleção ---------------- */
+/* 'sel' é um contexto ({ctx}), um subdomínio ({sub}) ou uma relação ({rel, from}),
+   nunca dois; 'hov' é o território sob o mouse. paintSel() deriva toda classe dos
+   dois, e roda de novo depois de cada desenho, porque o SVG é refeito a cada tecla.
+   Uma seleção que o texto apagou (contexto renomeado, relação removida) cai. */
+let sel = null, hov = null;
+function selAlive() {
+  if (!sel || !cur) return;
+  const n = cur.nav;
+  if ((sel.ctx && !n.tiles[sel.ctx]) || (sel.sub && !n.subs[sel.sub]) || (sel.rel && !n.relOf[sel.rel])) sel = null;
+  else if (sel.rel && sel.from && !n.tiles[sel.from]) sel.from = null;
+}
+function relLabel(rk) {
+  const r = fic && fic.rels[rk];
+  if (!r) return rk.replace("|", " · ");
+  if (r.c === "-->") return r.l + " → " + r.r;
+  if (r.c === "<--") return r.r + " → " + r.l;
+  return r.l + (r.c === "<->" ? " ⇄ " : " ✕ ") + r.r;
+}
+function paintSel() {
+  const svg = svgEl(); if (!svg || !cur) return;
+  selAlive();
+  const n = cur.nav, rk = sel && sel.rel, from = rk ? sel.from : null, cid = sel && sel.ctx, base = cid || from;
+  const sk = sel && sel.sub, near = {}, inSub = {}, ends = {}, homes = {};
+  if (base) { near[base] = 1; n.near[base].forEach((x) => { near[x] = 1; }); }
+  if (rk) { ends[n.relOf[rk][1]] = 1; ends[n.relOf[rk][2]] = 1; }
+  if (sk) n.subs[sk].ids.forEach((id) => { inSub[id] = 1; });
+  const faded = (c) => (base ? !near[c] : rk ? !ends[c] : sk ? !inSub[c] : false);
+  const isOn = (c) => c === cid || !!ends[c];
+  const hotSub = (k) => k === sk || k === hov;
+  /* o território de casa do contexto selecionado acende junto; numa relação, os
+     territórios das duas pontas */
+  if (cid) homes[n.ctxSub[cid]] = 1;
+  if (rk) Object.keys(ends).forEach((c) => { homes[n.ctxSub[c]] = 1; });
+  each(svg.querySelectorAll("g.node"), (g) => {
+    const c = g.getAttribute("data-ctx");
+    g.classList.toggle("on", isOn(c)); g.classList.toggle("fade", faded(c));
+    g.classList.toggle("subhot", hotSub(g.getAttribute("data-sub")));
+  });
+  each(svg.querySelectorAll("text.cnm"), (t) => {
+    const c = t.textContent;
+    t.classList.toggle("on", isOn(c)); t.classList.toggle("fade", faded(c));
+  });
+  each(svg.querySelectorAll("g.sub"), (g) => {
+    const key = g.getAttribute("data-sub");
+    g.classList.toggle("hot", hotSub(key) || !!homes[key]); g.classList.toggle("on", key === sk || !!homes[key]);
+  });
+  each(svg.querySelectorAll("g.sublab"), (g) => {
+    const key = g.getAttribute("data-sub");
+    g.classList.toggle("subhot", hotSub(key) || !!homes[key]);
+  });
+  /* Só o contexto acende relações; o foco em subdomínio é sobre o território. Com
+     uma relação em foco, ela engrossa e escurece, e as irmãs (do mesmo 'from')
+     seguem correndo num cinza mais claro. */
+  each(svg.querySelectorAll("g.rel"), (g) => {
+    const k = g.getAttribute("data-rk"), r = n.relOf[k]; if (!r) return;
+    const touches = base ? (r[1] === base || r[2] === base) : false;
+    const mute = !!rk && k !== rk && touches, lit = rk ? (k === rk || mute) : touches;
+    g.classList.toggle("lit", lit); g.classList.toggle("focus", !!rk && k === rk);
+    g.classList.toggle("mute", mute); g.classList.toggle("fade", !!sel && !lit && !mute);
+  });
+  svg.classList.toggle("sel-on", !!sel);
+  let name = "", rest = "Clique num contexto para acender as relações, numa linha para ver uma só, ou num território para focar o subdomínio.";
+  if (cid) { const k = n.near[cid].length; name = cid; rest = ` · ${k} vizinho${k === 1 ? "" : "s"} · clique numa linha para ver só ela · Esc limpa`; }
+  if (sk) { const k = n.subs[sk].ids.length; name = n.subs[sk].title; rest = ` · subdomínio · ${k} contexto${k === 1 ? "" : "s"} · Esc limpa`; }
+  if (rk) { name = relLabel(rk); rest = " · relação" + (from ? ` de ${from} · Esc volta para o contexto` : " · Esc limpa"); }
+  $("selName").textContent = name; $("selRest").textContent = rest;
+}
+function select(id, frame) {
+  sel = id ? { ctx: id } : null; paintSel(); renderPanel();
+  if (id && frame && cur.nav.tiles[id]) frameTo([id].concat(cur.nav.near[id]).map((o) => cur.nav.tiles[o]));
+}
+function selectSub(key, frame) {
+  sel = key ? { sub: key } : null; paintSel(); renderPanel();
+  if (key && frame && cur.nav.subs[key]) frameTo(cur.nav.subs[key].cells);
+}
+/* Vindo de um contexto, a câmera fica onde está: a vizinhança dele já enquadra as
+   duas pontas. Sem contexto, enquadra as duas peças. */
+function selectRel(rk, from, frame) {
+  sel = rk ? { rel: rk, from: from || null } : null; paintSel(); renderPanel();
+  const r = rk && cur.nav.relOf[rk];
+  if (r && frame && !from) frameTo([cur.nav.tiles[r[1]], cur.nav.tiles[r[2]]]);
+}
+function relClick(rk) {
+  const r = cur.nav.relOf[rk]; if (!r) return;
+  const base = sel && (sel.ctx || sel.from);
+  const from = base && (r[1] === base || r[2] === base) ? base : null;
+  if (sel && sel.rel === rk) { if (sel.from) select(sel.from); else select(null); return; }
+  selectRel(rk, from, true);
+}
+
+/* ---------------- a ficha ---------------- */
+const TAGS = {
+  OHS: ["Open-Host Service", "Oferece uma API bem desenhada, para que outros times operem sobre o modelo com confiança."],
+  PL: ["Published Language", "Publica um esquema documentado para a troca de dados; costuma andar junto com o OHS."],
+  S: ["Supplier", "Fornecedor de um Customer-Supplier: atende às necessidades do downstream, a critério próprio."],
+  C: ["Customer", "Cliente de um Customer-Supplier: depende do upstream e negocia o que precisa dele."],
+  CF: ["Conformist", "Adota o modelo do upstream como ele é, sem traduzir."],
+  ACL: ["Anti-Corruption Layer", "Traduz o modelo do upstream para a própria linguagem, numa camada defensiva."],
+  SK: ["Shared Kernel", "Os dois times dividem um modelo pequeno e comum, com dado e comportamento."],
+  P: ["Partnership", "Os dois times dependem um do outro a ponto de falharem juntos; coordenam como pares."],
+  BBM: ["Big Ball of Mud", "Caracteriza o sistema, não o contrato: um monólito sem desenho intencional. Não é tag de padrão."],
+};
+const FORMS = {
+  "-->": ["Upstream / Downstream", "As decisões do upstream afetam o downstream, e não o contrário."],
+  "<--": ["Upstream / Downstream", "As decisões do upstream afetam o downstream, e não o contrário."],
+  "<->": ["Mutuamente dependentes", "Os dois precisam ser entregues juntos; atraso ou falha num afeta o outro na hora."],
+  "-x-": ["Separate Ways", "Nenhum vínculo entre os dois: integrar não valeria o esforço, e cada um resolve sozinho."],
+};
+const panel = $("selBox");
+const lineBtn = (line) => `<button class="lnk" data-line="${line}">${esc(MODELS[modelKey].file)} · L${line}</button>`;
+function roleText(r, id) {
+  if (r.c === "<->") return "mutuamente dependentes";
+  if (r.c === "-x-") return "caminhos separados: decisão, não falha";
+  const upLeft = r.c === "-->", selLeft = r.l === id, other = selLeft ? r.r : r.l;
+  return upLeft === selLeft ? "upstream de " + other : "downstream de " + other;
+}
+function vd(d) {
+  return `<div class="vd"><span class="sevdot ${d.severity}"></span><span>${esc(sentence(d, "pt"))}` +
+    `<span class="c">${esc(d.code)} · <button class="lnk" data-line="${d.span.start.line}">L${d.span.start.line}:${d.span.start.column}</button></span></span></div>`;
+}
+function docHtml(d) {
+  let out = "";
+  if (d.description) out += `<div class="prop"><span class="pk">description</span><span class="pv">${esc(d.description)}</span></div>`;
+  if (d.responsibilities) out += `<div class="prop"><span class="pk">responsibilities</span><ul class="rlist">${d.responsibilities.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+  if (d.type) out += `<div class="prop"><span class="pk">type</span><span class="pv">${esc(d.type)}</span></div>`;
+  if (d.maturity) out += `<div class="prop"><span class="pk">maturity</span><span class="mat">${esc(d.maturity)}</span></div>`;
+  if (d.team) out += `<div class="prop"><span class="pk">team</span><span class="pv">${esc(d.team)}</span></div>`;
+  if (d.technology) out += `<div class="prop"><span class="pk">technology</span><span class="pv">${esc(d.technology)}</span></div>`;
+  return out;
+}
+function subOfCtx(id) { const k = cur && cur.nav.ctxSub[id]; return k ? [k, cur.nav.subs[k]] : [null, null]; }
+function sideHtml(id, role, tags) {
+  const d = fic.ctx[id] || {}, [home, hs] = subOfCtx(id), type = hs ? hs.type : "external";
+  let h = `<div class="rside" data-type="${esc(type)}"><div class="rs-head"><span class="role">${esc(role)}</span><button class="golink" data-go="${esc(id)}">${esc(id)}</button></div>`;
+  if (d.title) h += `<div class="ti">${esc(d.title)}</div>`;
+  h += `<div class="rs-meta">${home ? `<button class="golink plain" data-gosub="${esc(home)}">${esc(home.split("/")[1])}</button> · ${esc(type)}` : "fora do domínio"}</div>`;
+  h += tags.length ? tags.map((t) => {
+    const T = TAGS[t] || [t, ""];
+    return `<div class="tagrow"><span class="tgchip">${esc(t)}</span><span><b>${esc(T[0])}</b> · ${esc(T[1])}</span></div>`;
+  }).join("") : `<div class="nofill">Nenhuma tag declarada deste lado.</div>`;
+  const doc = docHtml(d);
+  h += doc ? `<div class="rs-doc">${doc}</div>` : `<div class="nofill">Sem documentação declarada.</div>`;
+  return h + "</div>";
+}
+function relPanel(rk, from) {
+  const r = fic.rels[rk];
+  if (!r) return `<div class="sel-empty">A relação <code>${esc(rk)}</code> não está mais no texto.</div>`;
+  const form = FORMS[r.c], [subL, sL] = subOfCtx(r.l), [subR, sR] = subOfCtx(r.r);
+  const dir = r.c === "-->" || r.c === "<--", upLeft = r.c === "-->";
+  let h = `<div class="sel">`;
+  if (from) h += `<button class="golink back" data-go="${esc(from)}">← contrato de ${esc(from)}</button>`;
+  h += `<div class="kind">relationship</div><h4>${esc(relLabel(rk))}</h4>`;
+  h += `<div class="meta"><b>${esc(form[0])}</b> · ${esc(form[1])}</div>`;
+  h += `<div class="relsrc">${esc(r.l)} ${r.lt.length ? `<span class="tg">[${esc(r.lt.join(", "))}]</span> ` : ""}${esc(r.c)}${r.rt.length ? ` <span class="tg">[${esc(r.rt.join(", "))}]</span>` : ""} ${esc(r.r)}<span class="c">${lineBtn(r.line)}</span></div>`;
+  const verdict = lastDiags.filter((d) => d.target.rk === rk);
+  h += `<div class="sect">Veredito</div>` + (verdict.length ? verdict.map(vd).join("") : `<div class="nofill">Nenhum diagnóstico nesta relação.</div>`);
+  const fr = subL && subL === subR ? `Dentro de <b>${esc(subL.split("/")[1])}</b>.`
+    : (!sL || !sR) ? "Com um sistema <b>externo</b>, fora do domínio: o contrato do outro lado não é seu."
+    : `Atravessa a fronteira: <b>${esc(subL.split("/")[1])}</b> (${esc(sL.type)}) e <b>${esc(subR.split("/")[1])}</b> (${esc(sR.type)}).`;
+  h += `<div class="sect">Fronteira</div><div class="nofill">${fr}</div>`;
+  /* upstream primeiro: é quem publica, e a seta corre dele */
+  const sides = dir ? (upLeft ? [[r.l, "upstream", r.lt], [r.r, "downstream", r.rt]] : [[r.r, "upstream", r.rt], [r.l, "downstream", r.lt]])
+    : [[r.l, r.c === "<->" ? "par" : "lado", r.lt], [r.r, r.c === "<->" ? "par" : "lado", r.rt]];
+  h += `<div class="sect">Os dois lados</div>` + sides.map((s) => sideHtml(s[0], s[1], s[2])).join("");
+  h += `<div class="fence">A <b>tag</b> é o contrato que o validador confere. A <b>documentação</b> é contexto para quem lê, e nenhuma regra a julga.</div></div>`;
+  return h;
+}
+function renderPanel() {
+  if (!fic || !cur) { panel.innerHTML = ""; return; }
+  let h;
+  if (sel && sel.rel) h = relPanel(sel.rel, sel.from);
+  else if (sel && sel.sub) {
+    const s = cur.nav.subs[sel.sub], ids = s.ids, key = sel.sub.split("/")[1], sd = fic.sub[sel.sub] || {};
+    let inside = 0, crossing = 0; const deg = {};
+    Object.values(fic.rels).forEach((r) => {
+      const a = ids.includes(r.l), b = ids.includes(r.r);
+      if (a && b) inside++; else if (a || b) crossing++;
+      deg[r.l] = (deg[r.l] || 0) + 1; deg[r.r] = (deg[r.r] || 0) + 1;
+    });
+    h = `<div class="sel"><div class="kind">subdomain</div><h4>${esc(key)}</h4><div class="meta"><b>${esc(s.type)}</b>` +
+      (sd.title && sd.title !== key ? ` · <span class="pv">${esc(sd.title)}</span>` : "") + `<br>${esc(fic.dom)}` +
+      (sd.line ? ` · ${lineBtn(sd.line)}` : "") + `</div>`;
+    if (sd.description) h += `<div class="prop"><span class="pk">description</span><span class="pv">${esc(sd.description)}</span></div>`;
+    if (sd.owner) h += `<div class="prop"><span class="pk">owner</span><span class="pv">${esc(sd.owner)}</span></div>`;
+    h += `<div class="sect">Derivado</div><div class="tally"><span>${ids.length} contexto${ids.length === 1 ? "" : "s"}</span><span>${inside} interna${inside === 1 ? "" : "s"}</span><span>${crossing} atravessa${crossing === 1 ? "" : "m"} a fronteira</span></div>`;
+    h += `<div class="sect">Contextos</div>` + ids.map((id) => `<button class="ctxrow" data-go="${esc(id)}"><span class="nm">${esc(id)}</span><span class="cnt2">${deg[id] || 0} rel.</span></button>`).join("") + `</div>`;
+  } else if (sel && sel.ctx) {
+    const id = sel.ctx, [home, hs] = subOfCtx(id), cd = fic.ctx[id] || {};
+    const mine = Object.values(fic.rels).filter((r) => r.l === id || r.r === id).sort((a, b) => a.line - b.line);
+    const verdict = lastDiags.filter((d) => d.target.ctx === id || (d.target.rk && d.target.rk.split("|").includes(id)));
+    h = `<div class="sel"><div class="kind">context</div><h4>${esc(id)}</h4>` + (cd.title ? `<div class="ti big">${esc(cd.title)}</div>` : "");
+    h += `<div class="meta">${home ? `<button class="golink" data-gosub="${esc(home)}">${esc(home.split("/")[1])}</button> · ${esc(hs.type)}` : "fora do domínio"}<br>${esc(fic.dom)}` +
+      (cd.line ? ` · ${lineBtn(cd.line)}` : "") + `</div>`;
+    if (verdict.length) h += `<div class="sect">Veredito</div>` + verdict.map(vd).join("");
+    h += `<div class="sect">Contrato</div>` + (mine.length ? mine.map((r) => {
+      const line = `<button class="golink plain" data-go="${esc(r.l)}">${esc(r.l)}</button> ` + (r.lt.length ? `<span class="tg">[${esc(r.lt.join(", "))}]</span> ` : "") + esc(r.c) +
+        (r.rt.length ? ` <span class="tg">[${esc(r.rt.join(", "))}]</span>` : "") + ` <button class="golink plain" data-go="${esc(r.r)}">${esc(r.r)}</button>`;
+      return `<div class="rel">${line}<button class="ro relgo" data-gorel="${esc(r.rk)}">${esc(roleText(r, id))} ›</button></div>`;
+    }).join("") : `<div class="none">Nenhuma relação no mapping.</div>`);
+    const props = docHtml(cd);
+    h += `<div class="sect">Propriedades</div>` + (props || `<div class="nofill">Nenhuma propriedade declarada.</div>`);
+    h += `<div class="fence">Propriedade é <b>documentação</b>, tag é <b>contrato</b>. Nenhuma propriedade alimenta o gatilho de uma regra.</div></div>`;
+  } else {
+    h = `<div class="sel-empty">Nada selecionado. Clique num <b>hexágono</b> (ou chegue a ele com <b>Tab</b> e aperte Enter) para ver o contrato do contexto, numa <b>linha</b> para ver uma relação só, ou no <b>território</b> para ver o subdomínio. <b>Esc</b> limpa a seleção. Os números de linha levam ao texto.</div>`;
+  }
+  panel.innerHTML = h;
+}
+panel.addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-go], [data-gosub], [data-gorel], [data-line]"); if (!b) return;
+  if (b.hasAttribute("data-line")) jumpTo(+b.dataset.line);
+  else if (b.hasAttribute("data-gorel")) relClick(b.dataset.gorel);
+  else if (b.hasAttribute("data-go")) select(b.dataset.go, true);
+  else selectSub(b.dataset.gosub, true);
+});
+/* do mapa para o texto: a linha vai para o topo do editor e fica selecionada */
+function jumpTo(line) {
+  if ($("stageGrid").classList.contains("noed")) setEditor("on");
+  const lines = ta.value.split("\n"); let o = 0;
+  for (let i = 0; i < line - 1 && i < lines.length; i++) o += lines[i].length + 1;
+  ta.focus(); ta.setSelectionRange(o, o + (lines[line - 1] || "").length);
+  ta.scrollTop = Math.max(0, (line - 4) * 19); caret();
+}
+function renderLegend() {
+  if (!cur) return;
+  const subs = cur.nav.subs, names = (t) => Object.keys(subs).filter((k) => subs[k].type === t).map((k) => k.split("/")[1]).sort();
+  const ext = Object.keys(cur.nav.tiles).filter((id) => !cur.nav.ctxSub[id]).length;
+  $("legend").innerHTML = TYPES.map((t) => names(t).length ? `<div class="row"><span class="sw ${t}"></span><span><b>${t}</b> · ${esc(names(t).join(" + "))}</span></div>` : "").join("") +
+    (ext ? `<div class="row"><span class="sw external"></span><span><b>external</b> · ${ext} · fora da água territorial</span></div>` : "") +
+    `<div class="row" style="margin-top:6px;border-top:1px solid rgb(var(--c-border));padding-top:10px"><svg width="54" height="14" viewBox="0 0 54 14"><path d="M4 7 H44" stroke="rgb(var(--c-edge))" stroke-width="1.6"/><path d="M50 7 L41 11.4 L41 2.6 Z" fill="rgb(var(--c-edge))"/></svg><span>A seta aponta para o <b>downstream</b>.</span></div>` +
+    `<div class="row"><svg width="54" height="14" viewBox="0 0 54 14"><path d="M4 7 H50" stroke="rgb(var(--c-edge-lit))" stroke-width="2" stroke-dasharray="7 5"/></svg><span>Relação <b>acesa</b>: tracejado correndo do upstream para o downstream.</span></div>` +
+    `<div class="row"><svg width="54" height="14" viewBox="0 0 54 14"><path d="M4 7 H50" stroke="rgb(var(--c-error))" stroke-width="1.8" stroke-dasharray="6 4"/></svg><span>Relação <b>inválida</b>: tracejado vermelho e parado.</span></div>` +
+    `<div class="row"><svg width="54" height="20" viewBox="0 0 54 20"><path d="M2 2 L14 2 L20 10 L14 18 L2 18" fill="none" stroke="rgb(var(--c-dim))" stroke-width="1.2"/><rect x="22" y="3" width="30" height="14" rx="6" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-edge) / .75)"/><text x="37" y="10.5" font-family="JetBrains Mono,monospace" font-size="8.5" fill="rgb(var(--c-ink))" text-anchor="middle" dominant-baseline="central">ACL</text></svg><span>A tag fica <b>encostada no lado</b> da peça a que pertence.</span></div>`;
+}
+
 /* ---------------- o ciclo de uma tecla ---------------- */
 function relayout(model, keys, kind) {
-  const prevTiles = cur ? cur.geo.tiles : null, prevBox = cur ? cur.geo.viewBox : null;
+  const prevTiles = cur ? cur.geo.tiles : null;
   let geo;
   try { geo = runLayout(model); layoutError = null; }
   catch (e) { layoutError = e.message; log("frozen", `layout falhou: ${e.message}`); metrics(); return; }
   if (kind === "relayout" && prevTiles) lastMove = moveStats(prevTiles, geo.tiles);
   counters[kind]++;
-  cur = { geo, topo: keys.topo, full: keys.full };
-  paint(geo, prevTiles, prevBox, measures.anim && kind === "relayout");
+  const prevFit = cur && cur.nav.fit;
+  cur = { geo, topo: keys.topo, full: keys.full, nav: navOf(geo) };
+  const anim8 = measures.anim && kind === "relayout";
+  const camWas = cam && cam.slice();
+  paint(geo, prevTiles, anim8);
+  /* a câmera que acompanha o mapa inteiro anda até o enquadramento novo com as peças */
+  if (camAuto && anim8 && camWas && prevFit) { apply(clampCam(camWas)); go(fitCam(), 460); }
+  renderLegend(); renderPanel();
   const mv = kind === "relayout" && lastMove ? ` · ${lastMove.moved}/${lastMove.of} peças andaram` + (lastMove.born ? ` · +${lastMove.born}` : "") + (lastMove.gone ? ` · −${lastMove.gone}` : "") : "";
   log(kind, `${kind === "relayout" ? "relayout" : "rerrota"} · layout ${ms(timing.layout)} · svg ${ms(timing.svg)}${mv}`);
 }
@@ -4369,19 +4943,22 @@ function onText() {
   mapEl.classList.remove("frozen");
   const anchors = anchorsOf(res.ast);
   lastDiags = res.diagnostics.map((d) => ({ code: d.code, severity: d.severity, data: d.data, span: d.span, target: targetOf(d, anchors) }));
+  fic = fichaOf(res.ast);
   const model = toModel(res.ast), keys = keysOf(model);
 
-  if (!measures.split) { schedule(model, keys); metrics(); return; }
+  if (!measures.split) { schedule(model, keys); renderPanel(); metrics(); return; }
   if (cur && keys.full === cur.full) {
     counters.repaint++;
     clearPending();
-    paint(cur.geo, null, null, false);
+    paint(cur.geo, null, false);
+    renderPanel();
     log("repaint", `repintura · parse ${ms(timing.parse)} · svg ${ms(timing.svg)}`);
   } else if (cur && keys.topo === cur.topo) {
     clearPending();
     relayout(model, keys, "route");
   } else {
     schedule(model, keys);
+    renderPanel();
   }
   metrics();
 }
@@ -4390,7 +4967,7 @@ function schedule(model, keys) {
   if (!measures.pause || !cur) { flush(); return; }
   clearTimeout(pauseTimer);
   mapEl.classList.add("waiting");
-  if (cur) paint(cur.geo, null, null, false); // os marcadores seguem o texto enquanto a geometria espera
+  if (cur) paint(cur.geo, null, false); // os marcadores seguem o texto enquanto a geometria espera
   pauseTimer = setTimeout(flush, PAUSE_MS);
 }
 function clearPending() { pending = null; clearTimeout(pauseTimer); mapEl.classList.remove("waiting"); }
@@ -4418,7 +4995,9 @@ function gutter(diags) {
   gut.innerHTML = h;
   gut.scrollTop = ta.scrollTop;
 }
+let shownDiags = [];
 function diagPanel(diags) {
+  shownDiags = diags;
   const c = { error: 0, warning: 0, info: 0 };
   diags.forEach((d) => c[d.severity]++);
   $("dcounts").innerHTML = ["error", "warning", "info"].map((s) => `<span class="cnt ${s}">${c[s]} ${{ error: "erro", warning: "aviso", info: "info" }[s]}${c[s] === 1 || s === "info" ? "" : "s"}</span>`).join("");
@@ -4427,13 +5006,22 @@ function diagPanel(diags) {
     `<button class="drow" data-i="${i}"><svg width="16" height="16" viewBox="-8 -8 16 16" aria-hidden="true">${sevIcon(d.severity)}</svg>` +
     `<span class="code ${d.severity}">${esc(d.code)}</span><span class="msg">${esc(sentence(d, "pt"))}</span>` +
     `<span class="sp">L${d.span.start.line}:${d.span.start.column}</span></button>`).join("");
-  $("dlist").querySelectorAll("[data-i]").forEach((b) => b.addEventListener("click", () => {
-    const d = diags[+b.dataset.i];
-    ta.focus();
-    ta.setSelectionRange(offsetOf(d.span.start), offsetOf(d.span.end));
-    ta.scrollTop = Math.max(0, (d.span.start.line - 6) * 19);
-  }));
 }
+/* o diagnóstico leva aos dois lugares: ao trecho no texto e ao alvo no mapa */
+$("dlist").addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-i]"); if (!b) return;
+  const d = shownDiags[+b.dataset.i];
+  const t = lastDiags.find((x) => same(x.span, d.span) && x.code === d.code);
+  if (t && cur) {
+    if (t.target.rk && cur.nav.relOf[t.target.rk]) selectRel(t.target.rk, null, true);
+    else if (t.target.ctx && cur.nav.tiles[t.target.ctx]) select(t.target.ctx, true);
+    else if (t.target.sub && cur.nav.subs[t.target.sub]) selectSub(t.target.sub, true);
+  }
+  if ($("stageGrid").classList.contains("noed")) return;
+  ta.focus();
+  ta.setSelectionRange(offsetOf(d.span.start), offsetOf(d.span.end));
+  ta.scrollTop = Math.max(0, (d.span.start.line - 6) * 19);
+});
 function sevIcon(sev) {
   if (sev === "warning") return `<g class="sev-warning"><path class="ic-bg" d="M0 -6.5L7 5.5L-7 5.5Z"/><path class="ic-fg" d="M0 -2L0 1.3"/><circle class="ic-dot" cx="0" cy="3.4" r="0.9"/></g>`;
   if (sev === "error") return `<g class="sev-error"><circle class="ic-bg" r="6.5"/><path class="ic-fg" d="M-2.7 -2.7L2.7 2.7M2.7 -2.7L-2.7 2.7"/></g>`;
@@ -4473,7 +5061,7 @@ function caret() {
   $("caret").textContent = `L${before.length}:${before[before.length - 1].length + 1}`;
 }
 
-/* ---------------- entrada ---------------- */
+/* ---------------- entrada: editor ---------------- */
 ta.addEventListener("input", () => { counters.keys++; onText(); caret(); });
 ta.addEventListener("scroll", () => { gut.scrollTop = ta.scrollTop; });
 ta.addEventListener("keyup", caret); ta.addEventListener("click", caret);
@@ -4483,6 +5071,85 @@ ta.addEventListener("keydown", (e) => {
   ta.setRangeText("  ", ta.selectionStart, ta.selectionEnd, "end");
   ta.dispatchEvent(new Event("input"));
 });
+
+/* ---------------- entrada: mapa ---------------- */
+/* arrastar no vazio move; clique sem arrasto seleciona ou limpa */
+let drag = null;
+mapEl.addEventListener("pointerdown", (ev) => {
+  if (ev.button !== 0 || !cur) return;
+  drag = { x: ev.clientX, y: ev.clientY, moved: false, id: ev.pointerId };
+});
+mapEl.addEventListener("pointermove", (ev) => {
+  if (!drag || ev.pointerId !== drag.id) {
+    /* o território sob o mouse, por delegação: o SVG é refeito a cada tecla */
+    const g = ev.target.closest && ev.target.closest("g.sub"), key = g ? g.getAttribute("data-sub") : null;
+    if (key !== hov) { hov = key; paintSel(); }
+    return;
+  }
+  const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+  if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+  if (!drag.moved) { drag.moved = true; mapEl.setPointerCapture(ev.pointerId); mapEl.classList.add("dragging"); }
+  drag.x = ev.clientX; drag.y = ev.clientY; pan(dx, dy);
+});
+mapEl.addEventListener("pointerleave", () => { if (hov && !drag) { hov = null; paintSel(); } });
+function endDrag(ev) {
+  if (!drag || ev.pointerId !== drag.id) return;
+  const wasDrag = drag.moved; drag = null; mapEl.classList.remove("dragging");
+  if (wasDrag || ev.type === "pointercancel" || !cur) return;
+  const t = ev.target.closest ? ev.target : null;
+  const node = t && t.closest("g.node");
+  const rel = !node && t && t.closest("g.rel");
+  const sub = !node && !rel && t && t.closest("g.sub");
+  if (node) select(node.getAttribute("data-ctx"), true);
+  else if (rel) relClick(rel.getAttribute("data-rk"));
+  else if (sub) { const key = sub.getAttribute("data-sub"); selectSub(sel && sel.sub === key ? null : key, true); }
+  else if (sel) select(null);
+}
+mapEl.addEventListener("pointerup", endDrag);
+mapEl.addEventListener("pointercancel", endDrag);
+/* roda: pinça do trackpad (ctrlKey) e roda de mouse aproximam; arrasto de dois dedos
+   no trackpad move. Roda de mouse é reconhecida por saltos inteiros e grandes. */
+mapEl.addEventListener("wheel", (ev) => {
+  if (!cur) return;
+  ev.preventDefault();
+  const r = mapEl.getBoundingClientRect(), px = ev.clientX - r.left, py = ev.clientY - r.top;
+  const mouse = ev.deltaMode !== 0 || (ev.deltaX === 0 && Math.abs(ev.deltaY) >= 40 && Number.isInteger(ev.deltaY));
+  if (ev.ctrlKey || mouse) {
+    const dy = ev.deltaMode === 1 ? ev.deltaY * 16 : ev.deltaY;
+    zoomAt(Math.exp(-dy * (ev.ctrlKey ? 0.01 : 0.0022)), px, py);
+  } else pan(-ev.deltaX, -ev.deltaY);
+}, { passive: false });
+/* teclado: Tab chega nas peças (a v4 já as faz focáveis); o mapa recebe o resto */
+mapEl.addEventListener("keydown", (ev) => {
+  if (!cur) return;
+  const k = ev.key, step = 80, node = ev.target.closest && ev.target.closest("g.node");
+  if ((k === "Enter" || k === " ") && node) { ev.preventDefault(); select(node.getAttribute("data-ctx"), true); return; }
+  if (k === "Escape") { if (sel && sel.rel && sel.from) select(sel.from); else if (sel) select(null); return; }
+  const cx = mapEl.clientWidth / 2, cy = mapEl.clientHeight / 2;
+  if (k === "+" || k === "=") zoomAt(1.4, cx, cy);
+  else if (k === "-" || k === "_") zoomAt(1 / 1.4, cx, cy);
+  else if (k === "0") toFit();
+  else if (k === "ArrowLeft") pan(step, 0);
+  else if (k === "ArrowRight") pan(-step, 0);
+  else if (k === "ArrowUp") pan(0, step);
+  else if (k === "ArrowDown") pan(0, -step);
+  else return;
+  ev.preventDefault();
+});
+$("zIn").addEventListener("click", () => zoomAt(1.4, mapEl.clientWidth / 2, mapEl.clientHeight / 2));
+$("zOutBtn").addEventListener("click", () => zoomAt(1 / 1.4, mapEl.clientWidth / 2, mapEl.clientHeight / 2));
+$("zFit").addEventListener("click", toFit);
+/* tamanho do mapa (o editor recolhido, a janela): mantém centro e escala */
+let lastW = mapEl.clientWidth;
+new ResizeObserver(() => {
+  if (!cam || !lastW) { lastW = mapEl.clientWidth; return; }
+  if (camAuto) { lastW = mapEl.clientWidth; apply(fitCam()); return; }
+  const s = cam[2] / lastW, w = mapEl.clientWidth * s, h = w / aspect();
+  lastW = mapEl.clientWidth;
+  apply(clampCam([cam[0] + cam[2] / 2 - w / 2, cam[1] + cam[3] / 2 - h / 2, w, h]));
+}).observe(mapEl);
+
+/* ---------------- controles ---------------- */
 $("mSplit").addEventListener("change", (e) => { measures.split = e.target.checked; });
 $("mPause").addEventListener("change", (e) => { measures.pause = e.target.checked; if (!measures.pause) flush(); });
 $("mAnim").addEventListener("change", (e) => { measures.anim = e.target.checked; });
@@ -4493,21 +5160,44 @@ function seg(id, fn) {
     fn(b.dataset.v);
   });
 }
-seg("segView", (v) => { v3.state.view = v; if (cur) paint(cur.geo, null, null, false); });
+function pressSeg(id, v) { $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.v === v))); }
+seg("segView", (v) => { v3.state.view = v; if (cur) paint(cur.geo, null, false); });
 document.documentElement.setAttribute("data-theme", "light");
 seg("segTheme", (v) => { if (v === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", v); });
+function setEditor(v) { pressSeg("segEditor", v); $("stageGrid").classList.toggle("noed", v === "off"); }
+seg("segEditor", setEditor);
+function loadModel(k) {
+  stopRobot(); modelKey = k; pressSeg("segModel", k);
+  $("fileName").textContent = MODELS[k].file;
+  ta.value = MODELS[k].text; lastMove = null; sel = null; hov = null; camAuto = true;
+  cur = null; clearPending(); lastType.clear();
+  onText();
+  Object.keys(counters).forEach((c) => { counters[c] = 0; }); // o desenho inicial não é tecla de ninguém
+  metrics(); ta.setSelectionRange(0, 0); ta.scrollTop = 0; caret();
+}
+seg("segModel", loadModel);
+$("btnReset").addEventListener("click", () => loadModel(modelKey));
 
-$("btnReset").addEventListener("click", () => { stopRobot(); ta.value = INITIAL; lastMove = null; ta.dispatchEvent(new Event("input")); });
+/* Export: o mapa inteiro, em repouso (sem a seleção), com a pele da v4 e a da
+   bancada. O SVG vai dentro de outro, de classe 'nav', para os seletores da bancada
+   valerem fora da página. Se o export deve levar a seleção é decisão em aberto
+   (ADR-0012, Consequências); por ora não leva. */
 $("btnExport").addEventListener("click", () => {
-  const svg = host.querySelector("svg"); if (!svg) return;
-  const out = svg.cloneNode(true);
-  out.setAttribute("viewBox", cur.geo.viewBox.join(" "));
-  out.removeAttribute("class"); out.setAttribute("class", v3.state.view === "flow" ? "v-flow" : "v-contain");
+  const svg = svgEl(); if (!svg || !cur) return;
+  const inner = svg.cloneNode(true), NS = "http://www.w3.org/2000/svg";
+  const vb = cur.geo.viewBox;
+  inner.setAttribute("viewBox", vb.join(" "));
+  inner.setAttribute("class", v3.state.view === "flow" ? "v-flow" : "v-contain");
+  inner.querySelectorAll(".on, .fade, .lit, .focus, .mute, .hot, .subhot").forEach((el) =>
+    el.classList.remove("on", "fade", "lit", "focus", "mute", "hot", "subhot"));
+  const out = document.createElementNS(NS, "svg");
+  out.setAttribute("xmlns", NS); out.setAttribute("class", "nav");
+  out.setAttribute("viewBox", vb.join(" ")); out.setAttribute("width", vb[2].toFixed(0)); out.setAttribute("height", vb[3].toFixed(0));
   const theme = document.documentElement.getAttribute("data-theme");
   if (theme) out.setAttribute("data-theme", theme);
-  const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
-  style.textContent = $("v3css").textContent;
-  out.insertBefore(style, out.firstChild);
+  const style = document.createElementNS(NS, "style");
+  style.textContent = $("v3css").textContent + "\n" + $("navcss").textContent;
+  out.appendChild(style); out.appendChild(inner);
   const blob = new Blob([new XMLSerializer().serializeToString(out)], { type: "image/svg+xml" });
   const done = () => log("repaint", `exportado · ${(blob.size / 1024).toFixed(0)} KB, com ${lastDiags.length} marcador(es)`);
   if (downloads) {
@@ -4535,24 +5225,18 @@ if (globalThis.claude?.use) {
    editado a ponto de o ponto sumir, ele diz e não inventa. */
 let robot = null;
 const sleep = (t) => new Promise((r) => setTimeout(r, t));
-const ROBOT = {
-  ctx: { find: /subdomain supporting CustomerCare \{\n(\s*title:[^\n]*\n)?/, type: "    context Loyalty\n" },
-  rel: { find: /mapping \{\n/, type: "    Returns          [ACL] <-- [OHS]        OrderManagement\n" },
-  desc: { find: /description: "Itens escolhidos antes do fechamento, com reserva temporária/, type: " e cupom aplicado" },
-  // `Cart [OHS] --> ...` vira `Cart [ACL] --> ...`: ACL no lado upstream
-  tag: { find: /Cart\s+\[OHS\] --> \[ACL\]/, erase: "OHS", type: "ACL" },
-};
 async function runRobot(name) {
   stopRobot();
-  const sc = ROBOT[name], m = ta.value.match(sc.find);
+  const sc = MODELS[modelKey].robot[name], m = ta.value.match(sc.find);
   if (!m) { log("frozen", `robô: o ponto de “${name}” não está mais no texto — restaure o texto`); return; }
+  if ($("stageGrid").classList.contains("noed")) setEditor("on");
   const token = robot = { stop: false };
   document.querySelectorAll("[data-robot]").forEach((b) => { b.disabled = true; b.classList.toggle("run", b.dataset.robot === name); });
   $("btnStop").disabled = false; ta.classList.add("robot");
   const press = (fn) => {
     fn();
     ta.dispatchEvent(new Event("input"));
-    // o editor acompanha o robô: sem isto ele digita na linha 170 com a 1 na tela
+    // o editor acompanha o robô: sem isto ele digita na linha 470 com a 1 na tela
     const line = ta.value.slice(0, ta.selectionStart).split("\n").length;
     const top = (line - 1) * 19, view = ta.clientHeight;
     if (top < ta.scrollTop || top > ta.scrollTop + view - 40) ta.scrollTop = Math.max(0, top - view / 2);
@@ -4584,14 +5268,10 @@ function stopRobot() {
 document.querySelectorAll("[data-robot]").forEach((b) => b.addEventListener("click", () => runRobot(b.dataset.robot)));
 $("btnStop").addEventListener("click", stopRobot);
 
-/* gancho para captura e checagem: roda um cenário e resolve quando acabar */
-globalThis.__live = { runRobot, measures, counters, get lastMove() { return lastMove; }, get robotBusy() { return !!robot; } };
+/* gancho para captura e checagem */
+globalThis.__live = { runRobot, measures, counters, loadModel, select, selectSub, selectRel, relClick, go, fitCam, zoomAt, setEditor,
+  get lastMove() { return lastMove; }, get robotBusy() { return !!robot; }, get cam() { return cam; }, get sel() { return sel; }, get nav() { return cur && cur.nav; } };
 
-ta.value = INITIAL;
-onText();
-Object.keys(counters).forEach((k) => { counters[k] = 0; }); // o desenho inicial não é tecla de ninguém
-metrics();
-ta.setSelectionRange(0, 0);
-caret();
+loadModel("m50");
 })();
 </script>
