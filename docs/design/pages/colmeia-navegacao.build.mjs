@@ -95,6 +95,15 @@ const svgOf = (g, diags, source, view, file) => {
   const sfx = view[0] + file[0];
   svg = svg.replace(/id="(t?sh)"/g, `id="$1-${sfx}"`).replace(/url\(#(t?sh)\)/g, `url(#$1-${sfx})`);
   svg = svg.replace("<svg ", `<svg data-view="${view}" data-file="${file}" `);
+  /* Rótulos de longe: com o nome de contexto escondido, o do subdomínio cresce para
+     18 unidades. Ampliar os de 13 no lugar fazia vizinhos se atropelarem, então a
+     camada é posicionada de novo pelo placeLabels da v4, que evita peça e rótulo já
+     posto (o mesmo modo "subdomínio" da v4). Só aparece abaixo do limiar. */
+  const far = v.placeLabels(g, { edges: false, tags: false, ctxLabels: false, subLabels: true, subSize: 18 });
+  const esc2 = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const farSvg = far.subSpots.map((sp) =>
+    `<g class="sublab far-lab" data-sub="${sp.sub}"><text class="snm" style="font-size:${sp.size}px" x="${sp.p[0].toFixed(0)}" y="${(sp.p[1] + sp.size * 0.36).toFixed(0)}">${esc2(sp.id.toUpperCase())}</text></g>`).join("");
+  svg = svg.replace(/<\/svg>$/, farSvg + "</svg>");
   if (view === "flow") {
     const fl = flowsOf(g), bad = invalidOf(diags);
     svg = svg.replace(/<g class="rel" data-rk="([^"]+)">/g, (m, rk) =>
@@ -329,8 +338,12 @@ function apply(c){
   cam = c;
   var vb = c.map(function(x){ return x.toFixed(2); }).join(' ');
   each(all, function(svg){ svg.setAttribute('viewBox', vb); });
+  /* longe: abaixo do limiar em que uma tag de 9 unidades fica legível. Vale para
+     tag e para nome de contexto; '--k' é quantas unidades do SVG cabem num pixel,
+     para o texto que continua visível de longe ter tamanho fixo na tela */
   var far = pxPerUnit(c) < D.lim.tagPx;
-  each(flows, function(svg){ svg.classList.toggle('far', far); });
+  stage.style.setProperty('--k', (1 / pxPerUnit(c)).toFixed(4));
+  each(all, function(svg){ svg.classList.toggle('far', far); });
   document.getElementById('zoomOut').textContent = Math.round(fitW() / c[2] * 100) + '%';
 }
 function ease(t){ return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
@@ -398,6 +411,7 @@ function paint(){
     var lit = cid ? (r[1] === cid || r[2] === cid) : false;
     g.classList.toggle('lit', lit); g.classList.toggle('fade', !!sel && !lit);
   }); });
+  each(all, function(svg){ svg.classList.toggle('sel-on', !!sel); });
   var name = '', rest = 'Clique num contexto para acender as relações, ou num território para focar o subdomínio.';
   if (cid) { var n = D.near[cid].length; name = cid; rest = ' · ' + n + ' vizinho' + (n === 1 ? '' : 's') + ' · Esc limpa'; }
   if (sk) { var m = D.subs[sk].ids.length; name = D.subs[sk].title; rest = ' · subdomínio · ' + m + ' contexto' + (m === 1 ? '' : 's') + ' · Esc limpa'; }
@@ -542,14 +556,31 @@ const page = `<title>Colmeia navegação</title>
 /* Detalhe por zoom: longe demais para ler uma tag, ela só faz ruído. A relação acesa
    mostra as suas em qualquer zoom, porque é para ler aquela que se clicou. */
 .nav svg.far g.rel:not(.lit) .port{display:none}
+/* Legibilidade em qualquer zoom (2026-10-09).
+   Traço: espessura fixa na tela. Sem isso, no mapa inteiro (~0,7 px por unidade) o
+   contorno de destaque e a linha inválida somem, e a 4× ficam grossos.
+   Rótulo: de longe, nome de contexto (7 px na tela) é ruído; ele some, e o nome do
+   subdomínio cresce para o mapa se ler como territórios. Com algo selecionado, os
+   nomes que a seleção deixa acesos voltam, em tamanho fixo na tela. */
+.nav .palco svg :is(path, rect, line, polyline, circle){vector-effect:non-scaling-stroke}
+.nav svg.far text.cnm{display:none}
+.nav svg.far.sel-on text.cnm:not(.fade){display:inline; font-size:calc(var(--k) * 11px); stroke-width:calc(var(--k) * 3.5px)}
+.nav svg.far g.sublab:not(.far-lab), .nav svg:not(.far) g.far-lab{display:none}
+.nav svg.far g.far-lab .snm{fill:rgb(var(--c-ink) / .58); stroke-width:5px}
+.nav svg.far g.far-lab.subhot .snm{fill:rgb(var(--t))}
+/* de longe a linha afina: com traço fixo na tela, 64 linhas de 1,6 px e halo de 5 px
+   pesavam mais que os territórios */
+.nav svg.far .edge{stroke-width:1}
+.nav svg.far .ecase{stroke-width:2.6}
+.nav svg.far g.rel.lit .edge{stroke-width:1.8}
 /* Cor por tipo de subdomínio (2026-10-09). O roxo sai do mapa e fica só na
    interface. Linha é cinza; acesa, quase tinta. Peça e território tomam o tom do
    próprio tipo, escurecido para ler como borda sobre o chão claro (e clareado no
    escuro). A inválida segue vermelha: é a única cor forte numa linha. */
-:root{ --c-core-ink:176 120 0; --c-sup-ink:61 111 232; --c-gen-ink:84 82 102; --c-edge:128 125 146; --c-edge-lit:52 50 66; }
+:root{ --c-core-ink:176 120 0; --c-sup-ink:61 111 232; --c-gen-ink:84 82 102; --c-edge:128 125 146; --c-edge-lit:52 50 66; --c-edge-far:204 202 216; }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; } }
-:root[data-theme="dark"]{ --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; }
+  --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; --c-edge-far:64 62 82; } }
+:root[data-theme="dark"]{ --c-core-ink:255 200 90; --c-sup-ink:125 163 255; --c-gen-ink:196 193 214; --c-edge:118 115 140; --c-edge-lit:222 220 234; --c-edge-far:64 62 82; }
 .nav [data-type="core"]{--t:var(--c-core-ink)}
 .nav [data-type="supporting"]{--t:var(--c-sup-ink)}
 .nav [data-type="generic"], .nav [data-type="external"]{--t:var(--c-gen-ink)}
@@ -568,6 +599,11 @@ const page = `<title>Colmeia navegação</title>
 .nav g.sub.on .bsub{stroke:rgb(var(--t))}
 .nav g.sublab.subhot .snm{fill:rgb(var(--t))}
 .nav g.rel.invalid.lit .head{fill:rgb(var(--c-error))}
+/* de longe, a linha em repouso é um cinza clarinho (pedido do autor, 2026-10-09):
+   o todo se lê pelos territórios, e as linhas só sugerem a trama */
+.nav svg.far g.rel:not(.lit):not(.invalid) .edge{stroke:rgb(var(--c-edge-far))}
+.nav svg.far g.rel:not(.lit):not(.invalid) .head{fill:rgb(var(--c-edge-far))}
+.nav svg.far g.rel.invalid .edge{stroke-width:1.6}
 /* Linha (ADR-0012). Em repouso, a relação válida é sólida. Acesa, vira tracejado
    correndo do upstream para o downstream; a mútua fica tracejada e parada, porque
    não tem sentido de dependência. A inválida (diagnóstico 'error') é tracejado
