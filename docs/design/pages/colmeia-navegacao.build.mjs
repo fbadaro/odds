@@ -20,7 +20,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { MODEL } from "./colmeia-50.model.mjs";
+import { MODEL as BARE } from "./colmeia-50.model.mjs";
+import { CTX_DOCS, SUB_DOCS } from "./colmeia-navegacao.docs.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../..");
@@ -29,11 +30,43 @@ const outPath = path.join(here, "colmeia-navegacao.html");
 const WRITE = process.argv.includes("--write");
 
 const core = await import(pathToFileURL(path.join(root, "packages/core/dist/index.js")).href);
+const messages = await import(pathToFileURL(path.join(root, "packages/messages/dist/index.js")).href);
 const v4html = fs.readFileSync(v4Path, "utf8");
 const scripts = [...v4html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
 globalThis.__V3_HEADLESS = true;
 new Function(scripts[scripts.length - 1][1])();
 const v = globalThis.__v3;
+
+/* ---------------- a documentação preenchida ---------------- */
+/* Para a ficha da relação (pedido do autor, 2026-10-10): cada contexto e subdomínio
+   ganha as propriedades que a linguagem tem. O que os modelos da v4 já documentam,
+   com os mesmos nomes, vem de lá; o resto, do colmeia-navegacao.docs.mjs. Os valores
+   da v4 já trazem as aspas da fonte; os daqui ganham agora. Propriedade não alimenta
+   regra (RULES §0.2) nem move peça; a checagem 0 confere as duas coisas. */
+const q = (t) => '"' + t + '"';
+const fromV4 = { ctx: {}, sub: {} };
+for (const k of Object.keys(v.MODELS)) for (const d of v.MODELS[k].domains) {
+  for (const sd of d.subdomains) {
+    if (sd.description && !fromV4.sub[sd.id]) fromV4.sub[sd.id] = { description: sd.description, owner: sd.owner };
+    for (const c of sd.contexts) if (Object.keys(c).length > 1 && !fromV4.ctx[c.id]) fromV4.ctx[c.id] = c;
+  }
+  for (const c of d.external) if (Object.keys(c).length > 1 && !fromV4.ctx[c.id]) fromV4.ctx[c.id] = c;
+}
+const quoted = (doc) => Object.fromEntries(Object.entries(doc).map(([k, val]) =>
+  [k, k === "title" || k === "maturity" ? val : Array.isArray(val) ? val.map(q) : q(val)]));
+const MODEL = JSON.parse(JSON.stringify(BARE));
+const undocumented = [];
+for (const sd of MODEL.domains[0].subdomains) {
+  Object.assign(sd, fromV4.sub[sd.id] || (SUB_DOCS[sd.id] && quoted(SUB_DOCS[sd.id])) || {});
+  for (const c of sd.contexts) {
+    const doc = fromV4.ctx[c.id] || (CTX_DOCS[c.id] && quoted(CTX_DOCS[c.id]));
+    if (doc) Object.assign(c, doc, { id: c.id }); else undocumented.push(c.id);
+  }
+}
+for (const c of MODEL.domains[0].external) {
+  const doc = fromV4.ctx[c.id] || (CTX_DOCS[c.id] && quoted(CTX_DOCS[c.id]));
+  if (doc) Object.assign(c, doc, { id: c.id }); else undocumented.push(c.id);
+}
 
 /* ---------------- modelo, veredito e layout ---------------- */
 const cm = v.canon(MODEL);
@@ -106,8 +139,12 @@ const svgOf = (g, diags, source, view, file) => {
   svg = svg.replace(/<\/svg>$/, farSvg + "</svg>");
   if (view === "flow") {
     const fl = flowsOf(g), bad = invalidOf(diags);
-    svg = svg.replace(/<g class="rel" data-rk="([^"]+)">/g, (m, rk) =>
-      `<g class="rel${bad.has(rk) ? " invalid" : ""}" data-rk="${rk}" data-flow="${fl[rk].dir}">`);
+    /* A linha é clicável (pedido do autor, 2026-10-10): um traço invisível e largo,
+       com o mesmo desenho, logo acima do halo. Fica sob as peças, então só pega o
+       clique no vão entre elas, e a tag da porta, que mora no mesmo grupo, também
+       seleciona a relação. */
+    svg = svg.replace(/<g class="rel" data-rk="([^"]+)"><path class="ecase" d="([^"]+)"\/>/g, (m, rk, d) =>
+      `<g class="rel${bad.has(rk) ? " invalid" : ""}" data-rk="${rk}" data-flow="${fl[rk].dir}"><path class="ecase" d="${d}"/><path class="rhit" d="${d}"/>`);
   }
   return { svg, box };
 };
@@ -180,6 +217,13 @@ const LIM = { pad: 78, maxFrame: 3, maxZoom: 5, tagPx: 1.15 };
 
 /* ---------------- checagens ---------------- */
 const fails = [];
+/* 0. a documentação não move peça (o layout do modelo nu é o mesmo, centro a centro)
+   e cobre todo contexto: a ficha da relação não deve cair em "sem documentação" por
+   esquecimento, só quando o modelo escolher não documentar */
+const geoBare = v.layout(v.canon(BARE));
+const movedByDocs = ids.filter((id) => geoBare.tiles[id].join() !== geo.tiles[id].join());
+if (movedByDocs.length) fails.push(`a documentação moveu peças: ${movedByDocs.join(", ")}`);
+if (undocumented.length) fails.push(`contextos sem documentação: ${undocumented.join(", ")}`);
 /* 1. todo clique enquadra a peça e todos os vizinhos, e todo subdomínio o próprio
    território inteiro, em qualquer proporção de palco */
 const contains = (f, p, m) => p[0] - m >= f[0] - 0.01 && p[0] + m <= f[0] + f[2] + 0.01 && p[1] - m >= f[1] - 0.01 && p[1] + m <= f[1] + f[3] + 0.01;
@@ -242,7 +286,7 @@ const movedOnFile = ids.filter((id) => hf[id] !== hb[id] || hc[id] !== hcb[id]);
 if (movedOnFile.length) fails.push(`trocar de arquivo move ${movedOnFile.length} peças: ${movedOnFile.slice(0, 5).join(", ")}`);
 /* 3. o script da página nunca toca geometria: só viewBox e classes. Confere-se no
    texto do script, depois de montado, mais abaixo. */
-const GEOMETRY = /setAttribute\(\s*['"](d|x|y|cx|cy|transform|points)['"]|\.style\.transform|\.innerHTML\s*=/;
+const GEOMETRY = /setAttribute\(\s*['"](d|x|y|cx|cy|transform|points)['"]|\.style\.transform|(?<!\bpanel|\bsrcPanel)\.innerHTML\s*=/;
 /* 4. todo nome de contexto tem rótulo, senão a seleção não consegue apagá-lo */
 const labelled = new Set([...flow.svg.matchAll(/<text class="cnm[^"]*"[^>]*>([^<]+)<\/text>/g)].map((m) => m[1]));
 const unlabelled = ids.filter((id) => !labelled.has(id));
@@ -251,6 +295,11 @@ if (unlabelled.length) fails.push(`sem rótulo: ${unlabelled.join(", ")}`);
 const rks = new Set([...flow.svg.matchAll(/<g class="rel[^"]*" data-rk="([^"]+)"/g)].map((m) => m[1]));
 const missing = rels.filter((r) => !rks.has(r.rk));
 if (missing.length) fails.push(`aresta sem grupo: ${missing.map((r) => r.rk).join(", ")}`);
+for (const file of ["clean", "broken"]) {
+  const hit = new Set([...SV.flow[file].svg.matchAll(/data-rk="([^"]+)" data-flow="[a-z]+"><path class="ecase" d="[^"]+"\/><path class="rhit"/g)].map((m) => m[1]));
+  const noHit = rels.filter((r) => !hit.has(r.rk));
+  if (noHit.length) fails.push(`aresta sem área de clique (${file}): ${noHit.map((r) => r.rk).join(", ")}`);
+}
 
 /* ---------------- as perguntas do protocolo, e as respostas tiradas do modelo ---------------- */
 /* `c` é sempre relativo à linha como escrita: `l <-- r` diz que r é upstream de l */
@@ -299,6 +348,7 @@ const report = {
   trocaDeVista: `${movedOnSwap.length} peças movidas`,
   trocaDeArquivo: `${movedOnFile.length} peças movidas`,
   invalidas: wantInvalid,
+  documentacao: `${ids.length - undocumented.length} de ${ids.length} contextos; ${movedByDocs.length} peças movidas por ela`,
   respostas: exactAnswerBits,
 };
 console.log(JSON.stringify(report, null, 2));
@@ -306,7 +356,52 @@ console.log(JSON.stringify(report, null, 2));
 /* ---------------- página ---------------- */
 const css = v4html.match(/<style>([\s\S]*?)<\/style>/)[1];
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-const DATA = { tiles, near, subs: SUBS, rels: rels.map((r) => [r.rk, r.l, r.r]), fit: FIT, lim: LIM };
+/* A barra lateral da v4 (2026-10-10, a pedido do autor, para validar a ficha): o
+   contrato e o veredito de cada arquivo, com a frase do MESSAGES.md em português. */
+const fichaOf = (cmX, diags, srcX) => ({
+  rels: cmX.mapping.map((r) => [r.l, r.lt || [], r.c, r.rt || [], r.r]),
+  /* a linha de cada relação na fonte, para a ficha da relação apontar onde ela mora */
+  lines: Object.fromEntries(cmX.mapping.map((r) => [r.rk, srcX.anchors["rel:" + r.rk].start.line])),
+  diags: diags.map((d) => ({ code: d.code, severity: d.severity, msg: messages.renderMessage(d.code, d.data, "pt"),
+    line: d.span.start.line, col: d.span.start.column, ctx: d.target.ctx || null, rk: d.target.rk || null })),
+  src: srcX.text,
+});
+/* A documentação, como o autor a leu na fonte: sem as aspas do literal. */
+const unq = (t) => String(t).replace(/^"|"$/g, "");
+const PROP_KEYS = ["title", "type", "description", "responsibilities", "maturity", "team", "technology"];
+const docOf = (c) => Object.fromEntries(PROP_KEYS.filter((k) => c[k] !== undefined).map((k) => [k, Array.isArray(c[k]) ? c[k].map(unq) : unq(c[k])]));
+const DOCS = { ctx: {}, sub: {} };
+for (const sd of cm.domains[0].subdomains) {
+  DOCS.sub[cm.domains[0].id + "/" + sd.id] = Object.fromEntries(["description", "owner"].filter((k) => sd[k]).map((k) => [k, unq(sd[k])]));
+  for (const c of sd.contexts) DOCS.ctx[c.id] = docOf(c);
+}
+for (const c of cm.domains[0].external) DOCS.ctx[c.id] = docOf(c);
+/* O que cada tag e cada conector querem dizer, resumido em português das tabelas do
+   RULES-PT.md ("Relacionamentos de Equipe" e "Padrões de Context Map"). É o que a
+   ficha da relação mostra ao lado da tag declarada. */
+const TAGS = {
+  OHS: ["Open-Host Service", "upstream", "Oferece uma API bem desenhada, para que outros times operem sobre o modelo com confiança."],
+  PL: ["Published Language", "upstream", "Publica um esquema documentado para a troca de dados; costuma andar junto com o OHS."],
+  S: ["Supplier", "upstream", "Fornecedor de um Customer-Supplier: atende às necessidades do downstream, a critério próprio."],
+  C: ["Customer", "downstream", "Cliente de um Customer-Supplier: depende do upstream e negocia o que precisa dele."],
+  CF: ["Conformist", "downstream", "Adota o modelo do upstream como ele é, sem traduzir."],
+  ACL: ["Anti-Corruption Layer", "downstream", "Traduz o modelo do upstream para a própria linguagem, numa camada defensiva."],
+  SK: ["Shared Kernel", "os dois lados", "Os dois times dividem um modelo pequeno e comum, com dado e comportamento."],
+  P: ["Partnership", "os dois lados", "Os dois times dependem um do outro a ponto de falharem juntos; coordenam como pares."],
+  BBM: ["Big Ball of Mud", "qualquer lado", "Caracteriza o sistema, não o contrato: um monólito sem desenho intencional. Não é tag de padrão."],
+};
+const FORMS = {
+  "-->": ["Upstream / Downstream", "As decisões do upstream afetam o downstream, e não o contrário."],
+  "<--": ["Upstream / Downstream", "As decisões do upstream afetam o downstream, e não o contrário."],
+  "<->": ["Mutuamente dependentes", "Os dois precisam ser entregues juntos; atraso ou falha num afeta o outro na hora."],
+  "-x-": ["Separate Ways", "Nenhum vínculo entre os dois: integrar não valeria o esforço, e cada um resolve sozinho."],
+};
+const FICHA = {
+  dom: cm.domains[0].title || cm.domains[0].id, docs: DOCS, tags: TAGS, forms: FORMS,
+  clean: fichaOf(cm, [], src), broken: fichaOf(cmB, diagsB, srcB),
+  files: { clean: MODEL.file, broken: BROKEN.file },
+};
+const DATA = { tiles, near, subs: SUBS, ficha: FICHA, rels: rels.map((r) => [r.rk, r.l, r.r]), fit: FIT, lim: LIM };
 
 const pageScript = `
 (function(){
@@ -374,56 +469,223 @@ function pan(dxPx, dyPx){
    'sel' é um contexto ({ctx}) ou um subdomínio ({sub}), nunca os dois; 'hov' é o
    território sob o mouse. paint() deriva toda classe dos dois, então o hover nunca
    desfaz o que a seleção acendeu. */
-var hov = null, ctxSub = {};
+var hov = null, ctxSub = {}, relOf = {};
 Object.keys(D.subs).forEach(function(k){ D.subs[k].ids.forEach(function(id){ ctxSub[id] = k; }); });
+D.rels.forEach(function(r){ relOf[r[0]] = r; });
+/* 'sel' também pode ser uma relação ({rel, from}): o clique numa linha (pedido do
+   autor, 2026-10-10). 'from' é o contexto de onde se chegou a ela; com ele, a
+   vizinhança desse contexto continua à vista e as outras linhas dele ficam mais
+   claras em vez de sumir, para dar para pular de uma relação para a outra. */
+function relLabel(rk){
+  var r = cur().rels.filter(function(x){ return x[0] + '|' + x[4] === rk; })[0];
+  if (!r) return rk;
+  if (r[2] === '-->') return r[0] + ' → ' + r[4];
+  if (r[2] === '<--') return r[4] + ' → ' + r[0];
+  return r[0] + (r[2] === '<->' ? ' ⇄ ' : ' ✕ ') + r[4];
+}
 function paint(){
-  var cid = sel && sel.ctx, sk = sel && sel.sub, near = {}, inSub = {};
-  if (cid) { near[cid] = 1; D.near[cid].forEach(function(n){ near[n] = 1; }); }
+  var rk = sel && sel.rel, from = rk ? sel.from : null, cid = sel && sel.ctx, base = cid || from;
+  var sk = sel && sel.sub, near = {}, inSub = {}, ends = {};
+  if (base) { near[base] = 1; D.near[base].forEach(function(n){ near[n] = 1; }); }
+  if (rk) { ends[relOf[rk][1]] = 1; ends[relOf[rk][2]] = 1; }
   if (sk) D.subs[sk].ids.forEach(function(id){ inSub[id] = 1; });
-  function faded(c){ return cid ? !near[c] : sk ? !inSub[c] : false; }
+  function faded(c){ return base ? !near[c] : rk ? !ends[c] : sk ? !inSub[c] : false; }
+  function isOn(c){ return c === cid || !!ends[c]; }
   function hotSub(k){ return k === sk || k === hov; }
   /* o território de casa do contexto selecionado acende junto (pedido do autor,
-     2026-10-09): o contorno e o nome, não as peças, que seguem a regra da vizinhança */
-  var home = cid ? ctxSub[cid] : null;
+     2026-10-09): o contorno e o nome, não as peças, que seguem a regra da vizinhança.
+     Numa relação, acendem os territórios das duas pontas. */
+  var homes = {};
+  if (cid) homes[ctxSub[cid]] = 1;
+  if (rk) Object.keys(ends).forEach(function(c){ homes[ctxSub[c]] = 1; });
   each(all, function(svg){
     Array.prototype.forEach.call(svg.querySelectorAll('g.node'), function(g){
       var c = g.getAttribute('data-ctx');
-      g.classList.toggle('on', c === cid); g.classList.toggle('fade', faded(c));
+      g.classList.toggle('on', isOn(c)); g.classList.toggle('fade', faded(c));
       g.classList.toggle('subhot', hotSub(g.getAttribute('data-sub')));
     });
     Array.prototype.forEach.call(svg.querySelectorAll('text.cnm'), function(t){
       var c = t.textContent;
-      t.classList.toggle('on', c === cid); t.classList.toggle('fade', faded(c));
+      t.classList.toggle('on', isOn(c)); t.classList.toggle('fade', faded(c));
     });
     Array.prototype.forEach.call(svg.querySelectorAll('g.sub'), function(g){
       var key = g.getAttribute('data-sub');
-      g.classList.toggle('hot', hotSub(key) || key === home); g.classList.toggle('on', key === sk || key === home);
+      g.classList.toggle('hot', hotSub(key) || !!homes[key]); g.classList.toggle('on', key === sk || !!homes[key]);
     });
     Array.prototype.forEach.call(svg.querySelectorAll('g.sublab'), function(g){
       var key = g.getAttribute('data-sub');
-      g.classList.toggle('subhot', hotSub(key) || key === home);
+      g.classList.toggle('subhot', hotSub(key) || !!homes[key]);
     });
   });
   each(flows, function(svg){ D.rels.forEach(function(r){
     var g = svg.querySelector('g.rel[data-rk="' + r[0] + '"]'); if (!g) return;
     /* só o contexto acende relações; o foco em subdomínio é sobre o território, e
-       as linhas dele apagam junto com o resto (decisão do autor, 2026-10-09) */
-    var lit = cid ? (r[1] === cid || r[2] === cid) : false;
-    g.classList.toggle('lit', lit); g.classList.toggle('fade', !!sel && !lit);
+       as linhas dele apagam junto com o resto (decisão do autor, 2026-10-09).
+       Com uma relação em foco, ela engrossa e escurece; as irmãs (do mesmo 'from')
+       seguem correndo, num cinza mais claro (ajuste do autor, 2026-10-10). */
+    var touches = base ? (r[1] === base || r[2] === base) : false;
+    var mute = !!rk && r[0] !== rk && touches, lit = rk ? (r[0] === rk || mute) : touches;
+    g.classList.toggle('lit', lit); g.classList.toggle('focus', !!rk && r[0] === rk);
+    g.classList.toggle('mute', mute); g.classList.toggle('fade', !!sel && !lit && !mute);
   }); });
   each(all, function(svg){ svg.classList.toggle('sel-on', !!sel); });
-  var name = '', rest = 'Clique num contexto para acender as relações, ou num território para focar o subdomínio.';
-  if (cid) { var n = D.near[cid].length; name = cid; rest = ' · ' + n + ' vizinho' + (n === 1 ? '' : 's') + ' · Esc limpa'; }
+  var name = '', rest = 'Clique num contexto para acender as relações, numa linha para ver uma só, ou num território para focar o subdomínio.';
+  if (cid) { var n = D.near[cid].length; name = cid; rest = ' · ' + n + ' vizinho' + (n === 1 ? '' : 's') + ' · clique numa linha para ver só ela · Esc limpa'; }
+  if (rk) { name = relLabel(rk); rest = ' · relação' + (from ? ' de ' + from + ' · Esc volta para o contexto' : ' · Esc limpa'); }
   if (sk) { var m = D.subs[sk].ids.length; name = D.subs[sk].title; rest = ' · subdomínio · ' + m + ' contexto' + (m === 1 ? '' : 's') + ' · Esc limpa'; }
   document.getElementById('selName').textContent = name;
   document.getElementById('selRest').textContent = rest;
 }
+/* ---- barra lateral: a ficha da v4 e a fonte, os dois únicos innerHTML da página,
+   ambos fora do SVG (a checagem 3 confere que nenhum outro existe) ---- */
+var panel = document.getElementById('selBox'), srcPanel = document.getElementById('srcPre');
+function cur(){ return D.ficha[file]; }
+function esc(t){ return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+/* a documentação de um contexto, na ordem do GRAMMAR.md §3 */
+function docHtml(d){
+  var out = '';
+  if (d.description) out += '<div class="prop"><span class="pk">description</span><span class="pv">' + esc(d.description) + '</span></div>';
+  if (d.responsibilities) out += '<div class="prop"><span class="pk">responsibilities</span><ul class="rlist">' +
+    d.responsibilities.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+  if (d.type) out += '<div class="prop"><span class="pk">type</span><span class="pv">' + esc(d.type) + '</span></div>';
+  if (d.maturity) out += '<div class="prop"><span class="pk">maturity</span><span class="mat">' + esc(d.maturity) + '</span></div>';
+  if (d.team) out += '<div class="prop"><span class="pk">team</span><span class="pv">' + esc(d.team) + '</span></div>';
+  if (d.technology) out += '<div class="prop"><span class="pk">technology</span><span class="pv">' + esc(d.technology) + '</span></div>';
+  return out;
+}
+/* um lado da relação: quem é, onde mora, o que declarou na fronteira e o que a
+   documentação diz dele */
+function sideHtml(id, role, tags){
+  var F = D.ficha, d = F.docs.ctx[id] || {}, home = ctxSub[id], hs = D.subs[home], ext = hs.type === 'external';
+  var h = '<div class="rside" data-type="' + esc(hs.type) + '"><div class="rs-head"><span class="role">' + esc(role) + '</span>' +
+    '<button class="golink" data-go="' + esc(id) + '">' + esc(id) + '</button></div>';
+  if (d.title) h += '<div class="ti">' + esc(d.title) + '</div>';
+  h += '<div class="rs-meta"><button class="golink plain" data-gosub="' + esc(home) + '">' + esc(home.split('/')[1]) + '</button> · ' +
+       (ext ? 'fora do domínio' : esc(hs.type)) + '</div>';
+  h += tags.length ? tags.map(function(t){
+    var T = F.tags[t] || [t, '', ''];
+    return '<div class="tagrow"><span class="tgchip">' + esc(t) + '</span><span><b>' + esc(T[0]) + '</b> · ' + esc(T[2]) + '</span></div>';
+  }).join('') : '<div class="nofill">Nenhuma tag declarada deste lado.</div>';
+  var doc = docHtml(d);
+  h += doc ? '<div class="rs-doc">' + doc + '</div>' : '<div class="nofill">Sem documentação declarada.</div>';
+  return h + '</div>';
+}
+function relPanel(rk, from){
+  var F = D.ficha, c = cur(), r = c.rels.filter(function(x){ return x[0] + '|' + x[4] === rk; })[0];
+  var form = F.forms[r[2]], subL = ctxSub[r[0]], subR = ctxSub[r[4]];
+  var upLeft = r[2] === '-->', dir = r[2] === '-->' || r[2] === '<--';
+  var h = '<div class="sel">';
+  if (from) h += '<button class="golink back" data-go="' + esc(from) + '">← contrato de ' + esc(from) + '</button>';
+  h += '<div class="kind">relationship</div><h4>' + esc(relLabel(rk)) + '</h4>';
+  h += '<div class="meta"><b>' + esc(form[0]) + '</b> · ' + esc(form[1]) + '</div>';
+  h += '<div class="relsrc">' + esc(r[0]) + ' ' + (r[1].length ? '<span class="tg">[' + esc(r[1].join(', ')) + ']</span> ' : '') + esc(r[2]) +
+       (r[3].length ? ' <span class="tg">[' + esc(r[3].join(', ')) + ']</span>' : '') + ' ' + esc(r[4]) +
+       '<span class="c">' + esc(F.files[file]) + ' · L' + c.lines[rk] + '</span></div>';
+  var verdict = c.diags.filter(function(d){ return d.rk === rk; });
+  h += '<div class="sect">Veredito</div>' + (verdict.length ? verdict.map(vd).join('') : '<div class="nofill">Nenhum diagnóstico nesta relação.</div>');
+  var fr = subL === subR ? 'Dentro de <b>' + esc(subL.split('/')[1]) + '</b>.'
+    : (D.subs[subL].type === 'external' || D.subs[subR].type === 'external') ? 'Com um sistema <b>externo</b>, fora do domínio: o contrato do outro lado não é seu.'
+    : 'Atravessa a fronteira: <b>' + esc(subL.split('/')[1]) + '</b> (' + esc(D.subs[subL].type) + ') e <b>' + esc(subR.split('/')[1]) + '</b> (' + esc(D.subs[subR].type) + ').';
+  h += '<div class="sect">Fronteira</div><div class="nofill">' + fr + '</div>';
+  /* upstream primeiro: é quem publica, e a seta corre dele */
+  var sides = dir ? (upLeft ? [[r[0], 'upstream', r[1]], [r[4], 'downstream', r[3]]] : [[r[4], 'upstream', r[3]], [r[0], 'downstream', r[1]]])
+                  : [[r[0], r[2] === '<->' ? 'par' : 'lado', r[1]], [r[4], r[2] === '<->' ? 'par' : 'lado', r[3]]];
+  h += '<div class="sect">Os dois lados</div>' + sides.map(function(sd){ return sideHtml(sd[0], sd[1], sd[2]); }).join('');
+  h += '<div class="fence">A <b>tag</b> é o contrato que o validador confere. A <b>documentação</b> é contexto para quem lê, e nenhuma regra a julga.</div></div>';
+  return h;
+}
+function roleText(r, id){
+  if (r[2] === '<->') return 'mutuamente dependentes';
+  if (r[2] === '-x-') return 'caminhos separados: decisão, não falha';
+  var upLeft = r[2] === '-->', selLeft = r[0] === id, other = selLeft ? r[4] : r[0];
+  return (upLeft === selLeft) ? 'upstream de ' + other : 'downstream de ' + other;
+}
+function vd(d){
+  return '<div class="vd"><span class="sevdot ' + d.severity + '"></span><span>' + esc(d.msg) +
+         '<span class="c">' + esc(d.code) + ' · L' + d.line + ':' + d.col + '</span></span></div>';
+}
+function renderPanel(){
+  var F = D.ficha, cur = F[file], h;
+  if (sel && sel.rel) h = relPanel(sel.rel, sel.from);
+  else if (sel && sel.sub) {
+    var s = D.subs[sel.sub], ids = s.ids, inside = 0, crossing = 0, deg = {};
+    cur.rels.forEach(function(r){
+      var a = ids.indexOf(r[0]) >= 0, b = ids.indexOf(r[4]) >= 0;
+      if (a && b) inside++; else if (a || b) crossing++;
+      deg[r[0]] = (deg[r[0]] || 0) + 1; deg[r[4]] = (deg[r[4]] || 0) + 1;
+    });
+    var key = sel.sub.split('/')[1];
+    h = '<div class="sel"><div class="kind">subdomain</div><h4>' + esc(key) + '</h4><div class="meta"><b>' + esc(s.type) + '</b>' +
+        (s.title && s.title !== key ? ' · <span class="pv">' + esc(s.title) + '</span>' : '') + '<br>' + esc(F.dom) + '</div>';
+    var sd = F.docs.sub[sel.sub] || {};
+    if (sd.description) h += '<div class="prop"><span class="pk">description</span><span class="pv">' + esc(sd.description) + '</span></div>';
+    if (sd.owner) h += '<div class="prop"><span class="pk">owner</span><span class="pv">' + esc(sd.owner) + '</span></div>';
+    h += '<div class="sect">Derivado</div><div class="tally"><span>' + ids.length + ' contexto' + (ids.length === 1 ? '' : 's') + '</span><span>' +
+         inside + ' interna' + (inside === 1 ? '' : 's') + '</span><span>' + crossing + ' atravessa' + (crossing === 1 ? '' : 'm') + ' a fronteira</span></div>';
+    h += '<div class="sect">Contextos</div>' + ids.map(function(id){
+      var n = deg[id] || 0;
+      return '<button class="ctxrow" data-go="' + esc(id) + '"><span class="nm">' + esc(id) + '</span><span class="cnt2">' + n + ' rel.</span></button>';
+    }).join('');
+    h += '</div>';
+  } else if (sel && sel.ctx) {
+    var id = sel.ctx, home = ctxSub[id], hs = D.subs[home], ext = hs.type === 'external';
+    var mine = cur.rels.filter(function(r){ return r[0] === id || r[4] === id; });
+    var verdict = cur.diags.filter(function(d){ return d.ctx === id || (d.rk && d.rk.split('|').indexOf(id) >= 0); });
+    var cd = F.docs.ctx[id] || {};
+    h = '<div class="sel"><div class="kind">context</div><h4>' + esc(id) + '</h4>' + (cd.title ? '<div class="ti big">' + esc(cd.title) + '</div>' : '');
+    h += '<div class="meta"><button class="golink" data-gosub="' + esc(home) + '">' + esc(home.split('/')[1]) + '</button> · ' +
+         (ext ? 'fora do domínio' : esc(hs.type)) + '<br>' + esc(D.ficha.dom) + '</div>';
+    if (verdict.length) h += '<div class="sect">Veredito</div>' + verdict.map(vd).join('');
+    h += '<div class="sect">Contrato</div>' + (mine.length ? mine.map(function(r){
+      var line = '<button class="golink plain" data-go="' + esc(r[0]) + '">' + esc(r[0]) + '</button> ' +
+        (r[1].length ? '<span class="tg">[' + r[1].join(', ') + ']</span> ' : '') + esc(r[2]) +
+        (r[3].length ? ' <span class="tg">[' + r[3].join(', ') + ']</span>' : '') +
+        ' <button class="golink plain" data-go="' + esc(r[4]) + '">' + esc(r[4]) + '</button>';
+      return '<div class="rel">' + line + '<button class="ro relgo" data-gorel="' + esc(r[0] + '|' + r[4]) + '">' + esc(roleText(r, id)) + ' ›</button></div>';
+    }).join('') : '<div class="none">Nenhuma relação no mapping.</div>');
+    var props = docHtml(cd);
+    h += '<div class="sect">Propriedades</div>' + (props || '<div class="nofill">Nenhuma propriedade declarada.</div>');
+    if (ext) h += '<div class="nofill">Só <code>description</code> e <code>technology</code> valem aqui: pelo princípio de autoria do <code>RULES</code> §0.4 você não controla este sistema.</div>';
+    h += '<div class="fence">Propriedade é <b>documentação</b>, tag é <b>contrato</b>. Nenhuma propriedade alimenta o gatilho de uma regra.</div></div>';
+  } else {
+    h = '<div class="sel-empty">Nada selecionado. Clique num <b>hexágono</b> (ou chegue a ele com <b>Tab</b> e aperte Enter) para ver o contrato do contexto, numa <b>linha</b> para ver uma relação só, ou no <b>território</b> para ver o subdomínio. <b>Esc</b> limpa a seleção.</div>';
+  }
+  panel.innerHTML = h;
+}
+function renderSource(){
+  var cur = D.ficha[file], bad = {};
+  cur.diags.forEach(function(d){ bad[d.line] = d.severity; });
+  document.getElementById('srcName').textContent = D.ficha.files[file];
+  srcPanel.innerHTML = cur.src.split(String.fromCharCode(10)).map(function(line, i){
+    var n = i + 1;
+    return '<span class="ln"><span class="no">' + n + '</span><span class="gut">' + (bad[n] ? '<span class="sevdot ' + bad[n] + '"></span>' : '') + '</span>' + esc(line) + '</span>';
+  }).join('');
+}
+panel.addEventListener('click', function(ev){
+  var b = ev.target.closest('[data-go], [data-gosub], [data-gorel]'); if (!b) return;
+  if (b.hasAttribute('data-gorel')) relClick(b.getAttribute('data-gorel'));
+  else if (b.hasAttribute('data-go')) select(b.getAttribute('data-go'), true); else selectSub(b.getAttribute('data-gosub'), true);
+});
 function select(id, frame){
-  sel = id ? { ctx: id } : null; paint();
+  sel = id ? { ctx: id } : null; paint(); renderPanel();
   if (id && frame) go(frameOf([id].concat(D.near[id]).map(function(o){ return D.tiles[o]; }), D.fit, aspect(), D.lim), 420);
 }
+/* Vindo de um contexto, a câmera fica onde está: a vizinhança dele já enquadra as
+   duas pontas. Sem contexto, enquadra as duas peças. */
+function selectRel(rk, from, frame){
+  sel = rk ? { rel: rk, from: from || null } : null; paint(); renderPanel();
+  if (rk && frame && !from) go(frameOf([D.tiles[relOf[rk][1]], D.tiles[relOf[rk][2]]], D.fit, aspect(), D.lim), 420);
+}
+/* o gesto: clicar na linha. 'from' é o contexto aceso, se a linha for dele; clicar
+   de novo na relação em foco volta para esse contexto */
+function relClick(rk){
+  var base = sel && (sel.ctx || sel.from), r = relOf[rk];
+  var from = base && (r[1] === base || r[2] === base) ? base : null;
+  if (sel && sel.rel === rk) { if (sel.from) select(sel.from); else select(null); return; }
+  selectRel(rk, from, true);
+}
 function selectSub(key, frame){
-  sel = key ? { sub: key } : null; paint();
+  sel = key ? { sub: key } : null; paint(); renderPanel();
   if (key && frame) go(frameOf(D.subs[key].cells, D.fit, aspect(), D.lim), 420);
 }
 each(all, function(svg){
@@ -452,8 +714,10 @@ function endDrag(ev){
   var wasDrag = drag.moved; drag = null; stage.classList.remove('dragging');
   if (wasDrag || ev.type === 'pointercancel') return;
   var node = ev.target.closest && ev.target.closest('g.node');
-  var sub = !node && ev.target.closest && ev.target.closest('g.sub');
+  var rel = !node && ev.target.closest && ev.target.closest('g.rel');
+  var sub = !node && !rel && ev.target.closest && ev.target.closest('g.sub');
   if (node) select(node.getAttribute('data-ctx'), true);
+  else if (rel) relClick(rel.getAttribute('data-rk'));
   else if (sub) { var key = sub.getAttribute('data-sub'); selectSub(sel && sel.sub === key ? null : key, true); }
   else if (sel) select(null);
 }
@@ -476,7 +740,7 @@ stage.addEventListener('keydown', function(ev){
   var k = ev.key, step = 80;
   var node = ev.target.closest && ev.target.closest('g.node');
   if ((k === 'Enter' || k === ' ') && node) { ev.preventDefault(); select(node.getAttribute('data-ctx'), true); return; }
-  if (k === 'Escape') { if (sel) select(null); return; }
+  if (k === 'Escape') { if (sel && sel.rel && sel.from) select(sel.from); else if (sel) select(null); return; }
   var cx = stage.clientWidth / 2, cy = stage.clientHeight / 2;
   if (k === '+' || k === '=') zoomAt(1.4, cx, cy);
   else if (k === '-' || k === '_') zoomAt(1 / 1.4, cx, cy);
@@ -509,7 +773,7 @@ function seg(id, fn){
   });
 }
 seg('segView', function(v){ view = v; });
-seg('segFile', function(v){ file = v; });
+seg('segFile', function(v){ file = v; renderPanel(); renderSource(); });
 seg('segTheme', function(v){ document.documentElement.setAttribute('data-theme', v); });
 
 /* ---- tamanho do palco: mantém centro e escala ---- */
@@ -523,13 +787,24 @@ new ResizeObserver(function(){
 
 apply(fitCam());
 select(null);
-globalThis.__nav = { select: select, selectSub: selectSub, go: go, fitCam: fitCam, zoomAt: zoomAt, get cam(){ return cam; } };
+renderSource();
+globalThis.__nav = { select: select, selectSub: selectSub, selectRel: selectRel, relClick: relClick, go: go, fitCam: fitCam, zoomAt: zoomAt, get cam(){ return cam; } };
 })();
 `;
 if (/<\/script/i.test(pageScript)) throw new Error("o script da página contém </script");
 const geoHit = pageScript.match(GEOMETRY);
 if (geoHit) fails.push(`o script da página toca geometria: ${geoHit[0]}`);
 
+const TYPES = ["core", "supporting", "generic"];
+const legendHtml = TYPES.map((t) => {
+  const names = subKeys.filter((k) => SUBS[k].type === t).map((k) => k.split("/")[1]);
+  return names.length ? `<div class="row"><span class="sw ${t}"></span><span><b>${t}</b> · ${names.join(" + ")}</span></div>` : "";
+}).join("") +
+  `<div class="row"><span class="sw external"></span><span><b>external</b> · ${cm.domains[0].externalIds.length} · fora da água territorial</span></div>` +
+  `<div class="row" style="margin-top:6px;border-top:1px solid rgb(var(--c-border));padding-top:10px"><svg width="54" height="14" viewBox="0 0 54 14"><path d="M4 7 H44" stroke="rgb(var(--c-edge))" stroke-width="1.6"/><path d="M50 7 L41 11.4 L41 2.6 Z" fill="rgb(var(--c-edge))"/></svg><span>A seta aponta para o <b>downstream</b>.</span></div>` +
+  `<div class="row"><svg width="54" height="14" viewBox="0 0 54 14"><path d="M4 7 H50" stroke="rgb(var(--c-edge-lit))" stroke-width="2" stroke-dasharray="7 5"/></svg><span>Relação <b>acesa</b>: tracejado correndo do upstream para o downstream.</span></div>` +
+  `<div class="row"><svg width="54" height="14" viewBox="0 0 54 14"><path d="M4 7 H50" stroke="rgb(var(--c-error))" stroke-width="1.8" stroke-dasharray="6 4"/></svg><span>Relação <b>inválida</b>: tracejado vermelho e parado.</span></div>` +
+  `<div class="row"><svg width="54" height="20" viewBox="0 0 54 20"><path d="M2 2 L14 2 L20 10 L14 18 L2 18" fill="none" stroke="rgb(var(--c-dim))" stroke-width="1.2"/><rect x="22" y="3" width="30" height="14" rx="6" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-edge) / .75)"/><text x="37" y="10.5" font-family="JetBrains Mono,monospace" font-size="8.5" fill="rgb(var(--c-ink))" text-anchor="middle" dominant-baseline="central">ACL</text></svg><span>A tag fica <b>encostada no lado</b> da peça a que pertence.</span></div>`;
 const qHtml = QUESTIONS.map((x, i) => `
       <li><p>${x.q}</p>
         <details><summary>conferir</summary><p>${x.a}</p><p class="tests">testa: ${x.tests}</p></details></li>`).join("");
@@ -538,7 +813,19 @@ const page = `<title>Colmeia navegação</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>${css}
-.nav .layout{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:16px; align-items:start}
+.nav .layout{display:grid; grid-template-columns:minmax(0,1fr) 336px; gap:16px; align-items:start}
+.nav .sevdot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-top:4px; flex:none}
+.nav .sevdot.error{background:rgb(var(--c-error))}
+.nav .sevdot.warning{background:rgb(var(--c-warning))}
+.nav .sevdot.info{background:rgb(var(--c-info))}
+.nav .src .gut .sevdot{margin:0 4px 0 0; width:7px; height:7px}
+.nav .sel .golink.plain{font-weight:500; color:rgb(var(--c-ink)); text-decoration-color:rgb(var(--c-ink) / .3)}
+.nav .side #selBox{max-height:min(60vh,560px); overflow:auto}
+.nav details.card > summary{display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:36px;
+  padding:0 14px; background:rgb(var(--c-panel2)); cursor:pointer; list-style:none}
+.nav details.card > summary::-webkit-details-marker{display:none}
+.nav details.card[open] > summary{border-bottom:1px solid rgb(var(--c-border))}
+.nav details.card pre.src{margin:0; max-height:420px; overflow:auto}
 @media (max-width:960px){ .nav .layout{grid-template-columns:1fr} }
 .nav .bar{margin-top:22px}
 .nav .bar .sep{flex:1 1 auto}
@@ -617,6 +904,41 @@ const page = `<title>Colmeia navegação</title>
   stroke-dasharray:6 4; animation:none}
 .nav g.rel.invalid .head{fill:rgb(var(--c-error))}
 @media (prefers-reduced-motion: reduce){ .nav g.rel .edge{animation:none !important} }
+/* Uma relação por vez (pedido do autor, 2026-10-10). A linha é clicável por um traço
+   invisível de 12 px na tela; sob o mouse, ela escurece. Com uma relação em foco, ela
+   fica mais grossa e escura, com as tags em qualquer zoom; as outras do contexto de
+   onde se veio continuam acesas e correndo, num cinza mais claro, para seguirem
+   clicáveis e mostrando o sentido. */
+.nav g.rel .rhit{fill:none; stroke:transparent; stroke-width:12px; pointer-events:stroke; cursor:pointer}
+.nav g.rel:hover .edge{stroke:rgb(var(--c-edge-lit))}
+.nav g.rel:hover .head{fill:rgb(var(--c-edge-lit))}
+.nav g.rel.focus .edge, .nav svg.far g.rel.focus .edge{stroke-width:3}
+.nav g.rel.lit.mute:not(.invalid) .edge{stroke:rgb(var(--c-edge) / .6); stroke-width:1.6}
+.nav g.rel.lit.mute:not(.invalid) .head{fill:rgb(var(--c-edge) / .6)}
+.nav g.rel.lit.mute .port{opacity:.6}
+.nav svg.far g.rel.mute .port{display:none}
+.nav g.rel.fade .rhit{cursor:pointer}
+/* a ficha da relação */
+.nav .sel .relgo{appearance:none; border:0; background:transparent; padding:0; cursor:pointer; text-align:left;
+  font-family:"Inter",sans-serif; font-size:11px; color:rgb(var(--c-accent)); margin-top:2px; display:block}
+.nav .sel .relgo:hover{text-decoration:underline}
+.nav .sel .back{font-size:11.5px; font-weight:500; text-decoration:none; margin:0 0 10px; display:block}
+.nav .sel .relsrc{font-family:"JetBrains Mono",Menlo,monospace; font-size:11px; line-height:1.5; color:rgb(var(--c-ink));
+  background:rgb(var(--c-panel2)); border:1px solid rgb(var(--c-border)); border-radius:8px; padding:7px 9px; word-break:break-word}
+.nav .sel .relsrc .tg{color:rgb(var(--c-pulse))}
+.nav .sel .relsrc .c{display:block; font-size:10px; color:rgb(var(--c-dim)); margin-top:3px}
+.nav .sel .rside{border:1px solid rgb(var(--c-border)); border-left:3px solid rgb(var(--t, var(--c-dim))); border-radius:8px;
+  padding:9px 11px; margin:0 0 8px}
+.nav .sel .rs-head{display:flex; align-items:baseline; gap:8px; font-family:"JetBrains Mono",Menlo,monospace; font-size:12.5px}
+.nav .sel .rs-head .golink{color:rgb(var(--c-ink)); text-decoration-color:rgb(var(--c-ink) / .3)}
+.nav .sel .role{font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:rgb(var(--t, var(--c-dim)))}
+.nav .sel .rs-meta{font-size:11.5px; color:rgb(var(--c-dim)); margin:3px 0 6px}
+.nav .sel .tagrow{display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px; align-items:baseline;
+  font-size:11.5px; line-height:1.45; color:rgb(var(--c-dim)); padding:4px 0}
+.nav .sel .tagrow b{color:rgb(var(--c-ink)); font-weight:600}
+.nav .sel .tgchip{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; border:1px solid rgb(var(--c-edge) / .75);
+  border-radius:6px; padding:1px 6px; color:rgb(var(--c-ink)); background:rgb(var(--c-panel))}
+.nav .sel .rs-doc{margin-top:4px; padding-top:4px; border-top:1px dashed rgb(var(--c-border))}
 .nav .hint{position:absolute; left:12px; bottom:10px; font-size:11.5px; color:rgb(var(--c-dim));
   background:rgb(var(--c-panel) / .88); border:1px solid rgb(var(--c-border)); border-radius:10px; padding:5px 10px; pointer-events:none}
 .nav .proto{border:1px solid rgb(var(--c-border)); border-radius:16px; background:rgb(var(--c-panel)); padding:18px 20px}
@@ -675,9 +997,22 @@ const page = `<title>Colmeia navegação</title>
       ${SV.contain.clean.svg.replace("<svg ", "<svg hidden ")}
       ${SV.flow.broken.svg.replace("<svg ", "<svg hidden ")}
       ${SV.contain.broken.svg.replace("<svg ", "<svg hidden ")}
-      <div class="hint">roda ou pinça: zoom · arrastar: mover · clique na peça: relações · no território: subdomínio · <kbd>0</kbd> mapa inteiro</div>
+      <div class="hint">roda ou pinça: zoom · arrastar: mover · clique na peça: relações · na linha: só ela · no território: subdomínio · <kbd>0</kbd> mapa inteiro</div>
     </div>
 
+    <div class="side">
+      <div class="card">
+        <header><span class="eyebrow">Seleção</span><span class="mono" style="font-size:10px;color:rgb(var(--c-dim))">clique ou Tab</span></header>
+        <div class="body" id="selBox"></div>
+      </div>
+      <div class="card">
+        <header><span class="eyebrow">Como ler</span></header>
+        <div class="body leg">${legendHtml}</div>
+      </div>
+      <details class="card">
+        <summary><span class="eyebrow">Fonte</span><span class="mono" style="font-size:11px;color:rgb(var(--c-dim))"><span id="srcName"></span> · não abra durante o teste</span></summary>
+        <pre class="src" id="srcPre"></pre>
+      </details>
     <aside class="proto">
       <span class="tagpill novo">protocolo</span>
       <h3>O teste é o sinal de reversão do ADR-0011</h3>
@@ -686,6 +1021,7 @@ const page = `<title>Colmeia navegação</title>
       <ol>${qHtml}
       </ol>
     </aside>
+    </div>
   </div>
 
   <div class="notes">
@@ -714,15 +1050,21 @@ const page = `<title>Colmeia navegação</title>
       <h3>Entra só se o teste pedir</h3>
       <p><b>Minimapa</b> e <b>busca por nome</b>. Cada um é resposta a um travamento específico. Construir os dois antes do teste seria responder sem a pergunta.</p>
       <p><b>O foco num subdomínio saiu desta lista e entrou na página</b> em 2026-10-09, a pedido do autor, antes do teste. Por isso o teste já não mede se ele faz falta: mede se as quatro ferramentas bastam.</p>
-      <p><b>A ficha da v4</b> também ficou de fora: ela lista as relações em texto, e o teste perderia o objeto. Ele mede se o <b>mapa</b> responde, não se uma lista responde.</p>
+      <p><b>A ficha da v4 voltou</b> em 2026-10-10, a pedido do autor, para validar a barra lateral. Ela lista as relações em texto, então no teste vale anotar <b>de onde veio cada resposta</b>: do mapa ou da ficha. O sinal do ADR-0011 é sobre o mapa.</p>
+      <p><b>Uma relação por vez</b> (2026-10-10): clicar numa linha a põe em foco e abre a ficha dela, com as tags explicadas e a documentação dos dois lados. A documentação é sintética, escrita para esta página; nenhuma regra a lê.</p>
     </div>
   </div>
 
-  <details class="src"><summary>A fonte <code>${MODEL.file}</code>. Não abra durante o teste</summary><pre>${esc(src.text)}</pre></details>
 </div>
 <script>${pageScript}</script>
 `;
 
+/* 6. os scripts da página compilam. Três camadas de escape (este arquivo, o template
+   literal e o JS da página) já transformaram um '\\n' em quebra de linha literal uma
+   vez; a página abria sem script e nenhuma outra checagem via. */
+for (const m of page.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+  try { new Function(m[1]); } catch (e) { fails.push(`script da página não compila: ${e.message}`); }
+}
 if (fails.length) { console.error("falhas:\n  " + fails.join("\n  ")); process.exit(1); }
 console.log("checagens: ok");
 if (!WRITE) process.exit(0);
