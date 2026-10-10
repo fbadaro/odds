@@ -1,5 +1,5 @@
 <title>Colmeia ao vivo</title>
-<!--BUILD:14b41cd9b27e-->
+<!--BUILD:38bcbaf11836-->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <!--V3CSS--><style id="v3css">
@@ -4158,8 +4158,17 @@ const catalogue = {
         "pt": "`{context}` declara `[{declared}]`, mas o outro lado não declara `[{missing}]`. Customer/Supplier é um acordo bilateral, e metade dele documenta meio contrato."
     },
     "INCOMPLETE_MUTUAL_TAG": {
-        "en": "`[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the {declaredSide} side.",
-        "pt": "`[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado {declaredSide}."
+        "variantKey": "declaredSide",
+        "variants": {
+            "left": {
+                "en": "`[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the left side.",
+                "pt": "`[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado esquerdo."
+            },
+            "right": {
+                "en": "`[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the right side.",
+                "pt": "`[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado direito."
+            }
+        }
     },
     "INCONSISTENT_BBM": {
         "en": "`{context}` carries `[BBM]` on {withBbm} relationship(s) and not on {withoutBbm}. `[BBM]` characterises the system, so it should appear on every relationship that touches it.",

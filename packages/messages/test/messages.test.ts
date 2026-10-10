@@ -107,6 +107,17 @@ describe("renderização", () => {
     expect(conformist).not.toBe(bbm);
   });
 
+  it("diz o lado de INCOMPLETE_MUTUAL_TAG no idioma da frase", () => {
+    // `declaredSide` é valor fechado ("left"/"right"); interpolado cru, o PT
+    // dizia "aparece só no lado right". O lado é variante, como o `trigger`.
+    const msg = (side: string, locale: "pt" | "en") =>
+      renderMessage("INCOMPLETE_MUTUAL_TAG", { tag: "SK", declaredSide: side }, locale);
+    expect(msg("left", "pt")).toContain("só no lado esquerdo.");
+    expect(msg("right", "pt")).toContain("só no lado direito.");
+    expect(msg("left", "en")).toContain("only on the left side.");
+    expect(msg("right", "en")).toContain("only on the right side.");
+  });
+
   it("aceita um Diagnostic direto", () => {
     const span = { start: { line: 1, column: 1 }, end: { line: 1, column: 2 } };
     expect(render(
@@ -172,6 +183,22 @@ describe("renderização de diagnósticos que o validador de fato emite", () => 
         expect(text, where).not.toMatch(/\{[a-zA-Z]+\}/);
         // Cair no fallback significa template ou variante faltando.
         expect(text, where).not.toContain(diagnostic.code);
+      }
+    }
+  });
+
+  it("nunca põe um valor fechado em inglês dentro da frase em português", () => {
+    // Os valores fechados de `data` que são palavras (AST_SCHEMA.md §1.3) são
+    // contrato, não texto: quem os põe na frase é o template, já traduzido. Se
+    // um deles aparece cru no PT, o template interpolou o dado em vez de
+    // escolher a variante — foi o "lado right" de INCOMPLETE_MUTUAL_TAG.
+    const CLOSED_WORDS = new Set(["left", "right", "conformist", "bbm",
+      "unknown-code", "missing-justification", "not-suppressible"]);
+    for (const { label, diagnostic } of emitted) {
+      const text = render(diagnostic, "pt");
+      for (const value of Object.values(diagnostic.data)) {
+        if (!CLOSED_WORDS.has(value)) continue;
+        expect(text, `${label} / ${diagnostic.code}`).not.toMatch(new RegExp(`\\b${value}\\b`));
       }
     }
   });

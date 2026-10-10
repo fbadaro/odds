@@ -79,7 +79,8 @@ O teste prático, para quem for escrever um code novo: **se o valor mudaria ao t
 | `DOWNSTREAM_ONLY_TAG_MISPLACED` | — | `[{tag}]` can only be declared on the Downstream side of the integration — the side that consumes. | `[{tag}]` só pode ser declarada no lado Downstream da integração — o lado que consome. |
 | `MUTUAL_TAG_ON_DIRECTIONAL` | — | `[{tag}]` describes a mutual dependency and cannot be used with `{connector}`. Change the connector to `<->`. | `[{tag}]` descreve uma dependência mútua e não pode ser usada com `{connector}`. Troque o conector para `<->`. |
 | `POSITIONAL_TAG_ON_MUTUAL` | — | `[{tag}]` is defined by an Upstream/Downstream position, and `<->` has neither. | `[{tag}]` é definida por uma posição Upstream/Downstream, e `<->` não tem nenhuma das duas. |
-| `INCOMPLETE_MUTUAL_TAG` | — | `[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the {declaredSide} side. | `[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado {declaredSide}. |
+| `INCOMPLETE_MUTUAL_TAG` | `declaredSide: "left"` | `[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the left side. | `[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado esquerdo. |
+| `INCOMPLETE_MUTUAL_TAG` | `declaredSide: "right"` | `[{tag}]` is a bilateral agreement and must be declared on both sides — it appears only on the right side. | `[{tag}]` é um acordo bilateral e precisa ser declarada nos dois lados — ela aparece só no lado direito. |
 | `MUTUAL_TAG_WITH_EXTERNAL` | — | `[{tag}]` cannot be used with `{external}`: there is no Shared Kernel or Partnership with a third-party system. | `[{tag}]` não pode ser usada com `{external}`: não existe Shared Kernel nem Partnership com um sistema de terceiros. |
 | `SEPARATION_CONFLICT` | — | The `-x-` connector means the absence of integration. Remove the tags {tags}, or change the connector. | O conector `-x-` significa ausência de integração. Remova as tags {tags}, ou troque o conector. |
 | `ROLE_CONFLICT` | — | `{context}` cannot be Customer `[C]` and Supplier `[S]` at the same time in the same relationship. | `{context}` não pode ser Customer `[C]` e Supplier `[S]` ao mesmo tempo na mesma relação. |
@@ -147,4 +148,4 @@ Quando a implementação começar, este catálogo deve ser extraído para um `me
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
