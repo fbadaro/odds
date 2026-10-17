@@ -1,0 +1,2052 @@
+<title>Bancada do Herói ODDS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ---------------------------------------------------------------------------
+   Tokens do DESIGN.md §3, tema claro. Página deliberadamente de tema único:
+   o herói da landing é julgado no claro, e vesti-la de escuro corromperia
+   exatamente o julgamento que ela existe para permitir. Tudo é pintado
+   explicitamente, para a página se segurar sobre qualquer fundo do hospedeiro.
+--------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+  --c-bg:        250 250 253;
+  --c-panel:     255 255 255;
+  --c-panel2:    244 243 250;
+  --c-border:    230 228 242;
+  --c-ink:        27  26  36;
+  --c-dim:       107 104 128;
+  --c-accent:    108  64 217;
+  --c-lift:      138  91 240;
+  --c-azure:      61 111 232;
+  --c-pulse:      35 168 205;
+  --c-solar:     255 197  61;
+  --c-error:     192  52  43;
+  --c-error-ink: 147  39  31;
+  --c-warning:   166 106   0;
+  --c-info:       91 107 124;
+
+  /* Hues novos para a tipologia de F. Escolhidos escuros o bastante para o
+     rótulo de 9,5px passar em contraste sobre branco — o lilás e o laranja
+     claros ficavam em 3:1 e sumiam. Amarelo não entra: o DESIGN.md §3 diz que
+     ele é chão e nunca tinta, e #FFC53D num traço de 3px sobre branco não
+     passa em contraste nenhum. */
+  --c-jade:       17 128  90;
+  --c-tangerine: 184  86  20;
+  --c-lilac:     139  88 226;
+
+  /* tipo de subdomínio → cor */
+  --t-core:       var(--c-accent);
+  --t-supporting: var(--c-azure);
+  --t-generic:    var(--c-jade);
+  --t-external:   var(--c-tangerine);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: rgb(var(--c-bg));
+  color: rgb(var(--c-ink));
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.disp { font-family: "Montserrat", "Inter", system-ui, sans-serif; letter-spacing: -0.03em; }
+.mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+
+.eyebrow {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; font-weight: 500; line-height: 1;
+  text-transform: uppercase; letter-spacing: .22em;
+  color: rgb(var(--c-dim));
+}
+
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 28px; }
+
+/* ---------- cabeçalho ---------- */
+
+.page-head { padding: 64px 0 40px; }
+.page-head h1 {
+  font-family: "Montserrat", "Inter", system-ui, sans-serif;
+  font-weight: 800; font-size: 44px; line-height: 1.05; letter-spacing: -0.04em;
+  margin: 18px 0 0; text-wrap: balance;
+}
+.standfirst {
+  max-width: 62ch; margin: 18px 0 0;
+  font-size: 18px; line-height: 1.65; color: rgb(var(--c-dim));
+}
+.standfirst strong { color: rgb(var(--c-ink)); font-weight: 600; }
+
+.rails { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.rail {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11.5px; line-height: 1;
+  padding: 7px 11px; border-radius: 999px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  color: rgb(var(--c-dim));
+}
+
+/* ---------- bancada ---------- */
+
+.bench { padding: 40px 0 8px; border-top: 1px solid rgb(var(--c-border)); margin-top: 44px; }
+
+.bench-head { display: flex; gap: 18px; align-items: flex-start; }
+.bench-mark {
+  width: 46px; height: 46px; flex: 0 0 46px;
+  background: rgb(var(--c-solar)); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Montserrat", "Inter", system-ui, sans-serif;
+  font-weight: 800; font-size: 22px; color: rgb(var(--c-ink));
+}
+.bench-head h2 {
+  font-family: "Montserrat", "Inter", system-ui, sans-serif;
+  font-weight: 700; font-size: 30px; line-height: 1.15; letter-spacing: -0.03em;
+  margin: 4px 0 0;
+}
+.bench-sub { margin: 8px 0 0; max-width: 60ch; color: rgb(var(--c-dim)); font-size: 15.5px; }
+
+.claims {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px; margin: 26px 0 24px;
+  padding: 20px 22px; border-radius: 14px;
+  background: rgb(var(--c-panel2));
+}
+.claim b { display: block; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .18em;
+  color: rgb(var(--c-accent)); margin-bottom: 7px; }
+.claim span { font-size: 13.5px; line-height: 1.55; color: rgb(var(--c-dim)); }
+.claim.kill b { color: rgb(var(--c-error-ink)); }
+
+.seg { display: inline-flex; border: 1px solid rgb(var(--c-border)); border-radius: 9px; overflow: hidden; background: rgb(var(--c-panel)); }
+.seg button {
+  font-family: "Inter", system-ui, sans-serif; font-size: 12.5px; line-height: 1;
+  padding: 9px 13px; border: 0; background: transparent; color: rgb(var(--c-dim));
+  cursor: pointer; border-right: 1px solid rgb(var(--c-border));
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: rgb(var(--c-accent)); color: #fff; }
+.seg button:hover:not([aria-pressed="true"]) { background: rgb(var(--c-accent) / .07); color: rgb(var(--c-accent)); }
+.seg button:focus-visible { outline: 2px solid rgb(var(--c-accent)); outline-offset: -2px; }
+
+/* ---------- controles ---------- */
+
+.controls {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin: 0 0 16px;
+}
+.btn {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 13px; font-weight: 500; line-height: 1;
+  padding: 9px 15px; border-radius: 8px; cursor: pointer;
+  border: 1px solid rgb(var(--c-accent)); background: rgb(var(--c-accent)); color: #fff;
+}
+.btn:hover { background: rgb(var(--c-lift)); border-color: rgb(var(--c-lift)); }
+.btn.ghost { background: rgb(var(--c-panel)); color: rgb(var(--c-accent)); }
+.btn.ghost:hover { background: rgb(var(--c-accent) / .07); }
+.btn:focus-visible, input[type=range]:focus-visible {
+  outline: 2px solid rgb(var(--c-accent)); outline-offset: 2px;
+}
+input[type=range] { flex: 1 1 220px; min-width: 180px; accent-color: rgb(var(--c-accent)); }
+.tval {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px; color: rgb(var(--c-dim));
+  font-variant-numeric: tabular-nums; min-width: 74px; text-align: right;
+}
+
+/* ---------- palco ---------- */
+
+.stage-fit { overflow-x: auto; padding-bottom: 6px; }
+.stage { position: relative; width: 880px; }
+
+.dot { width: 7px; height: 7px; border-radius: 50%; flex: 0 0 7px; }
+.chip {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px; line-height: 1; padding: 5px 8px; border-radius: 6px;
+}
+
+/* palco B */
+
+#stage-b { height: 512px; }
+.b-solar { position: absolute; right: 0; top: 54px; width: 500px; height: 392px; border-radius: 22px; background: rgb(var(--c-solar)); }
+.b-panel {
+  position: absolute; left: 0; top: 0; width: 600px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 26px 64px -28px rgb(var(--c-accent) / .5);
+}
+.b-bar { height: 46px; display: flex; align-items: center; gap: 10px; padding: 0 18px; border-bottom: 1px solid rgb(var(--c-border) / .8); }
+.b-code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 14px; line-height: 28px; padding: 14px 0 12px; }
+.b-code > div { padding: 0 18px; white-space: pre; }
+.b-punct { color: rgb(var(--c-dim) / .8); }
+.b-kw { color: rgb(var(--c-accent)); }
+.b-tag { color: rgb(var(--c-azure)); }
+#b-caret { display: inline-block; width: 1.5px; height: 17px; background: rgb(var(--c-accent)); vertical-align: -3px; opacity: 0; }
+.blink { animation: blink 1.05s steps(1) infinite; }
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+
+.b-mapwrap { position: relative; border-top: 1px solid rgb(var(--c-border) / .8); padding: 10px 20px 14px; }
+#b-veil {
+  position: absolute; inset: 0; opacity: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(-45deg, rgb(var(--c-dim) / .07) 0 6px, transparent 6px 13px),
+    rgb(var(--c-panel) / .62);
+}
+#b-stale-badge {
+  display: inline-flex; align-items: center; gap: 7px; opacity: 0;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11.5px; color: rgb(var(--c-dim));
+  border: 1px dashed rgb(var(--c-dim) / .55); border-radius: 999px; padding: 3px 10px;
+}
+
+.b-pill {
+  position: absolute; left: 44px; top: 452px;
+  display: flex; align-items: center; gap: 13px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 999px; padding: 11px 20px; white-space: nowrap;
+  box-shadow: 0 16px 38px -18px rgb(var(--c-accent) / .45);
+}
+.count {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 13px; font-weight: 500;
+  border-radius: 999px; padding: 3px 11px;
+  background: rgb(var(--c-panel2)); color: rgb(var(--c-dim));
+}
+.roll { height: 20px; overflow: hidden; display: inline-block; }
+.roll > span { display: block; }
+.roll > span > span { display: block; height: 20px; line-height: 20px; }
+.sep { width: 1px; height: 18px; background: rgb(var(--c-border)); }
+.slot { position: relative; display: inline-block; height: 22px; min-width: 292px; }
+.slot > * { position: absolute; left: 0; top: 0; }
+
+/* palco C */
+
+#stage-c { height: 470px; }
+.c-panel {
+  position: absolute; inset: 0;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 20px; padding: 22px 26px 24px;
+  box-shadow: 0 26px 64px -30px rgb(var(--c-accent) / .42);
+}
+.c-gates { position: relative; height: 212px; margin-top: 16px; }
+.c-rails { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6, 1fr); }
+.c-rail { border-left: 1px solid rgb(var(--c-border)); padding: 0 0 0 12px; }
+.c-rail:first-child { border-left: 0; padding-left: 6px; }
+.c-rail .n { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; color: rgb(var(--c-dim) / .75); display: block; }
+.c-rail .nm { font-size: 12.5px; font-weight: 500; color: rgb(var(--c-ink)); display: block; margin-top: 3px; }
+
+.c-lane { position: absolute; left: 0; right: 0; top: 40px; height: 108px; }
+.c-tok {
+  position: absolute; height: 20px; border-radius: 5px;
+  background: rgb(var(--c-panel2)); border: 1px solid rgb(var(--c-border));
+  border-left: 3px solid rgb(var(--c-accent));
+}
+.c-trayline {
+  position: absolute; left: 0; right: 0; top: 160px; height: 52px;
+  border-top: 1px dashed rgb(var(--c-border));
+  display: flex; align-items: flex-start; padding-top: 28px;
+}
+.c-trayline span { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; color: rgb(var(--c-dim) / .8); }
+#c-ghost {
+  position: absolute; left: 150px; top: 160px; opacity: 0;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 12px; color: rgb(var(--c-error-ink));
+  border: 1px dashed rgb(var(--c-error) / .5); border-radius: 6px; padding: 4px 9px;
+  background: rgb(var(--c-error) / .06);
+}
+
+.c-out { margin-top: 18px; border-top: 1px solid rgb(var(--c-border)); padding-top: 14px; }
+.c-outhead { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.c-rows { display: grid; gap: 6px; }
+.c-row { display: flex; align-items: center; gap: 11px; opacity: 1; }
+.c-row .ph {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; color: rgb(var(--c-dim)); width: 52px;
+}
+.c-row .cd { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; }
+.sev-error   { color: rgb(var(--c-error-ink)); }
+.sev-warning { color: rgb(var(--c-warning)); }
+.sev-info    { color: rgb(var(--c-info)); }
+.d-error   { background: rgb(var(--c-error)); }
+.d-warning { background: rgb(var(--c-warning)); }
+.d-info    { background: rgb(var(--c-info)); }
+
+.stage-note { margin: 14px 0 0; font-size: 13.5px; color: rgb(var(--c-dim)); max-width: 74ch; }
+.stage-note code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; color: rgb(var(--c-ink)); }
+
+/* palco D */
+
+#stage-d { height: 496px; }
+.d-panel {
+  position: absolute; left: 0; top: 0; width: 880px; height: 450px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 26px 64px -30px rgb(var(--c-accent) / .45);
+}
+.d-panel canvas { display: block; }
+.d-solar { position: absolute; left: 0; top: 464px; width: 880px; height: 16px; border-radius: 8px; background: rgb(var(--c-solar)); }
+.d-status { position: absolute; left: 24px; top: 22px; height: 26px; }
+.d-status > span {
+  position: absolute; left: 0; top: 0; white-space: nowrap;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1;
+  color: rgb(var(--c-dim)); border: 1px solid rgb(var(--c-border));
+  background: rgb(var(--c-panel) / .88); border-radius: 999px; padding: 6px 12px;
+}
+#d-legend {
+  position: absolute; left: 522px; top: 392px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11.5px;
+  color: rgb(var(--c-dim));
+}
+.d-pill {
+  position: absolute; left: 24px; top: 396px;
+  display: flex; align-items: center; gap: 13px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 999px; padding: 10px 18px; white-space: nowrap;
+  box-shadow: 0 16px 38px -20px rgb(var(--c-accent) / .4);
+}
+#d-bbm {
+  color: rgb(var(--c-ink)); background: rgb(var(--c-panel2));
+  border: 1px solid rgb(var(--c-border)); font-weight: 500;
+}
+
+/* palco E */
+
+#stage-e { height: 500px; }
+
+/* A grelha não é mais um cartão: é campo. Sem borda, sem raio, sem sombra e sem
+   chapa branca — só o desenho, mascarado por uma elipse que o dissolve antes de
+   chegar em qualquer aresta. É a máscara que faz a sensação de infinito; um
+   corte duro, mesmo sem borda, ainda leria como limite. Ela transborda o palco
+   em cima e embaixo, onde não há rolagem horizontal para atrapalhar. */
+.e-grid {
+  /* inset 0, e não transbordando: .stage-fit tem overflow-x auto, e pela
+     especificação isso força overflow-y de visible para auto — o que sobrasse
+     para fora do palco seria recortado com a máscara ainda opaca, e o corte
+     reaparecia no topo. Com a máscara terminando dentro da própria caixa não
+     existe recorte possível. Raios de 50% com centro em 50%/50% fazem o zero
+     cair exatamente em cada aresta; o miolo sólido vai até 70% para o mapa não
+     ficar num campo lavado. */
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(rgb(var(--c-accent) / .14) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgb(var(--c-accent) / .14) 1px, transparent 1px) 0 0 / 28px 28px;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 0%, #000 70%, rgb(0 0 0 / .34) 88%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 0%, #000 70%, rgb(0 0 0 / .34) 88%, transparent 100%);
+}
+.e-panel {
+  position: absolute; left: 0; top: 85px; width: 880px; height: 330px;
+  background: transparent; border: 0; border-radius: 0; box-shadow: none;
+  perspective: 1100px;
+}
+#e-scene { position: absolute; inset: 0; transform-style: preserve-3d; }
+#e-wires { position: absolute; inset: 0; width: 880px; height: 330px; overflow: visible; }
+.e-wire {
+  fill: none; stroke: rgb(var(--c-accent) / .45); stroke-width: 1.7; stroke-linecap: round;
+  pointer-events: none; stroke-dasharray: 5 8; animation: e-flow 1.35s linear infinite;
+}
+@keyframes e-flow { to { stroke-dashoffset: -13; } }
+.e-hit { fill: none; stroke: transparent; stroke-width: 20; pointer-events: stroke; cursor: pointer; }
+
+.e-nd {
+  position: absolute; width: 190px; height: 62px;
+  border: 1px solid rgb(var(--c-border)); border-left: 3px solid rgb(var(--nc));
+  background: rgb(var(--c-panel)); border-radius: 4px;
+  padding: 10px 14px; cursor: pointer;
+  box-shadow: 0 10px 26px -18px rgb(var(--c-accent) / .55);
+  display: flex; flex-direction: column; justify-content: center; gap: 4px;
+}
+.e-ring {
+  position: absolute; inset: -4px; border-radius: 7px;
+  border: 1.5px solid rgb(var(--c-accent) / .75); opacity: 0; pointer-events: none;
+}
+.e-type {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 10px; line-height: 1; text-transform: uppercase; letter-spacing: .16em;
+  color: rgb(var(--nc)); display: flex; align-items: center; gap: 6px;
+}
+.e-type i { width: 6px; height: 6px; border-radius: 50%; background: rgb(var(--nc)); display: inline-block; }
+.e-name { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 14.5px; line-height: 1.2; color: rgb(var(--c-ink)); }
+
+.e-tag {
+  position: absolute; transform: translate(-50%, -50%);
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; line-height: 1; padding: 4px 7px; border-radius: 5px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  color: rgb(var(--c-accent)); opacity: 0; pointer-events: none; white-space: nowrap;
+  box-shadow: 0 4px 12px -6px rgb(var(--c-accent) / .5);
+}
+
+.e-file {
+  position: absolute; right: 22px; top: 272px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11.5px; line-height: 1;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel) / .92);
+  color: rgb(var(--c-dim)); pointer-events: none;
+  animation: e-drift 8s ease-in-out infinite;
+}
+@keyframes e-drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+.e-bar {
+  position: absolute; left: 26px; top: 268px;
+  display: flex; align-items: center; gap: 12px; white-space: nowrap;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 999px; padding: 10px 18px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; color: rgb(var(--c-dim));
+  box-shadow: 0 16px 36px -20px rgb(var(--c-accent) / .45);
+}
+.e-bar b { color: rgb(var(--c-ink)); font-weight: 500; }
+.e-slot { position: relative; display: inline-block; height: 17px; min-width: 468px; }
+.e-say { position: absolute; left: 0; top: 0; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) { .e-file, .e-wire { animation: none; } }
+
+/* palco F — o herói de verdade: texto de um lado, mapa do outro */
+
+#stage-f { width: 880px; height: 500px; }
+.f-copy { position: absolute; left: 0; top: 40px; width: 292px; }
+.f-copy h3 {
+  font-family: "Montserrat", "Inter", system-ui, sans-serif;
+  font-weight: 800; font-size: 34px; line-height: 1.06; letter-spacing: -0.04em;
+  margin: 14px 0 0; color: rgb(var(--c-ink));
+}
+.f-copy p { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); }
+.f-cta { display: flex; gap: 9px; margin-top: 20px; }
+.f-cta span {
+  font-family: "Inter", system-ui, sans-serif; font-size: 12.5px; font-weight: 500; line-height: 1;
+  padding: 10px 15px; border-radius: 9px;
+}
+.f-cta .a { background: rgb(var(--c-accent)); color: #fff; }
+.f-cta .b { border: 1px solid rgb(var(--c-border)); color: rgb(var(--c-ink)); }
+
+.f-field { position: absolute; left: 320px; top: 0; width: 560px; height: 440px; perspective: 1000px; }
+.f-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(rgb(var(--c-accent) / .14) 1px, transparent 1px) 0 0 / 26px 26px,
+    linear-gradient(90deg, rgb(var(--c-accent) / .14) 1px, transparent 1px) 0 0 / 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 0%, #000 70%, rgb(0 0 0 / .34) 88%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 0%, #000 70%, rgb(0 0 0 / .34) 88%, transparent 100%);
+}
+#f-scene { position: absolute; inset: 0; transform-style: preserve-3d; }
+#f-wires { position: absolute; inset: 0; width: 560px; height: 440px; overflow: visible; }
+
+/* nós menores: a caixa de E tinha 190x62 e não cabe num campo quase quadrado */
+#stage-f .e-nd { width: 148px; height: 52px; padding: 8px 12px; gap: 3px; }
+#stage-f .e-name { font-size: 13px; }
+#stage-f .e-type { font-size: 9.5px; letter-spacing: .14em; }
+#stage-f .e-ring { inset: -3px; border-radius: 6px; }
+
+.f-file {
+  position: absolute; left: 330px; top: 388px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; line-height: 1;
+  padding: 6px 11px; border-radius: 999px;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel) / .92);
+  color: rgb(var(--c-dim)); pointer-events: none;
+  animation: e-drift 8s ease-in-out infinite;
+}
+.f-bar {
+  position: absolute; left: 320px; top: 452px; width: 560px;
+  display: flex; align-items: center; gap: 11px; white-space: nowrap;
+  border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));
+  border-radius: 10px; padding: 11px 16px;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12px; color: rgb(var(--c-dim));
+  box-shadow: 0 14px 32px -22px rgb(var(--c-accent) / .45);
+}
+.f-bar b { color: rgb(var(--c-ink)); font-weight: 500; }
+.f-slot { position: relative; display: inline-block; height: 16px; flex: 1 1 auto; }
+.f-say { position: absolute; left: 0; top: 0; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) { .f-file { animation: none; } }
+
+/* ---------- beats ---------- */
+
+.beats { margin-top: 26px; padding-top: 20px; border-top: 1px solid rgb(var(--c-border)); }
+.beats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+.beat b { display: block; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; font-weight: 500; color: rgb(var(--c-accent)); margin-bottom: 6px; }
+.beat span { font-size: 13px; line-height: 1.55; color: rgb(var(--c-dim)); }
+.beat code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12px; color: rgb(var(--c-ink)); }
+
+/* ---------- notas ---------- */
+
+.notes { margin: 56px 0 80px; padding-top: 28px; border-top: 1px solid rgb(var(--c-border)); }
+.notes h3 { font-size: 15px; font-weight: 600; margin: 0 0 14px; }
+.notes dl { display: grid; grid-template-columns: 168px 1fr; gap: 12px 22px; margin: 0; }
+.notes dt { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11.5px; color: rgb(var(--c-dim)); padding-top: 2px; }
+.notes dd { margin: 0; font-size: 14px; line-height: 1.6; color: rgb(var(--c-ink)); }
+.notes dd code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; }
+
+@media (max-width: 720px) {
+  .claims, .beats-grid { grid-template-columns: 1fr 1fr; }
+  .notes dl { grid-template-columns: 1fr; gap: 4px 0; }
+  .notes dd { margin-bottom: 12px; }
+  .page-head h1 { font-size: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink { animation: none; }
+}
+</style>
+
+<div class="wrap">
+
+  <header class="page-head">
+    <span class="eyebrow">ODDS · rodada de herói · 09 set 2026</span>
+    <h1 class="disp">Cinco candidatas ao herói</h1>
+    <p class="standfirst">
+      A v4 mostra <strong>um erro sendo consertado</strong>. As duas primeiras aqui encenam o que a landing
+      ainda não disse: que o mapa <strong>nunca apaga</strong> enquanto você digita, e que existe um
+      <strong>pipeline de seis fases</strong> atrás do veredito. A terceira não encena regra nenhuma — encena
+      a permissão que este idioma dá e nenhuma ferramenta de desenho dá: <strong>documentar a bagunça</strong>.
+    </p>
+    <div class="rails">
+      <span class="rail">sem tag na aresta · DESIGN.md §4.2</span>
+      <span class="rail">o veredito acontece no branco</span>
+      <span class="rail">o texto é a fonte · ADR-0003</span>
+      <span class="rail">estado natural = mapa curado</span>
+      <span class="rail">codes reais · AST_SCHEMA §1.3</span>
+      <span class="rail">B e C: uma passada, sem laço · D e E quebram isso de propósito</span>
+      <span class="rail">E rompe a §4.2 com registro</span>
+    </div>
+  </header>
+
+  <!-- =================== BANCADA B =================== -->
+
+  <section class="bench">
+    <div class="bench-head">
+      <div class="bench-mark disp">B</div>
+      <div>
+        <h2 class="disp">O mapa que não pisca</h2>
+        <p class="bench-sub">
+          Toda tecla intermediária é um erro de sintaxe. A pergunta que a landing não responde é o que
+          acontece com o desenho nesse meio-tempo — e a resposta da especificação é a coisa mais
+          tranquilizadora que este produto tem para dizer.
+        </p>
+      </div>
+    </div>
+
+    <div class="claims">
+      <div class="claim">
+        <b>Aposta</b>
+        <span>Na calma. O medo de um playground ao vivo é a tela branca a cada tecla; aqui ela nunca chega.</span>
+      </div>
+      <div class="claim">
+        <b>Encena</b>
+        <span>RULES-EN §5: um <code>SYNTAX_ERROR</code> puro congela o último diagrama bom e o marca como
+        obsoleto; assim que o arquivo volta a compilar, a degradação passa a ser por elemento — nó
+        fantasma pontilhado para referência que não resolve.</span>
+      </div>
+      <div class="claim kill">
+        <b>O que a derruba</b>
+        <span>A ausência de falha é pouco dramática. Se ler como "não acontece nada", o conceito morreu —
+        é o mais arriscado dos dois.</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" data-play="b">Rodar de novo</button>
+      <button class="btn ghost" data-final="b">Ir ao frame final</button>
+      <input type="range" id="scrub-b" min="0" max="1000" value="1000" aria-label="Percorrer a linha do tempo de B">
+      <span class="tval" id="t-b">4,30 s</span>
+    </div>
+
+    <div class="stage-fit">
+      <div class="stage" id="stage-b">
+        <div class="b-solar"></div>
+
+        <div class="b-panel">
+          <div class="b-bar">
+            <span class="dot" style="background: rgb(var(--c-border)); width: 9px; height: 9px; flex-basis: 9px;"></span>
+            <span class="mono" style="font-size: 13px; color: rgb(var(--c-dim));">vendas.odds</span>
+            <span style="flex: 1 1 auto;"></span>
+            <span id="b-stale-badge">
+              <span style="width:8px;height:8px;border-radius:2px;background:rgb(var(--c-dim) / .5);display:inline-block;"></span>
+              congelado · obsoleto
+            </span>
+          </div>
+
+          <div class="b-code">
+            <div><span class="b-kw">mapping</span> <span class="b-punct">{</span></div>
+            <div>  Vendas <span class="b-tag">[OHS]</span> --&gt; <span class="b-tag">[ACL]</span> Entrega</div>
+            <div style="position: relative;"><span id="b-typed" style="opacity: 0;">  Cobranca [ACL] &lt;-- [OHS] Emissor</span><span id="b-caret" class="blink"></span><span id="b-typed-rich" style="position: absolute; left: 18px; top: 0;">  Cobranca <span class="b-tag">[ACL]</span> &lt;-- <span class="b-tag">[OHS]</span> Emissor</span></div>
+            <div><span class="b-punct">}</span></div>
+          </div>
+
+          <div class="b-mapwrap">
+            <svg viewBox="0 0 560 250" width="560" height="250" role="img"
+                 aria-label="Mapa abstrato de quatro contextos: enquanto o arquivo não compila o desenho fica congelado e marcado como obsoleto; quando volta a compilar, a referência que não resolve é desenhada como nó fantasma pontilhado e depois se solidifica.">
+              <defs>
+                <marker id="b-ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M0 1 L9 5 L0 9 z" fill="rgb(var(--c-accent))"/>
+                </marker>
+                <marker id="b-ar-bad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M0 1 L9 5 L0 9 z" fill="rgb(var(--c-error))"/>
+                </marker>
+              </defs>
+
+              <path d="M105 86 V 152" stroke="rgb(var(--c-accent))" stroke-width="1.6" stroke-linecap="round" fill="none" opacity=".42"/>
+              <path d="M180 56 H 372" stroke="rgb(var(--c-accent))" stroke-width="2" stroke-linecap="round" fill="none" marker-end="url(#b-ar)"/>
+
+              <path id="b-e3-bad" d="M180 182 H 372" stroke="rgb(var(--c-error))" stroke-width="2.2"
+                    stroke-linecap="round" fill="none" stroke-dasharray="8 7" opacity="0" marker-end="url(#b-ar-bad)"/>
+              <path id="b-e3-good" d="M180 182 H 372" stroke="rgb(var(--c-accent))" stroke-width="2.2"
+                    stroke-linecap="round" fill="none" style="stroke-dasharray: 192; stroke-dashoffset: 0;" marker-end="url(#b-ar)"/>
+
+              <g>
+                <rect x="30" y="26" width="150" height="60" rx="13" fill="rgb(var(--c-accent) / .07)" stroke="rgb(var(--c-accent))" stroke-width="1.5"/>
+                <rect x="50" y="46" width="64" height="8" rx="4" fill="rgb(var(--c-accent))" opacity=".75"/>
+                <rect x="50" y="64" width="96" height="7" rx="3.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+              </g>
+              <g>
+                <rect x="380" y="26" width="150" height="60" rx="13" fill="rgb(var(--c-azure) / .07)" stroke="rgb(var(--c-azure))" stroke-width="1.5"/>
+                <rect x="400" y="46" width="54" height="8" rx="4" fill="rgb(var(--c-azure))" opacity=".75"/>
+                <rect x="400" y="64" width="90" height="7" rx="3.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+              </g>
+              <g>
+                <rect x="30" y="152" width="150" height="60" rx="13" fill="rgb(var(--c-pulse) / .08)" stroke="rgb(var(--c-pulse))" stroke-width="1.5"/>
+                <rect x="50" y="172" width="58" height="8" rx="4" fill="rgb(var(--c-pulse))" opacity=".8"/>
+                <rect x="50" y="190" width="84" height="7" rx="3.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+              </g>
+
+              <g id="b-n4-ghost" opacity="0">
+                <rect x="380" y="152" width="150" height="60" rx="13" fill="none"
+                      stroke="rgb(var(--c-dim))" stroke-width="1.5" stroke-dasharray="6 5" opacity=".7"/>
+                <rect x="400" y="172" width="60" height="8" rx="4" fill="rgb(var(--c-dim))" opacity=".28"/>
+                <rect x="400" y="190" width="88" height="7" rx="3.5" fill="rgb(var(--c-dim))" opacity=".2"/>
+              </g>
+              <g id="b-n4-solid">
+                <rect x="380" y="152" width="150" height="60" rx="13" fill="rgb(var(--c-accent) / .07)" stroke="rgb(var(--c-accent))" stroke-width="1.5"/>
+                <rect x="400" y="172" width="60" height="8" rx="4" fill="rgb(var(--c-accent))" opacity=".75"/>
+                <rect x="400" y="190" width="88" height="7" rx="3.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+              </g>
+            </svg>
+            <div id="b-veil"></div>
+          </div>
+        </div>
+
+        <div class="b-pill">
+          <span class="count" id="b-count">
+            <span class="dot" id="b-dot" style="background: rgb(var(--c-dim));"></span>
+            <span class="roll"><span id="b-roll" style="transform: translateY(-40px);"><span>0</span><span>1</span><span>0</span></span></span>
+          </span>
+          <span class="sep"></span>
+          <span class="slot">
+            <span class="mono b-msg" id="b-msg-clean" style="font-size: 13px; color: rgb(var(--c-dim)); top: 3px;">nenhum diagnóstico neste mapa</span>
+            <span class="chip b-msg" id="b-msg-syntax" style="opacity: 0; color: rgb(var(--c-error-ink)); background: rgb(var(--c-error) / .12); top: 1px;">SYNTAX_ERROR</span>
+            <span class="chip b-msg" id="b-msg-phantom" style="opacity: 0; color: rgb(var(--c-error-ink)); background: rgb(var(--c-error) / .12); top: 1px;">PHANTOM_REFERENCE</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <p class="stage-note">
+      O congelamento cobre <strong>27 dos 33 caracteres</strong> digitados — é a maior parte da cena, e é
+      esse o argumento. Só quando o primeiro caractere do operando da direita cai é que o arquivo volta a
+      ter árvore; daí em diante o erro é <code>PHANTOM_REFERENCE</code> (fase 3, <code>error</code>) e a
+      degradação passa a ser por elemento.
+    </p>
+
+    <div class="beats">
+      <span class="eyebrow">Beats</span>
+      <div class="beats-grid" style="margin-top: 16px;">
+        <div class="beat">
+          <b>0,00 – 0,70 s</b>
+          <span>Repouso. Três contextos, nenhum diagnóstico, contador em 0. O cursor pisca no fim do bloco <code>mapping</code>.</span>
+        </div>
+        <div class="beat">
+          <b>0,70 – 2,15 s</b>
+          <span>A digitação começa e o arquivo deixa de compilar. O mapa <em>não some</em>: ganha o véu hachurado e o selo <code>congelado · obsoleto</code>. Ele mente sobre o arquivo, e diz que mente.</span>
+        </div>
+        <div class="beat">
+          <b>2,15 – 2,60 s</b>
+          <span>Cai o primeiro caractere do operando: há árvore de novo. O véu sai, e a aresta nova chega tracejada em vermelho até um nó pontilhado — <code>PHANTOM_REFERENCE</code>. Contador 0 → 1.</span>
+        </div>
+        <div class="beat">
+          <b>3,05 s em diante</b>
+          <span>Duas teclas de correção. O fantasma se solidifica, a aresta costura de vermelho para roxo, o contador rola 1 → 0. Nada volta ao início: o mapa limpo é a composição.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== BANCADA C =================== -->
+
+  <section class="bench">
+    <div class="bench-head">
+      <div class="bench-mark disp">C</div>
+      <div>
+        <h2 class="disp">Seis portões</h2>
+        <p class="bench-sub">
+          O pipeline de validação, visível. Um elemento que erra sai da fila e leva os filhos — e o
+          diagnóstico derivado que qualquer outro linter emitiria na fase 3 aparece de leve e se dissolve
+          sem nunca ser emitido.
+        </p>
+      </div>
+    </div>
+
+    <div class="claims">
+      <div class="claim">
+        <b>Aposta</b>
+        <span>No rigor. Isto é um compilador de desenho estratégico, não um desenhador com opinião.</span>
+      </div>
+      <div class="claim">
+        <b>Encena</b>
+        <span>RULES-EN §3.1 e §3.2: seis fases, princípio de erro-raiz em leitura ampla, e
+        <code>warning</code> que nunca invalida nada. A ordem de emissão é a normativa — fase ascendente.</span>
+      </div>
+      <div class="claim kill">
+        <b>O que a derruba</b>
+        <span>Explicar a máquina em vez de vender o valor. É o mais frio dos dois e o que mais corre risco
+        de virar diagrama de processo num topo de página.</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" data-play="c">Rodar de novo</button>
+      <button class="btn ghost" data-final="c">Ir ao frame final</button>
+      <input type="range" id="scrub-c" min="0" max="1000" value="1000" aria-label="Percorrer a linha do tempo de C">
+      <span class="tval" id="t-c">4,40 s</span>
+    </div>
+
+    <div class="stage-fit">
+      <div class="stage" id="stage-c">
+        <div class="c-panel">
+          <div style="display: flex; align-items: baseline; gap: 12px;">
+            <span class="eyebrow">pipeline de validação</span>
+            <span class="mono" style="font-size: 12px; color: rgb(var(--c-dim) / .8);">fase 0 já passou — existe árvore</span>
+          </div>
+
+          <div class="c-gates">
+            <div class="c-rails">
+              <div class="c-rail"><span class="n">01</span><span class="nm">Estrutural</span></div>
+              <div class="c-rail"><span class="n">02</span><span class="nm">Declarativa</span></div>
+              <div class="c-rail"><span class="n">03</span><span class="nm">Referencial</span></div>
+              <div class="c-rail"><span class="n">04</span><span class="nm">Relacional</span></div>
+              <div class="c-rail"><span class="n">05</span><span class="nm">Estratégica</span></div>
+              <div class="c-rail"><span class="n">06</span><span class="nm">Supressão</span></div>
+            </div>
+
+            <div class="c-lane">
+              <div class="c-tok" id="c-t1" style="top: 0px;   left: 0px;  width: 38px; transform: translateX(752px);"></div>
+              <div class="c-tok" id="c-t2" style="top: 22px;  left: 0px;  width: 28px; transform: translateX(454px);"></div>
+              <div class="c-tok" id="c-t3" style="top: 44px;  left: 0px;  width: 44px; transform: translateX(46px);"></div>
+              <div class="c-tok" id="c-t4" style="top: 66px;  left: 16px; width: 24px; transform: translateX(94px);"></div>
+              <div class="c-tok" id="c-t5" style="top: 88px; left: 0px;  width: 32px; transform: translateX(752px);"></div>
+            </div>
+
+            <div class="c-trayline"><span>declarados, inválidos — seguem na tabela de símbolos, para não virarem referências fantasma</span></div>
+            <div id="c-ghost">PHANTOM_REFERENCE · não emitido</div>
+          </div>
+
+          <div class="c-out">
+            <div class="c-outhead">
+              <span class="eyebrow">array emitido</span>
+              <span class="count">
+                <span class="dot d-error"></span>
+                <span class="roll"><span id="c-re" style="transform: translateY(-40px);"><span>0</span><span>1</span><span>2</span></span></span>
+              </span>
+              <span class="count">
+                <span class="dot d-warning"></span>
+                <span class="roll"><span id="c-rw" style="transform: translateY(-20px);"><span>0</span><span>1</span></span></span>
+              </span>
+              <span class="count">
+                <span class="dot d-info"></span>
+                <span class="roll"><span id="c-ri" style="transform: translateY(-20px);"><span>0</span><span>1</span></span></span>
+              </span>
+            </div>
+
+            <div class="c-rows">
+              <div class="c-row" id="c-r1"><span class="dot d-error"></span><span class="ph">fase 1</span><span class="cd sev-error">ORPHAN_CONTEXT</span></div>
+              <div class="c-row" id="c-r2"><span class="dot d-error"></span><span class="ph">fase 4</span><span class="cd sev-error">UPSTREAM_ONLY_TAG_MISPLACED</span></div>
+              <div class="c-row" id="c-r3"><span class="dot d-warning"></span><span class="ph">fase 5</span><span class="cd sev-warning">GENERIC_WITHOUT_OHS</span></div>
+              <div class="c-row" id="c-r4"><span class="dot d-info"></span><span class="ph">fase 6</span><span class="cd sev-info">UNUSED_SUPPRESSION</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="stage-note">
+      A frase inteira da bancada está no que <em>não</em> está ali: o contexto órfão saiu na fase 1, então a
+      linha do <code>mapping</code> que o cita atravessa a fase 3 sem emitir <code>PHANTOM_REFERENCE</code>.
+      Um erro seu, um diagnóstico nosso. O <code>warning</code> da fase 5 não tira ninguém da fila — só
+      <code>error</code> invalida.
+    </p>
+
+    <div class="beats">
+      <span class="eyebrow">Beats</span>
+      <div class="beats-grid" style="margin-top: 16px;">
+        <div class="beat">
+          <b>0,55 – 1,20 s</b>
+          <span>Fase 1. Um <code>context</code> declarado fora de um <code>subdomain</code> acende em vermelho e desce para a bandeja, levando o filho junto. Primeira linha do array.</span>
+        </div>
+        <div class="beat">
+          <b>1,60 – 2,05 s</b>
+          <span>Fase 3. O fantasma aparece a 18% e some. É o <code>PHANTOM_REFERENCE</code> que não vai ser emitido, porque quem seria acusado já não está na fila.</span>
+        </div>
+        <div class="beat">
+          <b>2,05 – 2,95 s</b>
+          <span>Fase 4, um <code>error</code>: acende e sai. Fase 5, um <code>warning</code>: acende e <em>fica</em>. É a diferença que o §3.1 faz, encenada em quatro décimos.</span>
+        </div>
+        <div class="beat">
+          <b>3,40 s em diante</b>
+          <span>Fase 6 fecha com um <code>info</code>. O array descansa em ordem normativa — fase ascendente — e o contador lê 2 · 1 · 1.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== BANCADA D =================== -->
+
+  <section class="bench">
+    <div class="bench-head">
+      <div class="bench-mark disp">D</div>
+      <div>
+        <h2 class="disp">A lama tem nome</h2>
+        <p class="bench-sub">
+          A terceira não encena uma regra. Encena a permissão que este idioma dá e nenhuma ferramenta de
+          desenho dá: <strong>documentar a bagunça em vez de fingir que ela não está lá.</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="claims">
+      <div class="claim">
+        <b>Aposta</b>
+        <span>No reconhecimento. Todo mundo que abre esta página tem uma bola de lama no trabalho. A cena
+        começa dentro dela, e não num mapa limpo que ninguém tem.</span>
+      </div>
+      <div class="claim">
+        <b>Encena</b>
+        <span><code>[BBM]</code> é a nona tag e a única que <em>não</em> é padrão de Context Map
+        (RULES §0.2): sem regra de posição, sem regra de conflito, legal em qualquer conector — inclusive
+        <code>-x-</code>. Ela não julga o contrato; descreve o sistema.</span>
+      </div>
+      <div class="claim kill">
+        <b>O que a derruba</b>
+        <span>É a única que continua se mexendo depois de acabar, e a que mais se afasta do registro sóbrio
+        das outras. Se a lama parecer enfeite em vez de verdade, morreu na hora.</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" data-play="d">Rodar de novo</button>
+      <button class="btn ghost" data-final="d">Ir ao frame final</button>
+      <input type="range" id="scrub-d" min="0" max="1000" value="1000" aria-label="Percorrer a linha do tempo de D">
+      <span class="tval" id="t-d">5,20 s</span>
+    </div>
+
+    <div class="stage-fit">
+      <div class="stage" id="stage-d">
+        <div class="d-panel">
+          <canvas id="d-canvas" role="img"
+                  aria-label="Um emaranhado de vinte pontos e setenta e quatro fios sem fronteira nenhuma se reorganiza em quatro contextos delimitados e quatro relações; o quarto contexto continua fervilhando por dentro e é o que recebe a tag BBM."></canvas>
+        </div>
+        <div class="d-solar"></div>
+
+        <div class="d-status">
+          <span id="d-chip-mud">sem mapa · 20 pontos, 74 fios, 0 fronteiras</span>
+          <span id="d-chip-map">4 contextos · 4 relações · 1 fronteira em volta da lama</span>
+        </div>
+
+        <div id="d-legend">sistema legado — declarado, não escondido</div>
+
+        <div class="d-pill">
+          <span class="count">
+            <span class="dot" style="background: rgb(var(--c-dim));"></span>
+            <span>0</span>
+          </span>
+          <span class="sep"></span>
+          <span class="mono" style="font-size: 13px; color: rgb(var(--c-dim));">nenhum diagnóstico neste mapa</span>
+          <span class="chip" id="d-bbm">[BBM]</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="stage-note">
+      A cor conta a história sozinha: <strong>a lama é grafite, o mapa é roxo</strong>. Três contextos perdem
+      o grafite quando ganham fronteira; o quarto fica com ele — e continua fervilhando por dentro do próprio
+      contorno. Nenhum diagnóstico é emitido, porque <code>[BBM]</code> não é acusação: é descrição.
+    </p>
+
+    <div class="beats">
+      <span class="eyebrow">Beats</span>
+      <div class="beats-grid" style="margin-top: 16px;">
+        <div class="beat">
+          <b>0,00 – 1,10 s</b>
+          <span>Só a lama. Vinte pontos à deriva e setenta e quatro fios entre eles, sem fronteira nenhuma. É feio de propósito, e é o desenho que o leitor reconhece.</span>
+        </div>
+        <div class="beat">
+          <b>1,10 – 2,65 s</b>
+          <span>A ordem chega. Os pontos voam para quatro aglomerados e as fronteiras se desenham em volta deles, com atraso — primeiro o agrupamento, depois o contorno.</span>
+        </div>
+        <div class="beat">
+          <b>1,95 – 3,80 s</b>
+          <span>Os fios somem e sobram <em>quatro</em>. As relações de verdade estavam ali dentro o tempo todo; o emaranhado só não deixava contá-las.</span>
+        </div>
+        <div class="beat">
+          <b>3,90 s em diante</b>
+          <span>A quarta fronteira não limpa por dentro. Ela recebe o chip <code>[BBM]</code> e continua fervendo, contida. Nada volta ao início e nada para: é a única das três que respira.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== BANCADA E =================== -->
+
+  <section class="bench">
+    <div class="bench-head">
+      <div class="bench-mark disp">E</div>
+      <div>
+        <h2 class="disp">O mapa responde</h2>
+        <p class="bench-sub">
+          O nível de movimento do <strong>ArchStudio</strong> com o comportamento de grafo do
+          <strong>EventCatalog</strong>. A única das quatro em que o herói é <em>o produto</em>, e não uma
+          ilustração dele: passe o mouse e ele responde.
+        </p>
+      </div>
+    </div>
+
+    <div class="claims">
+      <div class="claim">
+        <b>Aposta</b>
+        <span>Na demonstração. Um herói que é a tela de verdade não precisa prometer nada — ele mostra. E
+        quem passa o mouse descobre montante e jusante sem ler uma linha de texto.</span>
+      </div>
+      <div class="claim">
+        <b>Encena</b>
+        <span>Foco por vizinhança, e a identidade da relação como <strong>par não ordenado</strong>: passar
+        pela linha acende as duas pontas juntas. Cor por tipo de subdomínio — <code>core</code>,
+        <code>supporting</code>, <code>generic</code> — e o <code>external</code> no grafite, porque não
+        pertence a subdomínio nenhum.</span>
+      </div>
+      <div class="claim kill">
+        <b>O que a derruba</b>
+        <span>Depender do mouse. A passada automática existe justamente porque a maioria não passa o cursor
+        — se a história só funcionar para quem interage, o herói falhou com o resto.</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" data-play="e">Rodar de novo</button>
+      <button class="btn ghost" data-final="e">Ir ao frame final</button>
+      <input type="range" id="scrub-e" min="0" max="1000" value="1000" aria-label="Percorrer a linha do tempo de E">
+      <span class="tval" id="t-e">5,20 s</span>
+    </div>
+
+    <div class="stage-fit">
+      <div class="stage" id="stage-e">
+        <div class="e-grid"></div>
+        <div class="e-panel">
+          <div id="e-scene">
+            <svg id="e-wires" viewBox="0 0 880 330" aria-hidden="true">
+              <defs>
+                <marker id="e-mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                  <path d="M0 1 L9 5 L0 9 z" fill="rgb(var(--c-accent))"/>
+                </marker>
+              </defs>
+              <path class="e-wire" data-e="0" d="M218,213 C276,213 273,79 331,79" marker-end="url(#e-mk)"/>
+              <path class="e-wire" data-e="1" d="M218,57 C276,57 273,79 331,79" marker-end="url(#e-mk)"/>
+              <path class="e-wire" data-e="2" d="M528,79 C586,79 583,53 641,53" marker-end="url(#e-mk)"/>
+              <path class="e-wire" data-e="3" d="M218,213 C276,213 273,227 331,227" marker-end="url(#e-mk)"/>
+              <path class="e-wire" data-e="4" d="M528,227 C586,227 583,203 641,203" marker-end="url(#e-mk)"/>
+              <path class="e-hit" data-e="0" d="M218,213 C276,213 273,79 331,79"/>
+              <path class="e-hit" data-e="1" d="M218,57 C276,57 273,79 331,79"/>
+              <path class="e-hit" data-e="2" d="M528,79 C586,79 583,53 641,53"/>
+              <path class="e-hit" data-e="3" d="M218,213 C276,213 273,227 331,227"/>
+              <path class="e-hit" data-e="4" d="M528,227 C586,227 583,203 641,203"/>
+            </svg>
+
+            <div class="e-nd" data-n="gateway" tabindex="0" style="left: 28px; top: 26px; --nc: var(--c-dim);">
+              <span class="e-ring"></span><span class="e-type"><i></i>external</span><span class="e-name">Gateway</span></div>
+            <div class="e-nd" data-n="precificacao" tabindex="0" style="left: 28px; top: 182px; --nc: var(--c-accent);">
+              <span class="e-ring"></span><span class="e-type"><i></i>core</span><span class="e-name">Precificacao</span></div>
+            <div class="e-nd" data-n="checkout" tabindex="0" style="left: 338px; top: 48px; --nc: var(--c-accent);">
+              <span class="e-ring"></span><span class="e-type"><i></i>core</span><span class="e-name">Checkout</span></div>
+            <div class="e-nd" data-n="faturamento" tabindex="0" style="left: 338px; top: 196px; --nc: var(--c-azure);">
+              <span class="e-ring"></span><span class="e-type"><i></i>supporting</span><span class="e-name">Faturamento</span></div>
+            <div class="e-nd" data-n="entrega" tabindex="0" style="left: 648px; top: 22px; --nc: var(--c-azure);">
+              <span class="e-ring"></span><span class="e-type"><i></i>supporting</span><span class="e-name">Entrega</span></div>
+            <div class="e-nd" data-n="notificacao" tabindex="0" style="left: 648px; top: 172px; --nc: var(--c-pulse);">
+              <span class="e-ring"></span><span class="e-type"><i></i>generic</span><span class="e-name">Notificacao</span></div>
+
+            <span class="e-file">vendas.odds · 6 contextos, 5 relações</span>
+            <div class="e-bar" id="e-bar"><span class="e-slot">
+              <span class="e-say" id="e-say-0">a passada automática mostra sozinha · o mouse assume quando você quiser</span>
+              <span class="e-say" id="e-say-1" style="opacity: 0;"><b>Checkout</b> · core · 2 a montante, 1 a jusante</span>
+              <span class="e-say" id="e-say-2" style="opacity: 0;"><b>Faturamento</b> · supporting · 1 a montante, 1 a jusante</span>
+              <span class="e-say" id="e-say-3" style="opacity: 0;"><b>Notificacao</b> · generic · 1 a montante, 0 a jusante</span>
+              <span class="e-say" id="e-say-live" style="opacity: 0;"></span>
+            </span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="stage-note">
+      <strong>A quebra, registrada.</strong> O <code>DESIGN.md</code> §4.2 proíbe tag sobre a linha na arte
+      de herói — foi por isso que a v4 move a tag <em>no editor</em>. Aqui elas aparecem na aresta, de
+      propósito: é o gesto mais forte da peça, e sem ele o hover só acende e apaga caixa. Se E for a
+      escolhida, a exceção sobe para o <code>DESIGN.md</code> §4.2 e fecha com o <code>CHANGELOG.md</code>;
+      enquanto for candidata, mora aqui.
+    </p>
+
+    <div class="beats">
+      <span class="eyebrow">Beats</span>
+      <div class="beats-grid" style="margin-top: 16px;">
+        <div class="beat">
+          <b>0,15 – 1,30 s</b>
+          <span>Entrada em escada: os contextos sobem e as arestas entram atrás deles, já serrilhadas e correndo. O mapa inteiro aceso, sem foco.</span>
+        </div>
+        <div class="beat">
+          <b>1,90 – 3,60 s</b>
+          <span>A passada automática caminha sozinha: <code>Checkout</code>, o hub, depois <code>Faturamento</code>. A cada parada o resto apaga e as tags da relação aparecem sobre a linha.</span>
+        </div>
+        <div class="beat">
+          <b>3,60 – 4,40 s</b>
+          <span><code>Notificacao</code>, a ponta: só ela e o vizinho ficam. A vizinhança aperta a cada passo, e é isso que ensina o gesto sem uma linha de instrução.</span>
+        </div>
+        <div class="beat">
+          <b>4,40 s em diante</b>
+          <span>Descansa com <code>Faturamento</code> em foco e o resto a 45% — legível, não apagado. E no primeiro movimento do mouse a peça entrega o controle: daí em diante quem foca é você.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== BANCADA F =================== -->
+
+  <section class="bench">
+    <div class="bench-head">
+      <div class="bench-mark disp">F</div>
+      <div>
+        <h2 class="disp">O mapa responde, no lugar dele</h2>
+        <p class="bench-sub">
+          A mesma peça de E, redesenhada para o formato que ela vai ocupar de verdade: <strong>metade da
+          largura, ao lado do título</strong>. Cinco contextos em vez de seis, caixas menores, e um campo
+          quase quadrado em vez de uma faixa deitada. <strong>E continua ali em cima, intacta.</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="claims">
+      <div class="claim">
+        <b>O que mudou</b>
+        <span>Campo de 880×500 para <strong>560×440</strong> (1,27:1 no lugar de 1,76:1). Nó de 190×62 para
+        148×52. Saiu <code>Entrega</code>, e o fluxo virou um <strong>ziguezague descendente</strong> — num
+        campo quadrado, três colunas lado a lado não cabem sem espremer as arestas.</span>
+      </div>
+      <div class="claim">
+        <b>O que ficou</b>
+        <span>Tudo o que você aprovou em E: serrilhado correndo, caixas retas, grelha sem moldura
+        dissolvendo nos quatro lados, foco por vizinhança, tags na aresta, e a passada automática que
+        entrega o controle no primeiro movimento do mouse.</span>
+      </div>
+      <div class="claim kill">
+        <b>O que a derruba</b>
+        <span>Cinco contextos podem ser pouco para convencer de que a ferramenta aguenta um domínio
+        complexo — o <code>PRD.md</code> §5.3 trata isso como problema real. Se o mapa parecer de brinquedo,
+        a proporção resolveu o encaixe e estragou o argumento.</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" data-play="f">Rodar de novo</button>
+      <button class="btn ghost" data-final="f">Ir ao frame final</button>
+      <input type="range" id="scrub-f" min="0" max="1000" value="1000" aria-label="Percorrer a linha do tempo de F">
+      <span class="tval" id="t-f">5,20 s</span>
+    </div>
+
+    <div class="controls" style="margin-top: -4px;">
+      <span class="ctl-label" style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 11px; text-transform: uppercase; letter-spacing: .18em; color: rgb(var(--c-dim));">cor da borda</span>
+      <div class="seg" id="f-scheme">
+        <button data-s="tipo" aria-pressed="true">por tipo de subdomínio</button>
+        <button data-s="ctx" aria-pressed="false">uma por contexto</button>
+      </div>
+    </div>
+
+    <div class="stage-fit">
+      <div class="stage" id="stage-f">
+        <div class="f-copy">
+          <span class="eyebrow">linter de desenho estratégico</span>
+          <h3 class="disp">Sintaxe perfeita. Arquitetura cara.</h3>
+          <p>O arquivo compila. O desenho é que não fecha — e é isso que ninguém te conta antes da fatura chegar.</p>
+          <div class="f-cta"><span class="a">Abrir o playground</span><span class="b">Ver a linguagem</span></div>
+        </div>
+
+        <div class="f-field">
+          <div class="f-grid"></div>
+          <div id="f-scene">
+            <svg id="f-wires" viewBox="0 0 560 440" aria-hidden="true">
+              <defs>
+                <marker id="f-mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+                  <path d="M0 1 L9 5 L0 9 z" fill="rgb(var(--c-accent))"/>
+                </marker>
+              </defs>
+            </svg>
+          </div>
+          <span class="f-file">vendas.odds · 5 contextos</span>
+        </div>
+
+        <div class="f-bar" id="f-bar"><span class="f-slot">
+          <span class="f-say" id="f-say-0">a passada automática mostra sozinha · o mouse assume quando você quiser</span>
+          <span class="f-say" id="f-say-1" style="opacity: 0;"><b>Checkout</b> · core · 2 a montante, 1 a jusante</span>
+          <span class="f-say" id="f-say-2" style="opacity: 0;"><b>Faturamento</b> · supporting · 1 a montante, 1 a jusante</span>
+          <span class="f-say" id="f-say-3" style="opacity: 0;"><b>Notificacao</b> · generic · 1 a montante, 0 a jusante</span>
+          <span class="f-say" id="f-say-live" style="opacity: 0;"></span>
+        </span></div>
+      </div>
+    </div>
+
+    <p class="stage-note">
+      A coluna da esquerda é <strong>maquete</strong>, não proposta: existe só para você julgar a proporção
+      com o título ao lado, que é a pergunta que abriu esta rodada. O texto sai do <code>PRD.md</code>; o
+      desenho da landing continua sendo o da v4.
+    </p>
+
+    <div class="beats">
+      <span class="eyebrow">Beats</span>
+      <div class="beats-grid" style="margin-top: 16px;">
+        <div class="beat">
+          <b>0,15 – 1,30 s</b>
+          <span>Os cinco contextos sobem em escada e as arestas entram atrás, já serrilhadas. O ziguezague desce da esquerda alta para a esquerda baixa, cruzando o campo duas vezes.</span>
+        </div>
+        <div class="beat">
+          <b>1,90 – 3,60 s</b>
+          <span>A caminhada: <code>Checkout</code>, o núcleo com três vizinhos; depois <code>Faturamento</code>, com dois. A cada parada o resto apaga e as tags aparecem na linha.</span>
+        </div>
+        <div class="beat">
+          <b>3,60 – 4,40 s</b>
+          <span><code>Notificacao</code>, a ponta: só ela e o vizinho. Com cinco contextos o aperto é mais rápido de ler do que com seis — é o ganho colateral de ter cortado uma caixa.</span>
+        </div>
+        <div class="beat">
+          <b>4,40 s em diante</b>
+          <span>Descansa em <code>Faturamento</code>, resto a 45%. A barra de estado saiu de dentro do desenho e virou legenda embaixo — num campo estreito ela não cabia sem brigar com o mapa.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== NOTAS =================== -->
+
+  <section class="notes">
+    <span class="eyebrow">Notas de bancada</span>
+    <h3 style="margin-top: 16px;">Cinco coisas que valem registro antes de escolher</h3>
+    <dl>
+      <dt>duração</dt>
+      <dd>B em <strong>4,30 s</strong>, C em <strong>4,40 s</strong>, D e E em <strong>5,20 s</strong> — a
+      v4 roda em 3,4 s. Todas são mais longas porque contam uma história de três atos em vez de um gesto.
+      Encurtar é decisão real, não ajuste: em B o corte é o tempo de leitura do estado fantasma; em C, o
+      número de portões com dwell próprio; em D, o quanto de lama o leitor aguenta antes da ordem chegar —
+      e esse é justamente o segundo em que a peça convence ou não.</dd>
+
+      <dt>estado natural</dt>
+      <dd>O DOM em repouso <em>é</em> o frame final de B e C, como na v4. Consequência de graça:
+      <code>prefers-reduced-motion</code> simplesmente não roda a timeline e sobra a composição legível,
+      sem media query duplicando valores.</dd>
+
+      <dt>o que E quebra</dt>
+      <dd>Duas coisas. <strong>A §4.2 do <code>DESIGN.md</code></strong>, que proíbe tag sobre a linha na
+      arte de herói — com registro, e com o compromisso de subir a exceção para o arquivo normativo se E
+      vencer. E <strong>a regra de que o herói não interage</strong>: as outras três são filme, esta é
+      software. Quem passar o mouse assume o controle e a passada automática sai de cena; quem não passar
+      recebe a demonstração inteira mesmo assim. Se a peça só funcionar para quem interage, ela falhou.</dd>
+
+      <dt>o que D quebra</dt>
+      <dd><strong>A regra da passada única.</strong> B, C e a v4 param; D continua fervendo dentro da
+      fronteira da lama, para sempre. Foi de propósito — a tese da peça é que a lama <em>não</em> some — mas
+      é a decisão mais discutível das três, e a que muda a natureza do herói: de composição para presença.
+      Sob <code>prefers-reduced-motion</code> a amplitude vai a zero e o canvas repinta só quando o estado
+      muda, então quem pediu menos movimento recebe uma imagem parada de verdade, não um loop disfarçado.</dd>
+
+      <dt>as duas referências de E</dt>
+      <dd>Do <strong>ArchStudio</strong> (a mesma referência do <code>DESIGN.md</code> §1) veio o que ainda
+      não tinha sido tomado dela: o <em>movimento</em> — plano em perspectiva inclinando na direção do
+      cursor, profundidade por nó via <code>translateZ</code>, entrada em escada, pill em mono flutuando.
+      Do <strong>EventCatalog</strong> veio o comportamento de grafo: cor por tipo, foco na vizinhança com o
+      resto apagado, e rótulo de aresta deslocado pela <em>normal da curva</em> — sem isso, duas arestas
+      que chegam no mesmo contexto empilham os chips no mesmo ponto, que foi exatamente o defeito da
+      primeira versão. Isso é requisito de render, não detalhe de mock.</dd>
+
+      <dt>canvas, e por quê</dt>
+      <dd>D não é SVG: é uma timeline do GSAP animando um objeto JS comum, com o canvas redesenhado a cada
+      tick. Setenta e quatro curvas se retorcendo em SVG seriam setenta e quatro nós de DOM sob layout; em
+      canvas é um <code>clearRect</code>. A semente do gerador é fixa, então a composição é a mesma a cada
+      recarga — sem isso não dá para julgar desenho nenhum.</dd>
+
+      <dt>técnica</dt>
+      <dd>Só <code>transform</code>, <code>opacity</code> e <code>stroke-dashoffset</code> — nada que
+      dispare layout. Os contadores são rolos de <code>translateY</code>, não troca de texto, para que o
+      scrub funcione nos dois sentidos.</dd>
+
+      <dt>dependência</dt>
+      <dd>GSAP 3 core, do cdnjs, e nenhum plugin de clube — o showcase deles vive de MorphSVG, DrawSVG,
+      SplitText e Inertia, que são todos pagos, então nada disso entrou. Num mock descartável a dependência
+      está coberta pelo <code>ADR-0007</code>; se um destes for para o produto, ela vira ADR própria. B e C
+      ainda cabem em <code>@keyframes</code>, como a v4 provou. <strong>D e E não cabem</strong>: D precisa
+      de uma engine animando o modelo do canvas, e E precisa de <code>quickTo</code> para o paralaxe e de
+      <code>overwrite: "auto"</code> para um foco não brigar com o anterior. E vale registrar o que E
+      <em>não</em> prova: as seis posições foram postas à mão, então nada aqui diz nada sobre a qualidade
+      do layout automático nem sobre o custo de re-render a cada tecla — as duas perguntas que decidem a
+      biblioteca, e que o <code>ADR-0007</code> continua guardando.</dd>
+
+      <dt>tema único</dt>
+      <dd>Esta página é só clara, de propósito. O herói da landing é julgado no claro; vesti-la de escuro
+      corromperia o julgamento que ela existe para permitir.</dd>
+    </dl>
+  </section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  if (!window.gsap) return;
+
+  var E = "power2.out";
+  var timelines = {};
+
+  /* ------------------------------------------------------------------ B */
+
+  var LINE_BAD  = "  Cobranca [ACL] <-- [OHS] Emisor";   // 33 · com o erro de digitação
+  var LINE_GOOD = "  Cobranca [ACL] <-- [OHS] Emissor";  // 34 · o nome que resolve
+  var OPERAND_AT = 27;                                    // onde começa o operando da direita
+  var SHARED     = 31;                                    // "...Emis" — prefixo comum às duas
+
+  function typer(el, str, from, to, dur) {
+    var o = { n: from };
+    return gsap.to(o, {
+      n: to, duration: dur, ease: "none",
+      onUpdate: function () { el.textContent = str.slice(0, Math.round(o.n)); }
+    });
+  }
+
+  function buildB() {
+    var typed = document.getElementById("b-typed");
+    var tl = gsap.timeline({ paused: true });
+
+    // estado acusado: linha vazia, mapa de três nós, nada emitido
+    tl.set("#b-caret", { opacity: 1 }, 0)
+      .set("#b-typed", { opacity: 1 }, 0)
+      .set("#b-typed-rich", { opacity: 0 }, 0)
+      .set("#b-veil, #b-stale-badge, #b-e3-bad, #b-n4-ghost, #b-msg-syntax, #b-msg-phantom", { opacity: 0 }, 0)
+      .set("#b-n4-solid", { opacity: 0 }, 0)
+      .set("#b-e3-good", { opacity: 0, strokeDashoffset: 192 }, 0)
+      .set("#b-msg-clean", { opacity: 1 }, 0)
+      .set("#b-roll", { xPercent: 0, yPercent: 0, y: 0 }, 0)
+      .set("#b-dot", { backgroundColor: "rgba(107,104,128,1)" }, 0);
+    // sustenta a linha vazia durante o repouso — resolve o seek em qualquer ponto
+    tl.add(typer(typed, LINE_BAD, 0, 0, 0.72), 0);
+
+    // 0,70 — o arquivo deixa de compilar: congela e marca como obsoleto
+    tl.to("#b-veil", { opacity: 1, duration: .26, ease: E }, 0.70)
+      .to("#b-stale-badge", { opacity: 1, duration: .26, ease: E }, 0.70)
+      .to("#b-msg-clean", { opacity: 0, duration: .18 }, 0.70)
+      .to("#b-msg-syntax", { opacity: 1, duration: .22 }, 0.80);
+
+    // 0,72 – 2,15 — digitando o que ainda não é uma relação
+    tl.add(typer(typed, LINE_BAD, 0, OPERAND_AT, 1.42), 0.72);
+
+    // 2,15 — cai o primeiro caractere do operando: há árvore outra vez
+    tl.to("#b-veil", { opacity: 0, duration: .34, ease: E }, 2.15)
+      .to("#b-stale-badge", { opacity: 0, duration: .28 }, 2.15)
+      .to("#b-msg-syntax", { opacity: 0, duration: .18 }, 2.15)
+      .add(typer(typed, LINE_BAD, OPERAND_AT, LINE_BAD.length, .46), 2.15);
+
+    // 2,30 — a referência não resolve: nó fantasma, aresta tracejada, contador 1
+    tl.to("#b-n4-ghost", { opacity: 1, duration: .3, ease: E }, 2.32)
+      .to("#b-e3-bad", { opacity: 1, duration: .3, ease: E }, 2.32)
+      .to("#b-msg-phantom", { opacity: 1, duration: .22 }, 2.40)
+      .to("#b-roll", { y: -20, duration: .34, ease: "power3.inOut" }, 2.40)
+      .to("#b-dot", { backgroundColor: "rgba(192,52,43,1)", duration: .2 }, 2.40);
+
+    // 3,05 – 3,55 — duas teclas de correção
+    tl.add(typer(typed, LINE_BAD, LINE_BAD.length, SHARED, .18), 3.05)
+      .add(typer(typed, LINE_GOOD, SHARED, LINE_GOOD.length, .28), 3.25);
+
+    // 3,50 — a cura
+    tl.to("#b-e3-bad", { opacity: 0, duration: .3 }, 3.50)
+      .to("#b-e3-good", { opacity: 1, duration: .12 }, 3.50)
+      .to("#b-e3-good", { strokeDashoffset: 0, duration: .55, ease: "power2.inOut" }, 3.50)
+      .to("#b-n4-ghost", { opacity: 0, duration: .34 }, 3.58)
+      .to("#b-n4-solid", { opacity: 1, duration: .34, ease: E }, 3.58)
+      .to("#b-msg-phantom", { opacity: 0, duration: .2 }, 3.62)
+      .to("#b-roll", { y: -40, duration: .34, ease: "power3.inOut" }, 3.70)
+      .to("#b-dot", { backgroundColor: "rgba(107,104,128,1)", duration: .25 }, 3.70)
+      .to("#b-msg-clean", { opacity: 1, duration: .26 }, 3.80)
+      .to("#b-caret", { opacity: 0, duration: .2 }, 3.95);
+
+    // a linha volta a ser texto colorido — troca dura, imperceptível
+    tl.set("#b-typed", { opacity: 0 }, 3.56).set("#b-typed-rich", { opacity: 1 }, 3.56);
+
+    // deixa a passada respirar antes do fim
+    tl.to({}, { duration: .35 }, 3.95);
+    return tl;
+  }
+
+  /* ------------------------------------------------------------------ C */
+
+  // centros dos seis portões, já descontada a largura da coluna de tokens
+  var GATES = [46, 182, 318, 454, 590, 726];
+  var EXIT  = 752;
+  var TRAY  = 120; // pouso na bandeja, medido dentro da faixa (160 - top 40 da faixa)
+
+  function buildC() {
+    var tl = gsap.timeline({ paused: true });
+    var toks = ["#c-t1", "#c-t2", "#c-t3", "#c-t4", "#c-t5"];
+    var tops = [0, 22, 44, 66, 88];
+
+    // estado inicial: coluna antes do portão 1, bandeja vazia, array vazio
+    tl.set(toks, { xPercent: 0, yPercent: 0, x: 4, y: 0, opacity: 1, borderColor: "rgba(230,228,242,1)", borderLeftColor: "rgba(108,64,217,1)", backgroundColor: "rgba(244,243,250,1)" }, 0)
+      .set("#c-r1, #c-r2, #c-r3, #c-r4", { opacity: 0, y: -6 }, 0)
+      .set("#c-ghost", { opacity: 0 }, 0)
+      .set("#c-re, #c-rw, #c-ri", { xPercent: 0, yPercent: 0, y: 0 }, 0);
+
+    var all = toks.join(", ");
+    var live = "#c-t1, #c-t2, #c-t5";      // sobreviventes da fase 1
+    var late = "#c-t1, #c-t5";             // sobreviventes da fase 4
+
+    // fase 1 — o órfão e o filho saem da fila
+    tl.to(all, { x: GATES[0], duration: .40, ease: E }, 0.55)
+      .to("#c-t3", { borderColor: "rgba(192,52,43,1)", borderLeftColor: "rgba(192,52,43,1)", backgroundColor: "rgba(192,52,43,0.09)", duration: .18 }, 0.95)
+      .to("#c-t4", { borderColor: "rgba(192,52,43,1)", borderLeftColor: "rgba(192,52,43,1)", backgroundColor: "rgba(192,52,43,0.09)", duration: .18 }, 1.00)
+      .to("#c-t3", { y: TRAY - tops[2], opacity: .5, duration: .42, ease: "power2.in" }, 1.10)
+      .to("#c-t4", { y: TRAY - tops[3], x: GATES[0] + 48, opacity: .5, duration: .42, ease: "power2.in" }, 1.14)
+      .to("#c-r1", { opacity: 1, y: 0, duration: .3, ease: E }, 1.12)
+      .to("#c-re", { y: -20, duration: .3, ease: "power3.inOut" }, 1.12);
+
+    // fase 2 — nada
+    tl.to(live, { x: GATES[1], duration: .38, ease: E }, 1.30);
+
+    // fase 3 — o diagnóstico derivado que não acontece
+    tl.to(live, { x: GATES[2], duration: .38, ease: E }, 1.68)
+      .fromTo("#c-ghost", { opacity: 0, y: 4 }, { opacity: .22, y: 0, duration: .28, ease: E }, 1.80)
+      .to("#c-ghost", { opacity: 0, y: -4, duration: .40, ease: "power1.in" }, 2.16);
+
+    // fase 4 — outro error, e ele também sai
+    tl.to(live, { x: GATES[3], duration: .38, ease: E }, 2.12)
+      .to("#c-t2", { borderColor: "rgba(192,52,43,1)", borderLeftColor: "rgba(192,52,43,1)", backgroundColor: "rgba(192,52,43,0.09)", duration: .18 }, 2.44)
+      .to("#c-t2", { y: TRAY - tops[1], opacity: .5, duration: .42, ease: "power2.in" }, 2.54)
+      .to("#c-r2", { opacity: 1, y: 0, duration: .3, ease: E }, 2.56)
+      .to("#c-re", { y: -40, duration: .3, ease: "power3.inOut" }, 2.56);
+
+    // fase 5 — um warning: acende e fica
+    tl.to(late, { x: GATES[4], duration: .38, ease: E }, 2.60)
+      .to("#c-t5", { borderColor: "rgba(166,106,0,0.55)", borderLeftColor: "rgba(166,106,0,1)", backgroundColor: "rgba(166,106,0,0.08)", duration: .22 }, 2.92)
+      .to("#c-r3", { opacity: 1, y: 0, duration: .3, ease: E }, 2.98)
+      .to("#c-rw", { y: -20, duration: .3, ease: "power3.inOut" }, 2.98);
+
+    // fase 6 — supressão fecha o array
+    tl.to(late, { x: GATES[5], duration: .38, ease: E }, 3.06)
+      .to("#c-r4", { opacity: 1, y: 0, duration: .3, ease: E }, 3.42)
+      .to("#c-ri", { y: -20, duration: .3, ease: "power3.inOut" }, 3.42);
+
+    // saída
+    tl.to(late, { x: EXIT, duration: .42, ease: E }, 3.60);
+    tl.to({}, { duration: .38 }, 4.02);
+    return tl;
+  }
+
+  /* ------------------------------------------------------------------ D
+     Uma timeline do GSAP dirigindo um modelo de dados, e o canvas redesenhado
+     a cada tick. É o que sustenta metade do showcase deles sem custar plugin:
+     o core anima objetos JS quaisquer, e quem desenha somos nós.
+  ------------------------------------------------------------------------- */
+
+  function buildD() {
+    var cv = document.getElementById("d-canvas");
+    if (!cv || !cv.getContext) return gsap.timeline({ paused: true });
+
+    var W = 878, H = 448;
+    var ctx = cv.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W + "px"; cv.style.height = H + "px";
+    ctx.scale(dpr, dpr);
+
+    var DIM = "107,104,128", ACC = "108,64,217", AZU = "61,111,232", PUL = "35,168,205";
+
+    // quatro contextos. O último é a lama: fica com o grafite e não limpa por dentro.
+    var BOX = [
+      { x:  96, y:  96, w: 160, h:  90, rgb: ACC },
+      { x: 468, y:  76, w: 160, h:  90, rgb: AZU },
+      { x: 150, y: 300, w: 160, h:  90, rgb: PUL },
+      { x: 520, y: 268, w: 192, h: 110, rgb: DIM }
+    ];
+    var MUD = 3;
+
+    // as quatro relações que estavam escondidas no emaranhado
+    var ROUTE = [
+      [[256,141],[362,141],[362,121],[468,121]],
+      [[176,186],[176,243],[230,243],[230,300]],
+      [[310,345],[415,345],[415,323],[520,323]],
+      [[548,166],[548,217],[616,217],[616,268]]
+    ];
+
+    // semente fixa: a composição tem de ser a mesma a cada recarga, senão não se julga
+    function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+    var R = rng(20260909);
+
+    // três contextos com quatro pontos; a lama com oito, porque ela precisa de massa
+    // para continuar parecendo lama depois que a fronteira fecha em volta dela
+    var pts = [], i, j2, k, c;
+    for (c = 0; c < 4; c++) {
+      var n = c === MUD ? 8 : 4, bx = BOX[c];
+      for (k = 0; k < n; k++) {
+        pts.push({
+          cx: 46 + (R() + R()) * .5 * (W - 92), cy: 40 + (R() + R()) * .5 * (H - 80),
+          ox: c === MUD ? bx.x + 24 + R() * (bx.w - 48) : bx.x + bx.w * (k % 2 ? .70 : .30),
+          oy: c === MUD ? bx.y + 24 + R() * (bx.h - 48) : bx.y + bx.h * (k > 1 ? .70 : .32),
+          ph: R() * 6.2832, sp: .45 + R() * .7, cl: c
+        });
+      }
+    }
+    var N = pts.length, M0 = 12;   // a lama ocupa os índices 12..19
+
+    var threads = [];
+    // todos os pares dentro da lama — garantidos, não sorteados
+    for (i = M0; i < N; i++)
+      for (j2 = i + 1; j2 < N; j2++)
+        threads.push({ a: i, b: j2, bend: (R() - .5) * 70, ph: R() * 6.2832 });
+    // e o emaranhado geral por cima
+    for (i = 0; i < 46; i++) {
+      var a = Math.floor(R() * N), b = Math.floor(R() * N);
+      if (a === b) b = (b + 5) % N;
+      threads.push({ a: a, b: b, bend: (R() - .5) * 96, ph: R() * 6.2832 });
+    }
+
+    var st = { order: 0, cull: 0, bound: 0, link: 0, amp: 1 };
+
+    function rr(x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function at(p, T) {
+      var o = st.order;
+      var x = p.cx + (p.ox - p.cx) * o, y = p.cy + (p.oy - p.cy) * o;
+      var amp = (17 * (1 - o) + (p.cl === MUD ? 9 : 1.1) * o) * st.amp;
+      return [x + Math.sin(T * p.sp + p.ph) * amp, y + Math.cos(T * p.sp * .8 + p.ph * 1.3) * amp];
+    }
+
+    function polyline(route, pr, rgb) {
+      if (pr <= 0) return null;
+      var segs = [], tot = 0, j;
+      for (j = 1; j < route.length; j++) {
+        var L = Math.hypot(route[j][0] - route[j-1][0], route[j][1] - route[j-1][1]);
+        segs.push(L); tot += L;
+      }
+      var want = tot * pr, acc = 0, prev = route[0], end = route[0];
+      ctx.strokeStyle = "rgb(" + rgb + ")";
+      ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.lineJoin = "round";
+      ctx.beginPath(); ctx.moveTo(route[0][0], route[0][1]);
+      for (j = 1; j < route.length; j++) {
+        if (acc + segs[j-1] <= want) {
+          ctx.lineTo(route[j][0], route[j][1]);
+          prev = route[j-1]; end = route[j]; acc += segs[j-1];
+        } else {
+          var f = (want - acc) / segs[j-1];
+          var ex = route[j-1][0] + (route[j][0] - route[j-1][0]) * f;
+          var ey = route[j-1][1] + (route[j][1] - route[j-1][1]) * f;
+          ctx.lineTo(ex, ey); prev = route[j-1]; end = [ex, ey];
+          break;
+        }
+      }
+      ctx.stroke();
+      return [prev, end];
+    }
+
+    function arrow(from, to, rgb, al) {
+      var ang = Math.atan2(to[1] - from[1], to[0] - from[0]);
+      ctx.fillStyle = "rgba(" + rgb + "," + al + ")";
+      ctx.beginPath();
+      ctx.moveTo(to[0], to[1]);
+      ctx.lineTo(to[0] - Math.cos(ang - .42) * 9, to[1] - Math.sin(ang - .42) * 9);
+      ctx.lineTo(to[0] - Math.cos(ang + .42) * 9, to[1] - Math.sin(ang + .42) * 9);
+      ctx.closePath(); ctx.fill();
+    }
+
+    function draw() {
+      var T = gsap.ticker.time, j, b, P = [];
+      ctx.clearRect(0, 0, W, H);
+
+      // malha de 28px do DESIGN.md, atrás de tudo
+      ctx.strokeStyle = "rgba(" + ACC + ",0.05)"; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (j = 28; j < W; j += 28) { ctx.moveTo(j + .5, 0); ctx.lineTo(j + .5, H); }
+      for (j = 28; j < H; j += 28) { ctx.moveTo(0, j + .5); ctx.lineTo(W, j + .5); }
+      ctx.stroke();
+
+      for (j = 0; j < 4; j++) {
+        b = BOX[j];
+        ctx.fillStyle = "rgba(" + b.rgb + "," + (0.075 * st.bound) + ")";
+        rr(b.x, b.y, b.w, b.h, 15); ctx.fill();
+        if (j === MUD) continue;   // a da lama não recebe conteúdo: ela tem lama dentro
+        ctx.fillStyle = "rgba(" + b.rgb + "," + (0.72 * st.bound) + ")";
+        rr(b.x + 22, b.y + 26, 62, 8, 4); ctx.fill();
+        ctx.fillStyle = "rgba(" + DIM + "," + (0.30 * st.bound) + ")";
+        rr(b.x + 22, b.y + 44, 92, 7, 3.5); ctx.fill();
+      }
+
+      for (j = 0; j < N; j++) P.push(at(pts[j], T));
+
+      // os fios do emaranhado: somem, menos os que estão dentro da lama
+      for (j = 0; j < threads.length; j++) {
+        var th = threads[j], A = P[th.a], Z = P[th.b];
+        var inMud = pts[th.a].cl === MUD && pts[th.b].cl === MUD;
+        var al = inMud ? (0.14 + 0.13 * (1 - st.cull)) : 0.19 * (1 - st.cull);
+        if (al <= 0.005) continue;
+        var dx = Z[0] - A[0], dy = Z[1] - A[1], L = Math.hypot(dx, dy) || 1;
+        var bend = th.bend * (1 - st.order) + Math.sin(T * .55 + th.ph) * 7 * st.amp;
+        ctx.strokeStyle = "rgba(" + DIM + "," + al + ")"; ctx.lineWidth = 1.1;
+        ctx.beginPath(); ctx.moveTo(A[0], A[1]);
+        ctx.quadraticCurveTo((A[0]+Z[0])/2 - dy/L*bend, (A[1]+Z[1])/2 + dx/L*bend, Z[0], Z[1]);
+        ctx.stroke();
+      }
+
+      // as quatro relações, desenhando-se em escada
+      for (j = 0; j < ROUTE.length; j++) {
+        var pr = Math.max(0, Math.min(1, (st.link - j * 0.12) / 0.64));
+        var seg = polyline(ROUTE[j], pr, ACC);
+        if (seg && pr >= 1) arrow(seg[0], seg[1], ACC, 1);
+      }
+
+      // pontos: os três contextos limpos perdem os seus; a lama guarda os dela
+      for (j = 0; j < N; j++) {
+        var p = pts[j];
+        var pa = p.cl === MUD ? (0.30 + 0.22 * (1 - st.order)) : 0.40 * (1 - st.order);
+        if (pa <= 0.01) continue;
+        ctx.fillStyle = "rgba(" + DIM + "," + pa + ")";
+        ctx.beginPath(); ctx.arc(P[j][0], P[j][1], p.cl === MUD ? 2.7 : 2.2, 0, 6.2832); ctx.fill();
+      }
+
+      // as fronteiras por cima, desenhando-se com tracejado
+      for (j = 0; j < 4; j++) {
+        b = BOX[j];
+        var bp = Math.max(0, Math.min(1, (st.bound - j * 0.09) / 0.73));
+        if (bp <= 0) continue;
+        var per = 2 * (b.w + b.h);
+        ctx.save();
+        ctx.setLineDash([per, per]); ctx.lineDashOffset = per * (1 - bp);
+        ctx.strokeStyle = "rgba(" + b.rgb + ",0.92)"; ctx.lineWidth = 1.6;
+        rr(b.x, b.y, b.w, b.h, 15); ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) st.amp = 0;
+    var lastKey = "";
+    gsap.ticker.add(function () {
+      if (reduce) {
+        var key = st.order + "|" + st.cull + "|" + st.bound + "|" + st.link;
+        if (key === lastKey) return;
+        lastKey = key;
+      }
+      draw();
+    });
+
+    var tl = gsap.timeline({ paused: true });
+    tl.set(st, { order: 0, cull: 0, bound: 0, link: 0, amp: reduce ? 0 : 1 }, 0)
+      .set("#d-chip-mud", { opacity: 1 }, 0)
+      .set("#d-chip-map", { opacity: 0 }, 0)
+      .set("#d-bbm, #d-legend", { opacity: 0, y: 7 }, 0);
+
+    tl.to(st, { order: 1, duration: 1.30, ease: "power2.inOut" }, 1.10)
+      .to(st, { bound: 1, duration: 1.10, ease: "power2.out" }, 1.55)
+      .to(st, { cull: 1, duration: 0.95, ease: "power1.in" }, 1.95)
+      .to(st, { link: 1, duration: 1.05, ease: "power2.out" }, 2.75)
+      .to(st, { amp: reduce ? 0 : 0.42, duration: 1.10, ease: "power1.out" }, 3.90);
+
+    tl.to("#d-chip-mud", { opacity: 0, duration: .28 }, 2.42)
+      .to("#d-chip-map", { opacity: 1, duration: .32, ease: E }, 2.58)
+      .to("#d-legend", { opacity: 1, y: 0, duration: .45, ease: E }, 3.95)
+      .to("#d-bbm", { opacity: 1, y: 0, duration: .40, ease: E }, 4.12);
+
+    tl.to({}, { duration: .35 }, 4.85);
+    return tl;
+  }
+
+  /* ------------------------------------------------------------------ E
+     O herói que é a tela. A passada automática existe porque a maioria não
+     passa o mouse; no primeiro movimento ela entrega o controle e sai.
+  ------------------------------------------------------------------------- */
+
+  function buildE() {
+    var panel = document.querySelector("#stage-e .e-panel");
+    if (!panel) return gsap.timeline({ paused: true });
+    var scene = document.getElementById("e-scene");
+
+    var EN = {
+      gateway:      { z:  8 }, precificacao: { z: 12 }, checkout:    { z: 20 },
+      faturamento:  { z: 16 }, entrega:      { z:  9 }, notificacao: { z:  9 }
+    };
+    var EE = [
+      { a: "precificacao", b: "checkout",    up: "OHS", dn: "ACL" },
+      { a: "gateway",      b: "checkout",    up: "OHS", dn: "ACL" },
+      { a: "checkout",     b: "entrega",     up: "OHS", dn: "ACL" },
+      { a: "precificacao", b: "faturamento", up: "OHS", dn: "ACL" },
+      { a: "faturamento",  b: "notificacao", up: "S",   dn: "C"   }
+    ];
+
+    var ids = Object.keys(EN), i, j;
+    for (i = 0; i < ids.length; i++) {
+      var el = panel.querySelector('[data-n="' + ids[i] + '"]');
+      EN[ids[i]].id = ids[i];
+      EN[ids[i]].el = el;
+      EN[ids[i]].ring = el.querySelector(".e-ring");
+      gsap.set(el, { z: EN[ids[i]].z });
+    }
+    for (i = 0; i < EE.length; i++) {
+      EE[i].el = panel.querySelector('.e-wire[data-e="' + i + '"]');
+      EE[i].hit = panel.querySelector('.e-hit[data-e="' + i + '"]');
+      EE[i].len = EE[i].el.getTotalLength();
+    }
+
+    // rótulo sai da linha pela NORMAL da curva; sem isso dois chips empilham
+    // no mesmo ponto quando duas arestas chegam no mesmo contexto
+    function mkTag(path, L, t, txt) {
+      var p0 = path.getPointAtLength(L * t), p1 = path.getPointAtLength(Math.min(L, L * t + 7));
+      var dx = p1.x - p0.x, dy = p1.y - p0.y, m = Math.hypot(dx, dy) || 1;
+      var nx = -dy / m, ny = dx / m;
+      if (ny > 0) { nx = -nx; ny = -ny; }
+      var sp = document.createElement("span");
+      sp.className = "e-tag"; sp.textContent = txt;
+      sp.style.left = (p0.x + nx * 15) + "px";
+      sp.style.top = (p0.y + ny * 15) + "px";
+      scene.appendChild(sp);
+      return sp;
+    }
+    for (i = 0; i < EE.length; i++) {
+      EE[i].tu = mkTag(EE[i].el, EE[i].len, 0.28, "[" + EE[i].up + "]");
+      EE[i].td = mkTag(EE[i].el, EE[i].len, 0.70, "[" + EE[i].dn + "]");
+    }
+
+    var adj = {};
+    for (i = 0; i < ids.length; i++) adj[ids[i]] = {};
+    for (i = 0; i < EE.length; i++) { adj[EE[i].a][EE[i].b] = 1; adj[EE[i].b][EE[i].a] = 1; }
+
+    function lit(id, focus) { return !focus || id === focus || adj[focus][id]; }
+
+    // um estado de foco escrito como tweens, e não como chamada de função:
+    // é o que faz o scrub voltar direito nos dois sentidos
+    function stateAt(tl, t, focus, dim, dur) {
+      var k;
+      for (k = 0; k < ids.length; k++) {
+        var n = EN[ids[k]], on = lit(n.id, focus);
+        tl.to(n.el, { autoAlpha: on ? 1 : dim, scale: focus === n.id ? 1.05 : 1, duration: dur, ease: E }, t);
+        tl.to(n.ring, { autoAlpha: focus === n.id ? 1 : 0, duration: dur, ease: E }, t);
+      }
+      for (k = 0; k < EE.length; k++) {
+        var e2 = EE[k], hot = focus && (e2.a === focus || e2.b === focus);
+        tl.to(e2.el, {
+          opacity: focus ? (hot ? 1 : 0.14) : 1,
+          strokeWidth: hot ? 2.6 : 1.7, duration: dur, ease: E
+        }, t);
+        tl.to([e2.tu, e2.td], { autoAlpha: hot ? 1 : 0, duration: dur * .8, ease: E }, t);
+      }
+    }
+
+    function sayAt(tl, t, idx) {
+      for (var k = 0; k < 4; k++)
+        tl.to("#e-say-" + k, { autoAlpha: k === idx ? 1 : 0, duration: .28 }, t);
+    }
+
+    var tl = gsap.timeline({ paused: true });
+
+    tl.set(".e-nd", { autoAlpha: 0, y: 22, scale: 1 }, 0)
+      .set(".e-ring", { autoAlpha: 0 }, 0)
+      .set(".e-tag", { autoAlpha: 0 }, 0)
+      .set("#e-say-1, #e-say-2, #e-say-3, #e-say-live", { autoAlpha: 0 }, 0)
+      .set("#e-say-0", { autoAlpha: 1 }, 0);
+    for (i = 0; i < EE.length; i++) tl.set(EE[i].el, { opacity: 0 }, 0);
+
+    // entrada
+    tl.to(".e-nd", { autoAlpha: 1, y: 0, duration: .7, stagger: .07, ease: "power3.out" }, 0.15);
+    for (i = 0; i < EE.length; i++)
+      tl.to(EE[i].el, { opacity: 1, duration: .6, ease: "power2.out" }, 0.38 + i * 0.07);
+
+    // a caminhada: hub, vizinho, ponta — a vizinhança apertando a cada parada
+    stateAt(tl, 1.90, "checkout",    0.18, .5); sayAt(tl, 1.95, 1);
+    stateAt(tl, 2.85, "faturamento", 0.18, .5); sayAt(tl, 2.90, 2);
+    stateAt(tl, 3.70, "notificacao", 0.18, .5); sayAt(tl, 3.75, 3);
+    // descanso: foco mantido, mas o resto legível em vez de apagado
+    stateAt(tl, 4.45, "faturamento", 0.45, .6); sayAt(tl, 4.50, 2);
+    tl.to({}, { duration: .3 }, 4.90);
+
+    /* --------------------------------------------- o mouse assume daqui */
+
+    var live = false, sayLive = document.getElementById("e-say-live");
+
+    function handover() { if (!live) { live = true; tl.pause(); } }
+
+    function paintE(focus, edge) {
+      var k;
+      for (k = 0; k < ids.length; k++) {
+        var n = EN[ids[k]];
+        var on = edge ? (n.id === edge.a || n.id === edge.b) : lit(n.id, focus);
+        gsap.to(n.el, { autoAlpha: on ? 1 : 0.18, scale: (focus === n.id || (edge && on)) ? 1.05 : 1,
+                        duration: .3, ease: E, overwrite: "auto" }, 0);
+        gsap.to(n.ring, { autoAlpha: (focus === n.id || (edge && on)) ? 1 : 0, duration: .3, overwrite: "auto" });
+      }
+      for (k = 0; k < EE.length; k++) {
+        var e2 = EE[k];
+        var hot = edge ? (e2 === edge) : (focus && (e2.a === focus || e2.b === focus));
+        gsap.to(e2.el, { opacity: (focus || edge) ? (hot ? 1 : 0.12) : 1, strokeWidth: hot ? 2.6 : 1.7,
+                         duration: .3, ease: E, overwrite: "auto" });
+        gsap.to([e2.tu, e2.td], { autoAlpha: hot ? 1 : 0, duration: .26, overwrite: "auto" });
+      }
+      gsap.to("#e-say-0, #e-say-1, #e-say-2, #e-say-3", { autoAlpha: 0, duration: .2, overwrite: "auto" });
+      gsap.to(sayLive, { autoAlpha: 1, duration: .2, overwrite: "auto" });
+    }
+
+    function deg(id) {
+      var u = 0, d = 0, k;
+      for (k = 0; k < EE.length; k++) { if (EE[k].b === id) u++; if (EE[k].a === id) d++; }
+      return u + " a montante, " + d + " a jusante";
+    }
+    function label(id) { return EN[id].el.querySelector(".e-name").textContent; }
+    function type(id) { return EN[id].el.querySelector(".e-type").textContent; }
+
+    for (i = 0; i < ids.length; i++) {
+      (function (n) {
+        function on() {
+          handover();
+          sayLive.innerHTML = "<b>" + label(n.id) + "</b> · " + type(n.id) + " · " + deg(n.id);
+          paintE(n.id, null);
+        }
+        n.el.addEventListener("mouseenter", on);
+        n.el.addEventListener("focus", on);
+      })(EN[ids[i]]);
+    }
+    for (i = 0; i < EE.length; i++) {
+      (function (e2) {
+        e2.hit.addEventListener("mouseenter", function () {
+          handover();
+          sayLive.innerHTML = "<b>{" + label(e2.a) + ", " + label(e2.b) + "}</b> · uma relação, uma aresta · [" +
+                              e2.up + "] montante, [" + e2.dn + "] jusante";
+          paintE(null, e2);
+        });
+      })(EE[i]);
+    }
+
+    document.querySelector('[data-play="e"]').addEventListener("click", function () { live = false; });
+
+    /* ------------------------------------ o movimento que veio da referência */
+
+    var mmE = gsap.matchMedia();
+    mmE.add("(prefers-reduced-motion: no-preference)", function () {
+      var qy = gsap.quickTo(scene, "rotationY", { duration: .8, ease: "power3" });
+      var qx = gsap.quickTo(scene, "rotationX", { duration: .8, ease: "power3" });
+      function mv(ev) {
+        var r = panel.getBoundingClientRect();
+        qy(((ev.clientX - r.left) / r.width - .5) * 7);
+        qx((0.5 - (ev.clientY - r.top) / r.height) * 5);
+      }
+      function out() { qy(0); qx(0); }
+      panel.addEventListener("pointermove", mv);
+      panel.addEventListener("pointerleave", out);
+      return function () { panel.removeEventListener("pointermove", mv); panel.removeEventListener("pointerleave", out); };
+    });
+
+    return tl;
+  }
+
+  /* ------------------------------------------------------------------ F
+     Mesma peça de E no formato que ela vai ocupar: metade da largura, ao lado
+     do título. Aqui os nós e as arestas são gerados a partir dos dados — com
+     ziguezague e âncoras variáveis, escrever os caminhos à mão vira erro certo.
+  ------------------------------------------------------------------------- */
+
+  function buildF() {
+    var field = document.querySelector("#stage-f .f-field");
+    if (!field) return gsap.timeline({ paused: true });
+    var scene = document.getElementById("f-scene");
+    var svg = document.getElementById("f-wires");
+    var NS = "http://www.w3.org/2000/svg";
+    var NW = 148, NH = 52;
+
+    // ziguezague descendente: num campo quase quadrado é o único arranjo que
+    // dá quatro níveis de profundidade sem espremer as arestas
+    var FN = [
+      { id: "gateway",      nome: "Gateway",      tipo: "external",   x:  18, y:  22, z:  8 },
+      { id: "precificacao", nome: "Precificacao", tipo: "core",       x: 332, y:  18, z: 12 },
+      { id: "checkout",     nome: "Checkout",     tipo: "core",       x: 176, y: 140, z: 20 },
+      { id: "faturamento",  nome: "Faturamento",  tipo: "supporting", x: 340, y: 258, z: 16 },
+      { id: "notificacao",  nome: "Notificacao",  tipo: "generic",    x:  44, y: 372, z: 10 }
+    ];
+    // ax/bx: onde a linha sai e onde entra, em fração da largura da caixa —
+    // as duas que chegam em Checkout entram em pontos diferentes do topo
+    var FE = [
+      { a: "gateway",      b: "checkout",    up: "OHS", dn: "ACL", ax: .58, bx: .26 },
+      { a: "precificacao", b: "checkout",    up: "OHS", dn: "ACL", ax: .40, bx: .74 },
+      { a: "checkout",     b: "faturamento", up: "OHS", dn: "CF",  ax: .62, bx: .40 },
+      { a: "faturamento",  b: "notificacao", up: "S",   dn: "C",   ax: .40, bx: .62 }
+    ];
+
+    var by = {}, i, k;
+    for (i = 0; i < FN.length; i++) by[FN[i].id] = FN[i];
+
+    // Dois esquemas. O de tipo é o que carrega significado: a cor diz se o
+    // contexto é core, supporting, generic ou external. O de contexto é mais
+    // colorido e não diz nada — está aqui para a comparação ser vista, não
+    // discutida. Amarelo fica de fora dos dois, por ser chão e não tinta.
+    var COR_CTX = {
+      gateway: "--c-pulse", precificacao: "--c-lilac", checkout: "--c-accent",
+      faturamento: "--c-tangerine", notificacao: "--c-jade"
+    };
+    function pintar(esquema) {
+      for (var j = 0; j < FN.length; j++) {
+        var n3 = FN[j];
+        n3.el.style.setProperty("--nc", esquema === "ctx"
+          ? "var(" + COR_CTX[n3.id] + ")"
+          : "var(--t-" + n3.tipo + ")");
+      }
+    }
+
+    for (i = 0; i < FN.length; i++) {
+      var n = FN[i];
+      var el = document.createElement("div");
+      el.className = "e-nd";
+      el.setAttribute("tabindex", "0");
+      el.style.position = "absolute";
+      el.style.left = n.x + "px"; el.style.top = n.y + "px";
+      el.style.setProperty("--nc", "var(--t-" + n.tipo + ")");
+      el.innerHTML = '<span class="e-ring"></span><span class="e-type"><i></i>' + n.tipo +
+                     '</span><span class="e-name">' + n.nome + '</span>';
+      scene.appendChild(el);
+      n.el = el; n.ring = el.querySelector(".e-ring");
+      gsap.set(el, { z: n.z });
+    }
+
+    for (i = 0; i < FE.length; i++) {
+      var e2 = FE[i], A = by[e2.a], B = by[e2.b];
+      var x1 = A.x + NW * e2.ax, y1 = A.y + NH;
+      var x2 = B.x + NW * e2.bx, y2 = B.y - 6;
+      var c = (y2 - y1) * 0.55;
+      var d = "M" + x1 + "," + y1 + " C" + x1 + "," + (y1 + c) + " " + x2 + "," + (y2 - c) + " " + x2 + "," + y2;
+      var vis = document.createElementNS(NS, "path");
+      vis.setAttribute("d", d); vis.setAttribute("class", "e-wire");
+      var hit = document.createElementNS(NS, "path");
+      hit.setAttribute("d", d); hit.setAttribute("class", "e-hit");
+      svg.appendChild(vis); svg.appendChild(hit);
+      e2.el = vis; e2.hit = hit; e2.len = vis.getTotalLength();
+
+      // Ponta desenhada, não marker-end: o Chrome não aplica o opacity do path
+      // ao marcador, então uma aresta apagada ficava com a seta em cheio.
+      var pt = vis.getPointAtLength(e2.len), pb = vis.getPointAtLength(e2.len - 7);
+      var ang = Math.atan2(pt.y - pb.y, pt.x - pb.x) * 180 / Math.PI;
+      var head = document.createElementNS(NS, "path");
+      head.setAttribute("d", "M0,0 L-9,-4.6 L-9,4.6 Z");
+      head.setAttribute("fill", "rgb(var(--c-accent))");
+      head.setAttribute("transform", "translate(" + pt.x + "," + pt.y + ") rotate(" + ang + ")");
+      svg.appendChild(head);
+      e2.head = head;
+    }
+
+    function mkTag(path, L, t, txt) {
+      var p0 = path.getPointAtLength(L * t), p1 = path.getPointAtLength(Math.min(L, L * t + 7));
+      var dx = p1.x - p0.x, dy = p1.y - p0.y, m = Math.hypot(dx, dy) || 1;
+      var nx = -dy / m, ny = dx / m;
+      if (ny > 0) { nx = -nx; ny = -ny; }
+      var sp = document.createElement("span");
+      sp.className = "e-tag"; sp.textContent = txt;
+      sp.style.left = (p0.x + nx * 16) + "px";
+      sp.style.top = (p0.y + ny * 16) + "px";
+      scene.appendChild(sp);
+      return sp;
+    }
+    for (i = 0; i < FE.length; i++) {
+      FE[i].tu = mkTag(FE[i].el, FE[i].len, 0.34, "[" + FE[i].up + "]");
+      FE[i].td = mkTag(FE[i].el, FE[i].len, 0.72, "[" + FE[i].dn + "]");
+    }
+
+    var adj = {};
+    for (i = 0; i < FN.length; i++) adj[FN[i].id] = {};
+    for (i = 0; i < FE.length; i++) { adj[FE[i].a][FE[i].b] = 1; adj[FE[i].b][FE[i].a] = 1; }
+    function lit(id, focus) { return !focus || id === focus || adj[focus][id]; }
+
+    function stateAt(tl, t, focus, dim, dur) {
+      for (var j = 0; j < FN.length; j++) {
+        var n2 = FN[j], on = lit(n2.id, focus);
+        tl.to(n2.el, { autoAlpha: on ? 1 : dim, scale: focus === n2.id ? 1.05 : 1, duration: dur, ease: E }, t);
+        tl.to(n2.ring, { autoAlpha: focus === n2.id ? 1 : 0, duration: dur, ease: E }, t);
+      }
+      for (j = 0; j < FE.length; j++) {
+        var g = FE[j], hot = focus && (g.a === focus || g.b === focus);
+        tl.to(g.el, { opacity: focus ? (hot ? 1 : 0.14) : 1, strokeWidth: hot ? 2.6 : 1.7, duration: dur, ease: E }, t);
+        tl.to(g.head, { opacity: focus ? (hot ? 1 : 0.14) : 1, duration: dur, ease: E }, t);
+        tl.to([g.tu, g.td], { autoAlpha: hot ? 1 : 0, duration: dur * .8, ease: E }, t);
+      }
+    }
+    function sayAt(tl, t, idx) {
+      for (var j = 0; j < 4; j++) tl.to("#f-say-" + j, { autoAlpha: j === idx ? 1 : 0, duration: .28 }, t);
+    }
+
+    var tl = gsap.timeline({ paused: true });
+    var nodes = FN.map(function (n2) { return n2.el; });
+
+    tl.set(nodes, { autoAlpha: 0, y: 20, scale: 1 }, 0)
+      .set(".f-field .e-ring", { autoAlpha: 0 }, 0)
+      .set(".f-field .e-tag", { autoAlpha: 0 }, 0)
+      .set("#f-say-1, #f-say-2, #f-say-3, #f-say-live", { autoAlpha: 0 }, 0)
+      .set("#f-say-0", { autoAlpha: 1 }, 0);
+    for (i = 0; i < FE.length; i++) tl.set([FE[i].el, FE[i].head], { opacity: 0 }, 0);
+
+    tl.to(nodes, { autoAlpha: 1, y: 0, duration: .7, stagger: .07, ease: "power3.out" }, 0.15);
+    for (i = 0; i < FE.length; i++)
+      tl.to([FE[i].el, FE[i].head], { opacity: 1, duration: .6, ease: "power2.out" }, 0.38 + i * 0.07);
+
+    stateAt(tl, 1.90, "checkout",    0.18, .5); sayAt(tl, 1.95, 1);
+    stateAt(tl, 2.85, "faturamento", 0.18, .5); sayAt(tl, 2.90, 2);
+    stateAt(tl, 3.70, "notificacao", 0.18, .5); sayAt(tl, 3.75, 3);
+    stateAt(tl, 4.45, "faturamento", 0.45, .6); sayAt(tl, 4.50, 2);
+    tl.to({}, { duration: .3 }, 4.90);
+
+    var live = false, sayLive = document.getElementById("f-say-live");
+    function handover() { if (!live) { live = true; tl.pause(); } }
+
+    function paintF(focus, edge) {
+      var j;
+      for (j = 0; j < FN.length; j++) {
+        var n2 = FN[j];
+        var on = edge ? (n2.id === edge.a || n2.id === edge.b) : lit(n2.id, focus);
+        var ring = (focus === n2.id) || (edge && on);
+        gsap.to(n2.el, { autoAlpha: on ? 1 : 0.18, scale: ring ? 1.05 : 1, duration: .3, ease: E, overwrite: "auto" });
+        gsap.to(n2.ring, { autoAlpha: ring ? 1 : 0, duration: .3, overwrite: "auto" });
+      }
+      for (j = 0; j < FE.length; j++) {
+        var g = FE[j];
+        var hot = edge ? (g === edge) : (focus && (g.a === focus || g.b === focus));
+        gsap.to([g.el, g.head], { opacity: (focus || edge) ? (hot ? 1 : 0.12) : 1, duration: .3, ease: E, overwrite: "auto" });
+        gsap.to(g.el, { strokeWidth: hot ? 2.6 : 1.7, duration: .3, ease: E, overwrite: "auto" });
+        gsap.to([g.tu, g.td], { autoAlpha: hot ? 1 : 0, duration: .26, overwrite: "auto" });
+      }
+      gsap.to("#f-say-0, #f-say-1, #f-say-2, #f-say-3", { autoAlpha: 0, duration: .2, overwrite: "auto" });
+      gsap.to(sayLive, { autoAlpha: 1, duration: .2, overwrite: "auto" });
+    }
+
+    function grau(id) {
+      var u = 0, d = 0, j;
+      for (j = 0; j < FE.length; j++) { if (FE[j].b === id) u++; if (FE[j].a === id) d++; }
+      return u + " a montante, " + d + " a jusante";
+    }
+
+    for (i = 0; i < FN.length; i++) {
+      (function (n2) {
+        function on() {
+          handover();
+          sayLive.innerHTML = "<b>" + n2.nome + "</b> · " + n2.tipo + " · " + grau(n2.id);
+          paintF(n2.id, null);
+        }
+        n2.el.addEventListener("mouseenter", on);
+        n2.el.addEventListener("focus", on);
+      })(FN[i]);
+    }
+    for (i = 0; i < FE.length; i++) {
+      (function (g) {
+        g.hit.addEventListener("mouseenter", function () {
+          handover();
+          sayLive.innerHTML = "<b>{" + by[g.a].nome + ", " + by[g.b].nome + "}</b> · uma relação, uma aresta · [" +
+                              g.up + "] montante, [" + g.dn + "] jusante";
+          paintF(null, g);
+        });
+      })(FE[i]);
+    }
+
+    document.querySelector('[data-play="f"]').addEventListener("click", function () { live = false; });
+
+    var seg = document.getElementById("f-scheme");
+    seg.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button");
+      if (!b) return;
+      var bs = seg.querySelectorAll("button");
+      for (var j = 0; j < bs.length; j++) bs[j].setAttribute("aria-pressed", String(bs[j] === b));
+      pintar(b.getAttribute("data-s"));
+    });
+    pintar("tipo");
+
+    var mmF = gsap.matchMedia();
+    mmF.add("(prefers-reduced-motion: no-preference)", function () {
+      var qy = gsap.quickTo(scene, "rotationY", { duration: .8, ease: "power3" });
+      var qx = gsap.quickTo(scene, "rotationX", { duration: .8, ease: "power3" });
+      function mv(ev) {
+        var r = field.getBoundingClientRect();
+        qy(((ev.clientX - r.left) / r.width - .5) * 7);
+        qx((0.5 - (ev.clientY - r.top) / r.height) * 5);
+      }
+      function out() { qy(0); qx(0); }
+      field.addEventListener("pointermove", mv);
+      field.addEventListener("pointerleave", out);
+      return function () { field.removeEventListener("pointermove", mv); field.removeEventListener("pointerleave", out); };
+    });
+
+    return tl;
+  }
+
+  /* --------------------------------------------------------- controles */
+
+  function wire(key, tl, scrubId, timeId) {
+    timelines[key] = tl;
+    var scrub = document.getElementById(scrubId);
+    var out = document.getElementById(timeId);
+    var dragging = false;
+
+    tl.eventCallback("onUpdate", function () {
+      if (!dragging) scrub.value = String(Math.round(tl.progress() * 1000));
+      out.textContent = tl.time().toFixed(2).replace(".", ",") + " s";
+    });
+
+    scrub.addEventListener("pointerdown", function () { dragging = true; tl.pause(); });
+    window.addEventListener("pointerup", function () { dragging = false; });
+    scrub.addEventListener("input", function () {
+      tl.pause();
+      tl.progress(Number(scrub.value) / 1000);
+    });
+
+    // o repouso é o frame final
+    tl.progress(1).pause();
+    scrub.value = "1000";
+    out.textContent = tl.duration().toFixed(2).replace(".", ",") + " s";
+  }
+
+  wire("b", buildB(), "scrub-b", "t-b");
+  wire("c", buildC(), "scrub-c", "t-c");
+  wire("d", buildD(), "scrub-d", "t-d");
+  wire("e", buildE(), "scrub-e", "t-e");
+  wire("f", buildF(), "scrub-f", "t-f");
+
+  document.querySelectorAll("[data-play]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tl = timelines[btn.getAttribute("data-play")];
+      if (tl) tl.restart();
+    });
+  });
+  document.querySelectorAll("[data-final]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tl = timelines[btn.getAttribute("data-final")];
+      if (tl) { tl.pause(); tl.progress(1); }
+    });
+  });
+
+  // uma passada automática, e só; quem pede menos movimento fica no frame final
+  var mm = gsap.matchMedia();
+  mm.add("(prefers-reduced-motion: no-preference)", function () {
+    gsap.delayedCall(0.6, function () { timelines.b.restart(); });
+    gsap.delayedCall(1.1, function () { timelines.c.restart(); });
+    gsap.delayedCall(1.6, function () { timelines.d.restart(); });
+    gsap.delayedCall(2.1, function () { timelines.e.restart(); });
+    gsap.delayedCall(2.6, function () { timelines.f.restart(); });
+  });
+})();
+</script>

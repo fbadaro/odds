@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 3840, "title": "Landing v2 · desktop", "print": "flow" },
+    { "file": "Mobile.dc.html", "x": 1600, "y": 0, "w": 390, "h": 2760, "title": "Landing v2 · 390px" }
+  ],
+  "annotations": [
+    { "id": "v2", "x": 0, "y": -470, "w": 560, "text": "Landing v2, refeita DEPOIS de ver a referência renderizada.\n\nO que a primeira tentativa errou, lendo só o CSS: as manchas ficaram fortes demais (dava para ver o círculo — na referência elas são lavagem, quase imperceptível), o H1 ficou pequeno demais, o respiro entre seções era curto, e as sombras dos cards eram roxas demais quando na verdade são neutras e discretas.\n\nAgora: manchas a 22–38% com 72px de blur, H1 de 68px em peso 800 com entrelinha 1.03, seções de 90px, cards com sombra neutra 0 10px 30px -12px." },
+    { "id": "plano", "x": 620, "y": -470, "w": 460, "text": "O motivo gráfico que só apareceu na imagem: uma PRANCHETA EM PERSPECTIVA que recua até o horizonte, atrás do herói e atrás do CTA final.\n\nSem imagem e sem biblioteca: malha de 1px em duas linear-gradient, perspective(600px) rotateX(64deg) e um mask-image que dissolve antes do horizonte. Para uma ferramenta de desenho de arquitetura, ela diz mais do que qualquer ilustração — e é o que amarra herói e CTA como a mesma cena.\n\nOutros dois achados: as pills flutuantes com seta ao redor da arte, e a faixa de régua (tiquinhos de 1px) com rótulo mono no meio, separando seções." },
+    { "id": "codes", "x": 1160, "y": -470, "w": 420, "text": "A esteira de pills com ponto colorido é da referência (lá são serviços de nuvem). Aqui ela carrega os DiagnosticCodes reais, com o ponto na cor da severidade — vermelho, âmbar, cinza-azulado.\n\nÉ o uso mais honesto que essa forma tem neste produto: mostra a extensão do catálogo sem afirmar nada que não seja verdade, e ensina o vocabulário que o usuário vai encontrar no painel.\n\nDuas esteiras em direções opostas, com velocidades diferentes e fade nas bordas. Param em prefers-reduced-motion." },
+    { "id": "mobile", "x": 1600, "y": -470, "w": 400, "text": "390px: o mesmo sistema, com a prancheta em perspectiva reduzida (perspective 420px) atrás do herói e do CTA, uma esteira só, e as seções de objeção e limites fora — num primeiro contato pelo celular elas atrasam o CTA.\n\nBotões em 52px." }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}

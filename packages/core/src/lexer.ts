@@ -53,6 +53,7 @@ const RESERVED_WORDS = [
   "domain", "subdomain", "context", "mapping", "external",
   "core", "supporting", "generic",
   "title", "type", "description", "responsibilities", "maturity", "team", "technology",
+  "owner",
   "experimental", "growing", "mature", "legacy",
 ] as const;
 

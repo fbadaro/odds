@@ -120,16 +120,19 @@ Além da declaração estrutural (`context Nome { ... }`), um Bounded Context �
 |---|---|---|
 | `title` | `domain`, `subdomain`, `context` | Rótulo de exibição legível para humanos, distinto do identificador técnico usado para referenciar o elemento em outros lugares (ex: no `mapping`). Destinado à renderização no canvas/diagrama. |
 | `type` | `context` | Classificação em texto livre da natureza do contexto (ex: "serviço", "sistema legado", "gateway"). Deliberadamente aberto, sem taxonomia fechada — não existe uma lista fixa de valores válidos. **Não** reutilize aqui o vocabulário de subdomínio (`core`/`supporting`/`generic`): são eixos diferentes, e `type: "generic"` dentro de um `subdomain generic` ensina ao leitor um vocabulário sobrecarregado. |
-| `description` | `context` | Explicação em texto livre do propósito e papel do contexto. |
+| `description` | `subdomain`, `context` | Explicação em texto livre. Num `context`, o propósito e o papel dele na solução; num `subdomain`, **por que ele existe** — a razão de negócio, não a soma das responsabilidades dos contextos filhos. A diferença de sentido vem do nível, não da palavra. |
 | `responsibilities` | `context` | Uma lista das responsabilidades de negócio ou técnicas atribuídas a este contexto. |
 | `maturity` | `context` | Estágio de maturidade do ciclo de vida do contexto. Um de: `experimental`, `growing`, `mature`, `legacy`. |
 | `team` | `context` | O time responsável pelo contexto, em texto livre. |
 | `technology` | `context` | A stack de tecnologia usada para implementar o contexto, em texto livre. |
+| `owner` | `subdomain` | Quem responde pelo subdomínio, em texto livre. Não é derivável dos filhos: um subdomínio com contextos de três times diferentes tem um dono só. Deliberadamente **não** é referência validada a uma lista de times — validar o dono o empurraria para o lado do contrato. |
 
 **Nenhuma dessas propriedades dispara qualquer diagnóstico por si só, e nenhuma jamais alimenta o gatilho de uma regra.** Esta é a fronteira enunciada na §0.3, e é uma promessa ao usuário: preencha `team` e `technology` sem medo de que a ferramenta comece a julgá-lo por isso. Duas consequências que vale explicitar:
 
 - `maturity: legacy` **não** implica `[BBM]` e não dispara nenhuma regra da §2. São conceitos independentes — um documenta estágio de ciclo de vida, o outro caracteriza um sistema numa integração — e misturá-los seria uma decisão de modelagem que a ferramenta não deve tomar silenciosamente em nome do usuário.
 - Duas regras propostas para o catálogo da §2 são, portanto, **inexprimíveis e foram descartadas**: "dois contextos do mesmo `team` numa relação Customer/Supplier" e "`maturity: experimental` num subdomínio `core`". A promessa acima vale mais do que essas duas regras.
+
+**Um `subdomain` aceita só `description` e `owner`**, e o critério que separa essas duas de qualquer outra candidata está escrito (`ADR-0008`): uma propriedade de subdomínio só é admissível se **não puder contradizer** nem a classificação `core`/`supporting`/`generic` nem os contextos que ele contém. Uma frase não contradiz um enum, e um nome de responsável não contradiz nada declarado. Já `maturity` num subdomínio poderia contradizer a dos filhos, e a contradição pediria uma regra que esta seção proíbe; por isso ele fica de fora, e a agregação dos filhos é coisa que o visualizador calcula, não que o autor declara.
 
 Um contexto declarado dentro do bloco `external { }` aceita essas mesmas seis propriedades. `responsibilities` e `team` são semanticamente estranhos para um sistema que não é seu — mas seguem permitidos, porque a alternativa seria criar a primeira propriedade proibida e reabrir justamente a fronteira que esta seção existe para proteger.
 
@@ -477,4 +480,4 @@ Por fim, ordene o array inteiro pelas chaves da §3.3. A ordem emitida faz parte
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.2.1** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.3.0** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.

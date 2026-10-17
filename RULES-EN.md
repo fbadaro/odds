@@ -118,16 +118,19 @@ Beyond the structural declaration (`context Name { ... }`), a Bounded Context �
 |---|---|---|
 | `title` | `domain`, `subdomain`, `context` | Human-readable display label, distinct from the technical identifier used to reference the element elsewhere (e.g. in `mapping`). Intended for rendering on the canvas/diagram. |
 | `type` | `context` | Free-text classification of the context's nature (e.g. "service", "legacy system", "gateway"). Deliberately left open-ended rather than a closed taxonomy — there is no fixed list of valid values. **Do not** reuse the subdomain vocabulary (`core`/`supporting`/`generic`) here: they are different axes, and `type: "generic"` inside a `subdomain generic` teaches the reader an overloaded vocabulary. |
-| `description` | `context` | Free-text explanation of the context's purpose and role. |
+| `description` | `subdomain`, `context` | Free-text explanation. On a `context`, its purpose and role in the solution; on a `subdomain`, **why it exists** — the business reason, not the sum of its child contexts' responsibilities. The difference in meaning comes from the level, not from the word. |
 | `responsibilities` | `context` | A list of the business or technical responsibilities owned by this context. |
 | `maturity` | `context` | Lifecycle stage of the context. One of: `experimental`, `growing`, `mature`, `legacy`. |
 | `team` | `context` | The team responsible for the context, as free text. |
 | `technology` | `context` | The technology stack used to implement the context, as free text. |
+| `owner` | `subdomain` | Who answers for the subdomain, as free text. It is not derivable from the children: a subdomain whose contexts belong to three different teams still has one owner. Deliberately **not** a validated reference to a list of teams — validating the owner would push it to the contract side. |
 
 **None of these properties trigger any diagnostic on their own, and none ever feed the trigger of a rule.** This is the boundary stated in §0.3, and it is a promise to the user: fill in `team` and `technology` without fear that the tool will start judging you for them. Two consequences worth spelling out:
 
 - `maturity: legacy` does **not** imply `[BBM]` and does not trigger any rule from §2. They are independent concepts — one documents a lifecycle stage, the other characterises a system in an integration — and conflating them would be a modelling decision the tool must not make silently on the user's behalf.
 - Two rules that were proposed for the §2 catalogue are therefore **inexpressible and were dropped**: "two contexts owned by the same `team` in a Customer/Supplier relationship" and "`maturity: experimental` in a `core` subdomain". The promise above is worth more than those two rules.
+
+**A `subdomain` accepts only `description` and `owner`**, and the criterion that separates these two from every other candidate is written down (`ADR-0008`): a subdomain property is admissible only if it **cannot contradict** either the `core`/`supporting`/`generic` classification or the contexts the subdomain contains. A sentence does not contradict an enum, and the name of an owner contradicts nothing declared. A subdomain `maturity`, by contrast, could contradict its children's, and the contradiction would call for a rule this section forbids; so it stays out, and aggregating the children is something the visualiser computes, not something the author declares.
 
 A context declared inside the `external { }` block accepts these same six properties. `responsibilities` and `team` are semantically odd for a system that is not yours — but they remain permitted, because the alternative is creating the first forbidden property and reopening the very boundary this section exists to protect.
 
@@ -475,4 +478,4 @@ Finally, sort the whole array by the keys in §3.3. The emitted order is part of
 
 ## Changelog
 
-Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## RULES-EN.md / RULES-PT.md`). Current version: **v0.2.1** — this file and `RULES-PT.md` version together. Any change here must get a new entry there, not here, and must be mirrored in the other language in the same pass.
+Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## RULES-EN.md / RULES-PT.md`). Current version: **v0.3.0** — this file and `RULES-PT.md` version together. Any change here must get a new entry there, not here, and must be mirrored in the other language in the same pass.

@@ -217,4 +217,4 @@ Isso mantém a tradição da v0.1.0, em que escrever a suíte encontrou duas con
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## TEST_SUITE.md`). Versão atual: **v0.2.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## TEST_SUITE.md`). Versão atual: **v0.2.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

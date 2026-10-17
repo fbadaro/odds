@@ -1,0 +1,63 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 4877,
+      "title": "Landing v4 · desktop",
+      "print": "flow"
+    },
+    {
+      "file": "Mobile.dc.html",
+      "x": 1600,
+      "y": 0,
+      "w": 390,
+      "h": 4500,
+      "title": "Landing v4 · 390px",
+      "print": "flow"
+    },
+    {
+      "file": "Heroi.dc.html",
+      "x": 2120,
+      "y": 0,
+      "w": 900,
+      "h": 700,
+      "title": "Herói · o lado da linha"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "v4",
+      "x": 0,
+      "y": -560,
+      "w": 520,
+      "text": "Landing v4 — parte da v3 e muda sete coisas.\n\n1. HERÓI reconstruído em torno de uma animação (ver a nota do artboard do herói).\n2. AMARELO deixa de ser traço e vira superfície: bloco do herói e numerais do 'Não faz'. (O CTA final chegou a ser amarelo e virou gradiente azul→roxo por decisão do autor, depois de publicado.) Saiu a risca de marca-texto sob o título e saiu o fundo amarelo atrás dos numerais em mono.\n3. FAIXA ESCURA em 'O que ele pega'. É onde mora o código, e escuro faz código cantar; dá espinha à página, que na v3 tinha quatro seções com o mesmo registro claro.\n4. O FLUXO virou uma faixa contínua com três colunas divididas por fio de 1px, em vez de três cards com setinha tracejada entre eles.\n5. MARQUEE em uma trilha só. Com o herói animando, duas trilhas correndo em direções opostas eram movimento demais.\n6. WORDMARK sozinho — o cubo isométrico era provisório e as três direções de marca foram recusadas. Wordmark honesto é melhor que pictograma errado.\n7. SEÇÃO 'DUAS VISTAS', nova (PRD §4.4).\n\nO rodapé mantém as duas faixas da v2/v3, agora sem pictograma."
+    },
+    {
+      "id": "amarelo",
+      "x": 580,
+      "y": -560,
+      "w": 480,
+      "text": "A REGRA NOVA, que o DESIGN.md §3 agora carrega:\n\nRoxo e azul são a TINTA — ação, seleção, arestas, gradiente. Amarelo nunca é tinta: é o CHÃO em que se desenha. Blocos, faixas, painéis. Quando carrega texto, o texto é --c-ink.\n\nA v3 dizia só 'grafismo, nunca estado', e foi por essa fresta que a risca de marca-texto passou. Risca é tinta.\n\nTrês coisas que a regra resolve de uma vez: torna a risca errada em retrospecto; respeita 'amarelo nunca é texto' por construção (#FFC53D sobre branco não passa em contraste nenhum); e mata a confusão com --c-warning, porque uma faixa inteira de cor nunca é lida como chip de severidade — o perigo estava exatamente na escala de chip, que é onde a v3 pôs.\n\nUMA PROVA DA REGRA no próprio desenho: o marcador de erro da ilustração é vermelho e ficaria lama sobre amarelo. Por isso o mapa vive num painel branco À FRENTE do bloco solar, e não em cima dele. O amarelo é o espaço atrás; o veredito acontece no branco. Se essa composição não fechasse, a regra estaria errada.\n\nONDE O AMARELO FICOU: o bloco atrás da arte do herói e os três quadrados do 'Não faz'. A faixa do CTA final nasceu solar e foi trocada por gradiente azul→roxo com texto branco — o amarelo deixou de fechar a página e passou a viver só no alto e no meio dela.\n\nConsequência menor: o herói perdeu a linha de horizonte solar. Com um bloco amarelo grande do lado direito, um fio amarelo atrás dele só sujava. A faixa de régua continua."
+    },
+    {
+      "id": "heroi",
+      "x": 2120,
+      "y": -560,
+      "w": 560,
+      "text": "HERÓI · O LADO DA LINHA — o conceito que as três animações recusadas não tinham.\n\nA construía o mapa, B acusava o mapa, C rearranjava o mapa. Nenhuma CONSERTAVA. E o único momento emocionalmente forte que um linter tem não é o erro: é o erro sumindo.\n\nA cena: a tag [OHS] está do lado errado do conector. Isso é UPSTREAM_ONLY_TAG_MISPLACED, fase 4, severidade error — code real do AST_SCHEMA §1.3, não invenção. Um único gesto move tudo: a tag atravessa o conector, e o mapa se cura.\n\nPOR QUE É NOSSA: encena que neste idioma POSIÇÃO É CONTRATO. Nada foi digitado errado. É a seção 'Sintaxe perfeita. Arquitetura cara.' acontecendo em três segundos e meio, no topo da página.\n\nDUAS DECISÕES TÉCNICAS QUE VALEM REGISTRO:\n\n• A tag se move NO EDITOR, não sobre a aresta. Isso mantém o DESIGN.md §4.2 ao pé da letra (a arte do herói não desenha tag na linha nem rótulo de contexto), evita o encosto no ADR-0007 que a versão C tinha, e ainda diz o que o ADR-0003 defende: o texto é a fonte, o diagrama só reage. Ele nunca escreve de volta.\n\n• O estado natural do CSS é o mapa CURADO; a animação parte do estado acusado e volta ao natural. Consequência: prefers-reduced-motion simplesmente desliga tudo e sobra o frame final legível — sem media query duplicando valores. E o frame final é a composição do herói, que é o que 90% das pessoas vão ver.\n\nO swap é feito com dois translateX exatos que se cruzam (a tag +35px, o conector −63px), sem animar largura: os dois trocam de lugar de verdade, sem reflow."
+    },
+    {
+      "id": "duasvistas",
+      "x": 1090,
+      "y": -560,
+      "w": 460,
+      "text": "SEÇÃO 'DUAS VISTAS' — nova, e a que mais encosta no ADR-0007.\n\nO PRD §4.4 trata as duas vistas como diferencial declarado, e na v3 isso aparecia numa única frase dentro de um card. Aqui vira seção.\n\nO desenho é deliberadamente esquemático: sem rótulo de contexto, sem tag na linha, formas abstratas. O ÚNICO texto no desenho é a palavra 'external' na vista de contenção — e ela está lá porque é a decisão mais contraintuitiva da especificação (o bloco external é desenhado FORA da fronteira do domínio) e sem o rótulo ninguém entende o que está vendo.\n\nRessalva honesta, do mesmo tipo que a versão C carregava: desenhar fronteira e aninhamento é encostar em coisa que o render de verdade ainda não decidiu. Como ilustração de landing passa; se alguém for usar isto como referência de render, releia o ADR-0007 antes."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

@@ -29,6 +29,7 @@ identifier    = letter , { letter | digit | "_" } , ?e não deve coincidir exata
 reserved_word = "domain" | "subdomain" | "context" | "mapping" | "external"
               | "core" | "supporting" | "generic"
               | "title" | "type" | "description" | "responsibilities" | "maturity" | "team" | "technology"
+              | "owner"
               | "experimental" | "growing" | "mature" | "legacy" ;
 
 line_comment  = "//" , { ?qualquer caractere exceto newline? } , newline ;
@@ -74,6 +75,7 @@ domain_decl     = "domain" , identifier , "{" ,
 
 subdomain_decl  = "subdomain" , subdomain_type , identifier , "{" ,
                      [ title_decl ] ,
+                     { subdomain_property_decl } ,
                      { context_decl } ,
                    "}" ;
 
@@ -82,6 +84,10 @@ subdomain_type  = identifier ;
 external_decl   = "external" , "{" , { context_decl } , "}" ;
 
 title_decl      = "title" , ":" , string_literal ;
+
+subdomain_property_decl = subdomain_property_key , ":" , string_literal ;
+
+subdomain_property_key  = "description" | "owner" ;
 
 context_decl    = "context" , identifier , [ context_block ] ;
 
@@ -116,6 +122,10 @@ maturity_value  = "experimental" | "growing" | "mature" | "legacy" ;
 - `maturity` é um **enum fechado**: `experimental | growing | mature | legacy`, escrito sem aspas (é uma palavra reservada, não uma string). Isso é semanticamente diferente de `type`, que é texto livre — o parser deve rejeitar `maturity: "experimental"` (com aspas) como erro sintático, já que os valores do enum não são `string_literal`.
 - Todas as propriedades são **opcionais e podem aparecer em qualquer ordem** dentro do `context_block`. A gramática não impõe ordem nem exige um conjunto mínimo — isso mantém o bloco flexível para contextos que só querem documentar uma ou duas propriedades.
 - `context_block` é o mesmo ponto de extensão onde, na Fase 4 (Tactical Design), entrarão `aggregate`, `entity` e `value_object` (ver seção 6). A ideia é que `property_decl` e as futuras declarações táticas coexistam dentro do mesmo bloco, distinguidas pela palavra-chave inicial de cada linha.
+- ✅ **Decisão fechada (v0.3.0, `ADR-0008`):** `subdomain_decl` aceita **duas** propriedades, num conjunto fechado próprio: `description` (por que o subdomínio existe) e `owner` (quem responde por ele). As duas são `string_literal`, opcionais e livres de ordem entre si, e ficam **depois** do `title_decl` e **antes** do primeiro `context_decl`. Uma propriedade escrita depois de um `context` é erro sintático, porque nenhuma produção a aceita ali.
+- O conjunto é **próprio do subdomínio**, não uma liberação das seis chaves do `context_block`. As outras quatro são de espaço de solução e não têm significado neste nível, e `type` colidiria com `subdomain_type`. `description` reutiliza a chave do `context` pela mesma razão que `title_decl` existe: uma palavra para um significado nos dois níveis. A diferença de sentido (escopo de solução num, razão de negócio no outro) vem do nível, não da palavra.
+- **Teste de admissão para qualquer chave futura de `subdomain`** (`ADR-0008`): ela só entra se **não puder contradizer** nem a classificação `core | supporting | generic` nem os contextos que o subdomínio contém. Uma chave que pode contradizer o que está declarado ao lado dela vai atrair um diagnóstico, e diagnóstico cujo gatilho é propriedade quebra a fronteira do `RULES.md` §0.2 para todas as propriedades de uma vez. É por isso que `maturity` e `volatility` não entraram.
+- `owner` passou a ser **palavra reservada**, como todas as chaves de propriedade. Um `identifier` escrito `owner` (um contexto chamado `owner`, por exemplo) deixou de ser válido, e por isso esta mudança é MAJOR na `ODDS Language Version` (`CHANGELOG.md`). Ele recebe o mesmo `SYNTAX_ERROR` que qualquer outra palavra reservada usada como nome.
 
 **Erros sintáticos cobertos nesta seção** (distintos dos erros semânticos de `RULES.md`):
 - `domain` sem identificador → erro de parsing puro.
@@ -162,6 +172,8 @@ domain ECommercePlatform {
 
   subdomain core Sales {
     title: "Vendas"
+    description: "Converter intenção de compra em pedido pago"
+    owner: "Diretoria Comercial"
     context OrderManagement
     context Checkout {
       description: "Fluxo de finalização de compra"
@@ -205,7 +217,7 @@ domain ECommercePlatform {
 
 Correspondência com a AST (ver `AST_SCHEMA.md`):
 - `domain ECommercePlatform { ... }` → 1 `DomainNode`, com `title` opcional
-- cada `subdomain ... { ... }` → 1 `SubdomainNode` filho, com `subdomainType` bruto (validado pelo Visitor, não pelo parser) e `title` opcional
+- cada `subdomain ... { ... }` → 1 `SubdomainNode` filho, com `subdomainType` bruto (validado pelo Visitor, não pelo parser), e `title`, `description` e `owner` opcionais
 - o bloco `external { ... }` → 1 `ExternalBlockNode`, irmão dos subdomains; seus filhos são `ContextNode` comuns — a externalidade é dada pela **posição na árvore**, não por um tipo de nó próprio
 - cada `context X` → 1 `ContextNode`, com `title` opcional e um objeto `properties` opcional contendo `type`, `description`, `responsibilities[]`, `maturity`, `team`, `technology` (todos opcionais)
 - cada linha dentro de `mapping` → 1 `RelationshipNode`, com `left`, `right`, `connector`, `leftTags[]`, `rightTags[]` e posição (linha/coluna) para navegação clique-a-clique
@@ -296,4 +308,4 @@ Nenhuma. As duas ações que constavam aqui — formalizar "exatamente um `domai
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## GRAMMAR.md`). Versão atual: **v0.2.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## GRAMMAR.md`). Versão atual: **v0.3.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

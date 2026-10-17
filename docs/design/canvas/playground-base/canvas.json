@@ -1,0 +1,29 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1440, "h": 900, "title": "Base do protótipo" }
+  ],
+  "annotations": [
+    {
+      "id": "base",
+      "x": 0,
+      "y": -300,
+      "w": 520,
+      "text": "Base do protótipo — variante D, fixada em 2026-09-07.\n\nCanvas da B com o outline da C: quatro quadrados isolados governam os painéis da esquerda (código, estrutura, modelos, ajuda), um painel por vez, e o mesmo quadrado fecha tudo. Diagnóstico ancorado no rodapé, sempre visível — decisão registrada, não default.\n\nToda hipótese nova é testada CONTRA esta base. Se nada convencer, o retorno é para cá.\n\nAs variantes A, B e C saíram do canvas e continuam versionadas no git, em docs/design/canvas/. Voltar qualquer uma é acrescentá-la ao seed."
+    },
+    {
+      "id": "sistema",
+      "x": 0,
+      "y": 960,
+      "w": 700,
+      "text": "IBM Plex Sans (UI) + IBM Plex Mono (editor, codes, spans).\nTexto #1B1B19 · secundário #6E6E67 · bordas #E6E6E1 · canvas #FAFAF8 com malha de pontos.\nAzul de planta #2B4C8C só para ação e seleção. Severidade nunca é o acento: erro #C0342B, aviso #A66A00, info #5B6B7C — três cores funcionais, cada uma com ícone próprio, para não depender de cor sozinha.\nRitmo: ilhas com raio 9px, quadrados do trilho 44px, cabeçalhos de painel 36px, linhas de lista 34px."
+    },
+    {
+      "id": "aberto",
+      "x": 760,
+      "y": 960,
+      "w": 520,
+      "text": "Ainda em aberto nesta base:\n\n· os quadrados de modelos prontos (PRD §9.3) e ajuda (§5.1) são candidatos, saem sem custo;\n· H8 — um painel por vez basta? o que derruba é escrever o bloco mapping conferindo nomes declarados acima;\n· os estados de degradação (PRD §5.2) e o desenho do render entram só depois da biblioteca escolhida."
+    }
+  ],
+  "launch": { "view": "focused", "file": "Main.dc.html" }
+}

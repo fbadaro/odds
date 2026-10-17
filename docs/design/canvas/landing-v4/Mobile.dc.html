@@ -1,0 +1,428 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --c-bg: 250 250 253; --c-panel: 255 255 255; --c-panel2: 244 243 250;
+      --c-border: 230 228 242; --c-ink: 27 26 36; --c-dim: 107 104 128;
+      --c-accent: 108 64 217; --c-accent-lift: 138 91 240; --c-azure: 61 111 232;
+      --c-pulse: 35 168 205; --c-solar: 255 197 61;
+      --c-error: 192 52 43; --c-warning: 166 106 0; --c-info: 91 107 124;
+    }
+    .dark {
+      --c-bg: 18 17 26; --c-panel: 26 25 38; --c-panel2: 35 33 47;
+      --c-border: 50 47 69; --c-ink: 236 235 245; --c-dim: 154 151 174;
+      --c-accent: 173 141 255; --c-accent-lift: 198 176 255; --c-azure: 125 163 255;
+      --c-pulse: 94 208 238; --c-solar: 255 209 99;
+      --c-error: 224 121 111; --c-warning: 217 164 65; --c-info: 147 163 179;
+    }
+    body { margin: 0; background: rgb(253 253 255); font-family: "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: rgb(var(--c-accent)); } a:hover { color: rgb(var(--c-accent-lift)); }
+    .disp { font-family: "Montserrat", "Inter", system-ui, sans-serif; }
+    .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+    .eyebrow { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 10.5px; font-weight: 400; text-transform: uppercase; letter-spacing: .2em; color: rgb(var(--c-dim)); }
+    .grad { background: linear-gradient(105deg, rgb(var(--c-accent)) 10%, rgb(var(--c-azure)) 70%, rgb(var(--c-pulse))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .h2 { font-family: "Montserrat", "Inter", system-ui, sans-serif; font-size: 27px; font-weight: 700; letter-spacing: -.03em; line-height: 1.14; margin: 0; }
+    .lead { font-size: 15px; line-height: 1.62; color: rgb(var(--c-dim)); margin: 0; }
+    .card { border: 1px solid rgb(var(--c-border) / .8); background: rgb(var(--c-panel)); border-radius: 18px; padding: 20px; box-shadow: 0 8px 24px -12px rgb(27 26 36 / .10); }
+    .tile { width: 34px; height: 34px; border-radius: 10px; background: rgb(var(--c-accent) / .09); display: flex; align-items: center; justify-content: center; color: rgb(var(--c-accent)); }
+    .btn1 { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: 13px; padding: 15px 24px; font-size: 15px; font-weight: 600; color: #FFFFFF; background: linear-gradient(180deg, rgb(var(--c-accent-lift)), rgb(var(--c-accent))); box-shadow: 0 12px 28px -10px rgb(var(--c-accent) / .6); }
+    .btn2 { display: inline-flex; align-items: center; justify-content: center; border-radius: 13px; padding: 15px 24px; font-size: 15px; font-weight: 600; color: rgb(var(--c-ink)); background: rgb(var(--c-panel)); border: 1px solid rgb(var(--c-border)); }
+    .cpill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 999px; padding: 5px 12px; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; color: rgb(var(--c-dim)); white-space: nowrap; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .chip { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 10.5px; border-radius: 6px; padding: 2px 6px; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+    .plane { position: absolute; left: 50%; width: 1000px; height: 400px; transform: translateX(-50%) perspective(500px) rotateX(64deg); transform-origin: 50% 100%;
+      background-image: linear-gradient(rgb(var(--c-accent) / .16) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--c-accent) / .16) 1px, transparent 1px);
+      background-size: 56px 56px;
+      -webkit-mask-image: linear-gradient(to top, #000 4%, transparent 62%); mask-image: linear-gradient(to top, #000 4%, transparent 62%); pointer-events: none; }
+    .num { width: 36px; height: 36px; border-radius: 8px; background: rgb(var(--c-solar)); color: rgb(var(--c-ink)); display: flex; align-items: center; justify-content: center; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .track { display: flex; gap: 8px; width: max-content; animation: marquee 46s linear infinite; }
+
+    .anim { animation-duration: 3.4s; animation-timing-function: cubic-bezier(.4,.75,.25,1); animation-delay: .7s; animation-fill-mode: both; }
+    .a-band  { animation-name: a-band; }
+    .a-tag   { animation-name: a-tag; }
+    .a-tint  { animation-name: a-tint; }
+    .a-arrow { animation-name: a-arrow; }
+    .a-bad   { animation-name: a-bad; }
+    .a-good  { animation-name: a-good; }
+    .a-mark  { animation-name: a-mark; }
+    .a-node  { animation-name: a-node; }
+    .a-roll  { animation-name: a-roll; }
+    .a-out   { animation-name: a-out; }
+    .a-in    { animation-name: a-in; }
+    @keyframes a-band  { 0%, 26% { opacity: 1; } 48%, 100% { opacity: 0; } }
+    @keyframes a-tag   { 0%, 22% { transform: translateX(0); } 42%, 100% { transform: translateX(26px); } }
+    @keyframes a-arrow { 0%, 22% { transform: translateX(0); } 42%, 100% { transform: translateX(-46px); } }
+    @keyframes a-tint  { 0%, 24%  { background: rgb(var(--c-error) / .12); border-color: rgb(var(--c-error) / .5); color: rgb(147 39 31); }
+                         46%, 100% { background: rgb(var(--c-panel2)); border-color: rgb(var(--c-border)); color: rgb(var(--c-dim)); } }
+    @keyframes a-bad   { 0%, 30% { opacity: 1; } 46%, 100% { opacity: 0; } }
+    @keyframes a-good  { 0%, 32% { stroke-dashoffset: 108; } 56%, 100% { stroke-dashoffset: 0; } }
+    @keyframes a-mark  { 0%, 30% { opacity: 1; transform: scale(1); } 46%, 100% { opacity: 0; transform: scale(.5); } }
+    @keyframes a-node  { 0%, 32% { stroke: rgb(var(--c-error)); } 52%, 100% { stroke: rgb(var(--c-accent)); } }
+    @keyframes a-roll  { 0%, 34% { transform: translateY(0); } 52%, 100% { transform: translateY(-20px); } }
+    @keyframes a-out   { 0%, 36% { opacity: 1; } 52%, 100% { opacity: 0; } }
+    @keyframes a-in    { 0%, 46% { opacity: 0; } 64%, 100% { opacity: 1; } }
+    .mk { transform-box: fill-box; transform-origin: center; }
+    .ln { display: flex; align-items: center; gap: 6px; position: relative; height: 22px; }
+    .tg { width: 40px; height: 17px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel2)); color: rgb(var(--c-dim)); border-radius: 5px; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 10px; transform: translateX(26px); }
+    .ar { width: 20px; text-align: center; color: rgb(var(--c-dim)); transform: translateX(-46px); }
+    .roll { height: 20px; overflow: hidden; display: inline-block; }
+    .roll > span { display: block; height: 20px; line-height: 20px; }
+
+    @media (prefers-reduced-motion: reduce) { .track, .anim { animation: none; } }
+  </style>
+</helmet>
+
+<div style="width: 390px; background: rgb(var(--c-bg)); color: rgb(var(--c-ink)); position: relative; overflow: hidden;">
+
+  <div class="blob" style="left: -120px; top: -100px; width: 22rem; height: 22rem; opacity: .34; background: radial-gradient(circle, #D9C8FF, transparent 66%);"></div>
+  <div class="blob" style="right: -140px; top: 300px; width: 20rem; height: 20rem; opacity: .24; background: radial-gradient(circle, #C3E9F5, transparent 66%);"></div>
+
+  <!-- nav -->
+  <div style="position: relative; height: 64px; display: flex; align-items: center; padding: 0 20px;">
+    <span class="disp" style="font-size: 19px; font-weight: 800; letter-spacing: -.055em;">odds</span>
+    <span style="flex-grow: 1;"></span>
+    <span style="display: inline-flex; align-items: center; border-radius: 11px; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: #FFFFFF; background: linear-gradient(180deg, rgb(var(--c-accent-lift)), rgb(var(--c-accent)));">Playground</span>
+  </div>
+
+  <!-- herói -->
+  <div style="position: relative; padding: 22px 20px 0; overflow: hidden;">
+    <div class="plane" style="bottom: -60px;"></div>
+    <div style="position: relative;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: rgb(var(--c-accent));"></span>
+        <span class="eyebrow">DDD estratégico · no navegador</span>
+      </div>
+      <h1 class="disp" style="font-size: 38px; font-weight: 800; line-height: 1.06; letter-spacing: -.04em; margin: 18px 0 0;">
+        O context map <span class="grad">aponta os erros</span> que você não vê.
+      </h1>
+      <p class="lead" style="font-size: 16px; margin-top: 18px;">
+        Escreva domínios, subdomínios e bounded contexts em texto. O diagrama aparece enquanto você digita — e 35 regras dizem, na linha exata, onde o seu mapa se contradiz.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+        <span class="btn1">Abrir o playground</span>
+        <span class="btn2">Ver um exemplo pronto</span>
+      </div>
+      <p class="mono" style="font-size: 11px; color: rgb(var(--c-dim)); margin-top: 16px; line-height: 1.6;">sem conta · sem instalação · o que você escreve não sai do navegador</p>
+    </div>
+
+    <!-- arte -->
+    <div style="position: relative; height: 386px; margin-top: 30px;">
+      <div style="position: absolute; right: -20px; top: 44px; width: 320px; height: 270px; border-radius: 18px; background: rgb(var(--c-solar));"></div>
+
+      <div style="position: absolute; left: 0; top: 0; width: 330px; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 16px; box-shadow: 0 18px 44px -22px rgb(var(--c-accent) / .5); overflow: hidden;">
+        <div style="height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 13px; border-bottom: 1px solid rgb(var(--c-border) / .8);">
+          <span class="dot" style="background: rgb(var(--c-border)); width: 7px; height: 7px;"></span>
+          <span class="mono" style="font-size: 11px; color: rgb(var(--c-dim));">vendas.odds</span>
+          <span style="flex-grow: 1;"></span>
+          <span class="mono anim a-band" style="font-size: 10px; color: rgb(147 39 31);">L7:14</span>
+        </div>
+        <div class="mono" style="font-size: 11px; line-height: 22px; padding: 11px 0;">
+          <div style="padding: 0 13px; color: rgb(var(--c-dim) / .75);"><span style="color: rgb(var(--c-accent));">mapping</span> {</div>
+          <div style="position: relative;">
+            <div class="anim a-band" style="position: absolute; inset: 0; background: rgb(var(--c-error) / .09); border-left: 2px solid rgb(var(--c-error));"></div>
+            <div class="ln" style="padding: 0 13px 0 24px;">
+              <span>Pagamento</span>
+              <span class="tg anim a-tag a-tint">[OHS]</span>
+              <span class="ar anim a-arrow">&lt;--</span>
+              <span>ERPLegado</span>
+            </div>
+          </div>
+          <div style="padding: 0 13px; color: rgb(var(--c-dim) / .75);">}</div>
+        </div>
+        <div style="border-top: 1px solid rgb(var(--c-border) / .8);">
+          <svg width="330" height="168" viewBox="0 0 330 168" fill="none" role="img" aria-label="Mapa abstrato: a relação acusada se cura quando a tag muda de lado no editor">
+            <defs>
+              <marker id="mah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0 1 L9 5 L0 9 z" fill="rgb(var(--c-accent))"/>
+              </marker>
+            </defs>
+            <path d="M76 84 V 122 H 128" stroke="rgb(var(--c-accent))" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".55"/>
+            <path class="anim a-bad" d="M132 46 H 218" stroke="rgb(var(--c-error))" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="6 5"/>
+            <path class="anim a-good" d="M218 46 H 136" stroke="rgb(var(--c-accent))" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="108" marker-end="url(#mah)"/>
+            <g>
+              <rect class="anim a-node" x="36" y="24" width="96" height="44" rx="10" fill="rgb(var(--c-accent) / .07)" stroke="rgb(var(--c-accent))" stroke-width="1.3"/>
+              <rect x="48" y="37" width="42" height="6" rx="3" fill="rgb(var(--c-accent))" opacity=".75"/>
+              <rect x="48" y="49" width="62" height="5" rx="2.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+            </g>
+            <g>
+              <rect x="218" y="24" width="96" height="44" rx="10" fill="rgb(var(--c-azure) / .07)" stroke="rgb(var(--c-azure))" stroke-width="1.3"/>
+              <rect x="230" y="37" width="36" height="6" rx="3" fill="rgb(var(--c-azure))" opacity=".75"/>
+              <rect x="230" y="49" width="58" height="5" rx="2.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+            </g>
+            <g>
+              <rect x="128" y="100" width="96" height="44" rx="10" fill="rgb(var(--c-pulse) / .08)" stroke="rgb(var(--c-pulse))" stroke-width="1.3"/>
+              <rect x="140" y="113" width="38" height="6" rx="3" fill="rgb(var(--c-pulse))" opacity=".8"/>
+              <rect x="140" y="125" width="54" height="5" rx="2.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+            </g>
+            <g class="mk anim a-mark">
+              <circle cx="175" cy="46" r="11" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-error))" stroke-width="1.8"/>
+              <path d="M171 42 l8 8 M179 42 l-8 8" stroke="rgb(var(--c-error))" stroke-width="1.8" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div style="position: absolute; left: 12px; top: 336px; display: flex; align-items: center; gap: 9px; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 999px; padding: 8px 14px; box-shadow: 0 12px 28px -14px rgb(var(--c-accent) / .45); white-space: nowrap;">
+        <span class="mono" style="display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: rgb(147 39 31); background: rgb(var(--c-error) / .1); border-radius: 999px; padding: 1px 9px;">
+          <span class="dot" style="background: rgb(var(--c-error));"></span>
+          <span class="roll"><span class="anim a-roll" style="display: block;"><span>1</span><span>0</span></span></span>
+        </span>
+        <span style="width: 1px; height: 14px; background: rgb(var(--c-border));"></span>
+        <span style="position: relative; display: inline-block; height: 16px; min-width: 194px;">
+          <span class="chip anim a-out" style="position: absolute; left: 0; top: 0; color: rgb(147 39 31); background: rgb(var(--c-error) / .12);">UPSTREAM_ONLY_TAG_MISPLACED</span>
+          <span class="mono anim a-in" style="position: absolute; left: 0; top: 1px; font-size: 11px; color: rgb(var(--c-dim));">nenhum diagnóstico neste mapa</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- faixa de régua -->
+  <div style="position: relative; display: flex; align-items: center; gap: 14px; padding: 0 20px; margin-top: 28px;">
+    <div style="flex-grow: 1; height: 10px; background-image: linear-gradient(90deg, rgb(var(--c-border)) 1px, transparent 1px); background-size: 12px 10px;"></div>
+    <span class="eyebrow" style="white-space: nowrap;">Do texto ao veredito</span>
+    <div style="flex-grow: 1; height: 10px; background-image: linear-gradient(90deg, rgb(var(--c-border)) 1px, transparent 1px); background-size: 12px 10px;"></div>
+  </div>
+
+  <!-- o fluxo -->
+  <div style="position: relative; padding: 48px 20px 56px;">
+    <span class="eyebrow">O fluxo</span>
+    <h2 class="h2" style="margin-top: 12px;">Do texto ao diagrama, e do diagrama ao veredito</h2>
+    <div class="card" style="margin-top: 24px; padding: 0; overflow: hidden;">
+      <div style="padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <div class="tile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5"/><path d="M15 7l5 5-5 5"/></svg></div>
+          <span class="eyebrow">Escreva</span>
+        </div>
+        <h3 style="font-size: 17px; font-weight: 600; letter-spacing: -.015em; margin: 14px 0 0;">Nove linhas, e o mapa existe</h3>
+        <div class="mono" style="margin-top: 12px; background: rgb(var(--c-panel2) / .7); border: 1px solid rgb(var(--c-border) / .7); border-radius: 10px; padding: 12px; font-size: 11px; line-height: 19px;">
+          <div><span style="color: rgb(var(--c-accent));">subdomain core</span> Checkout <span style="color: rgb(var(--c-dim) / .7);">{</span></div>
+          <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent));">context</span> Pagamento</div>
+          <div><span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+        </div>
+      </div>
+      <div style="padding: 20px; border-top: 1px solid rgb(var(--c-border) / .7);">
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <div class="tile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="6" rx="1.5"/><rect x="14" y="14" width="7" height="6" rx="1.5"/><path d="M10 7h4a3 3 0 0 1 3 3v4"/></svg></div>
+          <span class="eyebrow">Veja</span>
+        </div>
+        <h3 style="font-size: 17px; font-weight: 600; letter-spacing: -.015em; margin: 14px 0 0;">O diagrama acompanha a tecla</h3>
+        <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 10px 0 0;">Duas vistas do mesmo modelo: o fluxo das integrações e a estrutura aninhada. Sem arrastar caixa nenhuma.</p>
+      </div>
+      <div style="padding: 20px; border-top: 1px solid rgb(var(--c-border) / .7); background: rgb(var(--c-accent) / .035);">
+        <div style="display: flex; align-items: center; gap: 9px;">
+          <div class="tile" style="background: linear-gradient(180deg, rgb(var(--c-accent-lift)), rgb(var(--c-accent))); color: #FFFFFF;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></div>
+          <span class="eyebrow" style="color: rgb(var(--c-accent));">O veredito</span>
+        </div>
+        <h3 style="font-size: 17px; font-weight: 600; letter-spacing: -.015em; margin: 14px 0 0;">E aqui ele diz o que ninguém disse</h3>
+        <div style="margin-top: 12px; border: 1px solid rgb(var(--c-warning) / .3); background: rgb(var(--c-warning) / .07); border-radius: 10px; padding: 11px 12px;">
+          <span class="chip" style="color: rgb(122 78 0); background: rgb(var(--c-warning) / .14);">CONFORMIST_CORE</span>
+          <p style="font-size: 12.5px; line-height: 1.5; margin: 7px 0 0;">O Core Domain <span class="mono" style="font-size: 11.5px;">Pagamento</span> está se conformando ao modelo de outro sistema.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- marquee -->
+  <div style="position: relative; padding: 20px 0 24px; border-top: 1px solid rgb(var(--c-border) / .6); border-bottom: 1px solid rgb(var(--c-border) / .6); background: rgb(var(--c-panel) / .55); overflow: hidden;">
+    <p class="eyebrow" style="text-align: center; margin: 0 0 16px;">35 regras · um code por diagnóstico</p>
+    <div style="-webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);">
+      <div class="track">
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>ROLE_CONFLICT</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-warning));"></span>CONFORMIST_CORE</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>PHANTOM_REFERENCE</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-info));"></span>UNMAPPED_CONTEXT</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>DUPLICATE_RELATIONSHIP</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-warning));"></span>CORE_IN_SHARED_KERNEL</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-info));"></span>UNDOCUMENTED_CONTRACT</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>UPSTREAM_ONLY_TAG_MISPLACED</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>ROLE_CONFLICT</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-warning));"></span>CONFORMIST_CORE</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>PHANTOM_REFERENCE</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-info));"></span>UNMAPPED_CONTEXT</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>DUPLICATE_RELATIONSHIP</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-warning));"></span>CORE_IN_SHARED_KERNEL</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-info));"></span>UNDOCUMENTED_CONTRACT</span>
+        <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>UPSTREAM_ONLY_TAG_MISPLACED</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- o que ele pega: faixa escura -->
+  <div class="dark" style="position: relative; padding: 52px 20px; background: rgb(var(--c-bg)); color: rgb(var(--c-ink));">
+    <span class="eyebrow">O que ele pega</span>
+    <h2 class="h2" style="margin-top: 12px;">Sintaxe perfeita. Arquitetura cara.</h2>
+    <p class="lead" style="margin-top: 14px;">Este arquivo compila em qualquer lugar. O problema dele não é de forma — é de decisão, e só aparece meses depois, no custo de mudar.</p>
+
+    <div style="margin-top: 24px; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 16px; overflow: hidden;">
+      <div style="height: 38px; display: flex; align-items: center; gap: 9px; padding: 0 14px; border-bottom: 1px solid rgb(var(--c-border));">
+        <span class="dot" style="background: rgb(var(--c-border)); width: 8px; height: 8px;"></span>
+        <span class="mono" style="font-size: 11px; color: rgb(var(--c-dim));">vendas.odds</span>
+      </div>
+      <div class="mono" style="font-size: 11px; line-height: 21px; padding: 14px;">
+        <div><span style="color: rgb(var(--c-accent)); font-weight: 500;">domain</span> Vendas <span style="color: rgb(var(--c-dim) / .7);">{</span></div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">subdomain core</span> Checkout <span style="color: rgb(var(--c-dim) / .7);">{</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">context</span> Pagamento</div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">external</span> <span style="color: rgb(var(--c-dim) / .7);">{</span> <span style="color: rgb(var(--c-accent)); font-weight: 500;">context</span> ERPLegado <span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">mapping</span> <span style="color: rgb(var(--c-dim) / .7);">{</span></div>
+        <div style="background: rgb(var(--c-warning) / .13); margin: 0 -14px; padding: 0 12px; border-left: 2px solid rgb(var(--c-warning));">&nbsp;Pagamento <span style="background: rgb(var(--c-panel2)); border-radius: 3px; padding: 0 3px;">[CF]</span> &lt;-- <span style="background: rgb(var(--c-panel2)); border-radius: 3px; padding: 0 3px;">[OHS]</span> ERPLegado</div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+        <div><span style="color: rgb(var(--c-dim) / .7);">}</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; border: 1px solid rgb(var(--c-warning) / .38); background: rgb(var(--c-panel)); border-radius: 16px; padding: 18px;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <span class="chip" style="color: rgb(var(--c-warning)); background: rgb(var(--c-warning) / .16);">CONFORMIST_CORE</span>
+        <span class="mono" style="font-size: 10.5px; color: rgb(var(--c-dim)); margin-left: auto;">L7:14</span>
+      </div>
+      <p style="font-size: 14px; line-height: 1.55; margin: 12px 0 0;">Risco estratégico: o Core Domain <span class="mono" style="font-size: 12.5px;">Pagamento</span> está se conformando ao modelo de outro sistema. Considere um <span class="mono" style="font-size: 12.5px;">[ACL]</span>.</p>
+    </div>
+
+    <div style="display: flex; gap: 7px; flex-wrap: wrap; margin-top: 16px;">
+      <span class="cpill"><span class="dot" style="background: rgb(var(--c-error));"></span>error</span>
+      <span class="cpill"><span class="dot" style="background: rgb(var(--c-warning));"></span>warning</span>
+      <span class="cpill"><span class="dot" style="background: rgb(var(--c-info));"></span>info</span>
+    </div>
+    <p style="font-size: 13px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 14px 0 0;">Nenhuma das três apaga o diagrama: o elemento com problema é desenhado marcado, e o resto continua de pé.</p>
+  </div>
+
+  <!-- duas vistas -->
+  <div style="position: relative; padding: 52px 20px;">
+    <span class="eyebrow">Duas vistas</span>
+    <h2 class="h2" style="margin-top: 12px;">O mesmo modelo, com poderes de dizer diferentes</h2>
+    <p class="lead" style="margin-top: 14px;">Cada vista mostra uma coisa que a outra não consegue. Você troca, o modelo continua o mesmo.</p>
+
+    <div class="card" style="margin-top: 22px; padding: 0; overflow: hidden;">
+      <div style="padding: 18px 18px 0;">
+        <span class="eyebrow">Vista de fluxo</span>
+        <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 10px 0 0;">Direção, tags na linha e marcadores. É a única vista onde o <span class="mono" style="font-size: 12.5px;">[BBM]</span> aparece.</p>
+      </div>
+      <div style="margin-top: 14px; background: rgb(var(--c-panel2) / .55); border-top: 1px solid rgb(var(--c-border) / .7); padding: 16px 0;">
+        <svg width="100%" height="132" viewBox="0 0 350 132" fill="none" role="img" aria-label="Vista de fluxo">
+          <defs><marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 z" fill="rgb(var(--c-accent))"/></marker></defs>
+          <path d="M214 38 H 140" stroke="rgb(var(--c-accent))" stroke-width="1.5" stroke-linecap="round" marker-end="url(#m2)" opacity=".8"/>
+          <path d="M92 60 V 94 H 138" stroke="rgb(var(--c-accent))" stroke-width="1.5" stroke-linecap="round" marker-end="url(#m2)" opacity=".8"/>
+          <rect x="46" y="18" width="94" height="42" rx="10" fill="rgb(var(--c-accent) / .07)" stroke="rgb(var(--c-accent))" stroke-width="1.3"/>
+          <rect x="58" y="30" width="40" height="6" rx="3" fill="rgb(var(--c-accent))" opacity=".75"/>
+          <rect x="58" y="42" width="58" height="5" rx="2.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+          <rect x="214" y="18" width="94" height="42" rx="10" fill="rgb(var(--c-azure) / .07)" stroke="rgb(var(--c-azure))" stroke-width="1.3"/>
+          <rect x="226" y="30" width="34" height="6" rx="3" fill="rgb(var(--c-azure))" opacity=".75"/>
+          <rect x="226" y="42" width="54" height="5" rx="2.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+          <rect x="138" y="74" width="94" height="42" rx="10" fill="rgb(var(--c-pulse) / .08)" stroke="rgb(var(--c-pulse))" stroke-width="1.3"/>
+          <rect x="150" y="86" width="36" height="6" rx="3" fill="rgb(var(--c-pulse))" opacity=".8"/>
+          <rect x="150" y="98" width="52" height="5" rx="2.5" fill="rgb(var(--c-dim))" opacity=".3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 16px; padding: 0; overflow: hidden;">
+      <div style="padding: 18px 18px 0;">
+        <span class="eyebrow">Vista de contenção</span>
+        <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 10px 0 0;">Onde cada contexto mora — e o bloco <span class="mono" style="font-size: 12.5px;">external</span> desenhado <em>fora</em> da fronteira, porque ele não é seu.</p>
+      </div>
+      <div style="margin-top: 14px; background: rgb(var(--c-panel2) / .55); border-top: 1px solid rgb(var(--c-border) / .7); padding: 16px 0;">
+        <svg width="100%" height="132" viewBox="0 0 350 132" fill="none" role="img" aria-label="Vista de contenção com o bloco external fora da fronteira do domínio">
+          <rect x="16" y="14" width="222" height="104" rx="14" fill="rgb(var(--c-accent) / .04)" stroke="rgb(var(--c-accent) / .5)" stroke-width="1.3"/>
+          <rect x="30" y="32" width="96" height="74" rx="10" fill="rgb(var(--c-accent) / .06)" stroke="rgb(var(--c-accent) / .45)" stroke-width="1.1" stroke-dasharray="5 5"/>
+          <rect x="42" y="46" width="72" height="22" rx="7" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-accent))" stroke-width="1.2"/>
+          <rect x="42" y="74" width="72" height="22" rx="7" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-accent))" stroke-width="1.2"/>
+          <rect x="136" y="32" width="90" height="74" rx="10" fill="rgb(var(--c-pulse) / .06)" stroke="rgb(var(--c-pulse) / .5)" stroke-width="1.1" stroke-dasharray="5 5"/>
+          <rect x="148" y="46" width="66" height="22" rx="7" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-pulse))" stroke-width="1.2"/>
+          <rect x="258" y="38" width="76" height="56" rx="10" fill="rgb(var(--c-azure) / .05)" stroke="rgb(var(--c-azure) / .6)" stroke-width="1.3" stroke-dasharray="6 5"/>
+          <rect x="270" y="62" width="52" height="22" rx="7" fill="rgb(var(--c-panel))" stroke="rgb(var(--c-azure))" stroke-width="1.2"/>
+          <text x="296" y="55" text-anchor="middle" font-family="JetBrains Mono, ui-monospace, Menlo, monospace" font-size="10" fill="rgb(var(--c-azure))">external</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- limites -->
+  <div style="position: relative; padding: 52px 20px; border-top: 1px solid rgb(var(--c-border) / .6); background: rgb(var(--c-panel) / .6);">
+    <span class="eyebrow">A pergunta honesta</span>
+    <h2 class="h2" style="margin-top: 12px;">Por que não continuar no quadro branco?</h2>
+    <p class="lead" style="margin-top: 14px;">Porque um quadro branco aceita qualquer coisa. Ele não sabe que <span class="mono" style="font-size: 13.5px;">[CF]</span> e <span class="mono" style="font-size: 13.5px;">[ACL]</span> no mesmo lado se contradizem, e envelhece no instante em que a reunião acaba.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 24px;">
+      <div class="card">
+        <div class="tile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4v16M16 4v16"/><path d="M4 9h16M4 15h16"/></svg></div>
+        <h3 style="font-size: 16.5px; font-weight: 600; letter-spacing: -.015em; margin: 14px 0 0;">Diff legível</h3>
+        <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 8px 0 0;">Uma mudança de arquitetura aparece como três linhas alteradas, com autor e data.</p>
+      </div>
+      <div class="card">
+        <div class="tile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="12" r="2.5"/><path d="M8.5 12h7"/></svg></div>
+        <h3 style="font-size: 16.5px; font-weight: 600; letter-spacing: -.015em; margin: 14px 0 0;">Uma relação, uma aresta</h3>
+        <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 8px 0 0;">O par de contextos é a identidade da relação. Uma segunda linha para o mesmo par é apontada, não desenhada duas vezes.</p>
+      </div>
+      <div class="card">
+        <div class="tile"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6M14 12h6"/><path d="M12 5v14"/></svg></div>
+        <h3 style="font-size: 16.5px; font-weight: 600; letter-spacing: -.015em; margin: 14px 0 0;">Discordar é permitido</h3>
+        <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 8px 0 0;">Suprimir uma regra exige justificativa escrita, na linha, dentro do arquivo. A ferramenta cede — e o motivo fica registrado.</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 22px; margin-top: 32px; padding-top: 26px; border-top: 1px solid rgb(var(--c-border) / .7);">
+      <div>
+        <div style="display: flex; align-items: center; gap: 11px;">
+          <span class="num">01</span><span class="eyebrow">Não faz</span>
+        </div>
+        <p style="font-size: 14.5px; font-weight: 600; margin: 12px 0 5px;">Design tático</p>
+        <p style="font-size: 13.5px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 0;">Agregados, entidades e eventos dentro de um contexto ficam de fora. O recorte é estratégico, de propósito.</p>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 11px;">
+          <span class="num">02</span><span class="eyebrow">Não faz</span>
+        </div>
+        <p style="font-size: 14.5px; font-weight: 600; margin: 12px 0 5px;">Edição arrastando caixa</p>
+        <p style="font-size: 13.5px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 0;">O texto é a fonte única e o diagrama nunca escreve de volta. É o que mantém o seu arquivo previsível.</p>
+      </div>
+      <div>
+        <div style="display: flex; align-items: center; gap: 11px;">
+          <span class="num">03</span><span class="eyebrow">Não faz</span>
+        </div>
+        <p style="font-size: 14.5px; font-weight: 600; margin: 12px 0 5px;">Julgar quem você é</p>
+        <p style="font-size: 13.5px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 0;">Propriedades como <span class="mono" style="font-size: 12.5px;">team</span> nunca alimentam uma regra, e nenhuma regra pressupõe que você controla o sistema que ela critica.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA final: faixa em gradiente azul → roxo -->
+  <div style="position: relative; height: 372px; overflow: hidden; background: linear-gradient(0deg, rgb(var(--c-ink) / .12), rgb(var(--c-ink) / .12)), linear-gradient(105deg, rgb(var(--c-azure)) 0%, rgb(var(--c-accent)) 100%);">
+    <div class="plane" style="bottom: -110px; background-image: linear-gradient(rgb(255 255 255 / .16) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .16) 1px, transparent 1px);"></div>
+    <div style="position: relative; text-align: center; padding: 52px 20px 0;">
+      <span class="eyebrow" style="color: rgb(255 255 255 / .9);">Nada para instalar</span>
+      <h2 class="disp" style="font-size: 31px; font-weight: 800; letter-spacing: -.036em; line-height: 1.1; margin: 14px 0 0; color: #FFFFFF;">Escreva nove linhas e veja o que elas dizem.</h2>
+      <p style="font-size: 15px; line-height: 1.6; color: rgb(255 255 255 / .92); margin: 14px 0 0;">Abre com um modelo pronto e não pede conta nenhuma.</p>
+      <span style="display: inline-flex; align-items: center; justify-content: center; border-radius: 13px; padding: 15px 24px; margin-top: 22px; font-size: 15px; font-weight: 600; color: rgb(var(--c-accent)); background: #FFFFFF; box-shadow: 0 14px 32px -12px rgb(12 10 30 / .55);">Abrir o playground</span>
+      <p class="mono" style="font-size: 11px; color: rgb(255 255 255 / .92); margin-top: 18px; line-height: 1.6;">compartilhar é uma URL com o desenho dentro dela</p>
+    </div>
+  </div>
+
+  <!-- rodapé: as duas faixas -->
+  <div style="position: relative; border-top: 1px solid rgb(var(--c-border) / .7); background: rgb(var(--c-panel));">
+    <div style="padding: 22px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <span class="disp" style="font-size: 17px; font-weight: 800; letter-spacing: -.055em;">odds</span>
+      <span style="color: rgb(var(--c-dim));">—</span>
+      <span style="font-size: 13.5px; color: rgb(var(--c-dim));">desenho estratégico que se revisa sozinho</span>
+      <div style="display: flex; gap: 18px; font-size: 13.5px; color: rgb(var(--c-dim)); width: 100%; margin-top: 6px;">
+        <span>Gramática</span><span>Regras</span><span>GitHub</span>
+      </div>
+    </div>
+    <div style="border-top: 1px solid rgb(var(--c-border) / .6); padding: 14px 20px 24px;">
+      <span class="mono" style="font-size: 11px; color: rgb(var(--c-dim) / .85); line-height: 1.7;">© ODDS · Open Domain Driven Specification<br>35 regras · 44 casos · 100% no navegador</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

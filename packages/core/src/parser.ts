@@ -205,8 +205,15 @@ export class OddsParser extends EmbeddedActionsParser {
     this.CONSUME(t.LBrace);
     let title: string | undefined;
     this.OPTION(() => { title = this.SUBRULE(this.titleDecl); });
-    const contexts: ContextNode[] = [];
+    // `GRAMMAR.md` §2 (`ADR-0008`): description e owner, livres de ordem entre
+    // si, depois do title e antes do primeiro context.
+    const properties: { description?: string; owner?: string } = {};
     this.MANY(() => {
+      const property = this.SUBRULE(this.subdomainPropertyDecl);
+      this.ACTION(() => { properties[property[0]] = property[1]; });
+    });
+    const contexts: ContextNode[] = [];
+    this.MANY2(() => {
       const context = this.SUBRULE(this.contextDecl);
       this.ACTION(() => contexts.push(context));
     });
@@ -217,10 +224,21 @@ export class OddsParser extends EmbeddedActionsParser {
       subdomainTypeSpan: spanOf(type),
       name: name.image,
       ...(title === undefined ? {} : { title }),
+      ...properties,
       contexts,
       headerSpan: spanBetween(spanOf(open), spanOf(name)),
       span: spanBetween(spanOf(open), spanOf(close)),
     };
+  });
+
+  private subdomainPropertyDecl = this.RULE("subdomainPropertyDecl", (): ["description" | "owner", string] => {
+    const key = this.OR([
+      { ALT: () => this.CONSUME(t.reservedTokens.description) },
+      { ALT: () => this.CONSUME(t.reservedTokens.owner) },
+    ]);
+    this.CONSUME(t.Colon);
+    const value = this.CONSUME(t.StringLiteral);
+    return this.ACTION(() => [key.image as "description" | "owner", unquote(value)]);
   });
 
   private externalDecl = this.RULE("externalDecl", (): ExternalBlockNode => {

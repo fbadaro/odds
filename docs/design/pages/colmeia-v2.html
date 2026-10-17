@@ -1,0 +1,1846 @@
+<title>Colmeia v2</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --c-bg:250 250 253; --c-panel:255 255 255; --c-panel2:244 243 250; --c-border:230 228 242;
+  --c-ink:27 26 36; --c-dim:107 104 128;
+  --c-accent:108 64 217; --c-accent-lift:138 91 240; --c-azure:61 111 232; --c-pulse:35 168 205;
+  --c-solar:255 197 61; --c-error:192 52 43; --c-warning:166 106 0; --c-info:91 107 124;
+  --shadow-strength:.14;
+  --mix-core:26%; --mix-sup:13%; --mix-gen:8%;
+  --tile-core:52%; --tile-sup:30%; --tile-gen:15%; --tile-edge:38%;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --c-bg:18 17 26; --c-panel:26 25 38; --c-panel2:35 33 47; --c-border:50 47 69;
+    --c-ink:236 235 245; --c-dim:154 151 174;
+    --c-accent:173 141 255; --c-accent-lift:198 176 255; --c-azure:125 163 255; --c-pulse:94 208 238;
+    --c-solar:255 209 99; --c-error:224 121 111; --c-warning:217 164 65; --c-info:147 163 179;
+    --shadow-strength:.5;
+    --mix-core:17%; --mix-sup:15%; --mix-gen:11%;
+    --tile-core:40%; --tile-sup:34%; --tile-gen:22%; --tile-edge:34%;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --c-bg:18 17 26; --c-panel:26 25 38; --c-panel2:35 33 47; --c-border:50 47 69;
+  --c-ink:236 235 245; --c-dim:154 151 174;
+  --c-accent:173 141 255; --c-accent-lift:198 176 255; --c-azure:125 163 255; --c-pulse:94 208 238;
+  --c-solar:255 209 99; --c-error:224 121 111; --c-warning:217 164 65; --c-info:147 163 179;
+  --shadow-strength:.5;
+  --mix-core:17%; --mix-sup:15%; --mix-gen:11%;
+  --tile-core:40%; --tile-sup:34%; --tile-gen:22%; --tile-edge:34%;
+}
+
+*{box-sizing:border-box}
+body{background:rgb(var(--c-bg)); color:rgb(var(--c-ink));
+  font-family:"Inter","Segoe UI",system-ui,sans-serif; -webkit-font-smoothing:antialiased;}
+.wrap{max-width:1240px; margin:0 auto; padding-inline:20px; padding-block:36px 72px;}
+.mono{font-family:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace}
+.eyebrow{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace; font-size:11px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase; color:rgb(var(--c-dim));}
+h1{font-family:"Montserrat","Inter",system-ui,sans-serif; font-weight:800; letter-spacing:-.03em;
+  font-size:clamp(30px,4.4vw,40px); line-height:1.08; margin:10px 0 0;}
+h3{font-family:"Montserrat","Inter",system-ui,sans-serif; font-weight:700; letter-spacing:-.02em;}
+p{line-height:1.62; margin:10px 0}
+.lede{font-size:17px; line-height:1.6; color:rgb(var(--c-dim)); max-width:74ch; margin-top:14px}
+.lede b{color:rgb(var(--c-ink)); font-weight:600}
+code{font-family:"JetBrains Mono",Menlo,monospace; font-size:.88em;
+  background:rgb(var(--c-panel2)); border-radius:6px; padding:1px 5px}
+
+.bar{display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center;
+  margin:26px 0 14px; padding:10px 12px; border:1px solid rgb(var(--c-border));
+  border-radius:16px; background:rgb(var(--c-panel));
+  box-shadow:0 2px 10px rgb(27 27 25 / calc(var(--shadow-strength) * .5));}
+.grp{display:flex; align-items:center; gap:8px}
+.grp > span.lbl{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; letter-spacing:.18em;
+  text-transform:uppercase; color:rgb(var(--c-dim));}
+.seg{display:flex; background:rgb(var(--c-panel2)); border:1px solid rgb(var(--c-border));
+  border-radius:8px; padding:2px; gap:2px}
+.seg button{appearance:none; border:0; background:transparent; cursor:pointer; color:rgb(var(--c-dim));
+  font-family:inherit; font-size:12.5px; font-weight:500; padding:6px 11px; border-radius:6px; line-height:1;}
+.seg button[aria-pressed="true"]{background:rgb(var(--c-panel)); color:rgb(var(--c-accent));
+  box-shadow:0 1px 2px rgb(27 27 25 / calc(var(--shadow-strength) * .4));}
+.seg button:hover{color:rgb(var(--c-ink))}
+.seg button[aria-pressed="true"]:hover{color:rgb(var(--c-accent))}
+
+.stage{display:grid; grid-template-columns:minmax(0,1fr) 336px; gap:16px; align-items:start}
+@media (max-width:900px){ .stage{grid-template-columns:minmax(0,1fr)} }
+
+.map{position:relative; border:1px solid rgb(var(--c-border)); border-radius:16px; overflow:hidden;
+  background-color:rgb(var(--c-bg));
+  background-image:radial-gradient(rgb(var(--c-accent) / .13) 1px, transparent 1px);
+  background-size:22px 22px;
+  box-shadow:0 2px 10px rgb(27 27 25 / calc(var(--shadow-strength) * .5));}
+.map svg{display:block; width:100%; height:auto}
+
+.side{display:flex; flex-direction:column; gap:12px}
+.card{border:1px solid rgb(var(--c-border)); border-radius:16px; background:rgb(var(--c-panel));
+  box-shadow:0 2px 10px rgb(27 27 25 / calc(var(--shadow-strength) * .5)); overflow:hidden}
+.card > header{display:flex; align-items:center; justify-content:space-between; height:36px;
+  padding:0 14px; border-bottom:1px solid rgb(var(--c-border)); background:rgb(var(--c-panel2))}
+.card > .body{padding:12px 14px}
+pre{margin:0; padding:12px 14px; overflow:auto; font-family:"JetBrains Mono",Menlo,monospace;
+  font-size:11.5px; line-height:19px; color:rgb(var(--c-ink)); max-height:460px}
+pre .k{color:rgb(var(--c-accent)); font-weight:500}
+pre .ty{color:rgb(var(--c-azure)); font-weight:500}
+pre .tg{color:rgb(var(--c-pulse)); font-weight:500}
+pre .cn{color:rgb(var(--c-ink)); font-weight:500}
+pre .p{color:rgb(var(--c-dim))}
+pre .hyp{color:rgb(var(--c-accent)); font-weight:500}
+pre b{font-weight:inherit}
+
+.leg{display:flex; flex-direction:column; gap:10px; font-size:12.5px; color:rgb(var(--c-dim))}
+.leg .row{display:flex; align-items:center; gap:10px}
+.leg .sw{width:23px; height:20px; flex:none; border:1px solid rgb(var(--c-ink) / .16);
+  clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+.leg .sw.core{background:color-mix(in srgb, rgb(var(--c-solar)) var(--mix-core), rgb(var(--c-panel)))}
+.leg .sw.supporting{background:color-mix(in srgb, rgb(var(--c-azure)) var(--mix-sup), rgb(var(--c-panel)))}
+.leg .sw.generic{background:color-mix(in srgb, rgb(var(--c-dim)) var(--mix-gen), rgb(var(--c-panel)))}
+.leg .sw.external{background:rgb(var(--c-panel2)); border-style:dashed; border-color:rgb(var(--c-dim) / .7)}
+.leg b{color:rgb(var(--c-ink)); font-weight:600}
+
+.sel-empty{font-size:13px; color:rgb(var(--c-dim)); line-height:1.55}
+.sel h4{margin:0; font-family:"JetBrains Mono",Menlo,monospace; font-size:14px; font-weight:500;
+  letter-spacing:-.01em; color:rgb(var(--c-ink))}
+.sel .meta{margin:6px 0 12px; font-size:12px; color:rgb(var(--c-dim))}
+.sel .meta b{color:rgb(var(--c-ink)); font-weight:600}
+.sel .rel{font-family:"JetBrains Mono",Menlo,monospace; font-size:11px; line-height:1.5;
+  padding:7px 0; border-top:1px solid rgb(var(--c-border)); color:rgb(var(--c-ink))}
+.sel .rel .tg{color:rgb(var(--c-pulse))}
+.sel .rel .ro{display:block; font-family:"Inter",sans-serif; font-size:11px; color:rgb(var(--c-dim)); margin-top:2px}
+.sel .none{font-size:12px; color:rgb(var(--c-warning)); margin-top:8px}
+.sel .kind{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:rgb(var(--c-accent)); margin-bottom:3px}
+.sel .ti{font-size:12px; color:rgb(var(--c-dim))}
+.sel .ti.big{font-size:13px; color:rgb(var(--c-ink)); margin:2px 0 0}
+.sel .sect{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.2em;
+  text-transform:uppercase; color:rgb(var(--c-dim)); margin:14px 0 6px;
+  padding-top:9px; border-top:1px solid rgb(var(--c-border))}
+/* Propriedade e DADO LITERAL do arquivo, entao mono — a mesma fronteira que o
+   DESIGN.md mantem entre dado e prosa. A chave fica a esquerda, estreita. */
+.sel .prop{padding:5px 0; font-size:11.5px}
+.sel .pk{display:block; font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px;
+  letter-spacing:.1em; text-transform:uppercase; color:rgb(var(--c-dim)); margin-bottom:3px}
+.sel .pv{font-family:"JetBrains Mono",Menlo,monospace; font-size:11px;
+  color:rgb(var(--c-ink)); word-break:break-word}
+.sel .rlist{margin:0; padding-left:16px; font-family:"JetBrains Mono",Menlo,monospace;
+  font-size:10.5px; color:rgb(var(--c-ink)); line-height:1.5}
+.sel .rlist li{margin:0 0 1px}
+.sel .mat{display:inline-block; font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; border-radius:999px;
+  padding:2px 9px; border:1px solid rgb(var(--c-border)); background:rgb(var(--c-panel2));
+  color:rgb(var(--c-ink))}
+.sel .mat-mature{background:color-mix(in srgb, rgb(var(--c-azure)) 14%, rgb(var(--c-panel)))}
+.sel .mat-growing{background:color-mix(in srgb, rgb(var(--c-pulse)) 16%, rgb(var(--c-panel)))}
+.sel .mat-experimental{background:color-mix(in srgb, rgb(var(--c-solar)) 30%, rgb(var(--c-panel)))}
+.sel .mat-legacy{background:color-mix(in srgb, rgb(var(--c-dim)) 16%, rgb(var(--c-panel)))}
+.sel .nofill{font-size:11.5px; color:rgb(var(--c-dim)); line-height:1.5; margin:6px 0 0}
+.sel .nofill code{font-size:10.5px}
+.sel .tally{display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 10px}
+.sel .tally span{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px;
+  border:1px solid rgb(var(--c-border)); border-radius:999px; padding:3px 9px;
+  color:rgb(var(--c-dim)); background:rgb(var(--c-panel2))}
+.sel .ctxrow{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px; align-items:baseline;
+  width:100%; text-align:left; appearance:none; cursor:pointer;
+  border:0; border-top:1px solid rgb(var(--c-border)); background:transparent;
+  padding:7px 0; font-family:inherit}
+.sel .ctxrow:hover{background:rgb(var(--c-accent) / .06)}
+.sel .ctxrow .nm{font-family:"JetBrains Mono",Menlo,monospace; font-size:11.5px;
+  color:rgb(var(--c-ink)); grid-column:1}
+.sel .ctxrow .ti{grid-column:1; font-size:10.5px}
+.sel .ctxrow .cnt{grid-row:1; grid-column:2; font-family:"JetBrains Mono",Menlo,monospace;
+  font-size:10px; color:rgb(var(--c-dim))}
+.sel .golink{appearance:none; border:0; background:transparent; cursor:pointer; padding:0;
+  font:inherit; font-weight:600; color:rgb(var(--c-accent)); text-decoration:underline;
+  text-decoration-color:rgb(var(--c-accent) / .35); text-underline-offset:2px}
+.sel .golink:hover{text-decoration-color:rgb(var(--c-accent))}
+.sel .hypbar{margin:10px 0 0; padding:7px 9px; border-radius:8px;
+  border:1px dashed rgb(var(--c-accent) / .45); background:rgb(var(--c-accent) / .06);
+  font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.06em;
+  text-transform:uppercase; color:rgb(var(--c-accent)); line-height:1.5}
+.sel .hypbar code{background:transparent; padding:0; font-size:9.5px; text-transform:none}
+.sel .fence{margin:14px 0 0; padding-top:10px; border-top:1px solid rgb(var(--c-border));
+  font-size:11.5px; line-height:1.5; color:rgb(var(--c-dim))}
+.sel .fence b{color:rgb(var(--c-ink)); font-weight:600}
+g.sub.on .subwash{fill:rgb(var(--c-accent) / .07)}
+g.sub.on .bsub{stroke:rgb(var(--c-accent)); stroke-width:2}
+
+.dregion{fill:rgb(var(--c-ink) / .034)}
+/* 2px e a unica excecao ao "borda sempre 1px" do DESIGN.md, e e deliberada:
+   fronteira de dominio num mapa nao e borda de componente. Sem peso proprio ela
+   fica indistinguivel do contorno da massa, e a hierarquia le como plana. */
+.bdom{fill:none; stroke:rgb(var(--c-ink) / .32); stroke-width:1.8; stroke-linecap:round}
+.terr.core{fill:color-mix(in srgb, rgb(var(--c-solar)) var(--mix-core), rgb(var(--c-panel)))}
+.terr.supporting{fill:color-mix(in srgb, rgb(var(--c-azure)) var(--mix-sup), rgb(var(--c-panel)))}
+.terr.generic{fill:color-mix(in srgb, rgb(var(--c-dim)) var(--mix-gen), rgb(var(--c-panel)))}
+.terr.external{fill:rgb(var(--c-panel2))}
+.comb{stroke:rgb(var(--c-ink) / .07); stroke-width:1; fill:none; pointer-events:none}
+.bsub{fill:none; stroke:rgb(var(--c-ink) / .13); stroke-width:1; stroke-linecap:round;
+  transition:stroke .14s, stroke-width .14s}
+/* o territorio inteiro e um alvo de hover: a lamina fica transparente ate acender */
+.subwash{fill:rgb(var(--c-accent) / 0); transition:fill .14s; pointer-events:all}
+g.sub.hot .subwash{fill:rgb(var(--c-accent) / .10)}
+g.sub.hot .bsub{stroke:rgb(var(--c-accent) / .8); stroke-width:1.8}
+g.sublab.subhot .snm{fill:rgb(var(--c-accent)); stroke-width:4px}
+g.node.subhot .tile{stroke:rgb(var(--c-accent)); stroke-width:2}
+.bmass{fill:none; stroke:rgb(var(--c-ink) / .30); stroke-width:1.2; stroke-linecap:round}
+.bmass.ext{stroke:rgb(var(--c-dim) / .85); stroke-dasharray:4 3}
+
+/* A peca e a cor do proprio tipo, mais concentrada que o terreno; a borda e a
+   mesma cor puxada para o ink. No tema escuro o ink e claro, entao a borda
+   continua contrastando — o mesmo par de tokens serve aos dois temas. */
+.tile{stroke-width:1.2; transition:fill .14s, stroke .14s}
+.tile.core{
+  fill:rgb(var(--c-panel));
+  stroke:rgb(var(--c-ink) / .45);
+  fill:color-mix(in srgb, rgb(var(--c-solar)) var(--tile-core), rgb(var(--c-panel)));
+  stroke:color-mix(in srgb, rgb(var(--c-ink)) var(--tile-edge),
+         color-mix(in srgb, rgb(var(--c-solar)) var(--tile-core), rgb(var(--c-panel))));
+}
+.tile.supporting{
+  fill:rgb(var(--c-panel));
+  stroke:rgb(var(--c-ink) / .45);
+  fill:color-mix(in srgb, rgb(var(--c-azure)) var(--tile-sup), rgb(var(--c-panel)));
+  stroke:color-mix(in srgb, rgb(var(--c-ink)) var(--tile-edge),
+         color-mix(in srgb, rgb(var(--c-azure)) var(--tile-sup), rgb(var(--c-panel))));
+}
+.tile.generic{
+  fill:rgb(var(--c-panel));
+  stroke:rgb(var(--c-ink) / .45);
+  fill:color-mix(in srgb, rgb(var(--c-dim)) var(--tile-gen), rgb(var(--c-panel)));
+  stroke:color-mix(in srgb, rgb(var(--c-ink)) var(--tile-edge),
+         color-mix(in srgb, rgb(var(--c-dim)) var(--tile-gen), rgb(var(--c-panel))));
+}
+.tile.external{
+  fill:color-mix(in srgb, rgb(var(--c-dim)) 16%, rgb(var(--c-panel)));
+  stroke:rgb(var(--c-dim)); stroke-dasharray:5 3;
+}
+g.node{cursor:pointer}
+g.node:hover .tile{stroke:rgb(var(--c-accent)); stroke-width:2.4}
+g.node.on .tile{stroke:rgb(var(--c-accent)); stroke-width:2.8}
+.hit{fill:transparent; stroke:none}
+
+.cnm{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; fill:rgb(var(--c-ink) / .9);
+  pointer-events:none; user-select:none;
+  paint-order:stroke; stroke:rgb(var(--c-panel)); stroke-width:3px; stroke-linejoin:round}
+/* Halo da cor do painel: o nome do territorio precisa ler sobre terreno, peca ou
+   aresta. Sem isso ele ficava por baixo das pecas e aparecia em fragmentos —
+   "LMEN", "ID...TY" — que se leem como ruido, nao como rotulo. */
+.snm{font-family:"JetBrains Mono",Menlo,monospace; letter-spacing:.16em; text-anchor:middle;
+  fill:rgb(var(--c-ink) / .42); pointer-events:none; user-select:none; transition:fill .14s;
+  paint-order:stroke; stroke:rgb(var(--c-panel)); stroke-width:3.5px; stroke-linejoin:round}
+.dnm{font-family:"Inter",system-ui,sans-serif; font-weight:600; letter-spacing:-.01em;
+  text-anchor:middle; fill:rgb(var(--c-ink) / .78)}
+.did{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.16em;
+  text-anchor:middle; fill:rgb(var(--c-dim) / .85)}
+
+.ecase{fill:none; stroke:rgb(var(--c-panel) / .82); stroke-width:5;
+  stroke-linecap:round; stroke-linejoin:round}
+.edge{fill:none; stroke:rgb(var(--c-accent) / .6); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.edge.sep{stroke:rgb(var(--c-dim) / .5); stroke-width:1.4}
+.head{fill:rgb(var(--c-accent) / .78)}
+.tick{stroke:rgb(var(--c-dim)); stroke-width:1.6; stroke-linecap:round; fill:none}
+.chip rect{fill:rgb(var(--c-panel)); stroke:rgb(var(--c-border))}
+.chip text{font-family:"JetBrains Mono",Menlo,monospace; font-size:9px; font-weight:500;
+  fill:rgb(var(--c-accent)); text-anchor:middle; dominant-baseline:central}
+g.fade{opacity:.12}
+text.cnm.fade{opacity:.12}
+text.cnm.on{fill:rgb(var(--c-accent)); font-weight:500}
+g.rel.lit .edge{stroke:rgb(var(--c-accent)); stroke-width:2.2}
+
+.notes{margin-top:52px; display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:16px}
+.note{border:1px solid rgb(var(--c-border)); border-radius:16px; background:rgb(var(--c-panel));
+  padding:22px 24px; box-shadow:0 18px 44px -22px rgb(var(--c-accent) / calc(var(--shadow-strength) * 2))}
+.note h3{font-size:16px; margin:10px 0 0}
+.note p{font-size:14px; color:rgb(var(--c-dim))}
+.note p b{color:rgb(var(--c-ink)); font-weight:600}
+.tagpill{display:inline-block; font-family:"JetBrains Mono",Menlo,monospace; font-size:10.5px;
+  border:1px solid rgb(var(--c-border)); border-radius:999px; padding:4px 11px; color:rgb(var(--c-dim));
+  background:rgb(var(--c-panel2))}
+.tagpill.novo{color:rgb(var(--c-accent)); border-color:rgb(var(--c-accent) / .4)}
+hr{border:0; border-top:1px solid rgb(var(--c-border)); margin:52px 0 0}
+.foot{margin-top:22px; font-size:13.5px; color:rgb(var(--c-dim)); line-height:1.62; max-width:80ch}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Exploração · rodada de render · v2 · 2026-09-11</div>
+  <h1>Colmeia v2</h1>
+  <p class="lede">Três mudanças sobre a v1. <b>As ilhas respiram:</b> cada tipo de subdomínio forma uma massa de terra própria, separada das outras por mar aberto. <b>Só o mesmo tipo se junta</b> — dois <code>core</code> compartilham chão e uma fronteira interna serrilhada; um <code>core</code> e um <code>generic</code>, nunca. E <b>o contexto voltou a ser hexágono</b>: uma peça com borda, que se pode passar o mouse em cima, clicar, e onde seta e tag têm onde ancorar.</p>
+  <p class="lede">Cada domínio agora tem <b>fronteira própria</b>, desenhada na mesma grade — a linha acompanha o contorno dos hexágonos, e não uma bolha por cima. Passar o mouse sobre um território <b>acende o subdomínio inteiro</b>, terreno, nome e peças. E tudo foi aproximado: a leitura de quem entra é o <b>mapa da floresta</b>, não uma peça de cada vez.</p>
+  <p class="lede"><b>Clicar abre a ficha.</b> Num hexágono, ela traz as <b>seis propriedades</b> que a gramática permite num <code>context</code> — o subdomínio <code>Sales</code> está com todas preenchidas — mais o contrato de cada relação. Num território, traz o que um <code>subdomain</code> de fato declara, que é só <code>title</code>, com a contagem do que atravessa a sua fronteira e atalho para cada contexto.</p>
+  <p class="lede">A geografia continua sendo função do texto: <code>core</code> no centro, <code>supporting</code> e <code>generic</code> em volta, <code>external</code> no mar de fora. Nenhuma biblioteca — SVG escrito à mão, e o <code>.odds</code> ao lado é gerado do mesmo modelo que desenha o mapa.</p>
+
+  <div class="bar">
+    <div class="grp"><span class="lbl">Domínios</span>
+      <div class="seg" id="segModel">
+        <button data-v="one" aria-pressed="true">1 — regra de hoje</button>
+        <button data-v="many" aria-pressed="false">3 — hipótese</button>
+      </div>
+    </div>
+    <div class="grp"><span class="lbl">Ligações</span>
+      <div class="seg" id="segEdge">
+        <button data-v="bundle" aria-pressed="true">feixe</button>
+        <button data-v="hex" aria-pressed="false">grade hex</button>
+        <button data-v="none" aria-pressed="false">ocultas</button>
+      </div>
+    </div>
+    <div class="grp"><span class="lbl">Tags</span>
+      <div class="seg" id="segTags">
+        <button data-v="on" aria-pressed="true">na ponta</button>
+        <button data-v="off" aria-pressed="false">ocultas</button>
+      </div>
+    </div>
+    <div class="grp"><span class="lbl">Subdomínio</span>
+      <div class="seg" id="segSub">
+        <button data-v="today" aria-pressed="true">só título</button>
+        <button data-v="rich" aria-pressed="false">+ propriedades</button>
+      </div>
+    </div>
+    <div class="grp"><span class="lbl">Escala</span>
+      <div class="seg" id="segLabels">
+        <button data-v="ctx" aria-pressed="true">contexto</button>
+        <button data-v="sub" aria-pressed="false">subdomínio</button>
+        <button data-v="dom" aria-pressed="false">domínio</button>
+      </div>
+    </div>
+    <div class="grp"><span class="lbl">Tema</span>
+      <div class="seg" id="segTheme">
+        <button data-v="auto" aria-pressed="true">sistema</button>
+        <button data-v="light" aria-pressed="false">claro</button>
+        <button data-v="dark" aria-pressed="false">escuro</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="map" id="map"></div>
+    <div class="side">
+      <div class="card">
+        <header><span class="eyebrow">Seleção</span><span class="mono" style="font-size:10px;color:rgb(var(--c-dim))">clique num hexágono</span></header>
+        <div class="body" id="selBox"></div>
+      </div>
+      <div class="card">
+        <header><span class="eyebrow">Massas de terra</span></header>
+        <div class="body leg" id="terrList"></div>
+      </div>
+      <div class="card">
+        <header><span class="eyebrow">Fonte</span><span class="mono" style="font-size:11px;color:rgb(var(--c-dim))" id="srcName">vendas.odds</span></header>
+        <pre id="src"></pre>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="notes">
+    <div class="note">
+      <span class="tagpill novo">mudança 1</span>
+      <h3>O mar entre as massas passa a significar alguma coisa</h3>
+      <p>Na v1 tudo era uma ilha só e o tipo do subdomínio era apenas um tom de fundo. Aqui <b>a separação é a informação</b>: <code>core</code>, <code>supporting</code> e <code>generic</code> não compartilham chão. Dois subdomínios do mesmo tipo se juntam e dividem uma fronteira interna serrilhada — é o que distingue “vizinho” de “parente”.</p>
+      <p>Um efeito que não estava no pedido e vale reter: <b>um arquivo sem <code>core</code> deixa o centro do mapa vazio</b>. O <code>DOMAIN_WITHOUT_CORE</code> passa a ser visível antes de ser escrito, e isso é raro — quase toda regra só existe como frase no rodapé.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 2</span>
+      <h3>O contexto virou peça, e peça se pega</h3>
+      <p>O ponto da v1 era fiel ao Aplas e ruim para nós: alvo pequeno, sem lugar para ancorar seta e sem borda para acender. O hexágono de <b>50px</b> resolve os três — <b>hover</b> acende a peça e apaga quem não conversa com ela, <b>clique</b> fixa a seleção e abre a ficha ao lado, e as arestas saem da borda em vez de saírem do nada.</p>
+      <p>O preço é honesto: peça ocupa mais área que ponto, então o mesmo mapa cabe menos vezes na tela. É a troca que o controle <b>Escala</b> existe para administrar.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 3</span>
+      <h3>Uma grade só, e o mapa encolheu</h3>
+      <p>A versão anterior tinha <b>duas grades</b>: terreno de 13px e peça de 25px. O efeito colateral era visível na borda — hexágonos pequenos serrilhando a ilha e hexágonos grandes no miolo, como se fossem coisas diferentes. Agora <b>a célula de terreno e a peça têm o mesmo tamanho</b>, e a silhueta da ilha é feita de hexágonos do tamanho das peças.</p>
+      <p>O ganho foi medido e é contraintuitivo: a peça ficou <b>12% maior</b> (56px contra 50px), o espaçamento entre peças subiu para 84px, e mesmo assim o mapa ficou <b>26% menor em área</b> (1114×762 contra 1279×898). Duas grades desperdiçavam a margem que uma precisava manter da outra.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 7</span>
+      <h3>A ficha, e a fronteira que ela tem de respeitar</h3>
+      <p>Propriedade é coisa de <code>context</code>, e só dele: pelo <code>GRAMMAR.md</code> §2 o <code>subdomain</code> declara <b>apenas <code>title</code></b>. Então a ficha tem duas formas, e a do território diz isso em voz alta em vez de fingir que tem o que não tem — no lugar das propriedades ela mostra o que é <i>derivável</i>: quantos contextos, quantas relações são internas e <b>quantas atravessam a fronteira</b>, que é a pergunta de quem olha um subdomínio.</p>
+      <p>O rodapé da ficha de contexto carrega a fronteira do <code>CLAUDE.md</code>, porque é o tipo de coisa que se perde: <b>tag é contrato, propriedade é documentação</b>. Nenhuma propriedade alimenta o gatilho de uma regra — e é isso que deixa preencher <code>team</code> sem medo de ser julgado por causa disso. A ficha reforça a separação pelo desenho: <b>Propriedades</b> e <b>Contrato</b> são duas seções, nunca uma lista só.</p>
+      <p>Uma consequência de tipografia: o valor de uma propriedade é <b>dado literal do arquivo</b>, então vai em mono — a mesma fronteira que o <code>MESSAGES.md</code> mantém entre <code>data</code> e prosa. A frase <i>sobre</i> a propriedade vai em Inter.</p>
+      <p><b>Todos os contextos de subdomínio estão preenchidos</b> — 14 no domínio único, 15 no arquipélago, com as seis chaves cada e os quatro valores de <code>maturity</code> exercitados. O <code>external</code> é a exceção, e não por economia: ele recebe <b>só <code>description</code> e <code>technology</code></b>, que é a contenção que o exemplo canônico do <code>GRAMMAR.md</code> já pratica. Pelo princípio de autoria do <code>RULES</code> §0.4 você não controla o sistema de terceiro, e <code>team</code> ou <code>maturity</code> dele não são seus para declarar. A ficha diz isso quando você clica num deles.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">hipótese</span>
+      <h3><code>description</code> e <code>owner</code> num subdomínio</h3>
+      <p>Hoje o <code>GRAMMAR.md</code> §2 dá ao <code>subdomain</code> <b>só <code>title</code></b>. O controle <b>Subdomínio</b> acima liga a hipótese de duas chaves a mais, e a ficha marca isso com faixa tracejada — a fonte também, com <code>// proposta</code> em cada linha. A página não finge que hipótese é sintaxe.</p>
+      <p>Por que <i>essas</i> duas e não as seis do contexto: as seis são de <b>espaço de solução</b> — <code>technology</code>, <code>team</code>, <code>maturity</code> descrevem uma implementação, e subdomínio é espaço de <b>problema</b>. E há um teste mais fino: o <code>subdomain</code> já carrega <code>core | supporting | generic</code>, que <b>é contrato</b> e alimenta cinco regras. Qualquer chave nova nasce ao lado de um campo que julga — então ela não pode ser <b>contradizível</b>. <code>description</code> e <code>owner</code> são prosa: não contradizem o tipo nem os filhos. <code>maturity</code> ou <code>value</code> contradizem, e no instante em que contradizem alguém quer uma regra — e regra feita de propriedade quebra a promessa de preencher <code>team</code> sem ser julgado.</p>
+      <p>Daí o rótulo <b>Derivado</b> na ficha, acima dos contadores: eles não são declarados, são calculados. <code>maturity</code> de subdomínio pertenceria ali, não em Propriedades — e isso é razão suficiente para ela não entrar na gramática.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">passada de composição</span>
+      <h3>O que só apareceu quando deu para olhar</h3>
+      <p>Esta é a primeira versão revista <b>vendo</b> a tela, com Chrome em modo headless — o navegador da extensão está bloqueado para <code>claude.ai</code>, e até aqui tudo era medido, não visto. Sete defeitos apareceram de olho e nenhum deles a medição pegava.</p>
+      <p>Os quatro que mais custavam: o nome do domínio caía <b>dentro</b> do mapa, com uma aresta cruzando por cima; a marca d'água do subdomínio ficava <b>por baixo</b> das peças e aparecia em fragmentos — <i>“LMEN”, “ID…TY”</i> —, que se leem como ruído; a fila de chips do topo era <b>cortada</b>, porque os limites do desenho só contavam terreno e peças; e a fronteira do domínio tinha o mesmo peso do contorno da massa, então a hierarquia lia como plana.</p>
+      <p>Três viraram checagem nova, para não voltarem: <b>nada fora do viewBox</b>, <b>marca d'água contra marca d'água</b> e <b>rótulo contra rótulo</b>. Sobram <b>dois chips</b> encostados num rótulo no modelo de um domínio — empacotamento genuinamente apertado, e fica registrado em vez de escondido.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 4</span>
+      <h3>A fronteira do domínio é uma região da grade</h3>
+      <p>Um domínio tem N subdomínios, e agora eles moram em massas separadas — então precisava de uma linha que dissesse “tudo isto é o mesmo domínio”. Ela não é um contorno desenhado por cima: as células do domínio são <b>dilatadas em três anéis</b> (o bastante para fechar os canais entre as massas), os buracos que sobram nos canais são tapados, e o resultado é <b>erodido em dois</b>. Sobra um halo de um anel, e a linha sai serrilhada porque segue os hexágonos.</p>
+      <p>O borrão roxo que ficava por baixo saiu junto. Ele era atmosfera; isto é fronteira — e num mapa a diferença entre as duas coisas não é decorativa.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 5</span>
+      <h3>Aproximar exigiu medir a forma, não o raio</h3>
+      <p>As massas estavam longe porque eram posicionadas por um <b>círculo</b>, e uma massa com dois territórios nasce alongada — sobrava mar do lado estreito. Agora a extensão é medida <b>por direção</b>, em 24 fatias, e o mesmo vale um nível acima: domínios são empacotados pela <b>caixa real</b> de cada um, não pelo raio do maior.</p>
+      <p>Medido: massas de 168–211px para <b>84px</b> entre terrenos. Fronteiras de domínio de 420px para <b>128px</b>. O mapa de três domínios saiu de 1996×1757 para <b>1450×1369</b> — 40% menos área para a mesma informação.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">mudança 6</span>
+      <h3>O subdomínio virou alvo, como o contexto já era</h3>
+      <p>Cada território tem uma lâmina transparente que cobre exatamente as suas células. No hover ela acende, a fronteira interna engrossa, o nome sai da marca d’água e <b>todas as peças daquele subdomínio ganham borda de seleção</b> — inclusive as que estão do outro lado do mapa visualmente, porque a peça carrega a que subdomínio pertence.</p>
+      <p>É a mesma gramática do contexto, um nível acima: a hierarquia do <code>.odds</code> vira hierarquia de alvos na tela, sem inventar controle nenhum.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill novo">medida</span>
+      <h3>A tag na aresta é o que fixa o espaçamento</h3>
+      <p>Duas peças vizinhas na rede hexagonal ficam a 48px de centro a centro — e a peça já tem 48px de altura. Sobra <b>zero de linha</b> para pendurar um chip de tag, que tem 30px de largura. Foi assim que 18 dos 21 chips acabaram em cima de uma peça na primeira tentativa.</p>
+      <p>A regra que resolveu não é estética: <b>dois contextos nunca ficam a menos de duas células</b> um do outro, o que dá 84px e deixa 36px de linha livre. Varrendo o espaçamento anterior: 59px → 18 chips sobrepostos · 68px → 1 empilhado · 81px → zero. É a primeira linha da lista de exigências desta rodada, e é um número, não uma opinião.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill">achado 1</span>
+      <h3>Com a regra de hoje, o arquipélago não existe</h3>
+      <p><code>INVALID_DOMAIN_CARDINALITY</code> é <b>fase 2</b>, severidade <b>error</b>, e o <code>RULES-EN.md</code> §3.4 manda <b>parar</b> ali. Um arquivo tem exatamente um <code>domain</code>.</p>
+      <p>Mudar isso arrasta a regra, o <code>DOMAIN_WITHOUT_CORE</code> (hoje <i>whole file, once</i>), a posição do bloco <code>external</code> — hoje <b>dentro</b> do <code>domain</code> — e a premissa “um arquivo = um domain” que sustenta a URL compartilhável. Na fonte, as ligações entre domínios aparecem <b>comentadas</b>: não há sintaxe para elas.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill">achado 2</span>
+      <h3>Posição estável × fonte única</h3>
+      <p>Aqui a posição é <b>derivada do texto</b>: o tipo do subdomínio escolhe a massa de terra, a ordem de declaração escolhe a semente dentro dela, e as peças saem de amostragem determinística. Mesmo arquivo, mesmo mapa — sem arquivo de layout, sem sorteio.</p>
+      <p>O preço é que <b>reordenar o arquivo redesenha o mapa</b>. A alternativa é posicionar à mão, e aí a posição precisa <b>morar no texto</b>, senão o diagrama escreve de volta e o <code>ADR-0003</code> cai. Segue sendo a pergunta mais cara desta ideia, e é de linguagem.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill">achado 3</span>
+      <h3>O <code>external</code> agora está literalmente fora</h3>
+      <p>O <code>GRAMMAR.md</code> §3 assume uma contradição por pragmatismo: o que é externo fica declarado <b>dentro</b> do <code>domain</code>, e diz que ela “é cancelada na vista de contenção”. Aqui o cancelamento é geográfico — a massa externa fica fora da água territorial do domínio, com fronteira tracejada.</p>
+      <p>Isso dá forma ao princípio de autoria do <code>RULES</code> §0.4: um aviso sobre o outro lado do mar lê como fronteira, não como culpa.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill">achado 4</span>
+      <h3>As duas vistas do PRD §4.4 colapsam numa só</h3>
+      <p>O PRD exige <b>duas</b> vistas com poder expressivo deliberadamente diferente. A colmeia com ligações faz as duas ao mesmo tempo — hierarquia por território, relação por linha.</p>
+      <p>Ou o §4.4 passa a ter uma vista só e mais rica (mudança de PRD, com ADR), ou a colmeia é a de contenção e o fluxo continua sendo outra tela. <b>É o fork a decidir</b>, e vem antes de qualquer biblioteca.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill">achado 5</span>
+      <h3>O Aplas não tem direção nem tag — a ODDS tem as duas</h3>
+      <p>As linhas de lá são sem ponta de seta e sem rótulo: dizem que há integração, não quem depende de quem. A ODDS não pode: upstream/downstream e as oito tags posicionais <b>são</b> o que o linter julga.</p>
+      <p>Então a colmeia é tomada como <b>geografia</b>, e a gramática da aresta continua nossa: seta na ponta downstream, chip encostado na ponta a que a tag pertence, e o <code>-x-</code> com quebra neutra — Separate Ways é <b>decisão, não falha</b>, e o vocabulário de alarme fica reservado ao veredito.</p>
+    </div>
+    <div class="note">
+      <span class="tagpill">achado 6</span>
+      <h3>A peça é o lugar óbvio do veredito</h3>
+      <p>Com o contexto de volta à forma de peça, o marcador de severidade tem onde morar sem inventar elemento novo: borda, canto ou faixa do próprio hexágono. Isso ainda está <b>fora desta rodada</b> de propósito, mas deixa de ser um problema em aberto e vira um encaixe.</p>
+      <p>Duas restrições já valem: severidade <b>nunca</b> depende só de cor (<code>DESIGN.md</code> §3), e o amarelo do <code>core</code> é <b>chão</b>, então o marcador não pode ser amarelo nem ficar sobre ele sem contorno próprio.</p>
+    </div>
+  </div>
+
+  <p class="foot"><b>Fora desta rodada, de propósito:</b> os marcadores de severidade, o diagrama congelado, o estado vazio e o zoom com pan de verdade. E nenhuma biblioteca — o que sair daqui vira <b>exigência</b> (“silhueta por união de células”, “massas separadas por tipo”, “peça como alvo de clique com ficha”, “agrupar arestas por corredor”, “trocar rótulo por escala”, “exportar vetor com os marcadores”), nunca alvo visual.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* UMA GRADE SO: a celula de terreno e a peca de contexto tem o mesmo tamanho.
+   Antes eram duas (terreno 13, peca 25) e o mapa mostrava hexagonos pequenos na
+   borda das ilhas e grandes no miolo. Com uma grade, o serrilhado da silhueta e
+   feito de hexagonos do tamanho da peca, e nenhuma area vira sobra. */
+var C = 28;
+var HR = C;
+var HIN = C*Math.sqrt(3)/2;
+var PER_CTX = 4;             /* piso de celulas por contexto */
+var GAP = 50;                /* mar aberto entre massas de terra */
+var MIN_STEP = 2;            /* distancia minima, EM CELULAS, entre dois contextos */
+var SQ3 = Math.sqrt(3);
+var CELL_AREA = 3*SQ3/2*C*C;
+var DIRS = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
+var EDGE_OF_DIR = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]];
+var TYPES = ['core','supporting','generic'];
+
+function px(q,r){ return [C*1.5*q, C*SQ3*(r + q/2)]; }
+function kk(q,r){ return q+','+r; }
+function corner(cx,cy,i,rad){ var a=Math.PI/180*60*i; return [cx+rad*Math.cos(a), cy+rad*Math.sin(a)]; }
+function hexPath(cx,cy,rad){
+  var d='';
+  for(var i=0;i<6;i++){ var c=corner(cx,cy,i,rad); d += (i?'L':'M')+c[0].toFixed(1)+' '+c[1].toFixed(1); }
+  return d+'Z';
+}
+function hexDist(a,b){
+  var dq=a[0]-b[0], dr=a[1]-b[1];
+  return (Math.abs(dq) + Math.abs(dq+dr) + Math.abs(dr))/2;
+}
+function pixelToAxial(x,y){
+  var q = (2/3*x)/C, r = (-1/3*x + SQ3/3*y)/C;
+  var cx=q, cz=r, cy=-cx-cz;
+  var rx=Math.round(cx), ry=Math.round(cy), rz=Math.round(cz);
+  var dx=Math.abs(rx-cx), dy=Math.abs(ry-cy), dz=Math.abs(rz-cz);
+  if(dx>dy && dx>dz) rx=-ry-rz; else if(dy>dz) ry=-rx-rz; else rz=-rx-ry;
+  return [rx,rz];
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function unit(p,q){ var dx=q[0]-p[0], dy=q[1]-p[1], L=Math.hypot(dx,dy)||1; return [dx/L,dy/L]; }
+function f(p){ return p[0].toFixed(1)+' '+p[1].toFixed(1); }
+
+/* ---------------- modelo ---------------- */
+/* As definicoes de contexto ficam fora dos modelos porque `Fulfillment` aparece
+   nos dois com o MESMO conteudo e tipo diferente — supporting no dominio unico,
+   core em Logistica. Compartilhar o conteudo e variar o tipo evita duas verdades
+   sobre o mesmo contexto.
+
+   As seis propriedades sao GRAMMAR.md secao 2 e valem so em `context`. No bloco
+   `external` entram apenas `description` e `technology`, seguindo o exemplo
+   canonico da propria gramatica: pelo principio de autoria do RULES secao 0.4
+   voce nao controla o sistema de terceiro, e `team`/`maturity` dele nao sao
+   seus para declarar. */
+var C_SALES = [
+  {id:'Cart', title:'Carrinho', type:'"aggregate"',
+   description:'"Itens escolhidos antes do fechamento, com reserva temporária"',
+   responsibilities:['"Manter itens e quantidades"','"Aplicar cupom"','"Expirar carrinho abandonado"'],
+   maturity:'mature', team:'"Vendas Squad"', technology:'"TypeScript, Redis"'},
+  {id:'Checkout', title:'Finalização de compra', type:'"process"',
+   description:'"Orquestra endereço, frete, pagamento e confirmação do pedido"',
+   responsibilities:['"Validar endereço"','"Calcular frete"','"Autorizar pagamento"','"Emitir o pedido"'],
+   maturity:'growing', team:'"Vendas Squad"', technology:'"TypeScript, Temporal"'},
+  {id:'OrderManagement', title:'Gestão de pedidos', type:'"aggregate"',
+   description:'"Ciclo de vida do pedido, da emissão à baixa"',
+   responsibilities:['"Manter o estado do pedido"','"Registrar eventos de fulfillment"','"Tratar cancelamento"'],
+   maturity:'mature', team:'"Pedidos Squad"', technology:'"Java, PostgreSQL"'},
+  {id:'Pricing', title:'Precificação', type:'"policy"',
+   description:'"Preço final por item, com promoção, imposto e regra de canal"',
+   responsibilities:['"Resolver preço de lista"','"Aplicar promoção vigente"','"Compor imposto"'],
+   maturity:'experimental', team:'"Pricing Squad"', technology:'"Kotlin, Redis"'}
+];
+var C_DISCOVERY = [
+  {id:'Search', title:'Busca', type:'"read-model"',
+   description:'"Índice do catálogo, com filtro, ordenação e sinônimo"',
+   responsibilities:['"Indexar catálogo"','"Resolver consulta"','"Registrar termo sem resultado"'],
+   maturity:'growing', team:'"Discovery Squad"', technology:'"Go, OpenSearch"'},
+  {id:'Recommendations', title:'Recomendação', type:'"read-model"',
+   description:'"Vitrine derivada de comportamento e catálogo"',
+   responsibilities:['"Montar vitrine por perfil"','"Reordenar por afinidade"','"Excluir item indisponível"'],
+   maturity:'experimental', team:'"Discovery Squad"', technology:'"Python, Feature Store"'}
+];
+var C_FULFILLMENT = [
+  {id:'Shipping', title:'Expedição', type:'"process"',
+   description:'"Do pedido confirmado à entrega, com rastreio"',
+   responsibilities:['"Escolher transportadora"','"Emitir etiqueta"','"Atualizar rastreio"'],
+   maturity:'mature', team:'"Logística Squad"', technology:'"Java, Kafka"'},
+  {id:'Inventory', title:'Estoque', type:'"aggregate"',
+   description:'"Saldo disponível por item e local, com reserva"',
+   responsibilities:['"Manter saldo por local"','"Reservar e liberar"','"Registrar divergência"'],
+   maturity:'mature', team:'"Logística Squad"', technology:'"Java, PostgreSQL"'},
+  {id:'Warehouse', title:'Armazém', type:'"service"',
+   description:'"Operação física: separação, conferência e embalagem"',
+   responsibilities:['"Roteirizar separação"','"Conferir volume"','"Embalar e despachar"'],
+   maturity:'legacy', team:'"Operações"', technology:'"C#, SQL Server"'}
+];
+var C_CARE = [
+  {id:'Support', title:'Atendimento', type:'"service"',
+   description:'"Ticket, histórico do cliente e resposta"',
+   responsibilities:['"Abrir e encerrar ticket"','"Consultar histórico do pedido"','"Escalar para a squad dona"'],
+   maturity:'growing', team:'"Atendimento"', technology:'"TypeScript, Zendesk API"'},
+  {id:'Returns', title:'Devolução', type:'"process"',
+   description:'"Logística reversa, da solicitação ao reembolso"',
+   responsibilities:['"Autorizar devolução"','"Gerar etiqueta reversa"','"Disparar reembolso"'],
+   maturity:'growing', team:'"Atendimento"', technology:'"TypeScript, Temporal"'}
+];
+var C_PAYMENTS = [
+  {id:'PaymentGateway', title:'Gateway de Pagamentos', type:'"gateway"',
+   description:'"Fachada única sobre os provedores de pagamento"',
+   responsibilities:['"Autorizar e capturar"','"Tratar webhook do provedor"','"Conciliar transação"'],
+   maturity:'mature', team:'"Payments Squad"', technology:'"Node.js, Stripe SDK"'},
+  {id:'Invoicing', title:'Faturamento', type:'"service"',
+   description:'"Nota fiscal e documento de cobrança"',
+   responsibilities:['"Emitir nota"','"Transmitir à SEFAZ"','"Arquivar documento"'],
+   maturity:'mature', team:'"Fiscal"', technology:'"Java, SOAP"'}
+];
+var C_IDENTITY = [
+  {id:'Auth', title:'Identidade', type:'"gateway"',
+   description:'"Autenticação, sessão e escopo de acesso"',
+   responsibilities:['"Autenticar credencial"','"Emitir e renovar token"','"Resolver escopo"'],
+   maturity:'mature', team:'"Plataforma"', technology:'"Go, OIDC"'}
+];
+var C_ROUTING = [
+  {id:'Routes', title:'Roteirização', type:'"policy"',
+   description:'"Rota e janela de entrega por região"',
+   responsibilities:['"Calcular rota"','"Respeitar janela"','"Reagendar falha"'],
+   maturity:'growing', team:'"Logística Squad"', technology:'"Python, OR-Tools"'}
+];
+var C_FLEET = [
+  {id:'FleetOps', title:'Frota', type:'"service"',
+   description:'"Veículo, motorista e disponibilidade"',
+   responsibilities:['"Manter cadastro de frota"','"Alocar motorista"','"Registrar manutenção"'],
+   maturity:'legacy', team:'"Operações"', technology:'"C#, SQL Server"'}
+];
+var C_CAMPAIGNS = [
+  {id:'Campaigns', title:'Campanhas', type:'"aggregate"',
+   description:'"Peça, público e vigência de cada campanha"',
+   responsibilities:['"Definir público"','"Agendar vigência"','"Medir conversão"'],
+   maturity:'growing', team:'"Growth"', technology:'"TypeScript, BigQuery"'},
+  {id:'Segments', title:'Segmentos', type:'"read-model"',
+   description:'"Coortes derivadas de comportamento de compra"',
+   responsibilities:['"Derivar coorte"','"Atualizar por evento"','"Expor para campanha"'],
+   maturity:'experimental', team:'"Growth"', technology:'"Python, dbt"'}
+];
+var C_COMMS = [
+  {id:'Email', title:'E-mail transacional', type:'"service"',
+   description:'"Envio, template e status de entrega"',
+   responsibilities:['"Renderizar template"','"Enviar e repetir"','"Tratar bounce"'],
+   maturity:'mature', team:'"Plataforma"', technology:'"Node.js, SES"'}
+];
+var X_STRIPE   = {id:'StripeApi',   description:'"Provedor de pagamentos de terceiros"',
+                  technology:'"Stripe REST API"'};
+var X_CORREIOS = {id:'CorreiosApi', description:'"Cálculo de frete e rastreio do serviço postal"',
+                  technology:'"SOAP, Correios"'};
+var X_ERP      = {id:'ERPLegado',   description:'"ERP da holding, fonte do cadastro fiscal"',
+                  technology:'"SAP ECC, RFC"'};
+
+var MODELS = {
+  one: {
+    file:'vendas.odds',
+    domains:[{
+      id:'ECommercePlatform', title:'E-Commerce Platform',
+      subdomains:[
+        {id:'Sales', type:'core', title:'Vendas',
+         description:'"Converter intenção de compra em pedido pago"',
+         owner:'"Diretoria Comercial"', contexts:C_SALES},
+        {id:'Discovery', type:'core', title:'Descoberta',
+         description:'"Fazer o cliente encontrar o que ainda não sabe que quer"',
+         owner:'"Diretoria Comercial"', contexts:C_DISCOVERY},
+        {id:'Fulfillment', type:'supporting', title:'Entrega e estoque',
+         description:'"Entregar o que foi vendido, no prazo prometido"',
+         owner:'"Diretoria de Operações"', contexts:C_FULFILLMENT},
+        {id:'CustomerCare', type:'supporting', title:'Atendimento',
+         description:'"Resolver o que deu errado sem perder o cliente"',
+         owner:'"Gerência de Experiência"', contexts:C_CARE},
+        {id:'Payments', type:'generic', title:'Pagamentos',
+         description:'"Receber o dinheiro e provar que recebeu"',
+         owner:'"Diretoria Financeira"', contexts:C_PAYMENTS},
+        {id:'Identity', type:'generic', title:'Identidade',
+         description:'"Saber quem é quem, uma vez, para todo o resto"',
+         owner:'"Plataforma"', contexts:C_IDENTITY}
+      ],
+      external:[X_STRIPE, X_CORREIOS, X_ERP]
+    }],
+    mapping:[
+      {l:'Cart',            lt:['OHS'], c:'-->', rt:['ACL'], r:'Checkout'},
+      {l:'Pricing',         lt:['S'],   c:'-->', rt:['C'],   r:'Checkout'},
+      {l:'Checkout',        lt:[],      c:'<--', rt:['OHS','PL'], r:'PaymentGateway'},
+      {l:'OrderManagement', lt:['ACL'], c:'<--', rt:[],      r:'Shipping'},
+      {l:'Shipping',        lt:['SK'],  c:'<->', rt:['SK'],  r:'Inventory'},
+      {l:'Inventory',       lt:['OHS'], c:'-->', rt:['ACL'], r:'Warehouse'},
+      {l:'Recommendations', lt:['ACL'], c:'<--', rt:['OHS'], r:'Search'},
+      {l:'Support',         lt:['ACL'], c:'<--', rt:['OHS'], r:'OrderManagement'},
+      {l:'Returns',         lt:['ACL'], c:'<--', rt:[],      r:'Shipping'},
+      {l:'Invoicing',       lt:['ACL'], c:'<--', rt:['OHS'], r:'PaymentGateway'},
+      {l:'Auth',            lt:['OHS'], c:'-->', rt:['CF'],  r:'Support'},
+      {l:'PaymentGateway',  lt:['ACL'], c:'<--', rt:[],      r:'StripeApi'},
+      {l:'Shipping',        lt:['ACL'], c:'<--', rt:[],      r:'CorreiosApi'},
+      {l:'Warehouse',       lt:[],      c:'-x-', rt:[],      r:'ERPLegado'}
+    ]
+  },
+  many: {
+    file:'grupo.odds',
+    domains:[
+      { id:'ECommercePlatform', title:'E-Commerce Platform',
+        subdomains:[
+          {id:'Sales', type:'core', title:'Vendas', contexts:C_SALES},
+          {id:'Discovery', type:'core', title:'Descoberta', contexts:C_DISCOVERY},
+          {id:'Payments', type:'generic', title:'Pagamentos',
+           description:'"Receber o dinheiro e provar que recebeu"',
+           owner:'"Diretoria Financeira"', contexts:[C_PAYMENTS[0]]}
+        ],
+        external:[X_STRIPE] },
+      { id:'Logistics', title:'Logística',
+        subdomains:[
+          {id:'Fulfillment', type:'core', title:'Entrega e estoque',
+           description:'"Entregar o que foi vendido, no prazo prometido"',
+           owner:'"Diretoria de Operações"', contexts:C_FULFILLMENT},
+          {id:'Routing', type:'supporting', title:'Roteirização',
+           description:'"Decidir por onde e quando cada entrega passa"',
+           owner:'"Diretoria de Operações"', contexts:C_ROUTING},
+          {id:'Fleet', type:'generic', title:'Frota',
+           description:'"Ter veículo e motorista disponíveis"',
+           owner:'"Gerência de Frota"', contexts:C_FLEET}
+        ],
+        external:[X_CORREIOS] },
+      { id:'Marketing', title:'Marketing',
+        subdomains:[
+          {id:'Campaigns', type:'core', title:'Campanhas',
+           description:'"Levar a oferta certa a quem tem chance de comprar"',
+           owner:'"Diretoria de Marketing"', contexts:C_CAMPAIGNS},
+          {id:'Comms', type:'supporting', title:'Comunicação',
+           description:'"Falar com o cliente sem virar spam"',
+           owner:'"Gerência de CRM"', contexts:C_COMMS}
+        ],
+        external:[X_ERP] }
+    ],
+    mapping:[
+      {l:'Cart',            lt:['OHS'], c:'-->', rt:['ACL'], r:'Checkout'},
+      {l:'Pricing',         lt:['S'],   c:'-->', rt:['C'],   r:'Checkout'},
+      {l:'Checkout',        lt:[],      c:'<--', rt:['OHS','PL'], r:'PaymentGateway'},
+      {l:'Recommendations', lt:['ACL'], c:'<--', rt:['OHS'], r:'Search'},
+      {l:'Shipping',        lt:['SK'],  c:'<->', rt:['SK'],  r:'Inventory'},
+      {l:'Warehouse',       lt:['ACL'], c:'<--', rt:[],      r:'Inventory'},
+      {l:'Routes',          lt:['ACL'], c:'<--', rt:['OHS'], r:'Shipping'},
+      {l:'FleetOps',        lt:['ACL'], c:'<--', rt:[],      r:'Routes'},
+      {l:'Email',           lt:['ACL'], c:'<--', rt:['OHS'], r:'Campaigns'},
+      {l:'Campaigns',       lt:['ACL'], c:'<--', rt:[],      r:'Segments'},
+      {l:'PaymentGateway',  lt:['ACL'], c:'<--', rt:[],      r:'StripeApi'},
+      {l:'Shipping',        lt:['ACL'], c:'<--', rt:[],      r:'CorreiosApi'},
+      {l:'Warehouse',       lt:[],      c:'-x-', rt:[],      r:'ERPLegado'},
+      {l:'OrderManagement', lt:['ACL'], c:'<--', rt:['OHS'], r:'Shipping'},
+      {l:'Segments',        lt:['ACL'], c:'<--', rt:['OHS'], r:'OrderManagement'}
+    ]
+  }
+};
+
+/* Um contexto pode vir como nome ou como objeto com propriedades. Normaliza para
+   objeto e guarda a lista de ids ao lado — a geometria so precisa dos ids, e o
+   painel precisa do objeto. As seis propriedades sao GRAMMAR.md secao 2, e valem
+   so em `context`: `subdomain` tem apenas `title`. */
+var PROP_ORDER = ['type','description','responsibilities','maturity','team','technology'];
+(function normalize(){
+  Object.keys(MODELS).forEach(function(k){
+    MODELS[k].domains.forEach(function(d){
+      d.subdomains.forEach(function(sd){
+        sd.contexts = sd.contexts.map(function(c){ return typeof c==='string' ? {id:c} : c; });
+        sd.ids = sd.contexts.map(function(c){ return c.id; });
+      });
+      if(d.external){
+        d.external = d.external.map(function(c){ return typeof c==='string' ? {id:c} : c; });
+        d.externalIds = d.external.map(function(c){ return c.id; });
+      }
+    });
+  });
+})();
+function ctxOf(m, id){
+  for(var i=0;i<m.domains.length;i++){
+    var d=m.domains[i], j;
+    for(j=0;j<d.subdomains.length;j++){
+      var f=d.subdomains[j].contexts.filter(function(c){ return c.id===id; })[0];
+      if(f) return f;
+    }
+    if(d.external){
+      var e=d.external.filter(function(c){ return c.id===id; })[0];
+      if(e) return e;
+    }
+  }
+  return null;
+}
+function subOf(m, key){
+  var parts=key.split('/'), domId=parts[0], sdId=parts[1];
+  for(var i=0;i<m.domains.length;i++){
+    var d=m.domains[i];
+    if(d.id!==domId) continue;
+    if(sdId==='external') return {dom:d, sd:{id:'external', type:'external', contexts:d.external||[], ids:d.externalIds||[]}};
+    var f=d.subdomains.filter(function(sd){ return sd.id===sdId; })[0];
+    if(f) return {dom:d, sd:f};
+  }
+  return null;
+}
+
+/* ---------------- fonte .odds gerada do modelo ---------------- */
+function pad(s,n){ while(s.length<n) s+=' '; return s; }
+function ownerDomain(m,ctx){
+  for(var i=0;i<m.domains.length;i++){
+    var d=m.domains[i];
+    for(var j=0;j<d.subdomains.length;j++) if(d.subdomains[j].ids.indexOf(ctx)>=0) return d;
+    if(d.externalIds && d.externalIds.indexOf(ctx)>=0) return d;
+  }
+  return null;
+}
+function relLine(rel){
+  var mid = (rel.lt.length ? '['+rel.lt.join(', ')+'] ' : '') + rel.c +
+            (rel.rt.length ? ' ['+rel.rt.join(', ')+']' : '');
+  return pad(rel.l,16)+' '+pad(mid,22)+' '+rel.r;
+}
+/* Um so lugar emite context_decl, e ele serve tanto o subdomain quanto o
+   external — senao a fonte mostra propriedade num lugar e nao no outro, e o
+   texto deixa de corresponder ao desenho, que e a propriedade que esta pagina
+   existe para manter. */
+function ctxLines(c, out){
+  var keys = PROP_ORDER.filter(function(k){ return c[k]!==undefined; });
+  if(!c.title && !keys.length){ out.push('    context '+c.id); return; }
+  out.push('    context '+c.id+' {');
+  if(c.title) out.push('      title: "'+c.title+'"');
+  keys.forEach(function(k){
+    var v = c[k];
+    out.push('      '+k+': '+(Array.isArray(v) ? '['+v.join(', ')+']' : v));
+  });
+  out.push('    }');
+}
+function srcOf(m){
+  var out=[], cross=[];
+  m.mapping.forEach(function(rel){
+    if(ownerDomain(m,rel.l)!==ownerDomain(m,rel.r)) cross.push(rel);
+  });
+  m.domains.forEach(function(d,di){
+    if(di) out.push('');
+    out.push('domain '+d.id+' {');
+    if(d.title) out.push('  title: "'+d.title+'"');
+    d.subdomains.forEach(function(sd){
+      out.push('');
+      out.push('  subdomain '+sd.type+' '+sd.id+' {');
+      if(sd.title) out.push('    title: "'+sd.title+'"');
+      /* description e owner num subdomain NAO EXISTEM na linguagem: GRAMMAR.md
+         secao 2 da a ele so title. Ficam marcados na fonte, como as ligacoes
+         entre dominios — a pagina nao finge que hipotese e sintaxe. */
+      if(state.sub==='rich'){
+        if(sd.description) out.push('    description: '+sd.description+'   // proposta');
+        if(sd.owner)       out.push('    owner: '+sd.owner+'   // proposta');
+      }
+      sd.contexts.forEach(function(c){ ctxLines(c, out); });
+      out.push('  }');
+    });
+    if(d.external && d.external.length){
+      out.push('');
+      out.push('  external {');
+      d.external.forEach(function(c){ ctxLines(c, out); });
+      out.push('  }');
+    }
+    var mine = m.mapping.filter(function(rel){
+      return ownerDomain(m,rel.l)===d && ownerDomain(m,rel.r)===d;
+    });
+    if(mine.length){
+      out.push('');
+      out.push('  mapping {');
+      mine.forEach(function(rel){ out.push('    '+relLine(rel)); });
+      out.push('  }');
+    }
+    out.push('}');
+  });
+  if(cross.length){
+    out.push('');
+    out.push('// ligacao entre dominios nao tem sintaxe hoje:');
+    cross.forEach(function(rel){ out.push('//   '+relLine(rel)); });
+  }
+  return out.join('\n');
+}
+function hl(s){
+  return esc(s)
+    .replace(/^(\/\/.*)$/gm,'<b class="p">$1</b>')
+    .replace(/(\/\/ proposta)/g,'<b class="hyp">$1</b>')
+    .replace(/\b(domain|subdomain|context|external|mapping)\b/g,'<b class="k">$1</b>')
+    .replace(/\b(core|supporting|generic)\b/g,'<b class="ty">$1</b>')
+    .replace(/(\[[^\]]*\])/g,'<b class="tg">$1</b>')
+    .replace(/(--&gt;|&lt;--|&lt;-&gt;|-x-)/g,'<b class="cn">$1</b>')
+    .replace(/(title:)/g,'<b class="p">$1</b>');
+}
+
+/* ---------------- geografia ---------------- */
+function spiral(radius){
+  var out=[[0,0]], k,i,j,q,r;
+  for(k=1;k<=radius;k++){
+    q=DIRS[4][0]*k; r=DIRS[4][1]*k;
+    for(i=0;i<6;i++) for(j=0;j<k;j++){ out.push([q,r]); q+=DIRS[i][0]; r+=DIRS[i][1]; }
+  }
+  return out;
+}
+
+/* uma MASSA DE TERRA por tipo de subdominio; dentro dela, um territorio por subdominio */
+/* Quantas celulas um territorio precisa. Num arranjo em que dois contextos nunca
+   ficam a menos de MIN_STEP celulas, a rede triangular acomoda cerca de uma peca a
+   cada tres celulas — mais uma orla para o territorio nao ficar colado nas pecas. */
+function cellsFor(nCtx){
+  return Math.max(Math.ceil(nCtx*3.0) + 3, 7);
+}
+function massesOf(dom){
+  var out = [];
+  TYPES.forEach(function(t){
+    var gs = [];
+    dom.subdomains.forEach(function(sd,i){
+      if((sd.type===t) || (TYPES.indexOf(sd.type)<0 && t==='supporting'))
+        gs.push({sd:sd, i:i, n:cellsFor(sd.ids.length)});
+    });
+    if(!gs.length) return;
+    var n = gs.reduce(function(a,g){ return a+g.n; },0);
+    var R0=Math.sqrt(n*CELL_AREA/Math.PI)*1.14;
+    out.push({type:t, groups:gs, n:n, R:R0, Rcap:R0});
+  });
+  if(dom.external && dom.external.length){
+    var n2 = cellsFor(dom.externalIds.length);
+    var R1=Math.sqrt(n2*CELL_AREA/Math.PI)*1.14;
+    out.push({type:'external', external:true, n:n2, R:R1, Rcap:R1,
+      groups:[{sd:{id:'external', type:'external', contexts:dom.external, ids:dom.externalIds}, i:99, n:n2}]});
+  }
+  return out;
+}
+
+/* Um raio unico e conservador demais: uma massa com dois territorios nasce
+   alongada, e posicionar pelo maior raio deixa mar sobrando do lado estreito.
+   Aqui a extensao e medida POR DIRECAO, em 24 fatias. */
+function extentFn(mass){
+  var N=24, ext=new Array(N), i;
+  for(i=0;i<N;i++) ext[i]=C;
+  mass.groups.forEach(function(g){
+    g.cells.forEach(function(c){
+      var pp=mass.pos[kk(c[0],c[1])];
+      var dx=pp[0]-mass.ctr[0], dy=pp[1]-mass.ctr[1];
+      var a=Math.atan2(dy,dx);
+      for(i=0;i<N;i++){
+        var ang=i/N*Math.PI*2;
+        var diff=Math.abs(((a-ang+Math.PI*3)%(Math.PI*2))-Math.PI);
+        if(diff < Math.PI/4.2){
+          var proj = dx*Math.cos(ang)+dy*Math.sin(ang) + C;
+          if(proj>ext[i]) ext[i]=proj;
+        }
+      }
+    });
+  });
+  return ext;
+}
+function extAt(mass, ang){
+  if(!mass.ext) return mass.R;
+  var N=mass.ext.length;
+  var i=Math.round((((ang%(Math.PI*2))+Math.PI*2)%(Math.PI*2))/(Math.PI*2)*N)%N;
+  return mass.ext[i];
+}
+var ANG = {supporting:Math.PI, generic:0, external:Math.PI*0.33};
+function layoutMasses(masses){
+  var hub = masses.filter(function(m){ return m.type==='core'; })[0] || masses[0];
+  hub.c = [0,0];
+  masses.forEach(function(m,idx){
+    if(m===hub) return;
+    var ang = ANG[m.type]!==undefined ? ANG[m.type] : (-Math.PI/2 + idx*2.1);
+    var d = extAt(hub, ang) + GAP + extAt(m, ang+Math.PI) + (m.type==='external' ? 22 : 0);
+    m.c = [Math.cos(ang)*d, Math.sin(ang)*d];
+  });
+  for(var it=0; it<80; it++){
+    var moved=false;
+    for(var i=0;i<masses.length;i++) for(var j=i+1;j<masses.length;j++){
+      var A=masses[i], B=masses[j];
+      var dx=B.c[0]-A.c[0], dy=B.c[1]-A.c[1], d=Math.hypot(dx,dy)||1;
+      var ab=Math.atan2(dy,dx);
+      var need=extAt(A,ab)+extAt(B,ab+Math.PI)+GAP;
+      if(d>=need) continue;
+      moved=true;
+      var u=[dx/d, dy/d], push=(need-d);
+      if(A===hub) B.c=[B.c[0]+u[0]*push, B.c[1]+u[1]*push];
+      else if(B===hub) A.c=[A.c[0]-u[0]*push, A.c[1]-u[1]*push];
+      else { A.c=[A.c[0]-u[0]*push/2, A.c[1]-u[1]*push/2]; B.c=[B.c[0]+u[0]*push/2, B.c[1]+u[1]*push/2]; }
+    }
+    if(!moved) break;
+  }
+  var rad = 0;
+  masses.forEach(function(m){
+    var far = m.ext ? Math.max.apply(null, m.ext) : m.R;
+    rad = Math.max(rad, Math.hypot(m.c[0],m.c[1]) + far);
+  });
+  return rad;
+}
+
+function packMass(mass, origin, occupied){
+  var ctr = [origin[0]+mass.c[0], origin[1]+mass.c[1]];
+  var base = pixelToAxial(ctr[0], ctr[1]);
+  var cap = mass.Rcap || mass.R;
+  var span = Math.ceil(cap/(C*1.5)) + 3;
+  var cand = [], pos = {};
+  spiral(span).forEach(function(c){
+    var q=c[0]+base[0], r=c[1]+base[1], p=px(q,r);
+    if(Math.hypot(p[0]-ctr[0], p[1]-ctr[1]) > cap) return;
+    cand.push([q,r]); pos[kk(q,r)] = p;
+  });
+  mass.ctr = ctr; mass.pos = pos;
+
+  var gs = mass.groups;
+  gs.forEach(function(g,idx){
+    if(gs.length===1){ g.seed = ctr; return; }
+    var a = (idx/gs.length)*Math.PI*2 - Math.PI/2;
+    g.seed = [ctr[0]+Math.cos(a)*cap*0.46, ctr[1]+Math.sin(a)*cap*0.46];
+  });
+
+  gs.forEach(function(g){
+    var blob=[], set={}, seedCell=null, bd=Infinity;
+    cand.forEach(function(c){
+      var key=kk(c[0],c[1]);
+      if(occupied[key]) return;
+      var p=pos[key], d=Math.hypot(p[0]-g.seed[0], p[1]-g.seed[1]);
+      if(d<bd){ bd=d; seedCell=c; }
+    });
+    if(!seedCell){ g.cells=[]; g.set={}; return; }
+    occupied[kk(seedCell[0],seedCell[1])]=g; blob.push(seedCell); set[kk(seedCell[0],seedCell[1])]=1;
+    while(blob.length < g.n){
+      var pick=null, pd=Infinity;
+      for(var b=0;b<blob.length;b++) for(var j=0;j<6;j++){
+        var nq=blob[b][0]+DIRS[j][0], nr=blob[b][1]+DIRS[j][1], key=kk(nq,nr);
+        if(occupied[key] || !(key in pos)) continue;
+        var p2=pos[key], d2=Math.hypot(p2[0]-g.seed[0], p2[1]-g.seed[1]);
+        if(d2<pd){ pd=d2; pick=[nq,nr]; }
+      }
+      if(!pick) break;
+      occupied[kk(pick[0],pick[1])]=g; blob.push(pick); set[kk(pick[0],pick[1])]=1;
+    }
+    g.cells=blob; g.set=set; g.pos=pos; g.mass=mass;
+  });
+}
+
+/* A fronteira do dominio e uma REGIAO DA GRADE, nao uma bolha por cima: dilata as
+   celulas do dominio em alguns aneis, tapa os buracos que sobram nos canais entre
+   as massas, e desenha a uniao. Assim a linha segue o contorno dos hexagonos. */
+function dilateFill(setObj, rings){
+  var cur = {}, k, j;
+  for(k in setObj) cur[k]=1;
+  for(var i=0;i<rings;i++){
+    var next={};
+    for(k in cur){
+      next[k]=1;
+      var pp=k.split(','), q=+pp[0], r=+pp[1];
+      for(j=0;j<6;j++) next[kk(q+DIRS[j][0], r+DIRS[j][1])]=1;
+    }
+    cur=next;
+  }
+  var qs=[], rs=[];
+  for(k in cur){ var p2=k.split(','); qs.push(+p2[0]); rs.push(+p2[1]); }
+  if(!qs.length) return cur;
+  var q0=Math.min.apply(null,qs)-2, q1=Math.max.apply(null,qs)+2;
+  var r0=Math.min.apply(null,rs)-2, r1=Math.max.apply(null,rs)+2;
+  var outside={}, stack=[], a, b;
+  for(a=q0;a<=q1;a++){ stack.push([a,r0]); stack.push([a,r1]); }
+  for(b=r0;b<=r1;b++){ stack.push([q0,b]); stack.push([q1,b]); }
+  while(stack.length){
+    var c=stack.pop();
+    if(c[0]<q0||c[0]>q1||c[1]<r0||c[1]>r1) continue;
+    var key=kk(c[0],c[1]);
+    if(outside[key] || cur[key]) continue;
+    outside[key]=1;
+    for(j=0;j<6;j++) stack.push([c[0]+DIRS[j][0], c[1]+DIRS[j][1]]);
+  }
+  for(a=q0;a<=q1;a++) for(b=r0;b<=r1;b++){
+    var k2=kk(a,b);
+    if(!cur[k2] && !outside[k2]) cur[k2]=1;
+  }
+  return cur;
+}
+/* O crescimento guloso as vezes deixa uma celula ilhada dentro da massa, e ela
+   aparece como um buraco branco no terreno. Tapa e entrega ao territorio que tem
+   mais vizinhos ali. */
+function fillMassHoles(mass){
+  var union={}, owner={}, j, a, b;
+  mass.groups.forEach(function(g){
+    g.cells.forEach(function(c){ union[kk(c[0],c[1])]=1; owner[kk(c[0],c[1])]=g; });
+  });
+  var keys=Object.keys(union);
+  if(!keys.length) return;
+  var qs=[], rs=[];
+  keys.forEach(function(k){ var pp=k.split(','); qs.push(+pp[0]); rs.push(+pp[1]); });
+  var q0=Math.min.apply(null,qs)-1, q1=Math.max.apply(null,qs)+1;
+  var r0=Math.min.apply(null,rs)-1, r1=Math.max.apply(null,rs)+1;
+  var outside={}, stack=[];
+  for(a=q0;a<=q1;a++){ stack.push([a,r0]); stack.push([a,r1]); }
+  for(b=r0;b<=r1;b++){ stack.push([q0,b]); stack.push([q1,b]); }
+  while(stack.length){
+    var c=stack.pop();
+    if(c[0]<q0||c[0]>q1||c[1]<r0||c[1]>r1) continue;
+    var k2=kk(c[0],c[1]);
+    if(outside[k2] || union[k2]) continue;
+    outside[k2]=1;
+    for(j=0;j<6;j++) stack.push([c[0]+DIRS[j][0], c[1]+DIRS[j][1]]);
+  }
+  for(a=q0;a<=q1;a++) for(b=r0;b<=r1;b++){
+    var k3=kk(a,b);
+    if(union[k3] || outside[k3]) continue;
+    var tally={}, bestG=null, bn=0;
+    for(j=0;j<6;j++){
+      var og=owner[kk(a+DIRS[j][0], b+DIRS[j][1])];
+      if(!og) continue;
+      var id=og.sd.id;
+      tally[id]=(tally[id]||0)+1;
+      if(tally[id]>bn){ bn=tally[id]; bestG=og; }
+    }
+    if(!bestG) continue;
+    bestG.cells.push([a,b]); bestG.set[k3]=1;
+    union[k3]=1; owner[k3]=bestG;
+    if(!(k3 in mass.pos)) mass.pos[k3]=px(a,b);
+  }
+}
+
+/* Onde por o nome do territorio. Heuristica de PONTO nao servia: o rotulo tem
+   largura, e dois territorios vizinhos acabavam com os nomes colados, lendo como
+   uma frase so. Agora e teste de CAIXA contra tudo que ja esta no mapa —
+   pecas, chips, rotulos de contexto e os nomes de territorio ja colocados. */
+function labelSpot(g, mass, obstacles, text, size){
+  var ctr = centroidOf(g.cells, mass.pos);
+  var w = text.length * size * 0.80, h = size * 1.5;
+  var best=null, bn=Infinity, bd=Infinity;
+  g.cells.forEach(function(c){
+    var pp = mass.pos[kk(c[0],c[1])];
+    if(!pp) return;
+    var box = [pp[0]-w/2, pp[1]-h/2, w, h];
+    var n = 0;
+    for(var i=0;i<obstacles.length;i++){
+      var o = obstacles[i];
+      if(box[0]<o[0]+o[2] && o[0]<box[0]+box[2] && box[1]<o[1]+o[3] && o[1]<box[1]+box[3]) n++;
+    }
+    var d = Math.hypot(pp[0]-ctr[0], pp[1]-ctr[1]);
+    if(n<bn || (n===bn && d<bd)){ bn=n; bd=d; best=pp; }
+  });
+  return {p: best || ctr, box: best ? [best[0]-w/2, best[1]-h/2, w, h] : null};
+}
+
+function erode(setObj, rings){
+  var cur = setObj, i, k, j;
+  for(i=0;i<rings;i++){
+    var next={};
+    for(k in cur){
+      var pp=k.split(','), q=+pp[0], r=+pp[1], ok=true;
+      for(j=0;j<6;j++) if(!cur[kk(q+DIRS[j][0], r+DIRS[j][1])]){ ok=false; break; }
+      if(ok) next[k]=1;
+    }
+    if(!Object.keys(next).length) return cur;
+    cur=next;
+  }
+  return cur;
+}
+function regionOf(setObj){
+  var cells=[], pos={};
+  for(var k in setObj){
+    var pp=k.split(','), c=[+pp[0], +pp[1]];
+    cells.push(c); pos[k] = px(c[0], c[1]);
+  }
+  return {cells:cells, set:setObj, pos:pos};
+}
+
+function interior(g, depth){
+  var lvl = g.set;
+  for(var d=0; d<depth; d++){
+    var next={};
+    for(var key in lvl){
+      var parts=key.split(','), q=+parts[0], r=+parts[1];
+      var ok = DIRS.every(function(dd){ return lvl[kk(q+dd[0], r+dd[1])]; });
+      if(ok) next[key]=1;
+    }
+    lvl = next;
+  }
+  return Object.keys(lvl).map(function(key){ var p=key.split(','); return [+p[0], +p[1]]; });
+}
+
+/* Pecas de contexto: celulas do proprio territorio, nunca a menos de MIN_STEP
+   celulas de qualquer outra peca DA MESMA MASSA — a restricao vale entre
+   territorios vizinhos tambem, senao duas pecas encostam na fronteira comum.
+   Entre as validas, a mais perto do centro do territorio. */
+function placeTilesForMass(mass){
+  var out = {}, home = {}, taken = [];
+  mass.groups.forEach(function(g){
+    if(!g.cells.length) return;
+    var names = g.sd.ids;
+    var ctr = centroidOf(g.cells, mass.pos);
+    var used = {}, mine = [];
+    while(mine.length < names.length){
+      var best=null, bs=Infinity, fallback=null, fs=-1;
+      g.cells.forEach(function(c){
+        if(used[kk(c[0],c[1])]) return;
+        var dmin = Infinity;
+        taken.forEach(function(t){ dmin = Math.min(dmin, hexDist(c, t)); });
+        var p = mass.pos[kk(c[0],c[1])];
+        var near = Math.hypot(p[0]-ctr[0], p[1]-ctr[1]);
+        if(dmin===Infinity || dmin>=MIN_STEP){
+          if(near<bs){ bs=near; best=c; }
+        }
+        if(dmin>fs){ fs=dmin; fallback=c; }
+      });
+      if(!best) best = fallback;
+      if(!best) break;
+      used[kk(best[0],best[1])]=1;
+      taken.push(best);
+      mine.push(best);
+    }
+    names.forEach(function(nm,i){
+      if(mine[i]){ out[nm] = mass.pos[kk(mine[i][0], mine[i][1])]; home[nm] = g; }
+    });
+  });
+  return {tiles:out, home:home};
+}
+
+function outline(cells, set, pos){
+  var d='';
+  cells.forEach(function(c){
+    var p = pos[kk(c[0],c[1])];
+    DIRS.forEach(function(dd,i){
+      if(set[kk(c[0]+dd[0], c[1]+dd[1])]) return;
+      var e = EDGE_OF_DIR[i];
+      var a = corner(p[0],p[1],e[0],C), b = corner(p[0],p[1],e[1],C);
+      d += 'M'+a[0].toFixed(1)+' '+a[1].toFixed(1)+'L'+b[0].toFixed(1)+' '+b[1].toFixed(1);
+    });
+  });
+  return d;
+}
+function fillOf(cells, pos){
+  var d='';
+  cells.forEach(function(c){ var p=pos[kk(c[0],c[1])]; d += hexPath(p[0],p[1],C); });
+  return d;
+}
+function centroidOf(cells, pos){
+  var cx=0, cy=0;
+  cells.forEach(function(c){ var p=pos[kk(c[0],c[1])]; cx+=p[0]; cy+=p[1]; });
+  return [cx/cells.length, cy/cells.length];
+}
+
+/* ---------------- arestas ---------------- */
+var UNITS = [30,90,150,210,270,330].map(function(deg){
+  var a=deg*Math.PI/180; return [Math.cos(a), Math.sin(a)];
+});
+function hexRoute(a,b){
+  var vx=b[0]-a[0], vy=b[1]-a[1];
+  for(var i=0;i<6;i++){
+    var u1=UNITS[i], u2=UNITS[(i+1)%6];
+    var det=u1[0]*u2[1]-u1[1]*u2[0];
+    var s1=(vx*u2[1]-vy*u2[0])/det;
+    var s2=(u1[0]*vy-u1[1]*vx)/det;
+    if(s1>=-0.01 && s2>=-0.01){
+      if(s1<34 || s2<34) return [a,b];
+      return [a,[a[0]+u1[0]*s1, a[1]+u1[1]*s1],b];
+    }
+  }
+  return [a,b];
+}
+function trim(pts, head, tail){
+  var p = pts.map(function(x){ return x.slice(); });
+  var n = p.length-1;
+  var u0 = unit(p[0],p[1]);   p[0] = [p[0][0]+u0[0]*head, p[0][1]+u0[1]*head];
+  var un = unit(p[n],p[n-1]); p[n] = [p[n][0]+un[0]*tail, p[n][1]+un[1]*tail];
+  return p;
+}
+function pathOf(pts){
+  if(pts.length===2) return 'M'+f(pts[0])+'L'+f(pts[1]);
+  var d='M'+f(pts[0]), t=14;
+  for(var i=1;i<pts.length-1;i++){
+    var c=pts[i], u1=unit(c,pts[i-1]), u2=unit(c,pts[i+1]);
+    d += 'L'+f([c[0]+u1[0]*t, c[1]+u1[1]*t])+'Q'+f(c)+' '+f([c[0]+u2[0]*t, c[1]+u2[1]*t]);
+  }
+  return d+'L'+f(pts[pts.length-1]);
+}
+function totalLen(pts){
+  var t=0; for(var i=0;i<pts.length-1;i++) t+=Math.hypot(pts[i+1][0]-pts[i][0], pts[i+1][1]-pts[i][1]);
+  return t;
+}
+function along(pts, dist, fromEnd){
+  var seq = fromEnd ? pts.slice().reverse() : pts, left = dist;
+  for(var i=0;i<seq.length-1;i++){
+    var L = Math.hypot(seq[i+1][0]-seq[i][0], seq[i+1][1]-seq[i][1]);
+    if(left<=L){ var u=unit(seq[i],seq[i+1]); return [seq[i][0]+u[0]*left, seq[i][1]+u[1]*left]; }
+    left -= L;
+  }
+  return seq[seq.length-1];
+}
+function arrow(pts, atStart){
+  var a,b;
+  if(atStart){ a=pts[1]; b=pts[0]; } else { a=pts[pts.length-2]; b=pts[pts.length-1]; }
+  var u=unit(a,b), n=[-u[1],u[0]], L=9, W=4.4;
+  return '<path class="head" d="M'+f(b)+
+    'L'+f([b[0]-u[0]*L+n[0]*W, b[1]-u[1]*L+n[1]*W])+
+    'L'+f([b[0]-u[0]*L-n[0]*W, b[1]-u[1]*L-n[1]*W])+'Z"/>';
+}
+function breakMark(pts){
+  var L=totalLen(pts), mid=along(pts,L/2,false);
+  var u=unit(along(pts,L/2-6,false), along(pts,L/2+6,false)), n=[-u[1],u[0]], W=6.5, g='';
+  [-5, 5].forEach(function(off){
+    var c=[mid[0]+u[0]*off, mid[1]+u[1]*off];
+    g += '<path class="tick" d="M'+f([c[0]+n[0]*W, c[1]+n[1]*W])+'L'+f([c[0]-n[0]*W, c[1]-n[1]*W])+'"/>';
+  });
+  return g;
+}
+function chipW(text){ return text.length*6.0+12; }
+function chip(p, text){
+  var w=chipW(text), h=15;
+  return '<g class="chip"><rect x="'+(p[0]-w/2).toFixed(1)+'" y="'+(p[1]-h/2).toFixed(1)+
+    '" width="'+w.toFixed(1)+'" height="'+h+'" rx="6"/><text x="'+p[0].toFixed(1)+'" y="'+p[1].toFixed(1)+
+    '">'+esc(text)+'</text></g>';
+}
+
+/* ---------------- render ---------------- */
+var state = {model:'one', edge:'bundle', tags:'on', labels:'ctx', sel:null, selSub:null, sub:'today'};
+
+function build(){
+  var m = MODELS[state.model];
+  var occupied = {}, islands = [], tiles = {}, homeOf = {};
+  /* Duas passadas. O disco de crescimento e sempre maior que o terreno que acaba
+     cabendo nele, entao posicionar pelo disco deixava as massas longe demais.
+     Passada 1 empacota so para MEDIR o raio real; passada 2 reposiciona com ele. */
+  var prepared = m.domains.map(function(dom){
+    var masses = massesOf(dom);
+    layoutMasses(masses);
+    var tmp = {};
+    masses.forEach(function(mass){ packMass(mass, [0,0], tmp); });
+    masses.forEach(function(mass){
+      if(!mass.cellsTotal) mass.cellsTotal = mass.groups.reduce(function(a,g){ return a+g.cells.length; },0);
+      if(mass.cellsTotal) mass.ext = extentFn(mass);
+    });
+    var rad = layoutMasses(masses);
+    var bx={minX:Infinity, maxX:-Infinity, minY:Infinity, maxY:-Infinity};
+    masses.forEach(function(mass){
+      bx.minX = Math.min(bx.minX, mass.c[0]-extAt(mass, Math.PI));
+      bx.maxX = Math.max(bx.maxX, mass.c[0]+extAt(mass, 0));
+      bx.minY = Math.min(bx.minY, mass.c[1]-extAt(mass, -Math.PI/2));
+      bx.maxY = Math.max(bx.maxY, mass.c[1]+extAt(mass, Math.PI/2));
+    });
+    return {dom:dom, masses:masses, rad:rad, box:bx};
+  });
+  /* Dominios em PRATELEIRA, nao em grade. Tres dominios de tamanhos diferentes
+     numa grade 2x2 deixavam um quadrante inteiro vazio — e o que esta rodada
+     quer e o mapa da floresta cheio, nao um tabuleiro com casas vazias. */
+  var HALO = C*Math.sqrt(3), DGAP = 34;
+  var pitch = 2*HALO + DGAP;
+  prepared.forEach(function(pr){
+    pr.w = (pr.box.maxX - pr.box.minX) + pitch;
+    pr.h = (pr.box.maxY - pr.box.minY) + pitch;
+  });
+  /* Quantas linhas? Testa todas e escolhe a que chega mais perto de uma
+     proporcao de leitura (1,4). Prateleira por largura acumulada quebrava em
+     coluna: o segundo dominio nunca caberia na linha do primeiro. */
+  function splitRows(k){
+    var perRow = Math.ceil(prepared.length/k), out=[], i;
+    for(i=0;i<prepared.length;i+=perRow) out.push(prepared.slice(i, i+perRow));
+    return out;
+  }
+  var bestShelves = null, bestScore = Infinity;
+  for(var k=1;k<=prepared.length;k++){
+    var cand = splitRows(k);
+    if(cand.length!==k && k>1) continue;
+    var w = Math.max.apply(null, cand.map(function(row){
+      return row.reduce(function(a,pr){ return a+pr.w; }, 0);
+    }));
+    var h = cand.reduce(function(a,row){
+      return a + Math.max.apply(null, row.map(function(pr){ return pr.h; }));
+    }, 0);
+    var score = Math.abs(Math.log((w/h)/1.4));
+    if(score<bestScore){ bestScore=score; bestShelves=cand; }
+  }
+  var shelves = bestShelves || [prepared];
+  var yCur = 0;
+  shelves.forEach(function(row){
+    var h = Math.max.apply(null, row.map(function(pr){ return pr.h; }));
+    var xCur = 0;
+    row.forEach(function(pr){
+      pr.origin = [xCur - pr.box.minX + pitch/2, yCur - pr.box.minY + pitch/2];
+      xCur += pr.w;
+    });
+    yCur += h;
+  });
+
+  prepared.forEach(function(pr){
+    var dom = pr.dom, masses = pr.masses, rad = pr.rad, origin = pr.origin;
+    masses.forEach(function(mass){ packMass(mass, origin, occupied); fillMassHoles(mass); });
+    masses.forEach(function(mass){
+      var r = placeTilesForMass(mass);
+      for(var nm in r.tiles){ tiles[nm]=r.tiles[nm]; homeOf[nm]=r.home[nm]; }
+    });
+    islands.push({dom:dom, masses:masses, origin:origin, rad:rad});
+  });
+
+  /* regiao do dominio: precisa existir antes dos limites, porque a fronteira
+     avanca um anel para fora do terreno */
+  islands.forEach(function(isl){
+    var domCells = {};
+    isl.masses.forEach(function(mass){
+      if(mass.external) return;
+      mass.groups.forEach(function(g){ g.cells.forEach(function(c){ domCells[kk(c[0],c[1])]=1; }); });
+    });
+    if(!Object.keys(domCells).length) return;
+    isl.region = regionOf(erode(dilateFill(domCells, 3), 2));
+  });
+
+  /* Arestas, chips e rotulos sao resolvidos AQUI, antes dos limites: eles caem
+     fora do terreno, e a v anterior cortava a fila de chips no topo do mapa. */
+  var rels = [], chips = [];
+  if(state.edge!=='none'){
+    m.mapping.forEach(function(rel){
+      var a=tiles[rel.l], b=tiles[rel.r];
+      if(!a||!b) return;
+      var ga=homeOf[rel.l], gb=homeOf[rel.r], pts;
+      if(state.edge==='bundle' && ga!==gb){
+        var ca = ga.mass!==gb.mass ? ga.mass.ctr : centroidOf(ga.cells, ga.pos);
+        var cb = ga.mass!==gb.mass ? gb.mass.ctr : centroidOf(gb.cells, gb.pos);
+        pts = [a, [(ca[0]+cb[0])/2, (ca[1]+cb[1])/2], b];
+      } else {
+        pts = hexRoute(a,b);
+      }
+      rels.push({rel:rel, pts:trim(pts, HIN+6, HIN+6)});
+    });
+  }
+
+  var tileBoxes = [];
+  for(var nmA in tiles) tileBoxes.push([tiles[nmA][0]-HR, tiles[nmA][1]-HIN, 2*HR, 2*HIN]);
+
+  var labels = {}, takenBoxes = [];
+  Object.keys(tiles).forEach(function(nm,idx){
+    var pt = tiles[nm], w = nm.length*5.9, h = 13;
+    /* Oito posicoes, nao quatro: num territorio denso as quatro ortogonais
+       colidiam todas, e o rotulo caia em cima do vizinho ("OCheckout"). */
+    var cands = [
+      {x:pt[0],         y:pt[1]+HIN+13, a:'middle', box:[pt[0]-w/2,     pt[1]+HIN+3,  w, h]},
+      {x:pt[0],         y:pt[1]-HIN-6,  a:'middle', box:[pt[0]-w/2,     pt[1]-HIN-17, w, h]},
+      {x:pt[0]+HR+7,    y:pt[1]+3.4,    a:'start',  box:[pt[0]+HR+7,    pt[1]-6.5,    w, h]},
+      {x:pt[0]-HR-7,    y:pt[1]+3.4,    a:'end',    box:[pt[0]-HR-7-w,  pt[1]-6.5,    w, h]},
+      {x:pt[0]+HR*0.6,  y:pt[1]+HIN+15, a:'start',  box:[pt[0]+HR*0.6,  pt[1]+HIN+5,  w, h]},
+      {x:pt[0]-HR*0.6,  y:pt[1]+HIN+15, a:'end',    box:[pt[0]-HR*0.6-w,pt[1]+HIN+5,  w, h]},
+      {x:pt[0]+HR*0.6,  y:pt[1]-HIN-8,  a:'start',  box:[pt[0]+HR*0.6,  pt[1]-HIN-19, w, h]},
+      {x:pt[0]-HR*0.6,  y:pt[1]-HIN-8,  a:'end',    box:[pt[0]-HR*0.6-w,pt[1]-HIN-19, w, h]}
+    ];
+    function hits(box){
+      var n=0;
+      tileBoxes.forEach(function(b,i){
+        if(i===idx) return;
+        if(box[0]<b[0]+b[2] && b[0]<box[0]+box[2] && box[1]<b[1]+b[3] && b[1]<box[1]+box[3]) n++;
+      });
+      takenBoxes.forEach(function(b){
+        if(box[0]<b[0]+b[2] && b[0]<box[0]+box[2] && box[1]<b[1]+b[3] && b[1]<box[1]+box[3]) n++;
+      });
+      return n;
+    }
+    var best=cands[0], bn=Infinity;
+    cands.forEach(function(c){ var n=hits(c.box); if(n<bn){ bn=n; best=c; } });
+    labels[nm]=best; takenBoxes.push(best.box);
+  });
+
+  if(state.tags==='on' && rels.length){
+    rels.forEach(function(R,i){
+      var pp=R.pts, n=pp.length-1;
+      if(R.rel.lt.length) chips.push({i:i, pts:pp, end:true,  text:R.rel.lt.join(' ')});
+      if(R.rel.rt.length) chips.push({i:i, pts:pp, end:false, text:R.rel.rt.join(' ')});
+    });
+    /* Colocacao sequencial travava: o primeiro chip nao sabia dos que vinham
+       depois, e ajustar o peso de um obstaculo so transferia a colisao para
+       outro. Tres passadas de reparo, cada chip revendo a posicao contra o
+       estado FINAL dos outros, resolvem sem precisar acertar pesos na sorte. */
+    var fixed = [];
+    tileBoxes.forEach(function(b){ fixed.push({b:b, w:10}); });
+    if(state.labels==='ctx') takenBoxes.forEach(function(b){ fixed.push({b:b, w:9}); });
+    var OFFS = [0, 14, -14, 26, -26, 38, -38, 50, -50, 62, -62];
+
+    function placeChip(Ch, others){
+      var cw=chipW(Ch.text), best=null, bp=Infinity, done=false;
+      for(var dist=14; dist<=104 && !done; dist+=4){
+        var base = along(Ch.pts, dist, Ch.end);
+        var ref  = along(Ch.pts, Math.max(2, dist-8), Ch.end);
+        var u = unit(ref, base), nvec = [-u[1], u[0]];
+        for(var oi=0; oi<OFFS.length; oi++){
+          var q = [base[0]+nvec[0]*OFFS[oi], base[1]+nvec[1]*OFFS[oi]];
+          var pen = Math.abs(OFFS[oi])*0.035 + (dist-14)*0.035;
+          var k;
+          for(k=0;k<fixed.length;k++){
+            var o=fixed[k].b;
+            if(Math.abs(q[0]-(o[0]+o[2]/2)) < (cw+o[2])/2 &&
+               Math.abs(q[1]-(o[1]+o[3]/2)) < (15+o[3])/2) pen += fixed[k].w;
+          }
+          for(k=0;k<others.length;k++){
+            var ob=others[k];
+            if(!ob) continue;
+            if(Math.abs(q[0]-(ob[0]+ob[2]/2)) < (cw+ob[2])/2 &&
+               Math.abs(q[1]-(ob[1]+ob[3]/2)) < (15+ob[3])/2) pen += 9;
+          }
+          if(pen<bp){ bp=pen; best=q; }
+          if(pen<0.9){ done=true; break; }
+        }
+      }
+      Ch.p = best.slice();
+      Ch.pen = bp;
+      return [Ch.p[0]-cw/2, Ch.p[1]-7.5, cw, 15];
+    }
+
+    var boxes = new Array(chips.length);
+    for(var pass=0; pass<3; pass++){
+      chips.forEach(function(Ch, i){
+        var others = boxes.slice();
+        others[i] = null;
+        boxes[i] = placeChip(Ch, others);
+      });
+    }
+  }
+
+  /* nome do territorio: celula mais livre de peca, chip e rotulo */
+  var subSpots = [];
+  if(state.labels!=='dom'){
+    var busy = tileBoxes.slice();
+    chips.forEach(function(c){
+      var cw=chipW(c.text);
+      busy.push([c.p[0]-cw/2, c.p[1]-7.5, cw, 15]);
+    });
+    if(state.labels==='ctx') Object.keys(labels).forEach(function(nm){ busy.push(labels[nm].box); });
+    var subSize = state.labels==='sub' ? 14 : 10;
+    islands.forEach(function(isl){ isl.masses.forEach(function(mass){
+      mass.groups.forEach(function(g){
+        if(!g.cells.length) return;
+        var txt = g.sd.id.toUpperCase();
+        var r = labelSpot(g, mass, busy, txt, subSize);
+        if(r.box) busy.push(r.box);
+        subSpots.push({sub:isl.dom.id+'/'+g.sd.id, id:g.sd.id, p:r.p});
+      });
+    }); });
+  }
+
+  var all=[];
+  for(var nm2 in tiles) all.push(tiles[nm2]);
+  islands.forEach(function(isl){ isl.masses.forEach(function(mass){
+    mass.groups.forEach(function(g){ g.cells.forEach(function(c){ all.push(g.pos[kk(c[0],c[1])]); }); });
+  }); });
+  chips.forEach(function(c){ all.push([c.p[0]-chipW(c.text)/2, c.p[1]-9]); all.push([c.p[0]+chipW(c.text)/2, c.p[1]+9]); });
+  Object.keys(labels).forEach(function(nm){
+    var b=labels[nm].box; all.push([b[0], b[1]]); all.push([b[0]+b[2], b[1]+b[3]]);
+  });
+  subSpots.forEach(function(sp){ all.push([sp.p[0]-60, sp.p[1]-10]); all.push([sp.p[0]+60, sp.p[1]+10]); });
+  islands.forEach(function(isl){
+    if(!isl.region) return;
+    isl.region.cells.forEach(function(c){ all.push(isl.region.pos[kk(c[0],c[1])]); });
+  });
+  var minX=Math.min.apply(null,all.map(function(p){return p[0];}))-C-8;
+  var maxX=Math.max.apply(null,all.map(function(p){return p[0];}))+C+8;
+  var minY=Math.min.apply(null,all.map(function(p){return p[1];}))-C-8;
+  var maxY=Math.max.apply(null,all.map(function(p){return p[1];}))+C+52;
+
+
+  var s=[];
+  s.push('<svg viewBox="'+minX.toFixed(0)+' '+minY.toFixed(0)+' '+(maxX-minX).toFixed(0)+' '+(maxY-minY).toFixed(0)+
+         '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa de contextos em colmeia">');
+  s.push('<defs>'+
+    '<filter id="sh" x="-30%" y="-30%" width="160%" height="160%">'+
+    '<feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgb(20,18,30)" flood-opacity="0.11"/></filter>'+
+    '</defs>');
+
+  /* 1. fronteira do dominio, na propria grade */
+  islands.forEach(function(isl){
+    if(!isl.region) return;
+    s.push('<path class="dregion" d="'+fillOf(isl.region.cells, isl.region.pos)+'"/>');
+    s.push('<path class="bdom" d="'+outline(isl.region.cells, isl.region.set, isl.region.pos)+'"/>');
+  });
+
+  /* 2. terreno: a massa da o chao, e cada subdominio e um grupo proprio — e o
+        grupo que recebe o hover, junto com o rotulo dele e as pecas que ele contem */
+  islands.forEach(function(isl){
+    isl.masses.forEach(function(mass){
+      var cells=[], set={};
+      mass.groups.forEach(function(g){ g.cells.forEach(function(c){ cells.push(c); set[kk(c[0],c[1])]=1; }); });
+      if(!cells.length) return;
+      s.push('<path class="terr '+mass.type+'" d="'+fillOf(cells, mass.pos)+'" filter="url(#sh)"/>');
+      mass.groups.forEach(function(g){
+        if(!g.cells.length) return;
+        var d = fillOf(g.cells, mass.pos);
+        var subKey = isl.dom.id+'/'+g.sd.id;
+        s.push('<g class="sub'+(state.selSub===subKey?' hot on':'')+'" data-sub="'+esc(subKey)+'">'+
+               '<path class="comb" d="'+d+'"/>'+
+               '<path class="subwash" d="'+d+'"/>'+
+               '<path class="bsub" d="'+outline(g.cells, g.set, mass.pos)+'"/></g>');
+      });
+      s.push('<path class="bmass'+(mass.external?' ext':'')+'" d="'+outline(cells, set, mass.pos)+'"/>');
+    });
+  });
+
+
+  /* 4. arestas */
+  var selSubIds = [];
+  if(state.selSub){
+    var sinfo = subOf(m, state.selSub);
+    if(sinfo) selSubIds = sinfo.sd.ids || [];
+  }
+  rels.forEach(function(R,i){
+    var rel=R.rel, pth=R.pts;
+    var lit = (state.sel && (rel.l===state.sel || rel.r===state.sel)) ||
+              (state.selSub && (selSubIds.indexOf(rel.l)>=0 || selSubIds.indexOf(rel.r)>=0));
+    var faded = (state.sel || state.selSub) && !lit;
+    var g='<g class="rel'+(lit?' lit':'')+(faded?' fade':'')+'" data-l="'+esc(rel.l)+'" data-r="'+esc(rel.r)+'">';
+    var dPath = pathOf(pth);
+    g += '<path class="ecase" d="'+dPath+'"/>';
+    g += '<path class="edge'+(rel.c==='-x-'?' sep':'')+'" d="'+dPath+'"/>';
+    if(rel.c==='-->' || rel.c==='<->') g += arrow(pth,false);
+    if(rel.c==='<--' || rel.c==='<->') g += arrow(pth,true);
+    if(rel.c==='-x-') g += breakMark(pth);
+    chips.forEach(function(c){ if(c.i===i) g += chip(c.p, c.text); });
+    s.push(g+'</g>');
+  });
+
+  /* 5. pecas de contexto */
+  var selSubOf = {};
+  islands.forEach(function(isl){ isl.masses.forEach(function(mass){
+    mass.groups.forEach(function(g){
+      g.sd.ids.forEach(function(id){ selSubOf[id] = isl.dom.id+'/'+g.sd.id; });
+    });
+  }); });
+
+  var near = {};
+  if(state.sel){
+    near[state.sel]=1;
+    m.mapping.forEach(function(rel){
+      if(rel.l===state.sel) near[rel.r]=1;
+      if(rel.r===state.sel) near[rel.l]=1;
+    });
+  }
+  islands.forEach(function(isl){ isl.masses.forEach(function(mass){
+    mass.groups.forEach(function(g){
+      g.sd.ids.forEach(function(nm){
+        var p = tiles[nm];
+        if(!p) return;
+        var subKey2 = isl.dom.id+'/'+g.sd.id;
+        var inSel = state.selSub===subKey2;
+        var cls = 'node' + (state.sel===nm ? ' on' : '') + (inSel ? ' subhot' : '') +
+                  ((state.sel && !near[nm]) || (state.selSub && !inSel) ? ' fade' : '');
+        s.push('<g class="'+cls+'" data-ctx="'+esc(nm)+'" data-sub="'+esc(isl.dom.id+'/'+g.sd.id)+'">'+
+               '<path class="tile '+mass.type+'" d="'+hexPath(p[0],p[1],HR)+'"/>'+
+               '<path class="hit" d="'+hexPath(p[0],p[1],HR-1)+'"/></g>');
+      });
+    });
+  }); });
+
+  /* 6. nome do territorio: por cima das pecas, com halo, no ponto mais livre */
+  subSpots.forEach(function(sp){
+    var size = state.labels==='sub' ? 14 : 10;
+    s.push('<g class="sublab'+(state.selSub===sp.sub?' subhot':'')+'" data-sub="'+esc(sp.sub)+'">'+
+           '<text class="snm" style="font-size:'+size+'px" x="'+sp.p[0].toFixed(0)+'" y="'+(sp.p[1]+4).toFixed(0)+
+           '">'+esc(sp.id.toUpperCase())+'</text></g>');
+  });
+
+  /* 6b. nome do contexto: por ultimo, acima de aresta, chip e marca d'agua */
+  if(state.labels==='ctx'){
+    Object.keys(labels).forEach(function(nm){
+      var L = labels[nm];
+      var faded = (state.sel && !near[nm]) || (state.selSub && selSubOf[nm]!==state.selSub);
+      s.push('<text class="cnm'+(faded?' fade':'')+(state.sel===nm?' on':'')+
+             '" x="'+L.x.toFixed(1)+'" y="'+L.y.toFixed(1)+
+             '" text-anchor="'+L.a+'">'+esc(nm)+'</text>');
+    });
+  }
+
+  /* 7. nome do dominio */
+  islands.forEach(function(isl){
+    /* Fora do mapa, nunca sobre ele: a caixa conta o external e o halo da
+       fronteira, senao o rotulo cai em cima do terreno e uma aresta o atravessa. */
+    var xs=[], ys=[];
+    isl.masses.forEach(function(mass){
+      mass.groups.forEach(function(g){ g.cells.forEach(function(c){
+        var p=mass.pos[kk(c[0],c[1])];
+        if(p){ xs.push(p[0]); ys.push(p[1]); }
+      }); });
+    });
+    if(isl.region) isl.region.cells.forEach(function(c){
+      var p=isl.region.pos[kk(c[0],c[1])]; xs.push(p[0]); ys.push(p[1]);
+    });
+    if(!xs.length) return;
+    var cx=(Math.min.apply(null,xs)+Math.max.apply(null,xs))/2;
+    var by=Math.max.apply(null,ys)+C+34;
+    var size = state.labels==='dom' ? 22 : 16;
+    s.push('<text class="dnm" style="font-size:'+size+'px" x="'+cx.toFixed(0)+'" y="'+by.toFixed(0)+'">'+
+           esc(isl.dom.title||isl.dom.id)+'</text>');
+    s.push('<text class="did" x="'+cx.toFixed(0)+'" y="'+(by+15).toFixed(0)+'">DOMAIN '+esc(isl.dom.id.toUpperCase())+'</text>');
+  });
+
+  s.push('</svg>');
+  return {svg:s.join(''), homeOf:homeOf};
+}
+
+/* ---------------- ficha da selecao ---------------- */
+var UP=['OHS','PL','S'], DOWN=['ACL','CF','C'];
+function roleText(rel, sel){
+  if(rel.c==='<->') return 'mutuamente dependentes';
+  if(rel.c==='-x-') return 'caminhos separados — decisão, não falha';
+  var upSide = rel.c==='-->' ? 'l' : 'r';
+  var selIsLeft = rel.l===sel;
+  var selIsUp = (upSide==='l') === selIsLeft;
+  var other = selIsLeft ? rel.r : rel.l;
+  return selIsUp ? 'upstream de '+other : 'downstream de '+other;
+}
+var PROP_LABEL = {type:'type', description:'description', responsibilities:'responsibilities',
+                  maturity:'maturity', team:'team', technology:'technology'};
+function unq(v){ return String(v).replace(/^"|"$/g,''); }
+function propRows(c){
+  var rows = [], any = false;
+  PROP_ORDER.forEach(function(k){
+    if(c[k]===undefined) return;
+    any = true;
+    var v = c[k], html;
+    if(Array.isArray(v)){
+      html = '<ul class="rlist">'+v.map(function(x){ return '<li>'+esc(unq(x))+'</li>'; }).join('')+'</ul>';
+    } else if(k==='maturity'){
+      html = '<span class="mat mat-'+esc(v)+'">'+esc(v)+'</span>';
+    } else {
+      html = '<span class="pv">'+esc(unq(v))+'</span>';
+    }
+    rows.push('<div class="prop"><span class="pk">'+esc(PROP_LABEL[k])+'</span>'+html+'</div>');
+  });
+  if(!any) return '<div class="nofill">Nenhuma propriedade declarada. As seis de '+
+    '<code>GRAMMAR.md</code> §2 são opcionais e valem só em <code>context</code>.</div>';
+  return rows.join('');
+}
+function selPanel(homeOf){
+  var m = MODELS[state.model], box = document.getElementById('selBox');
+
+  if(state.selSub){
+    var info = subOf(m, state.selSub);
+    if(!info){ box.innerHTML=''; return; }
+    var sd = info.sd, dom = info.dom;
+    var ids = sd.ids || [];
+    var inside = 0, crossing = 0;
+    m.mapping.forEach(function(r){
+      var a = ids.indexOf(r.l)>=0, b = ids.indexOf(r.r)>=0;
+      if(a && b) inside++;
+      else if(a || b) crossing++;
+    });
+    var h = '<div class="sel"><div class="kind">subdomain</div><h4>'+esc(sd.id)+'</h4>';
+    h += '<div class="meta"><b>'+esc(sd.type)+'</b>'+
+         (sd.title ? ' · <span class="pv">'+esc(sd.title)+'</span>' : '')+
+         '<br>'+esc(dom.title||dom.id)+'</div>';
+    if(state.sub==='rich'){
+      h += '<div class="hypbar">hipótese de linguagem — <code>description</code> e '+
+           '<code>owner</code> não existem hoje num <code>subdomain</code></div>';
+      h += '<div class="sect">Propriedades</div>';
+      if(sd.description) h += '<div class="prop"><span class="pk">description</span>'+
+        '<span class="pv">'+esc(unq(sd.description))+'</span></div>';
+      if(sd.owner) h += '<div class="prop"><span class="pk">owner</span>'+
+        '<span class="pv">'+esc(unq(sd.owner))+'</span></div>';
+      h += '<div class="nofill">Duas chaves, ambas prosa. Nenhuma delas pode contradizer '+
+           '<code>'+esc(sd.type)+'</code> nem os contextos abaixo — é o que as separa de '+
+           '<code>maturity</code> ou <code>value</code>, que contradizem e por isso pedem regra.</div>';
+    } else {
+      h += '<div class="nofill">Um <code>subdomain</code> declara só <code>title</code>. '+
+           'As seis propriedades são do <code>context</code> — clique num hexágono. '+
+           'Ligue <b>+ propriedades</b> acima para ver a hipótese.</div>';
+    }
+    h += '<div class="sect">Derivado</div>';
+    h += '<div class="tally"><span>'+ids.length+' contexto'+(ids.length===1?'':'s')+'</span>'+
+         '<span>'+inside+' relaç'+(inside===1?'ão':'ões')+' interna'+(inside===1?'':'s')+'</span>'+
+         '<span>'+crossing+' atravessa'+(crossing===1?'':'m')+' a fronteira</span></div>';
+    h += '<div class="sect">Contextos</div>';
+    h += ids.map(function(id){
+      var c = ctxOf(m, id) || {id:id};
+      var n = PROP_ORDER.filter(function(k){ return c[k]!==undefined; }).length;
+      return '<button class="ctxrow" data-go="'+esc(id)+'"><span class="nm">'+esc(id)+'</span>'+
+             (c.title ? '<span class="ti">'+esc(c.title)+'</span>' : '')+
+             '<span class="cnt">'+(n? n+'/6' : '—')+'</span></button>';
+    }).join('');
+    box.innerHTML = h+'</div>';
+    return;
+  }
+
+  if(!state.sel){
+    box.innerHTML = '<div class="sel-empty">Nada selecionado. Passe o mouse para acender a vizinhança; '+
+      'clique num <b>hexágono</b> para ver o contrato e as propriedades do contexto, '+
+      'ou no <b>terreno</b> para ver o subdomínio.</div>';
+    return;
+  }
+
+  var nm = state.sel, g = homeOf[nm], dom2 = ownerDomain(m, nm), c2 = ctxOf(m, nm) || {id:nm};
+  var rels2 = m.mapping.filter(function(r){ return r.l===nm || r.r===nm; });
+  var html = '<div class="sel"><div class="kind">context</div><h4>'+esc(nm)+'</h4>';
+  if(c2.title) html += '<div class="ti big">'+esc(c2.title)+'</div>';
+  var isExt = g.sd.type==='external';
+  html += '<div class="meta"><button class="golink" data-gosub="'+esc(dom2.id+'/'+g.sd.id)+'">'+
+          esc(g.sd.id)+'</button> · '+(isExt ? 'fora do domínio' : esc(g.sd.type))+
+          '<br>'+esc(dom2.title||dom2.id)+'</div>';
+  html += '<div class="sect">Propriedades</div>'+propRows(c2);
+  if(isExt) html += '<div class="nofill">Só <code>description</code> e <code>technology</code>: '+
+    'pelo princípio de autoria do <code>RULES</code> §0.4 você não controla este sistema, '+
+    'e <code>team</code> ou <code>maturity</code> dele não são seus para declarar. '+
+    'É a contenção que o exemplo canônico do <code>GRAMMAR.md</code> já pratica.</div>';
+  html += '<div class="sect">Contrato</div>';
+  if(!rels2.length){
+    html += '<div class="none">Nenhuma relação no mapping — candidato a <b>UNMAPPED_CONTEXT</b>.</div>';
+  } else {
+    rels2.forEach(function(r){
+      var line = esc(r.l)+' '+(r.lt.length?'<span class="tg">['+r.lt.join(', ')+']</span> ':'')+
+        esc(r.c)+(r.rt.length?' <span class="tg">['+r.rt.join(', ')+']</span>':'')+' '+esc(r.r);
+      html += '<div class="rel">'+line+'<span class="ro">'+esc(roleText(r,nm))+'</span></div>';
+    });
+  }
+  html += '<div class="fence">Propriedade é <b>documentação</b>, tag é <b>contrato</b>. '+
+          'Nenhuma propriedade alimenta o gatilho de uma regra — é o que deixa preencher '+
+          '<code>team</code> sem medo de ser julgado.</div>';
+  box.innerHTML = html+'</div>';
+}
+
+function render(){
+  var out = build();
+  var host = document.getElementById('map');
+  host.innerHTML = out.svg;
+  var svg = host.querySelector('svg');
+  Array.prototype.forEach.call(svg.querySelectorAll('g.node'), function(g){
+    g.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      var id = g.getAttribute('data-ctx');
+      state.sel = (state.sel===id) ? null : id;
+      state.selSub = null;
+      render();
+    });
+  });
+  svg.addEventListener('click', function(){
+    if(state.sel || state.selSub){ state.sel=null; state.selSub=null; render(); }
+  });
+  Array.prototype.forEach.call(svg.querySelectorAll('g.sub'), function(gg){
+    var id = gg.getAttribute('data-sub');
+    gg.addEventListener('click', function(ev){
+      ev.stopPropagation();
+      state.selSub = (state.selSub===id) ? null : id;
+      state.sel = null;
+      render();
+    });
+    gg.addEventListener('mouseenter', function(){
+      gg.classList.add('hot');
+      Array.prototype.forEach.call(svg.querySelectorAll('g.node,g.sublab'), function(n){
+        if(n.getAttribute('data-sub')===id) n.classList.add('subhot');
+      });
+    });
+    gg.addEventListener('mouseleave', function(){
+      gg.classList.remove('hot');
+      Array.prototype.forEach.call(svg.querySelectorAll('.subhot'), function(n){
+        n.classList.remove('subhot');
+      });
+    });
+  });
+
+  var m = MODELS[state.model];
+  selPanel(out.homeOf);
+  var selBox = document.getElementById('selBox');
+  Array.prototype.forEach.call(selBox.querySelectorAll('[data-go]'), function(b){
+    b.addEventListener('click', function(){
+      state.sel = b.getAttribute('data-go'); state.selSub = null; render();
+    });
+  });
+  Array.prototype.forEach.call(selBox.querySelectorAll('[data-gosub]'), function(b){
+    b.addEventListener('click', function(){
+      state.selSub = b.getAttribute('data-gosub'); state.sel = null; render();
+    });
+  });
+  document.getElementById('src').innerHTML = hl(srcOf(m));
+  document.getElementById('srcName').textContent = m.file;
+  var rows=[];
+  m.domains.forEach(function(d){
+    if(m.domains.length>1) rows.push('<div class="row" style="margin-top:6px"><b>'+esc(d.title||d.id)+'</b></div>');
+    TYPES.forEach(function(t){
+      var gs = d.subdomains.filter(function(sd){ return sd.type===t; });
+      if(!gs.length) return;
+      rows.push('<div class="row"><span class="sw '+t+'"></span><span><b>'+t+'</b> · '+
+        gs.map(function(sd){ return esc(sd.id); }).join(' + ')+'</span></div>');
+    });
+    if(d.external && d.external.length)
+      rows.push('<div class="row"><span class="sw external"></span><span><b>external</b> · '+
+        d.external.length+' · fora da água territorial</span></div>');
+  });
+  document.getElementById('terrList').innerHTML = rows.join('');
+}
+
+function seg(id, key, fn){
+  var el = document.getElementById(id);
+  el.addEventListener('click', function(ev){
+    var b = ev.target.closest('button');
+    if(!b) return;
+    Array.prototype.forEach.call(el.querySelectorAll('button'), function(x){
+      x.setAttribute('aria-pressed', String(x===b));
+    });
+    if(key) state[key] = b.getAttribute('data-v');
+    if(fn) fn(b.getAttribute('data-v')); else render();
+  });
+}
+seg('segModel','model',function(v){ state.model=v; state.sel=null; state.selSub=null; render(); });
+seg('segEdge','edge');
+seg('segTags','tags');
+seg('segLabels','labels');
+seg('segSub','sub');
+seg('segTheme',null,function(v){
+  if(v==='auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', v);
+});
+
+render();
+})();
+</script>

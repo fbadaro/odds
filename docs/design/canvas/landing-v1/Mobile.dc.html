@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --c-bg: 248 248 246; --c-panel: 255 255 255; --c-panel2: 242 242 238;
+      --c-border: 230 230 225; --c-ink: 27 27 25; --c-dim: 110 110 103;
+      --c-accent: 43 76 140; --c-accent-lift: 60 107 196; --c-pulse: 15 124 138;
+      --c-error: 192 52 43; --c-warning: 166 106 0; --c-info: 91 107 124;
+    }
+    body { margin: 0; font-family: "Inter", "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: rgb(var(--c-accent)); } a:hover { color: rgb(var(--c-accent-lift)); }
+    .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+    .eyebrow { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: .22em; color: rgb(var(--c-dim)); }
+    .card { border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 16px; padding: 20px; box-shadow: 0 18px 44px -22px rgb(var(--c-accent) / .28); }
+    .grid-bg { background-image: linear-gradient(rgb(var(--c-accent) / .07) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--c-accent) / .07) 1px, transparent 1px); background-size: 28px 28px; }
+    .chip { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 11px; border-radius: 6px; padding: 2px 6px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); border-radius: 999px; padding: 6px 14px; font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12px; color: rgb(var(--c-dim)); }
+  </style>
+</helmet>
+
+<div style="width: 390px; background: rgb(var(--c-bg)); color: rgb(var(--c-ink));">
+
+  <div style="height: 60px; border-bottom: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); display: flex; align-items: center; padding: 0 20px; gap: 12px;">
+    <span class="mono" style="font-size: 16px; font-weight: 500; letter-spacing: -.03em;">odds</span>
+    <span style="flex-grow: 1;"></span>
+    <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: rgb(var(--c-dim));">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </div>
+  </div>
+
+  <div class="grid-bg" style="padding: 44px 20px 40px;">
+    <span class="eyebrow">Desenho estratégico de DDD, em texto</span>
+    <h1 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 38px; font-weight: 700; line-height: 1.06; letter-spacing: -.025em; margin: 16px 0 0;">
+      O seu context map, escrito — e
+      <span style="background: linear-gradient(90deg, rgb(var(--c-accent)), rgb(var(--c-pulse))); -webkit-background-clip: text; background-clip: text; color: transparent;">julgado</span>.
+    </h1>
+    <p style="font-size: 16px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 18px 0 0;">Uma linguagem declarativa para domínios, subdomínios e bounded contexts — que vira diagrama enquanto você digita e passa por 35 regras de desenho estratégico.</p>
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 26px;">
+      <span style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 12px; font-size: 15px; font-weight: 600; color: #FFFFFF; background: linear-gradient(180deg, rgb(var(--c-accent-lift)), rgb(var(--c-accent))); box-shadow: 0 10px 30px -8px rgb(var(--c-accent) / .55);">Abrir o playground
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13"/><path d="M12 5l7 7-7 7"/></svg>
+      </span>
+      <span style="display: flex; align-items: center; justify-content: center; height: 48px; border-radius: 12px; font-size: 15px; font-weight: 600; background: rgb(var(--c-panel)); border: 1px solid rgb(var(--c-border));">Ler a gramática</span>
+    </div>
+    <p class="mono" style="font-size: 11.5px; color: rgb(var(--c-dim)); margin-top: 18px; line-height: 1.6;">sem conta · sem servidor · nada do que você escreve sai do navegador</p>
+  </div>
+
+  <div style="padding: 0 20px 40px;">
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-bottom: 1px solid rgb(var(--c-border));">
+        <span class="mono" style="font-size: 12px; color: rgb(var(--c-dim));">vendas.odds</span>
+      </div>
+      <div class="mono" style="font-size: 12px; line-height: 21px; padding: 12px 14px;">
+        <div><span style="color: rgb(var(--c-accent)); font-weight: 500;">domain</span> Vendas <span style="color: rgb(var(--c-dim));">{</span></div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">subdomain core</span> Checkout <span style="color: rgb(var(--c-dim));">{</span></div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">context</span> Pagamento</div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-dim));">}</span></div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-accent)); font-weight: 500;">mapping</span> <span style="color: rgb(var(--c-dim));">{</span></div>
+        <div style="background: rgb(var(--c-warning) / .07); margin: 0 -14px; padding: 0 14px;">&nbsp;&nbsp;&nbsp;&nbsp;Pagamento <span style="background: rgb(var(--c-panel2)); border-radius: 3px; padding: 0 3px;">[CF]</span> &lt;-- ERPLegado</div>
+        <div>&nbsp;&nbsp;<span style="color: rgb(var(--c-dim));">}</span></div>
+        <div><span style="color: rgb(var(--c-dim));">}</span></div>
+      </div>
+      <div style="border-top: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel2) / .5); padding: 12px 14px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgb(166 106 0)" stroke-width="2.2" stroke-linejoin="round"><path d="M12 4l9 16H3z"/></svg>
+          <span class="chip" style="color: rgb(122 78 0); background: rgb(var(--c-warning) / .1);">CONFORMIST_CORE</span>
+          <span class="mono" style="font-size: 11px; color: rgb(var(--c-dim)); margin-left: auto;">L6:15</span>
+        </div>
+        <p style="font-size: 13px; line-height: 1.5; margin: 8px 0 0;">Risco estratégico: o contexto de Core Domain <span class="mono" style="font-size: 12px;">Pagamento</span> está se conformando ao modelo de outro sistema.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 40px 20px; border-top: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel));">
+    <span class="eyebrow">Três severidades</span>
+    <h2 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 27px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; margin: 12px 0 0;">Nenhuma delas apaga o seu diagrama.</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 22px;">
+      <div style="display: flex; align-items: center; gap: 10px; border: 1px solid rgb(var(--c-border)); border-radius: 12px; padding: 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(192 52 43)" stroke-width="2.2" stroke-linecap="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+        <div><span style="font-size: 14px; font-weight: 600;">error</span><p style="font-size: 13px; color: rgb(var(--c-dim)); margin: 3px 0 0;">o modelo se contradiz</p></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; border: 1px solid rgb(var(--c-border)); border-radius: 12px; padding: 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(166 106 0)" stroke-width="2.2" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 4l9 16H3z"/></svg>
+        <div><span style="font-size: 14px; font-weight: 600;">warning</span><p style="font-size: 13px; color: rgb(var(--c-dim)); margin: 3px 0 0;">o desenho é arriscado</p></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; border: 1px solid rgb(var(--c-border)); border-radius: 12px; padding: 14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgb(91 107 124)" stroke-width="2.2" style="flex-shrink: 0;"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01" stroke-linecap="round"/></svg>
+        <div><span style="font-size: 14px; font-weight: 600;">info</span><p style="font-size: 13px; color: rgb(var(--c-dim)); margin: 3px 0 0;">higiene do mapa</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 40px 20px;">
+    <span class="eyebrow">Nove tags</span>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">
+      <span class="pill">OHS</span><span class="pill">PL</span><span class="pill">S</span><span class="pill">ACL</span><span class="pill">CF</span><span class="pill">C</span><span class="pill">SK</span><span class="pill">P</span>
+      <span class="pill" style="border-color: rgb(var(--c-accent) / .35); color: rgb(var(--c-accent));">BBM</span>
+    </div>
+    <p style="font-size: 14px; line-height: 1.6; color: rgb(var(--c-dim)); margin: 16px 0 0;">Oito têm posição obrigatória. A nona caracteriza o sistema, não o contrato — e é a única sem regra de posição.</p>
+  </div>
+
+  <div class="grid-bg" style="padding: 44px 20px; border-top: 1px solid rgb(var(--c-border)); text-align: center;">
+    <h2 style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -.025em; line-height: 1.12; margin: 0;">Escreva quatro linhas e veja o que elas dizem de você.</h2>
+    <span style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 12px; font-size: 15px; font-weight: 600; color: #FFFFFF; background: linear-gradient(180deg, rgb(var(--c-accent-lift)), rgb(var(--c-accent))); box-shadow: 0 10px 30px -8px rgb(var(--c-accent) / .55); margin-top: 24px;">Abrir o playground</span>
+  </div>
+
+  <div style="border-top: 1px solid rgb(var(--c-border)); background: rgb(var(--c-panel)); padding: 24px 20px; display: flex; align-items: center; gap: 12px;">
+    <span class="mono" style="font-size: 14px; font-weight: 500; letter-spacing: -.03em;">odds</span>
+    <span style="font-size: 12px; color: rgb(var(--c-dim));">Open Domain Driven Specification</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
