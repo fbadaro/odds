@@ -58,3 +58,8 @@ __pycache__/
 #                          são versionadas normalmente.
 docs/design/canvas/**/*.html
 !docs/design/canvas/**/*.dc.html
+
+# Design systems de referência (ex.: stripe-DESIGN.md) ficam só na máquina. O único
+# DESIGN.md versionado é o da raiz, a fonte única do sistema visual (ADR-0013).
+*DESIGN.md
+!/DESIGN.md

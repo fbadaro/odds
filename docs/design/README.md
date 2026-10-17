@@ -109,7 +109,7 @@ Um por rodada, e cada um tem uma função. **A base nunca é alterada por uma pr
 
 **Um detalhe operacional que custou caro:** o `h` de um artboard é moldura, não escala — o que passa dele é **cortado**, sem aviso. A v3 declarava `3840` e escondia o rodapé inteiro, que só aparecia no preview. Alturas agora nascem folgadas: sobra de moldura só pinta fundo, falta apaga conteúdo.
 
-O sistema visual está no **`DESIGN.md`** da raiz, junto da procedência dele: o que foi tomado da referência (método) e o que não foi (identidade).
+O sistema visual está no **`DESIGN.md`** da raiz, em inglês e no formato `design.md`: desde 2026-10-17 é a fonte única de toda interface, site e playground (`ADR-0013`). As páginas desta pasta ainda não o seguem e serão ajustadas a ele; a procedência do sistema (o que foi tomado da referência e o que não foi) ficou registrada no ADR.
 
 ## Páginas autônomas
 
@@ -145,7 +145,7 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] Rodada de herói (2026-09-09): cinco candidatas na bancada — B (o mapa que não pisca), C (seis portões), D (a lama tem nome), E (o mapa responde) e F (E no formato do herói)
 - [x] Estudo de render do Context Map, com a ressalva do `ADR-0007` escrita na página
 - [x] Landing v5: a v4 com o herói da opção F
-- [ ] Escolher entre as cinco candidatas — e, se for E ou F, subir para o `DESIGN.md` §4.2 a exceção da tag sobre a aresta, fechando com o `CHANGELOG.md`
+- [ ] Escolher entre as cinco candidatas — e, se for E ou F, registrar no `DESIGN.md` (seção Components) a exceção da tag sobre a aresta, fechando com o `CHANGELOG.md`
 - [ ] Decidir a face de display: Montserrat (aplicada) ou Space Grotesk — quadro de comparação no canvas da v3
 - [ ] Escolher a marca — a v4 tirou o cubo provisório e ficou só com o wordmark até haver decisão
 - [x] Apagar o playground estilizado, do repositório e do artifact (2026-09-11) — a base é o ponto de partida
