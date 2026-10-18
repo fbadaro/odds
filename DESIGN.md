@@ -30,6 +30,7 @@ colors:
   azure-dark: "#7DA3FF"
   pulse-dark: "#5ED0EE"
   solar-dark: "#FFD163"
+  on-accent-dark: "#12111A"
   error-dark: "#E0796F"
   warning-dark: "#D9A441"
   info-dark: "#93A3B3"
@@ -113,7 +114,7 @@ rounded:
   chip: 6px
   control: 8px
   button: 12px
-  card: 16px
+  card: 10px
   pill: 999px
 
 spacing:
@@ -131,6 +132,12 @@ spacing:
 
 components:
   button-primary:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.on-accent}"
+    typography: "{typography.button}"
+    rounded: "{rounded.button}"
+    padding: 12px 24px
+  button-primary-gradient:
     backgroundColor: "{colors.accent}"
     textColor: "{colors.on-accent}"
     typography: "{typography.button}"
@@ -262,7 +269,7 @@ All colors are implemented as CSS custom properties holding **RGB triplets**, co
 
 ### Brand & Accent
 - **Accent** (`{colors.accent}` — `#6C40D9`, CSS `--c-accent`): Action and selection. Primary button fill, selected state, focus ring, inline links.
-- **Accent Lift** (`{colors.accent-lift}` — `#8A5BF0`, CSS `--c-accent-lift`): Top stop of the primary button's vertical gradient; link hover.
+- **Accent Lift** (`{colors.accent-lift}` — `#8A5BF0`, CSS `--c-accent-lift`): Top stop of `button-primary-gradient`'s vertical gradient; link hover.
 - **Azure** (`{colors.azure}` — `#3D6FE8`, CSS `--c-azure`): The far stop of the purple → azure gradient. Not used as a standalone color.
 - **Pulse** (`{colors.pulse}` — `#23A8CD`, CSS `--c-pulse`): Secondary accent, used sparingly.
 - **Solar** (`{colors.solar}` — `#FFC53D`, CSS `--c-solar`): Third brand color. Surface only — blocks, bands, numeral grounds.
@@ -276,7 +283,7 @@ All colors are implemented as CSS custom properties holding **RGB triplets**, co
 ### Text
 - **Ink** (`{colors.ink}` — `#1B1A24`, CSS `--c-ink`): Primary text; also the text color on solar surfaces.
 - **Ink Mute** (`{colors.ink-mute}` — `#6B6880`, CSS `--c-dim`): Secondary text, eyebrows, metadata, spans.
-- **On Accent** (`{colors.on-accent}` — `#FFFFFF`): Text on the primary button.
+- **On Accent** (`{colors.on-accent}` — `#FFFFFF`; dark `{colors.on-accent-dark}` — `#12111A`): Text on the primary button. The accent lightens in the dark theme, so white on it stops reading; the dark value is the dark canvas.
 
 ### Semantic
 Severity is the product's verdict, and it has its own three colors. Each is always paired with its icon.
@@ -392,7 +399,7 @@ Shadows never take a functional color: an element with an error gets a marker, n
 | `{rounded.chip}` | 6px | Code chip, tag chip `[OHS]` |
 | `{rounded.control}` | 8px | Dense controls: segmented control, icon button, rail squares |
 | `{rounded.button}` | 12px | Buttons and tall fields |
-| `{rounded.card}` | 16px | Cards, large panels, playground islands |
+| `{rounded.card}` | 10px | Cards, large panels, playground islands |
 | `{rounded.pill}` | 999px | Pills, severity counters, badges |
 
 ### Borders
@@ -403,8 +410,11 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 ### Buttons
 
 **`button-primary`** — the main call to action.
-- Vertical gradient `{colors.accent-lift}` → `{colors.accent}`, text `{colors.on-accent}` in `{typography.button}`, padding 12px 24px, rounded `{rounded.button}`, shadow `--sh-cta`.
+- Solid `{colors.accent}`, text `{colors.on-accent}` in `{typography.button}`, padding 12px 24px, rounded `{rounded.button}`, shadow `--sh-cta`.
 - Hover: `filter: brightness(1.08)`.
+
+**`button-primary-gradient`** — the same button, opted into the gradient (CSS: `.primary.gradient`).
+- Replaces only the background: vertical gradient `{colors.accent-lift}` → `{colors.accent}`. The stops are tokens, so each theme draws its own gradient. Counts toward the gradient's twice-per-screen limit; everything else is `button-primary`.
 
 **`button-secondary`** — the alternative action.
 - Background `{colors.surface}`, 1px `{colors.hairline}` border, text `{colors.ink}` in `{typography.button}`, same geometry, shadow `--sh-sm`.
@@ -468,7 +478,7 @@ Everything stops under `prefers-reduced-motion: reduce`, including blob drift (t
 ### Don't
 - Don't use the accent to communicate severity — a purple button inside an error row is still a button.
 - Don't let severity depend on color alone; exports in grayscale and color-blind readers are real, and the export carries the markers.
-- Don't use the gradient more than twice per screen (primary button, one hero expression), and never across reading text.
+- Don't use the gradient more than twice per screen (a `button-primary-gradient`, one hero expression), and never across reading text.
 - Don't use `{colors.solar}` as text, highlight, underline, or behind small text — and never at chip scale next to a diagnostic, where it reads as a warning.
 - Don't add 2px borders; emphasize with fill, text color or shadow.
 - Don't give shadows a functional color.

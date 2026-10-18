@@ -109,7 +109,7 @@ Um por rodada, e cada um tem uma função. **A base nunca é alterada por uma pr
 
 **Um detalhe operacional que custou caro:** o `h` de um artboard é moldura, não escala — o que passa dele é **cortado**, sem aviso. A v3 declarava `3840` e escondia o rodapé inteiro, que só aparecia no preview. Alturas agora nascem folgadas: sobra de moldura só pinta fundo, falta apaga conteúdo.
 
-O sistema visual está no **`DESIGN.md`** da raiz, em inglês e no formato `design.md`: desde 2026-10-17 é a fonte única de toda interface, site e playground (`ADR-0013`). As páginas desta pasta ainda não o seguem e serão ajustadas a ele; a procedência do sistema (o que foi tomado da referência e o que não foi) ficou registrada no ADR.
+O sistema visual está no **`DESIGN.md`** da raiz, em inglês e no formato `design.md`: desde 2026-10-17 é a fonte única de toda interface, site e playground (`ADR-0013`). O `pages/playground.html` o segue desde 2026-10-17 (fontes, paleta, raios, sombras, escala de tipo, severidade sempre com ícone); as demais páginas desta pasta ainda não, e serão ajustadas a ele; a procedência do sistema (o que foi tomado da referência e o que não foi) ficou registrada no ADR.
 
 ## Páginas autônomas
 
