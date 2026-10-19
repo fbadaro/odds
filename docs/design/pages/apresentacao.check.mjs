@@ -104,6 +104,13 @@ for (const [code, text] of DEMO) {
   if (got !== code) fail(`demo: esperava ${code || "limpo"}, o validador deu ${got || "limpo"}`);
   if (code && !notesDemo.includes(code)) fail(`demo-ida: as notas não citam ${code}`);
 }
+// o "L73" da nota é onde o apresentador põe o cursor: tem de ser a linha do arquivo
+const solto = (s) => s.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/\s+/g, " ").trim();
+const linhas = pag.split("\n").map(solto);
+for (const [, n, trecho] of notesDemo.matchAll(/<td>L(\d+)<\/td><td>(?:<b>[^<]*<\/b>\s*)?<code>([^<]*)<\/code>/g)) {
+  const achada = linhas.indexOf(solto(trecho)) + 1;
+  if (achada !== Number(n)) fail(`demo-ida: a nota diz L${n} para «${solto(trecho)}», o arquivo tem na linha ${achada || "nenhuma"}`);
+}
 
 if (failures.length) {
   for (const f of failures) console.error("FALHA  " + f);

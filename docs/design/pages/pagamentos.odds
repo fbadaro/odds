@@ -4,66 +4,139 @@ domain Payments {
   subdomain core Initiation {
     title: "Iniciação de pagamento"
     description: "Receber a intenção de pagar e transformá-la numa ordem"
+    owner: "Diretoria de Pagamentos"
     context PaymentInitiation {
+      title: "Iniciação"
+      type: "process"
       description: "BIAN Payment Initiation: captura e valida o pedido de pagamento do cliente"
+      responsibilities: ["Receber o pedido pelos canais", "Validar beneficiário e limite", "Gerar a ordem com idempotência"]
+      maturity: mature
+      team: "Squad Iniciação"
+      technology: "Java, Spring Boot, PostgreSQL"
     }
     context PaymentOrder {
+      title: "Ordem de pagamento"
+      type: "aggregate"
       description: "BIAN Payment Order: a ordem de pagamento, do aceite à entrega para execução"
+      responsibilities: ["Manter o ciclo de vida da ordem", "Agendar e recorrer", "Cancelar antes da execução"]
+      maturity: mature
+      team: "Squad Iniciação"
+      technology: "Java, Kafka, PostgreSQL"
     }
   }
 
   subdomain core Fraud {
     title: "Fraude"
     description: "Decidir, antes de o dinheiro sair, se o pagamento é legítimo"
+    owner: "Diretoria de Prevenção a Fraudes"
     context FraudEvaluation {
+      title: "Avaliação de fraude"
+      type: "policy"
       description: "BIAN Fraud Evaluation: o veredito de risco de cada transação"
+      responsibilities: ["Pontuar o risco em tempo real", "Aplicar regras e modelos", "Responder aprovar, desafiar ou negar"]
+      maturity: growing
+      team: "Squad Risco Transacional"
+      technology: "Python, modelos de ML, Redis"
     }
     context FraudDiagnosis {
+      title: "Diagnóstico de fraude"
+      type: "process"
       description: "BIAN Fraud Diagnosis: a investigação dos casos suspeitos"
+      responsibilities: ["Abrir o caso suspeito", "Investigar com o analista", "Devolver o rótulo para o modelo"]
+      maturity: experimental
+      team: "Squad Investigação"
+      technology: "Kotlin, Camunda, Elasticsearch"
     }
   }
 
   subdomain supporting Settlement {
     title: "Liquidação"
     description: "Fazer o dinheiro chegar ao destino pelos trilhos certos"
+    owner: "Diretoria de Operações"
     context PaymentExecution {
+      title: "Execução"
+      type: "process"
       description: "BIAN Payment Execution: executa a ordem e escolhe o trilho"
+      responsibilities: ["Escolher o trilho de cada ordem", "Debitar e creditar as posições", "Tratar devolução e estorno"]
+      maturity: mature
+      team: "Squad Liquidação"
+      technology: "Java, Kafka, Oracle"
     }
     context PaymentRailOperations {
+      title: "Trilhos de pagamento"
+      type: "gateway"
       description: "BIAN Payment Rail Operations: a operação dos trilhos de pagamento"
+      responsibilities: ["Traduzir para o formato de cada trilho", "Acompanhar a janela de cada trilho", "Conciliar o retorno do trilho"]
+      maturity: growing
+      team: "Squad Trilhos"
+      technology: "Go, ISO 20022, ISO 8583"
     }
     context ACHOperations {
+      title: "Compensação em lote"
+      type: "process"
       description: "BIAN ACH Operations: a compensação em lote"
+      responsibilities: ["Montar o arquivo de remessa", "Processar o retorno do lote", "Reapresentar o que foi rejeitado"]
+      maturity: legacy
+      team: "Operações Batch"
+      technology: "COBOL, JCL, mainframe"
     }
   }
 
   subdomain supporting Accounts {
     title: "Posição e contas"
     description: "Saber quanto cada conta tem, a cada lançamento"
+    owner: "Diretoria de Contas"
     context PositionKeeping {
+      title: "Posição"
+      type: "aggregate"
       description: "BIAN Position Keeping: o registro das posições e lançamentos"
+      responsibilities: ["Registrar cada lançamento", "Calcular o saldo disponível", "Bloquear e desbloquear valores"]
+      maturity: mature
+      team: "Squad Ledger"
+      technology: "Java, DB2"
     }
     context CurrentAccount {
+      title: "Conta corrente"
+      type: "aggregate"
       description: "BIAN Current Account: a conta corrente do cliente"
+      responsibilities: ["Manter o contrato da conta", "Aplicar tarifas e limites", "Emitir o extrato"]
+      maturity: legacy
+      team: "Squad Contas"
+      technology: "COBOL, CICS, DB2"
     }
   }
 
   subdomain generic Authentication {
     title: "Autenticação"
     description: "Provar quem está pedindo"
+    owner: "Segurança da Informação"
     context PartyAuthentication {
+      title: "Autenticação"
+      type: "service"
       description: "BIAN Party Authentication: autentica a parte que inicia o pagamento"
+      responsibilities: ["Autenticar o cliente no canal", "Exigir o segundo fator", "Emitir o token da sessão"]
+      maturity: mature
+      team: "Squad Identidade"
+      technology: "Keycloak, OIDC, FIDO2"
     }
   }
 
   external {
     context SPI {
       title: "SPI (Pix)"
+      type: "gateway"
       description: "Sistema de Pagamentos Instantâneos do Banco Central"
+      responsibilities: ["Liquidar o Pix em tempo real", "Devolver a confirmação ao participante"]
+      maturity: mature
+      technology: "ISO 20022, RSFN"
     }
     context CardNetwork {
       title: "Bandeira de cartão"
+      type: "gateway"
       description: "A rede da bandeira, com as regras dela"
+      responsibilities: ["Autorizar a transação", "Liquidar com o emissor"]
+      maturity: mature
+      technology: "ISO 8583"
     }
   }
 

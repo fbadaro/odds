@@ -484,12 +484,12 @@ body.notes #notesPane{display:block}
   <a class="btn in" href="playground.html?modelo=pagamentos" target="_blank" rel="noopener">Abrir pagamentos.odds →</a>
   <aside class="notes">
     <p><b>Abrir:</b> o botão abre o playground numa aba nova, já com <code>pagamentos.odds</code>. Para voltar, clicar na aba desta apresentação (ou Ctrl+Tab; no Mac, Cmd+Option+←); ela continua no mesmo slide. Se a tela cheia sair, F de novo. A janela de notas (tecla P) segue aberta durante a demo, com este roteiro.</p>
-    <p><b>Roteiro</b> — uma edição por vez, sempre desfeita (Cmd/Ctrl+Z) antes da próxima. Conferido contra o validador.</p>
+    <p><b>Roteiro</b> — uma edição por vez, sempre desfeita (Cmd/Ctrl+Z) antes da próxima. Conferido contra o validador. O <code>mapping</code> fica no fim do arquivo (Cmd+↓ no Mac, Ctrl+End no Windows), depois das fichas dos contextos.</p>
     <table>
       <tr><th>Linha</th><th>Edição</th><th>Diagnóstico</th></tr>
-      <tr><td>L73</td><td><code>FraudEvaluation [OHS] --&gt; [ACL] PaymentOrder</code>: trocar <code>[ACL]</code> por <code>[CF]</code></td><td>warning <code>CONFORMIST_CORE</code>: um core que se conforma</td></tr>
-      <tr><td>L71</td><td><code>PartyAuthentication [OHS, PL] --&gt; PaymentInitiation</code>: trocar por <code>[S] --&gt; [C]</code></td><td>warning <code>GENERIC_WITHOUT_OHS</code>: genérico sem serviço aberto</td></tr>
-      <tr><td>L80</td><td><b>(60 min)</b> <code>SPI [OHS, PL] --&gt; [ACL] PaymentRailOperations</code>: trocar por <code>SPI [ACL] --&gt; PaymentRailOperations</code></td><td>error <code>DOWNSTREAM_ONLY_TAG_MISPLACED</code>: ACL do lado errado</td></tr>
+      <tr><td>L146</td><td><code>FraudEvaluation [OHS] --&gt; [ACL] PaymentOrder</code>: trocar <code>[ACL]</code> por <code>[CF]</code></td><td>warning <code>CONFORMIST_CORE</code>: um core que se conforma</td></tr>
+      <tr><td>L144</td><td><code>PartyAuthentication [OHS, PL] --&gt; PaymentInitiation</code>: trocar por <code>[S] --&gt; [C]</code></td><td>warning <code>GENERIC_WITHOUT_OHS</code>: genérico sem serviço aberto</td></tr>
+      <tr><td>L153</td><td><b>(60 min)</b> <code>SPI [OHS, PL] --&gt; [ACL] PaymentRailOperations</code>: trocar por <code>SPI [ACL] --&gt; PaymentRailOperations</code></td><td>error <code>DOWNSTREAM_ONLY_TAG_MISPLACED</code>: ACL do lado errado</td></tr>
     </table>
     <p><b>30 min:</b> o mapa, a troca Fluxo ↔ Contenção, clicar num contexto para a ficha, e as duas primeiras edições.</p>
     <p><b>60 min, além disso:</b> a terceira edição, e construir do zero — antes de <code>external {</code>, escrever <code>subdomain supporting Reconciliation {</code> / <code>context AccountReconciliation</code> / <code>}</code>: aparece info <code>UNMAPPED_CONTEXT</code>. Depois, no <code>mapping</code>, <code>PositionKeeping [OHS] --&gt; AccountReconciliation</code>: o diagnóstico some.</p>
