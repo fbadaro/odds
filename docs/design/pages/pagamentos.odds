@@ -121,7 +121,30 @@ domain Payments {
     }
   }
 
+  subdomain generic Calendar {
+    title: "Calendário"
+    description: "Saber se hoje é dia útil, e até que horas"
+    owner: "Diretoria de Operações"
+    context BusinessCalendar {
+      title: "Dias úteis"
+      type: "service"
+      description: "Feriados nacionais e locais, e a janela de cada trilho"
+      responsibilities: ["Dizer se a data é dia útil", "Publicar a janela de cada trilho", "Antecipar o feriado na grade"]
+      maturity: mature
+      team: "Squad Plataforma"
+      technology: "Go, PostgreSQL"
+    }
+  }
+
   external {
+    context DICT {
+      title: "DICT (chaves Pix)"
+      type: "gateway"
+      description: "Diretório de Identificadores de Contas Transacionais do Banco Central"
+      responsibilities: ["Resolver a chave Pix na conta de destino", "Registrar e portar chaves"]
+      maturity: mature
+      technology: "API REST do Banco Central, RSFN"
+    }
     context SPI {
       title: "SPI (Pix)"
       type: "gateway"
@@ -153,5 +176,7 @@ domain Payments {
     SPI                 [OHS, PL] --> [ACL] PaymentRailOperations
     CardNetwork         [OHS, PL] --> [CF] PaymentRailOperations
     ACHOperations       -x-                CardNetwork
+    BusinessCalendar    [OHS]     --> [ACL] PaymentOrder
+    DICT                [OHS, PL] --> [ACL] PaymentInitiation
   }
 }

@@ -480,18 +480,29 @@ body.notes #notesPane{display:block}
 <section class="slide" data-id="demo-ida" data-min="10" data-min60="20">
   <div class="eyebrow in">Demo</div>
   <h2 class="h2 in">Agora no playground.</h2>
-  <p class="lead in">O recorte de Pagamentos: 12 contextos, cinco subdomínios, dois sistemas externos, validado limpo.</p>
+  <p class="lead in">O recorte de Pagamentos: 14 contextos, seis subdomínios, três sistemas externos. Ele abre com 4 erros e 3 avisos.</p>
   <a class="btn in" href="playground.html?modelo=pagamentos" target="_blank" rel="noopener">Abrir pagamentos.odds →</a>
   <aside class="notes">
     <p><b>Abrir:</b> o botão abre o playground numa aba nova, já com <code>pagamentos.odds</code>. Para voltar, clicar na aba desta apresentação (ou Ctrl+Tab; no Mac, Cmd+Option+←); ela continua no mesmo slide. Se a tela cheia sair, F de novo. A janela de notas (tecla P) segue aberta durante a demo, com este roteiro.</p>
-    <p><b>Roteiro</b> — uma edição por vez, sempre desfeita (Cmd/Ctrl+Z) antes da próxima. Conferido contra o validador. O <code>mapping</code> fica no fim do arquivo (Cmd+↓ no Mac, Ctrl+End no Windows), depois das fichas dos contextos.</p>
+    <p><b>Ajuste ao vivo:</b> o recorte abre incoerente, com 4 erros e 3 avisos no rodapé. Mostrar um ou dois no mapa (o tracejado vermelho) e na lista. Depois clicar em <b>Tornar coerente</b>, no rodapé: em uns 30 segundos, cada falha é selecionada no código e reescrita, e o diagnóstico some; o canto de cima, à direita, diz o porquê de cada ajuste. No fim o botão vira <b>Recomeçar</b>, que volta ao incoerente, para ensaiar de novo. A ordem do ajuste:</p>
+    <ol>
+      <li>error <code>PHANTOM_REFERENCE</code>: o mapa citava <code>Ledger</code>, o nome antigo de <code>PositionKeeping</code></li>
+      <li>error <code>INCOMPLETE_MUTUAL_TAG</code>: <code>[SK]</code> declarado de um lado só</li>
+      <li>error <code>SEPARATION_CONFLICT</code>: <code>[ACL]</code> numa linha <code>-x-</code></li>
+      <li>error <code>UPSTREAM_ONLY_TAG_MISPLACED</code>: <code>[S]</code> do lado de quem recebe</li>
+      <li>warning <code>INCOMPLETE_CUSTOMER_SUPPLIER</code>: <code>[S]</code> sem o <code>[C]</code></li>
+      <li>warning <code>GENERIC_WITHOUT_OHS</code>: o Calendário, genérico, sem <code>[OHS]</code></li>
+      <li>warning <code>CONFORMIST_CORE</code>: a Iniciação, core, conformista com o DICT do Banco Central</li>
+    </ol>
+    <p>Os erros vêm antes porque um elemento com erro sai das fases seguintes: corrigido por último, ele revelaria um aviso novo no meio do ajuste.</p>
+    <p><b>Roteiro</b>, depois do ajuste, com o modelo já coerente — uma edição por vez, sempre desfeita (Cmd/Ctrl+Z) antes da próxima. Conferido contra o validador. O <code>mapping</code> fica no fim do arquivo (Cmd+↓ no Mac, Ctrl+End no Windows), depois das fichas dos contextos.</p>
     <table>
       <tr><th>Linha</th><th>Edição</th><th>Diagnóstico</th></tr>
-      <tr><td>L146</td><td><code>FraudEvaluation [OHS] --&gt; [ACL] PaymentOrder</code>: trocar <code>[ACL]</code> por <code>[CF]</code></td><td>warning <code>CONFORMIST_CORE</code>: um core que se conforma</td></tr>
-      <tr><td>L144</td><td><code>PartyAuthentication [OHS, PL] --&gt; PaymentInitiation</code>: trocar por <code>[S] --&gt; [C]</code></td><td>warning <code>GENERIC_WITHOUT_OHS</code>: genérico sem serviço aberto</td></tr>
-      <tr><td>L153</td><td><b>(60 min)</b> <code>SPI [OHS, PL] --&gt; [ACL] PaymentRailOperations</code>: trocar por <code>SPI [ACL] --&gt; PaymentRailOperations</code></td><td>error <code>DOWNSTREAM_ONLY_TAG_MISPLACED</code>: ACL do lado errado</td></tr>
+      <tr><td>L169</td><td><code>FraudEvaluation [OHS] --&gt; [ACL] PaymentOrder</code>: trocar <code>[ACL]</code> por <code>[CF]</code></td><td>warning <code>CONFORMIST_CORE</code>: um core que se conforma</td></tr>
+      <tr><td>L167</td><td><code>PartyAuthentication [OHS, PL] --&gt; PaymentInitiation</code>: trocar por <code>[S] --&gt; [C]</code></td><td>warning <code>GENERIC_WITHOUT_OHS</code>: genérico sem serviço aberto</td></tr>
+      <tr><td>L176</td><td><b>(60 min)</b> <code>SPI [OHS, PL] --&gt; [ACL] PaymentRailOperations</code>: trocar por <code>SPI [ACL] --&gt; PaymentRailOperations</code></td><td>error <code>DOWNSTREAM_ONLY_TAG_MISPLACED</code>: ACL do lado errado</td></tr>
     </table>
-    <p><b>30 min:</b> o mapa, a troca Fluxo ↔ Contenção, clicar num contexto para a ficha, e as duas primeiras edições.</p>
+    <p><b>30 min:</b> os diagnósticos do modelo incoerente, o ajuste ao vivo, a troca Fluxo ↔ Contenção, clicar num contexto para a ficha, e as duas primeiras edições.</p>
     <p><b>60 min, além disso:</b> a terceira edição, e construir do zero — antes de <code>external {</code>, escrever <code>subdomain supporting Reconciliation {</code> / <code>context AccountReconciliation</code> / <code>}</code>: aparece info <code>UNMAPPED_CONTEXT</code>. Depois, no <code>mapping</code>, <code>PositionKeeping [OHS] --&gt; AccountReconciliation</code>: o diagnóstico some.</p>
     <p><b>Não clicar em Compartilhar:</b> é um placeholder, o formato do link ainda está em aberto.</p>
   </aside>

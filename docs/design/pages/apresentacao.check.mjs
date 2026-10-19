@@ -15,6 +15,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { stamp } from "./colmeia-embed.mjs";
+import { AJUSTES } from "./pagamentos.ajustes.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../..");
@@ -104,6 +105,9 @@ for (const [code, text] of DEMO) {
   if (got !== code) fail(`demo: esperava ${code || "limpo"}, o validador deu ${got || "limpo"}`);
   if (code && !notesDemo.includes(code)) fail(`demo-ida: as notas não citam ${code}`);
 }
+// o playground abre o recorte incoerente: a nota tem de dizer o que o botão vai apagar
+if (!notesDemo.includes("Tornar coerente")) fail("demo-ida: as notas não falam do botão Tornar coerente");
+for (const a of AJUSTES) if (!notesDemo.includes(a.code)) fail(`demo-ida: as notas não citam ${a.code}, que o ajuste ao vivo apaga`);
 // o "L73" da nota é onde o apresentador põe o cursor: tem de ser a linha do arquivo
 const solto = (s) => s.replace(/&gt;/g, ">").replace(/&lt;/g, "<").replace(/\s+/g, " ").trim();
 const linhas = pag.split("\n").map(solto);
