@@ -53,6 +53,8 @@ body{background:rgb(var(--c-panel2)); color:rgb(var(--c-ink)); font-family:var(-
 .body{font:400 calc(16px * var(--k))/1.55 var(--f-sans)}
 .title{font:600 calc(20px * var(--k))/1.3 var(--f-sans); letter-spacing:-.01em}
 .mono{font-family:var(--f-mono)}
+/* sintaxe literal: sem ligaduras, --> é --> e não uma seta */
+.slide :is(.mono, code, .code, .codigo, svg text){font-variant-ligatures:none}
 code, .code{font:400 calc(13px * var(--k))/1.55 var(--f-mono)}
 .grad-text{background:var(--grad-hero); -webkit-background-clip:text; background-clip:text; color:transparent}
 
@@ -68,6 +70,85 @@ code, .code{font:400 calc(13px * var(--k))/1.55 var(--f-mono)}
   font:600 calc(16px * var(--k))/1 var(--f-sans); box-shadow:0 10px 30px -8px rgb(var(--c-accent) / calc(var(--shadow-strength) * 4))}
 .btn:focus-visible{outline:3px solid rgb(var(--c-accent) / .4); outline-offset:4px}
 
+/* cores de tipo de subdomínio: as do mapa do playground (fora do escopo do DESIGN.md, como o diagrama) */
+.slide{--t-core:var(--c-solar); --t-sup:var(--c-azure); --t-gen:var(--c-dim)}
+
+/* capa */
+.capa-grid{display:grid; grid-template-columns:1fr 420px; align-items:center; gap:64px}
+.capa-txt{display:flex; flex-direction:column; gap:28px}
+.capa-grid .hero{font-size:calc(62px * var(--k) * 1.5)}
+.autor{margin:0; font:500 calc(12px * var(--k))/1 var(--f-mono); color:rgb(var(--c-dim)); letter-spacing:.04em}
+.favo{width:420px; height:420px}
+.favo .hx polygon{stroke-width:2}
+.favo .core polygon{fill:rgb(var(--t-core) / .55); stroke:rgb(var(--t-core))}
+.favo .sup polygon{fill:rgb(var(--t-sup) / .22); stroke:rgb(var(--t-sup) / .7)}
+.favo .gen polygon{fill:rgb(var(--t-gen) / .16); stroke:rgb(var(--t-gen) / .6)}
+.favo .ext polygon{fill:rgb(var(--c-panel)); stroke:rgb(var(--t-gen) / .6); stroke-dasharray:6 5}
+
+/* o espaço da solução */
+.split{display:grid; grid-template-columns:880px 1fr; align-items:center; gap:56px}
+.pergunta-txt{display:flex; flex-direction:column; gap:28px}
+.pergunta-txt .h2{font-size:calc(38px * var(--k) * .82)}
+.pergunta-txt .lead{font-size:calc(16px * var(--k))}
+.sol{width:880px; height:500px; overflow:visible}
+.sol .nuvem rect{fill:rgb(var(--c-panel2) / .6); stroke:rgb(var(--c-border)); stroke-dasharray:8 6}
+.sol .nuvem text{font:500 13px var(--f-mono); fill:rgb(var(--c-dim)); letter-spacing:.08em}
+.sol .call{fill:none; stroke:rgb(var(--c-dim) / .7); stroke-width:1.5}
+.sol marker path{fill:rgb(var(--c-dim) / .8)}
+.sol .svc rect{fill:rgb(var(--c-panel)); stroke:rgb(var(--c-border)); stroke-width:1.5}
+.sol .svc text{font:500 16px var(--f-mono); fill:rgb(var(--c-ink)); text-anchor:middle}
+.sol .svc.ext rect{stroke-dasharray:6 5; stroke:rgb(var(--c-dim) / .6)}
+.sol .api-a rect:not(.halo){stroke:rgb(var(--c-accent)); stroke-width:2}
+.sol .api-a text{fill:rgb(var(--c-accent)); font-weight:500}
+.sol .api-a .halo{fill:rgb(var(--c-accent) / .1); stroke:none; transform-box:fill-box; transform-origin:center}
+
+/* dor */
+.duas{display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:8px}
+.tres{display:grid; grid-template-columns:1fr 1fr 1fr; gap:32px; margin-top:8px}
+.card-k{font:500 calc(11px * var(--k))/1 var(--f-mono); letter-spacing:.22em; text-transform:uppercase; color:rgb(var(--c-dim)); margin-bottom:20px}
+.card-acento{border-color:rgb(var(--c-accent) / .45)}
+.card-acento .card-k{color:rgb(var(--c-accent))}
+.lista{margin:0; padding-left:1.1em; font:400 calc(16px * var(--k))/1.6 var(--f-sans)}
+.card-pe{margin:20px 0 0; font:400 calc(13px * var(--k))/1.5 var(--f-sans); color:rgb(var(--c-dim))}
+.custos{list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:32px}
+.custos li{display:flex; gap:32px; align-items:flex-start}
+.custos .num{flex:none; width:72px; height:72px; border-radius:10px; background:rgb(var(--c-solar)); color:rgb(var(--c-ink));
+  display:grid; place-items:center; font:800 calc(24px * var(--k))/1 var(--f-display)}
+.custos .body{margin:6px 0 0; color:rgb(var(--c-dim))}
+
+/* texto que vira mapa */
+.tm{display:grid; grid-template-columns:1fr 560px; gap:48px; align-items:center}
+.codigo{margin:0; padding:28px 32px; white-space:pre; overflow:hidden}
+.codigo code{font-size:calc(13px * var(--k) * 1.05); font-variant-ligatures:none}
+.codigo .ln{display:inline-block; min-width:100%; border-radius:6px; transition:background .2s}
+.codigo .ln.aceso{background:rgb(var(--c-accent) / .08)}
+.codigo .kw{color:rgb(var(--c-accent))}
+.codigo .ty{color:rgb(var(--c-warning)); font-weight:500}
+.codigo .st{color:rgb(var(--c-dim))}
+.codigo .tg{color:rgb(var(--c-ink)); font-weight:500}
+.mini{width:560px; height:400px}
+.mini .reg{stroke-width:1.5}
+.mini .reg.core{fill:rgb(var(--t-core) / .14); stroke:rgb(var(--t-core) / .8)}
+.mini .reg-t{font:600 20px var(--f-sans); fill:rgb(var(--c-ink))}
+.mini .reg-k{font:500 13px var(--f-mono); fill:rgb(var(--c-dim)); letter-spacing:.12em; text-transform:uppercase}
+.mini .no{fill:rgb(var(--c-panel)); stroke:rgb(var(--c-border)); stroke-width:1.5}
+.mini .no.fora{stroke-dasharray:6 5}
+.mini .no-t{font:500 16px var(--f-mono); fill:rgb(var(--c-ink)); text-anchor:middle}
+.mini .rel{fill:none; stroke:rgb(var(--c-dim)); stroke-width:1.5}
+.mini marker path{fill:rgb(var(--c-dim))}
+.mini .chip-t{font:600 13px var(--f-mono); fill:rgb(var(--c-accent))}
+
+/* contratos */
+.defs{margin:0; display:grid; grid-template-columns:auto 1fr; gap:14px 20px; align-items:baseline;
+  font:400 calc(14px * var(--k))/1.4 var(--f-sans)}
+.defs dt{font-size:calc(13px * var(--k)); font-weight:500; color:rgb(var(--c-accent)); white-space:nowrap}
+.defs dd{margin:0}
+.sevs{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:16px; font:400 calc(14px * var(--k))/1.4 var(--f-sans)}
+.sevs li{display:flex; gap:14px; align-items:center}
+.sevs b{font-family:var(--f-mono); font-weight:500; margin-right:8px}
+.sv{flex:none; width:28px; height:28px; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.sv.err{stroke:rgb(var(--c-error))} .sv.warn{stroke:rgb(var(--c-warning))} .sv.info{stroke:rgb(var(--c-info))}
+
 /* fora do palco: contador e notas do apresentador */
 #counter{position:fixed; right:16px; bottom:12px; font:400 12px/1 var(--f-mono); color:rgb(var(--c-dim)); opacity:.7}
 #notesPane{position:fixed; left:16px; right:16px; bottom:36px; max-height:38vh; overflow:auto; display:none;
@@ -81,41 +162,184 @@ body.notes #notesPane{display:block}
 
 <main class="deck" aria-live="polite">
 
+<!-- O espaço da solução: o desenho que a plataforma já sabe fazer, com nomes genéricos.
+     Cada serviço corresponde a um contexto do recorte de Pagamentos (pagamentos.odds);
+     a API A é PaymentExecution. Clonado em todo .sol-host[data-tpl]. -->
+<template id="tpl-solucao">
+  <svg class="sol" viewBox="0 0 880 500" aria-label="Serviços em produção e quem chama quem">
+    <defs><marker id="ah-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
+    <g class="nuvem"><rect x="6" y="6" width="868" height="488" rx="12"/><text x="24" y="482">conta de nuvem · prod</text></g>
+    <g class="calls">
+      <path class="call" d="M240 98 H194" marker-end="url(#ah-s)"/>
+      <path class="call" d="M315 126 V226" marker-end="url(#ah-s)"/>
+      <path class="call" d="M390 250 H430 V98 H466" marker-end="url(#ah-s)"/>
+      <path class="call" d="M390 266 H466" marker-end="url(#ah-s)"/>
+      <path class="call" d="M620 258 H686" marker-end="url(#ah-s)"/>
+      <path class="call" d="M545 286 V396" marker-end="url(#ah-s)"/>
+      <path class="call" d="M510 286 V330 H315 V396" marker-end="url(#ah-s)"/>
+      <path class="call" d="M765 230 V130" marker-end="url(#ah-s)"/>
+    </g>
+    <g class="svc" data-svc="auth-svc" data-ctx="PartyAuthentication"><rect x="40" y="70" width="150" height="56" rx="8"/><text x="115" y="104">auth-svc</text></g>
+    <g class="svc" data-svc="payments-api" data-ctx="PaymentInitiation"><rect x="240" y="70" width="150" height="56" rx="8"/><text x="315" y="104">payments-api</text></g>
+    <g class="svc" data-svc="orders-svc" data-ctx="PaymentOrder"><rect x="240" y="230" width="150" height="56" rx="8"/><text x="315" y="264">orders-svc</text></g>
+    <g class="svc" data-svc="fraud-svc" data-ctx="FraudEvaluation"><rect x="470" y="70" width="150" height="56" rx="8"/><text x="545" y="104">fraud-svc</text></g>
+    <g class="svc api-a" data-svc="api-a" data-ctx="PaymentExecution"><rect class="halo" x="462" y="222" width="166" height="72" rx="12"/><rect x="470" y="230" width="150" height="56" rx="8"/><text x="545" y="264">API A</text></g>
+    <g class="svc" data-svc="rail-gateway" data-ctx="PaymentRailOperations"><rect x="690" y="230" width="150" height="56" rx="8"/><text x="765" y="264">rail-gateway</text></g>
+    <g class="svc" data-svc="ach-batch" data-ctx="ACHOperations"><rect x="470" y="400" width="150" height="56" rx="8"/><text x="545" y="434">ach-batch</text></g>
+    <g class="svc" data-svc="ledger-db" data-ctx="PositionKeeping"><rect x="240" y="400" width="150" height="56" rx="8"/><text x="315" y="434">ledger-db</text></g>
+    <g class="svc ext" data-svc="spi" data-ctx="SPI"><rect x="690" y="70" width="150" height="56" rx="8"/><text x="765" y="104">SPI (Pix)</text></g>
+  </svg>
+</template>
+
 <section class="slide" data-id="capa" data-min="0">
-  <div class="eyebrow in">Open Domain Driven Specification</div>
-  <h1 class="hero in"><span class="grad-text">ODDS</span></h1>
-  <p class="lead in">O espaço do problema, escrito, validado e versionado.</p>
-  <aside class="notes"><p>Abrir sem pressa. Uma frase: o que vou mostrar é uma iniciativa minha, e a pergunta no fim é se ela entra na plataforma.</p></aside>
+  <div class="capa-grid">
+    <div class="capa-txt">
+      <div class="eyebrow in">Open Domain Driven Specification</div>
+      <h1 class="hero in"><span class="grad-text">ODDS</span></h1>
+      <p class="lead in">O espaço do problema, escrito, validado e versionado.</p>
+      <p class="autor in">Fabio Badaro · iniciativa pessoal</p>
+    </div>
+    <svg class="favo" viewBox="0 0 420 420" aria-hidden="true">
+      <g class="hx core"><polygon points="210,40 262,70 262,130 210,160 158,130 158,70"/></g>
+      <g class="hx core"><polygon points="272,148 324,178 324,238 272,268 220,238 220,178"/></g>
+      <g class="hx sup"><polygon points="148,148 200,178 200,238 148,268 96,238 96,178"/></g>
+      <g class="hx sup"><polygon points="210,256 262,286 262,346 210,376 158,346 158,286"/></g>
+      <g class="hx gen"><polygon points="334,40 386,70 386,130 334,160 282,130 282,70"/></g>
+      <g class="hx ext"><polygon points="86,256 138,286 138,346 86,376 34,346 34,286"/></g>
+    </svg>
+  </div>
+  <aside class="notes">
+    <p>Abrir sem pressa. Duas frases: o que vou mostrar é uma iniciativa minha, não um produto; e a pergunta no fim é se ela pode fazer parte da plataforma interna.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="pergunta" data-min="2">
-  <div class="eyebrow in">A pergunta</div>
-  <h2 class="h2 in">Em que domínio e contexto este serviço está, e o que ele resolve?</h2>
-  <aside class="notes"><p>A história da "API A": sabemos que falamos com ela, não sabemos em que contexto ela vive.</p></aside>
+  <div class="split">
+    <div class="sol-host" data-tpl="tpl-solucao"></div>
+    <div class="pergunta-txt">
+      <div class="eyebrow in">A pergunta</div>
+      <h2 class="h2 ancora in">Em que domínio e contexto este serviço está, e o que ele resolve?</h2>
+      <p class="lead in">Os desenhos de produção mostram a API A e quem chama quem. Não respondem isso.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>Este é o tipo de desenho que temos: serviços, chamadas, uma conta de nuvem. Sabemos que falamos com a <b>API A</b>.</p>
+    <p>Pergunta para a sala: em que domínio ela está? É core para alguém, ou é genérica e substituível? Quem é upstream nessa relação? Ninguém responde olhando o desenho.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="dor-espacos" data-min="2">
   <div class="eyebrow in">A dor</div>
   <h2 class="h2 in">Os desenhos mostram a solução. O problema fica de fora.</h2>
-  <aside class="notes"><p>Espaço da solução × espaço do problema.</p></aside>
+  <div class="duas">
+    <div class="card in">
+      <div class="card-k mono">Espaço da solução</div>
+      <ul class="lista">
+        <li>serviços, APIs, filas, bancos</li>
+        <li>quem chama quem</li>
+        <li>o que está em produção</li>
+      </ul>
+      <p class="card-pe">É o que os desenhos mostram, e o que a plataforma já extrai sozinha.</p>
+    </div>
+    <div class="card card-acento in">
+      <div class="card-k mono">Espaço do problema</div>
+      <ul class="lista">
+        <li>o domínio e seus subdomínios</li>
+        <li>o que é <b>core</b>, <b>supporting</b> ou <b>generic</b></li>
+        <li>o contexto delimitado de cada serviço</li>
+        <li>a natureza de cada relação</li>
+      </ul>
+      <p class="card-pe">É o que o DDD traz, e o que ninguém desenha.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>O ponto central: o que falta não é mais um diagrama técnico. Os diagramas técnicos estão certos; eles só respondem outra pergunta.</p>
+    <p>O espaço do problema não se extrai de repositório nem de conta de nuvem: é intenção, e alguém precisa declarar.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="dor-custo" data-min="2">
   <div class="eyebrow in">A dor</div>
-  <h2 class="h2 in">O que se perde quando o entendimento fica na cabeça de poucos.</h2>
-  <aside class="notes"><p>Onboarding, decisões de integração, acoplamento que ninguém escolheu.</p></aside>
+  <h2 class="h2 in">Quando o entendimento fica na cabeça de poucos.</h2>
+  <ol class="custos">
+    <li class="in"><span class="num">1</span><div><div class="title">Onboarding</div><p class="body">Quem chega aprende os serviços, não o negócio que eles servem.</p></div></li>
+    <li class="in"><span class="num">2</span><div><div class="title">Decisões de integração</div><p class="body">Integrar com um serviço sem saber se ele é o core de outro time ou um genérico substituível.</p></div></li>
+    <li class="in"><span class="num">3</span><div><div class="title">Acoplamento que ninguém escolheu</div><p class="body">Relações nascem por conveniência e viram dependência sem contrato.</p></div></li>
+  </ol>
+  <aside class="notes">
+    <p>Numa corporação grande isso escala: o mapa mental está espalhado, desatualizado e some quando alguém sai.</p>
+    <p>Ter um exemplo próprio pronto para cada um dos três, de preferência um que a sala reconheça.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="odds-texto-mapa" data-min="2">
   <div class="eyebrow in">O ODDS</div>
   <h2 class="h2 in">Texto que vira mapa.</h2>
-  <aside class="notes"><p>Domínio → subdomínio → contexto.</p></aside>
+  <div class="tm">
+    <pre class="card codigo in"><code><span class="ln" data-k="sub"><span class="kw">subdomain</span> <span class="ty">core</span> Fraud {</span>
+<span class="ln" data-k="sub">  <span class="kw">title</span>: <span class="st">"Fraude"</span></span>
+<span class="ln" data-k="fe">  <span class="kw">context</span> FraudEvaluation</span>
+<span class="ln" data-k="fd">  <span class="kw">context</span> FraudDiagnosis</span>
+<span class="ln" data-k="sub">}</span>
+
+<span class="ln"><span class="kw">mapping</span> {</span>
+<span class="ln" data-k="r1">  FraudEvaluation <span class="tg">[OHS]</span> --> <span class="tg">[ACL]</span> PaymentOrder</span>
+<span class="ln" data-k="r2">  FraudEvaluation <span class="tg">[S]</span>   --> <span class="tg">[C]</span>   FraudDiagnosis</span>
+<span class="ln">}</span></code></pre>
+    <svg class="mini" viewBox="0 0 560 400" aria-label="O mesmo trecho como mapa">
+      <defs><marker id="ah-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
+      <g class="pc" data-k="sub"><rect class="reg core" x="20" y="40" width="300" height="320" rx="10"/><text class="reg-t" x="40" y="72">Fraude</text><text class="reg-k" x="40" y="94">core</text></g>
+      <g class="pc" data-k="fe"><rect class="no" x="60" y="130" width="220" height="56" rx="8"/><text class="no-t" x="170" y="164">FraudEvaluation</text></g>
+      <g class="pc" data-k="fd"><rect class="no" x="60" y="270" width="220" height="56" rx="8"/><text class="no-t" x="170" y="304">FraudDiagnosis</text></g>
+      <g class="pc" data-k="r1"><rect class="no fora" x="380" y="130" width="172" height="56" rx="8"/><text class="no-t" x="466" y="164">PaymentOrder</text>
+        <path class="rel" d="M280 158 H376" marker-end="url(#ah-m)"/><text class="chip-t" x="286" y="148">OHS</text><text class="chip-t" x="342" y="148">ACL</text></g>
+      <g class="pc" data-k="r2"><path class="rel" d="M170 186 V266" marker-end="url(#ah-m)"/><text class="chip-t" x="184" y="210">S</text><text class="chip-t" x="184" y="258">C</text></g>
+    </svg>
+  </div>
+  <p class="lead in">Domínio → subdomínio → contexto. Um arquivo por domínio, versionado ao lado do código.</p>
+  <aside class="notes">
+    <p>O trecho é do recorte de Pagamentos que vamos ver na demo. Cada linha do texto é uma peça do mapa.</p>
+    <p>A classificação <code>core</code> e as tags <code>[OHS]</code>/<code>[ACL]</code> são decisões declaradas, não deduzidas.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="odds-contratos" data-min="2">
   <div class="eyebrow in">O ODDS</div>
   <h2 class="h2 in">Relações são contratos, e contratos se validam.</h2>
-  <aside class="notes"><p>Conectores, tags, três severidades, 100% local.</p></aside>
+  <div class="tres">
+    <div class="card in">
+      <div class="card-k mono">Conectores</div>
+      <dl class="defs">
+        <dt class="mono">--&gt;</dt><dd>upstream → downstream</dd>
+        <dt class="mono">&lt;--</dt><dd>downstream ← upstream</dd>
+        <dt class="mono">&lt;-&gt;</dt><dd>mutuamente dependentes</dd>
+        <dt class="mono">-x-</dt><dd>caminhos separados</dd>
+      </dl>
+    </div>
+    <div class="card in">
+      <div class="card-k mono">Tags têm lado</div>
+      <dl class="defs">
+        <dt class="mono">OHS PL S</dt><dd>só no upstream</dd>
+        <dt class="mono">ACL CF C</dt><dd>só no downstream</dd>
+        <dt class="mono">SK P</dt><dd>só em <span class="mono">&lt;-&gt;</span>, dos dois lados</dd>
+        <dt class="mono">BBM</dt><dd>descreve o sistema, vale em qualquer lado</dd>
+      </dl>
+    </div>
+    <div class="card in">
+      <div class="card-k mono">Três severidades</div>
+      <ul class="sevs">
+        <li><svg viewBox="-8 -8 16 16" class="sv err" aria-hidden="true"><circle r="7"/><path d="M-3 -3L3 3M3 -3L-3 3"/></svg><span><b>error</b> o modelo é incoerente</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="sv warn" aria-hidden="true"><path d="M0 -7L7 6H-7z"/><path d="M0 -2V2M0 4V4.5"/></svg><span><b>warning</b> o desenho é arriscado</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="sv info" aria-hidden="true"><circle r="7"/><path d="M0 -1V4M0 -4V-3.5"/></svg><span><b>info</b> higiene</span></li>
+      </ul>
+      <p class="card-pe">Nenhuma bloqueia o desenho: o elemento errado aparece marcado.</p>
+    </div>
+  </div>
+  <p class="lead in">Tudo roda no navegador: sem servidor, sem dado saindo da máquina.</p>
+  <aside class="notes">
+    <p>As tags são os padrões do context map do DDD (Open Host Service, Anticorruption Layer, Conformist…). O ODDS sabe de que lado cada uma pode estar e acusa quando não está.</p>
+    <p>Regra de ouro: tags são contratos validáveis; propriedades do contexto (time, tecnologia) são documentação e nunca disparam regra.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="bian-catalogo" data-min="3" data-only="60">
@@ -211,6 +435,46 @@ function enterDefault(slide) {
   return G.timeline().fromTo(items.length ? items : slide, { autoAlpha: 0, y: 16 },
     { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" });
 }
+
+/* o desenho do espaço da solução, um só, clonado onde for usado */
+for (const host of deck.querySelectorAll("[data-tpl]")) {
+  host.appendChild(document.getElementById(host.dataset.tpl).content.cloneNode(true));
+}
+
+function drawIn(tl, paths, at) {
+  for (const p of paths) {
+    const len = p.getTotalLength();
+    tl.fromTo(p, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.5, ease: "power1.inOut" }, at);
+  }
+}
+
+ENTER.capa = (s) => G.timeline()
+  .add(enterDefault(s))
+  .fromTo(s.querySelectorAll(".favo .hx"), { autoAlpha: 0, scale: 0.6, transformOrigin: "50% 50%" },
+    { autoAlpha: 1, scale: 1, duration: 0.45, stagger: 0.09, ease: "back.out(1.7)" }, 0.15);
+
+ENTER.pergunta = (s) => {
+  const tl = G.timeline();
+  tl.fromTo(s.querySelector(".sol .nuvem"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 });
+  tl.fromTo(s.querySelectorAll(".sol .svc"), { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.35, stagger: 0.06 }, 0.1);
+  drawIn(tl, s.querySelectorAll(".sol .call"), 0.6);
+  tl.fromTo(s.querySelector(".api-a .halo"), { scale: 1 }, { scale: 1.12, duration: 0.5, yoyo: true, repeat: 3, ease: "sine.inOut" }, 1.2);
+  tl.fromTo(s.querySelectorAll(".pergunta-txt .in"), { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.12 }, 1.4);
+  return tl;
+};
+
+/* cada linha do texto acende a peça correspondente do mapa */
+ENTER["odds-texto-mapa"] = (s) => {
+  const tl = G.timeline().add(enterDefault(s));
+  const lines = s.querySelectorAll(".codigo .ln");
+  tl.set(s.querySelectorAll(".mini .pc"), { autoAlpha: 0 }, 0);
+  for (const k of ["sub", "fe", "fd", "r1", "r2"]) {
+    tl.add(() => lines.forEach((l) => l.classList.toggle("aceso", l.dataset.k === k)))
+      .to(s.querySelectorAll(`.mini .pc[data-k="${k}"]`), { autoAlpha: 1, duration: 0.45 }, "+=0.25");
+  }
+  tl.add(() => lines.forEach((l) => l.classList.remove("aceso")), "+=0.4");
+  return tl;
+};
 
 /* ---- motor ---- */
 let version = new URLSearchParams(location.search).get("v") === "60" ? 60 : 30;
