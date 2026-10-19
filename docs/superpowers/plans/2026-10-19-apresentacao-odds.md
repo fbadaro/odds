@@ -85,7 +85,7 @@ domain Payments {
     }
   }
 
-  subdomain supporting PositionAndAccounts {
+  subdomain supporting Accounts {
     title: "Posição e contas"
     description: "Saber quanto cada conta tem, a cada lançamento"
     context PositionKeeping {

@@ -1,0 +1,84 @@
+domain Payments {
+  title: "Pagamentos — recorte do BIAN 12"
+
+  subdomain core Initiation {
+    title: "Iniciação de pagamento"
+    description: "Receber a intenção de pagar e transformá-la numa ordem"
+    context PaymentInitiation {
+      description: "BIAN Payment Initiation: captura e valida o pedido de pagamento do cliente"
+    }
+    context PaymentOrder {
+      description: "BIAN Payment Order: a ordem de pagamento, do aceite à entrega para execução"
+    }
+  }
+
+  subdomain core Fraud {
+    title: "Fraude"
+    description: "Decidir, antes de o dinheiro sair, se o pagamento é legítimo"
+    context FraudEvaluation {
+      description: "BIAN Fraud Evaluation: o veredito de risco de cada transação"
+    }
+    context FraudDiagnosis {
+      description: "BIAN Fraud Diagnosis: a investigação dos casos suspeitos"
+    }
+  }
+
+  subdomain supporting Settlement {
+    title: "Liquidação"
+    description: "Fazer o dinheiro chegar ao destino pelos trilhos certos"
+    context PaymentExecution {
+      description: "BIAN Payment Execution: executa a ordem e escolhe o trilho"
+    }
+    context PaymentRailOperations {
+      description: "BIAN Payment Rail Operations: a operação dos trilhos de pagamento"
+    }
+    context ACHOperations {
+      description: "BIAN ACH Operations: a compensação em lote"
+    }
+  }
+
+  subdomain supporting Accounts {
+    title: "Posição e contas"
+    description: "Saber quanto cada conta tem, a cada lançamento"
+    context PositionKeeping {
+      description: "BIAN Position Keeping: o registro das posições e lançamentos"
+    }
+    context CurrentAccount {
+      description: "BIAN Current Account: a conta corrente do cliente"
+    }
+  }
+
+  subdomain generic Authentication {
+    title: "Autenticação"
+    description: "Provar quem está pedindo"
+    context PartyAuthentication {
+      description: "BIAN Party Authentication: autentica a parte que inicia o pagamento"
+    }
+  }
+
+  external {
+    context SPI {
+      title: "SPI (Pix)"
+      description: "Sistema de Pagamentos Instantâneos do Banco Central"
+    }
+    context CardNetwork {
+      title: "Bandeira de cartão"
+      description: "A rede da bandeira, com as regras dela"
+    }
+  }
+
+  mapping {
+    PartyAuthentication [OHS, PL] -->      PaymentInitiation
+    PaymentInitiation   [S]       --> [C]  PaymentOrder
+    FraudEvaluation     [OHS]     --> [ACL] PaymentOrder
+    FraudEvaluation     [S]       --> [C]  FraudDiagnosis
+    PaymentOrder        [S]       --> [C]  PaymentExecution
+    PaymentRailOperations [OHS]   --> [ACL] PaymentExecution
+    PaymentExecution    [S]       --> [C]  ACHOperations
+    PaymentExecution    [OHS]     -->      PositionKeeping
+    PositionKeeping     [SK]      <-> [SK] CurrentAccount
+    SPI                 [OHS, PL] --> [ACL] PaymentRailOperations
+    CardNetwork         [OHS, PL] --> [CF] PaymentRailOperations
+    ACHOperations       -x-                CardNetwork
+  }
+}
