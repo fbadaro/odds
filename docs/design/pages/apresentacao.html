@@ -112,7 +112,7 @@ code, .code{font:400 calc(13px * var(--k))/1.55 var(--f-mono)}
 .card-pe{margin:20px 0 0; font:400 calc(13px * var(--k))/1.5 var(--f-sans); color:rgb(var(--c-dim))}
 .custos{list-style:none; margin:16px 0 0; padding:0; display:flex; flex-direction:column; gap:32px}
 .custos li{display:flex; gap:32px; align-items:flex-start}
-.custos .num{flex:none; width:72px; height:72px; border-radius:10px; background:rgb(var(--c-solar)); color:rgb(var(--c-ink));
+.custos .num{
   display:grid; place-items:center; font:800 calc(24px * var(--k))/1 var(--f-display)}
 .custos .body{margin:6px 0 0; color:rgb(var(--c-dim))}
 
@@ -183,6 +183,41 @@ code, .code{font:400 calc(13px * var(--k))/1.55 var(--f-mono)}
 .endereco .forte{color:rgb(var(--c-accent))}
 .endereco .tp{margin-left:8px; vertical-align:middle}
 
+/* encaixe: a camada do problema sobre o mesmo desenho */
+.sol .problema{display:none}
+.com-problema .sol .problema{display:inline}
+.sol .reg rect{stroke-width:1.5}
+.sol .reg text{font:600 15px var(--f-sans); fill:rgb(var(--c-ink))}
+.sol .reg tspan{font:500 11px var(--f-mono); fill:rgb(var(--c-dim)); letter-spacing:.1em; text-transform:uppercase}
+.sol .reg.core rect{fill:rgb(var(--t-core) / .16); stroke:rgb(var(--t-core) / .85)}
+.sol .reg.sup rect{fill:rgb(var(--t-sup) / .08); stroke:rgb(var(--t-sup) / .55)}
+.sol .reg.gen rect{fill:rgb(var(--t-gen) / .08); stroke:rgb(var(--t-gen) / .5)}
+.sol .reg.ext rect{fill:none; stroke:rgb(var(--t-gen) / .5); stroke-dasharray:6 5}
+.sol .reg.ext text{font:500 11px var(--f-mono); fill:rgb(var(--c-dim)); letter-spacing:.1em; text-transform:uppercase}
+.mini-end{flex-direction:column; align-items:flex-start; padding:18px 24px; gap:10px; font-size:calc(14px * var(--k))}
+.achado .body{margin:0 0 12px}
+
+/* numerais sobre solar: dor-custo, fluxo, decisão */
+.slide .num{flex:none; width:72px; height:72px; border-radius:10px; background:rgb(var(--c-solar)); color:rgb(var(--c-ink));
+  display:grid; place-items:center; font:800 calc(24px * var(--k))/1 var(--f-display)}
+.fluxo{list-style:none; margin:8px 0 0; padding:0; display:grid; grid-template-columns:repeat(4, 1fr); gap:28px}
+.fluxo li{display:flex; flex-direction:column; gap:14px; position:relative}
+.fluxo li + li::before{content:"→"; position:absolute; left:-24px; top:18px; font:500 28px var(--f-sans); color:rgb(var(--c-dim))}
+.fluxo .body, .tres .body{margin:0; color:rgb(var(--c-dim))}
+.tres .card{display:flex; flex-direction:column; gap:14px}
+
+/* estado */
+.marcas{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:18px; font:400 calc(15px * var(--k))/1.45 var(--f-sans)}
+.marcas li{position:relative; padding-left:44px}
+.marcas li::before{position:absolute; left:0; top:2px; width:28px; height:28px; border-radius:999px; display:grid; place-items:center;
+  font:600 16px/1 var(--f-sans)}
+.marcas.sim li::before{content:"✓"; background:rgb(var(--c-accent) / .1); color:rgb(var(--c-accent))}
+.marcas.nao li::before{content:""; border:1.5px dashed rgb(var(--c-dim) / .7); box-sizing:border-box}
+.marcas.nao li{color:rgb(var(--c-dim))}
+
+/* decisão */
+.hero.dec{font-size:calc(62px * var(--k) * .95); max-width:1360px}
+
 /* fora do palco: contador e notas do apresentador */
 #counter{position:fixed; right:16px; bottom:12px; font:400 12px/1 var(--f-mono); color:rgb(var(--c-dim)); opacity:.7}
 #notesPane{position:fixed; left:16px; right:16px; bottom:36px; max-height:38vh; overflow:auto; display:none;
@@ -203,6 +238,15 @@ body.notes #notesPane{display:block}
   <svg class="sol" viewBox="0 0 880 500" aria-label="Serviços em produção e quem chama quem">
     <defs><marker id="ah-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
     <g class="nuvem"><rect x="6" y="6" width="868" height="488" rx="12"/><text x="24" y="482">conta de nuvem · prod</text></g>
+    <!-- a camada do problema: só aparece num .sol-host.com-problema (encaixe-camadas) -->
+    <g class="problema">
+      <g class="reg gen"><rect x="24" y="30" width="182" height="112" rx="10"/><text x="38" y="54">Autenticação <tspan>generic</tspan></text></g>
+      <g class="reg core"><rect x="224" y="30" width="182" height="272" rx="10"/><text x="238" y="54">Iniciação <tspan>core</tspan></text></g>
+      <g class="reg core"><rect x="454" y="30" width="182" height="112" rx="10"/><text x="468" y="54">Fraude <tspan>core</tspan></text></g>
+      <g class="reg ext"><rect x="674" y="30" width="182" height="112" rx="10"/><text x="688" y="54">externo</text></g>
+      <g class="reg sup"><rect x="454" y="184" width="402" height="288" rx="10"/><text x="468" y="208">Liquidação <tspan>supporting</tspan></text></g>
+      <g class="reg sup"><rect x="224" y="380" width="182" height="106" rx="10"/><text x="238" y="476">Contas <tspan>supporting</tspan></text></g>
+    </g>
     <g class="calls">
       <path class="call" d="M240 98 H194" marker-end="url(#ah-s)"/>
       <path class="call" d="M315 126 V226" marker-end="url(#ah-s)"/>
@@ -464,39 +508,114 @@ body.notes #notesPane{display:block}
 </section>
 
 <section class="slide" data-id="encaixe-camadas" data-min="2">
-  <div class="eyebrow in">O encaixe</div>
-  <h2 class="h2 in">A plataforma vê o que roda. O ODDS diz o que significa.</h2>
-  <aside class="notes"><p>Duas camadas do mesmo mapa.</p></aside>
+  <div class="split">
+    <div class="sol-host com-problema" data-tpl="tpl-solucao"></div>
+    <div class="pergunta-txt">
+      <div class="eyebrow in">O encaixe</div>
+      <h2 class="h2 in">A plataforma vê o que roda. O ODDS diz o que significa.</h2>
+      <div class="endereco mini-end in"><span class="mono">API A</span><span><i>↳</i> Liquidação <em class="tp sup">supporting</em></span><span><i>↳</i> <span class="mono forte">PaymentExecution</span></span></div>
+      <p class="lead in">Duas camadas do mesmo mapa: uma extraída, sempre atual; outra declarada, porque intenção não se extrai.</p>
+    </div>
+  </div>
+  <aside class="notes">
+    <p>O mesmo desenho do início. A plataforma já o produz sozinha. O ODDS acrescenta a camada que ninguém consegue extrair: domínio, subdomínio, tipo, contexto.</p>
+    <p>Não são ferramentas concorrentes. A plataforma responde "o que está rodando e quem chama quem"; o ODDS responde "por que isso existe e o que essa relação significa".</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="encaixe-visao" data-min="3">
-  <span class="selo-visao in">Visão</span>
+  <span class="selo-visao in">Visão · não existe hoje</span>
   <h2 class="h2 in">O declarado contra o descoberto.</h2>
-  <aside class="notes"><p>Não existe hoje em nenhum dos dois lados.</p></aside>
+  <div class="duas">
+    <div class="card achado in">
+      <div class="card-k mono">Descoberto, não declarado</div>
+      <p class="body"><span class="mono">orders-svc</span> chama <span class="mono">ledger-db</span> em produção.</p>
+      <p class="body">No mapa, <span class="mono">PaymentOrder</span> e <span class="mono">PositionKeeping</span> não têm relação.</p>
+      <p class="card-pe">Uma integração sem contrato: acoplamento que ninguém escolheu.</p>
+    </div>
+    <div class="card achado in">
+      <div class="card-k mono">Declarado, não descoberto</div>
+      <p class="body"><span class="mono">CardNetwork [OHS, PL] --&gt; [CF] PaymentRailOperations</span></p>
+      <p class="body">Nenhuma chamada de <span class="mono">rail-gateway</span> à bandeira aparece em produção.</p>
+      <p class="card-pe">Um mapa que envelheceu, ou uma relação que ainda não existe.</p>
+    </div>
+  </div>
+  <p class="lead in">Cruzar as duas camadas transforma diferença em achado. Isso não existe hoje em nenhum dos dois lados.</p>
+  <aside class="notes">
+    <p>Deixar explícito: isto é proposta, não capacidade. Nem o ODDS nem a plataforma fazem isso hoje.</p>
+    <p>Os dois achados são exemplos inventados sobre o recorte de Pagamentos, para mostrar a forma.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="encaixe-fluxo" data-min="5" data-only="60">
-  <span class="selo-visao in">Visão</span>
+  <span class="selo-visao in">Visão · sem prazo</span>
   <h2 class="h2 in">Como o ODDS e a plataforma conversariam.</h2>
-  <aside class="notes"><p>O fluxo possível, sem prazo.</p></aside>
+  <ol class="fluxo">
+    <li class="in"><span class="num">1</span><div class="title">O mapa vive no repositório</div><p class="body">Cada domínio tem seu <span class="mono">.odds</span>, versionado ao lado do código, revisado como código.</p></li>
+    <li class="in"><span class="num">2</span><div class="title">A plataforma lê o mapa</div><p class="body">Junto com o que ela já extrai dos repositórios e das contas de nuvem.</p></li>
+    <li class="in"><span class="num">3</span><div class="title">Cada serviço ganha endereço</div><p class="body">Domínio, subdomínio, tipo e contexto, na mesma tela do diagrama de produção.</p></li>
+    <li class="in"><span class="num">4</span><div class="title">A diferença vira achado</div><p class="body">O que roda sem estar no mapa, e o que está no mapa sem rodar.</p></li>
+  </ol>
+  <p class="lead in">A primeira peça a desenhar juntos: como um serviço descoberto se liga a um contexto declarado.</p>
+  <aside class="notes">
+    <p>Este é o slide para abrir a conversa sobre integração. A pergunta em aberto de verdade é a ligação serviço ↔ contexto: por convenção de nome, por metadado no repositório, por declaração explícita. Não tenho resposta pronta, e isso é bom: é o que decidiríamos juntos.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="estado" data-min="2">
   <div class="eyebrow in">Onde está</div>
   <h2 class="h2 in">O que existe hoje, e o que não existe.</h2>
-  <aside class="notes"><p>Iniciativa pessoal.</p></aside>
+  <div class="duas">
+    <div class="card in">
+      <div class="card-k mono">Existe</div>
+      <ul class="marcas sim">
+        <li>A especificação completa: gramática, regras com código e severidade, mensagens em português e inglês, linguagem na versão 1.0.1</li>
+        <li>O validador, passando nos 44 casos da suíte de conformidade</li>
+        <li>O playground no navegador, sem servidor: editor, mapa ao vivo, duas vistas, diagnósticos</li>
+      </ul>
+    </div>
+    <div class="card in">
+      <div class="card-k mono">Não existe</div>
+      <ul class="marcas nao">
+        <li>Link de compartilhamento (o formato está em aberto)</li>
+        <li>Mapeamento a partir de repositórios</li>
+        <li>Qualquer integração com a plataforma</li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead in">Uma iniciativa pessoal. Ser incubada num programa maior é bem-vindo.</p>
+  <aside class="notes">
+    <p>Honestidade como parte da mensagem: o que está pronto está pronto de verdade (a suíte é a especificação executável); o que não está, não está.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="decisao" data-min="3" data-min60="13">
   <div class="eyebrow in">A decisão</div>
-  <h2 class="h2 in"><span class="grad-text">O ODDS entra na plataforma interna?</span></h2>
-  <aside class="notes"><p>Deixar a pergunta na tela durante a discussão.</p></aside>
+  <h2 class="hero dec in"><span class="grad-text">O ODDS entra na plataforma interna?</span></h2>
+  <div class="tres">
+    <div class="card in"><span class="num">1</span><div class="title">O que entrar significa</div><p class="body">O ODDS como a camada do espaço do problema na plataforma, começando por um piloto num domínio.</p></div>
+    <div class="card in"><span class="num">2</span><div class="title">O que existe e o que se constrói junto</div><p class="body">Linguagem, validador e playground existem. A integração com o descoberto é visão, a construir junto.</p></div>
+    <div class="card in"><span class="num">3</span><div class="title">O que eu trago, e o que não prometo</div><p class="body">A especificação, o código e o tempo de uma iniciativa pessoal. Nenhum compromisso de roadmap fora do que combinarmos.</p></div>
+  </div>
+  <aside class="notes">
+    <p>Deixar esta tela durante a discussão. Na versão de 1 hora, são 10 minutos de conversa aqui.</p>
+    <p>Se a resposta for "talvez", propor o menor passo concreto: um domínio piloto, mapeado por um time, num prazo curto que combinarmos, e voltar com o que aprendemos.</p>
+  </aside>
 </section>
 
 <section class="slide" data-id="apendice-alternativas" data-min="0" data-apendice>
-  <div class="eyebrow in">Apêndice</div>
+  <div class="eyebrow in">Apêndice · se perguntarem</div>
   <h2 class="h2 in">Por que não Context Mapper, Structurizr ou Miro?</h2>
-  <aside class="notes"><p>Só se perguntarem. Tecla A volta ao slide em que se estava.</p></aside>
+  <div class="tres">
+    <div class="card in"><div class="title">Julgamento do desenho</div><p class="body">Regras de coerência estratégica, cada uma com código e severidade: um core que se conforma, um genérico sem serviço aberto.</p></div>
+    <div class="card in"><div class="title">Nada a instalar</div><p class="body">Texto, validação e mapa rodam no navegador. Nenhum dado sai da máquina.</p></div>
+    <div class="card in"><div class="title">Só o espaço do problema</div><p class="body">Feito para complementar a plataforma, não para substituir o que ela já desenha.</p></div>
+  </div>
+  <p class="lead in">Cada uma resolve bem outras perguntas. A comparação justa é por pergunta respondida.</p>
+  <aside class="notes">
+    <p>Não atacar as outras ferramentas. Context Mapper é uma DSL madura de DDD; Structurizr é C4 como código; Miro é quadro livre. A diferença do ODDS é de foco: validar o desenho estratégico, no navegador, como camada do problema.</p>
+    <p>Tecla A volta ao slide em que se estava.</p>
+  </aside>
 </section>
 
 </main>
@@ -533,9 +652,15 @@ function enterDefault(slide) {
 }
 
 /* o desenho do espaço da solução, um só, clonado onde for usado */
-for (const host of deck.querySelectorAll("[data-tpl]")) {
+deck.querySelectorAll("[data-tpl]").forEach((host, n) => {
   host.appendChild(document.getElementById(host.dataset.tpl).content.cloneNode(true));
-}
+  // ids únicos por cópia: um url(#id) repetido resolveria para a cópia de um slide oculto
+  for (const el of host.querySelectorAll("[id]")) {
+    const id = el.id;
+    el.id = `${id}-${n}`;
+    for (const ref of host.querySelectorAll(`[marker-end="url(#${id})"]`)) ref.setAttribute("marker-end", `url(#${id}-${n})`);
+  }
+});
 
 function drawIn(tl, paths, at) {
   for (const p of paths) {
@@ -569,6 +694,15 @@ ENTER["odds-texto-mapa"] = (s) => {
       .to(s.querySelectorAll(`.mini .pc[data-k="${k}"]`), { autoAlpha: 1, duration: 0.45 }, "+=0.25");
   }
   tl.add(() => lines.forEach((l) => l.classList.remove("aceso")), "+=0.4");
+  return tl;
+};
+
+/* o desenho já foi visto: entra inteiro, e a camada do problema chega por cima */
+ENTER["encaixe-camadas"] = (s) => {
+  const tl = G.timeline();
+  tl.fromTo(s.querySelectorAll(".sol .reg"), { autoAlpha: 0, scale: 0.96, transformOrigin: "50% 50%" },
+    { autoAlpha: 1, scale: 1, duration: 0.5, stagger: 0.12, ease: "power2.out" }, 0.3);
+  tl.fromTo(s.querySelectorAll(".pergunta-txt .in"), { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.12 }, 1.1);
   return tl;
 };
 
