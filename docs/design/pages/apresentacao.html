@@ -2,7 +2,7 @@
 <!--BUILD:4ca4316e5673-->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
 
 <style>
 /* Apresentação do ODDS à plataforma interna. Roteiro e decisões:
@@ -59,7 +59,7 @@ code, .code{font:400 calc(13px * var(--k))/1.55 var(--f-mono)}
 .grad-text{background:var(--grad-hero); -webkit-background-clip:text; background-clip:text; color:transparent}
 
 /* o que ainda não existe leva o selo, sempre visível */
-.selo-visao{align-self:flex-start; display:inline-flex; align-items:center; gap:10px; padding:8px 16px; border-radius:999px;
+.selo-visao{align-self:flex-start; display:inline-flex; white-space:nowrap; align-items:center; gap:10px; padding:8px 16px; border-radius:999px;
   border:1px solid rgb(var(--c-accent) / .35); background:rgb(var(--c-accent) / .08); color:rgb(var(--c-accent));
   font:500 calc(11px * var(--k))/1 var(--f-mono); letter-spacing:.22em; text-transform:uppercase}
 
@@ -254,7 +254,8 @@ body.notes #notesPane{display:block}
       <path class="call" d="M390 266 H466" marker-end="url(#ah-s)"/>
       <path class="call" d="M620 258 H686" marker-end="url(#ah-s)"/>
       <path class="call" d="M545 286 V396" marker-end="url(#ah-s)"/>
-      <path class="call" d="M510 286 V330 H315 V396" marker-end="url(#ah-s)"/>
+      <path class="call" d="M480 286 V330 H360 V396" marker-end="url(#ah-s)"/>
+      <path class="call" data-call="orders-svc>ledger-db" d="M300 286 V396" marker-end="url(#ah-s)"/>
       <path class="call" d="M765 230 V130" marker-end="url(#ah-s)"/>
     </g>
     <g class="svc" data-svc="auth-svc" data-ctx="PartyAuthentication"><rect x="40" y="70" width="150" height="56" rx="8"/><text x="115" y="104">auth-svc</text></g>
@@ -287,6 +288,7 @@ body.notes #notesPane{display:block}
     </svg>
   </div>
   <aside class="notes">
+    <p><b>Antes de começar:</b> tecla P abre estas notas numa janela à parte, para levar ao monitor do notebook; a tecla N as mostra sobre o slide, e aparece no projetor se a tela estiver espelhada.</p>
     <p>Abrir sem pressa. Duas frases: o que vou mostrar é uma iniciativa minha, não um produto; e a pergunta no fim é se ela pode fazer parte da plataforma interna.</p>
   </aside>
 </section>
@@ -481,7 +483,7 @@ body.notes #notesPane{display:block}
   <p class="lead in">O recorte de Pagamentos: 12 contextos, cinco subdomínios, dois sistemas externos, validado limpo.</p>
   <a class="btn in" href="playground.html?modelo=pagamentos" target="_blank" rel="noopener">Abrir pagamentos.odds →</a>
   <aside class="notes">
-    <p><b>Abrir:</b> o botão abre o playground numa aba nova, já com <code>pagamentos.odds</code>. Voltar a esta aba com Cmd/Ctrl+Tab; a apresentação continua aqui.</p>
+    <p><b>Abrir:</b> o botão abre o playground numa aba nova, já com <code>pagamentos.odds</code>. Para voltar, clicar na aba desta apresentação (ou Ctrl+Tab; no Mac, Cmd+Option+←); ela continua no mesmo slide. Se a tela cheia sair, F de novo. A janela de notas (tecla P) segue aberta durante a demo, com este roteiro.</p>
     <p><b>Roteiro</b> — uma edição por vez, sempre desfeita (Cmd/Ctrl+Z) antes da próxima. Conferido contra o validador.</p>
     <table>
       <tr><th>Linha</th><th>Edição</th><th>Diagnóstico</th></tr>
@@ -511,6 +513,7 @@ body.notes #notesPane{display:block}
   <div class="split">
     <div class="sol-host com-problema" data-tpl="tpl-solucao"></div>
     <div class="pergunta-txt">
+      <span class="selo-visao in">Ilustração · feita à mão</span>
       <div class="eyebrow in">O encaixe</div>
       <h2 class="h2 in">A plataforma vê o que roda. O ODDS diz o que significa.</h2>
       <div class="endereco mini-end in"><span class="mono">API A</span><span><i>↳</i> Liquidação <em class="tp sup">supporting</em></span><span><i>↳</i> <span class="mono forte">PaymentExecution</span></span></div>
@@ -518,7 +521,8 @@ body.notes #notesPane{display:block}
     </div>
   </div>
   <aside class="notes">
-    <p>O mesmo desenho do início. A plataforma já o produz sozinha. O ODDS acrescenta a camada que ninguém consegue extrair: domínio, subdomínio, tipo, contexto.</p>
+    <p>O mesmo desenho do início: é o tipo de desenho que a plataforma produz. Por cima, a camada que ninguém consegue extrair: domínio, subdomínio, tipo, contexto.</p>
+    <p>Dizer que a ligação de cada serviço ao seu contexto foi feita à mão para esta ilustração. Fazê-la de verdade é a parte da visão (dois slides adiante).</p>
     <p>Não são ferramentas concorrentes. A plataforma responde "o que está rodando e quem chama quem"; o ODDS responde "por que isso existe e o que essa relação significa".</p>
   </aside>
 </section>
@@ -709,6 +713,7 @@ ENTER["encaixe-camadas"] = (s) => {
 /* ---- motor ---- */
 let version = new URLSearchParams(location.search).get("v") === "60" ? 60 : 30;
 let seq = [], cur = null, tl = null, before = null;
+let notas = null;   // a janela do apresentador (tecla P), para o monitor do notebook
 
 function build() {
   seq = all.filter((s) => !s.hasAttribute("data-apendice") && (version === 60 || s.dataset.only !== "60"));
@@ -731,6 +736,29 @@ function show(slide, instant) {
   document.getElementById("counter").textContent = n < 0 ? "apêndice" : `${n + 1} / ${seq.length} · ${version} min`;
   const notes = slide.querySelector("aside.notes");
   document.getElementById("notesPane").innerHTML = notes ? notes.innerHTML : "";
+  syncNotas();
+}
+/* As notas numa janela à parte: com o projetor espelhado, a tecla N as mostraria à sala, e
+   durante a demo a aba da apresentação nem está à vista. A janela é about:blank aberta por
+   esta página, então a página escreve nela direto, a cada troca de slide. */
+const NOTAS_CSS = "body{margin:0;padding:20px 24px;font:17px/1.55 Inter,system-ui,sans-serif;color:#1B1A24;background:#FAFAFD}" +
+  "header{font:500 12px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.12em;color:#6C40D9;text-transform:uppercase;margin-bottom:14px}" +
+  "code{font:14px ui-monospace,Menlo,monospace;font-variant-ligatures:none}table{border-collapse:collapse;font-size:15px}" +
+  "td,th{border-bottom:1px solid #E6E4F2;padding:6px 12px 6px 0;text-align:left;vertical-align:top}";
+function syncNotas() {
+  if (!notas || notas.closed || !cur) return;
+  const n = cur.querySelector("aside.notes");
+  notas.document.body.innerHTML = `<header>${cur.dataset.id} · ${document.getElementById("counter").textContent}</header>` + (n ? n.innerHTML : "");
+}
+function abrirNotas() {
+  if (notas && !notas.closed) { notas.focus(); return; }
+  notas = window.open("", "odds-notas", "width=760,height=680");
+  if (!notas) return;
+  notas.document.title = "Notas · Apresentação ODDS";
+  const st = notas.document.createElement("style");
+  st.textContent = NOTAS_CSS;
+  notas.document.head.appendChild(st);
+  syncNotas();
 }
 function go(id, opts) {
   const slide = seq.find((s) => s.dataset.id === id);
@@ -766,6 +794,7 @@ document.addEventListener("keydown", (e) => {
     if (document.fullscreenElement) document.exitFullscreen();
     else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
   } else if (k === "n" || k === "N") document.body.classList.toggle("notes");
+  else if (k === "p" || k === "P") abrirNotas();
   else if (k === "a" || k === "A") apendice();
   else return;
   e.preventDefault();
@@ -774,7 +803,7 @@ addEventListener("resize", fit);
 
 /* gancho para captura e checagem */
 globalThis.__deck = { go, next: () => step(1), prev: () => step(-1), setVersion,
-  get version() { return version; }, get ids() { return seq.map((s) => s.dataset.id); } };
+  get version() { return version; }, get ids() { return seq.map((s) => s.dataset.id); }, get notas() { return notas; } };
 
 build();
 fit();

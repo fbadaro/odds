@@ -27,7 +27,8 @@ const V60 = ["capa", "pergunta", "dor-espacos", "dor-custo", "odds-texto-mapa", 
   "bian-catalogo", "bian-correspondencia", "demo-ida", "demo-volta", "encaixe-camadas", "encaixe-visao",
   "encaixe-fluxo", "estado", "decisao"];
 const ANCORA = "Em que domínio e contexto este serviço está, e o que ele resolve?";
-const VISAO = ["encaixe-visao", "encaixe-fluxo"];
+// a sobreposição de encaixe-camadas também é ilustração: a ligação serviço ↔ contexto não existe
+const VISAO = ["encaixe-camadas", "encaixe-visao", "encaixe-fluxo"];
 
 if (!fs.existsSync(pagePath)) {
   console.error("apresentacao.html: página ausente");
@@ -71,6 +72,17 @@ for (const id of VISAO) if (!/class="[^"]*\bselo-visao\b/.test(byId[id]?.body ??
 const link = /<a\b(?=[^>]*\bhref="playground\.html\?modelo=pagamentos")(?=[^>]*\btarget="_blank")[^>]*>/;
 if (!link.test(byId["demo-ida"]?.body ?? "")) fail("demo-ida: sem o link playground.html?modelo=pagamentos em aba nova");
 if (!byId.pergunta?.body.includes(ANCORA)) fail("pergunta: sem a pergunta-âncora no texto exato");
+
+// o achado "descoberto, não declarado" tem de ser uma chamada que o desenho de produção mostra
+if (!/data-call="orders-svc>ledger-db"/.test(html)) fail("tpl-solucao: sem a chamada orders-svc → ledger-db que encaixe-visao cita");
+// Cmd+Tab troca de aplicativo no Mac, não de aba: a nota não pode mandar o apresentador para fora do navegador
+if (/Cmd\/Ctrl\+Tab/.test(html)) fail("notas: Cmd+Tab não troca de aba no Mac");
+// atrás de um proxy que não responde, uma folha de estilo bloqueante segura a primeira pintura até o timeout
+for (const [nome, texto] of [["apresentacao.html", html], ["playground.html", fs.readFileSync(path.join(here, "playground.html"), "utf8")]]) {
+  for (const tag of texto.match(/<link\b[^>]*rel="stylesheet"[^>]*>/g) ?? []) {
+    if (!/media="print"/.test(tag) || !/onload=/.test(tag)) fail(`${nome}: folha de estilo externa bloqueante: ${tag.slice(0, 60)}…`);
+  }
+}
 
 /* O roteiro da demo, nas notas de demo-ida, conferido contra o validador: se o core
    mudar, a nota que promete um diagnóstico tem de mudar junto. Cada edição parte do
