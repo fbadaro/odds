@@ -13,7 +13,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { stamp } from "./colmeia-embed.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -71,6 +71,27 @@ for (const id of VISAO) if (!/class="[^"]*\bselo-visao\b/.test(byId[id]?.body ??
 const link = /<a\b(?=[^>]*\bhref="playground\.html\?modelo=pagamentos")(?=[^>]*\btarget="_blank")[^>]*>/;
 if (!link.test(byId["demo-ida"]?.body ?? "")) fail("demo-ida: sem o link playground.html?modelo=pagamentos em aba nova");
 if (!byId.pergunta?.body.includes(ANCORA)) fail("pergunta: sem a pergunta-âncora no texto exato");
+
+/* O roteiro da demo, nas notas de demo-ida, conferido contra o validador: se o core
+   mudar, a nota que promete um diagnóstico tem de mudar junto. Cada edição parte do
+   pagamentos.odds limpo; as duas últimas são a construção do zero da versão 60. */
+const core = await import(pathToFileURL(path.join(root, "packages/core/dist/index.js")).href);
+const pag = fs.readFileSync(path.join(here, "pagamentos.odds"), "utf8");
+const edit = (t, a, b) => (t.includes(a) ? t.replace(a, b) : (fail(`demo: a linha mudou em pagamentos.odds: ${a.trim()}`), t));
+const novo = edit(pag, "  external {", "  subdomain supporting Reconciliation {\n    context AccountReconciliation\n  }\n\n  external {");
+const DEMO = [
+  ["CONFORMIST_CORE", edit(pag, "--> [ACL] PaymentOrder", "--> [CF] PaymentOrder")],
+  ["GENERIC_WITHOUT_OHS", edit(pag, "PartyAuthentication [OHS, PL] -->      PaymentInitiation", "PartyAuthentication [S]       --> [C]  PaymentInitiation")],
+  ["DOWNSTREAM_ONLY_TAG_MISPLACED", edit(pag, "SPI                 [OHS, PL] --> [ACL] PaymentRailOperations", "SPI                 [ACL]     -->      PaymentRailOperations")],
+  ["UNMAPPED_CONTEXT", novo],
+  ["", edit(novo, "    ACHOperations       -x-                CardNetwork", "    ACHOperations       -x-                CardNetwork\n    PositionKeeping     [OHS]     -->      AccountReconciliation")],
+];
+const notesDemo = byId["demo-ida"]?.body ?? "";
+for (const [code, text] of DEMO) {
+  const got = core.parseAndValidate(text).diagnostics.map((d) => d.code).join(", ");
+  if (got !== code) fail(`demo: esperava ${code || "limpo"}, o validador deu ${got || "limpo"}`);
+  if (code && !notesDemo.includes(code)) fail(`demo-ida: as notas não citam ${code}`);
+}
 
 if (failures.length) {
   for (const f of failures) console.error("FALHA  " + f);
