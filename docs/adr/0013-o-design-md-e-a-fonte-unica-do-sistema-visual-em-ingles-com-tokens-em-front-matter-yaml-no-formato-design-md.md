@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0013 — O DESIGN.md é a fonte única do sistema visual, em inglês, com tokens em front matter YAML no formato design.md
 
+> **Leitura fixada em 2026-10-20 pelo `ADR-0014`.** O arquivo manda nos **valores** (cor, espaço, raio, sombra, tipografia), e os componentes que ele descreve são especificação visual, não nomes obrigatórios no código: um `<Button variant="primary">` que cumpra o `button-primary` está conforme. A saída prevista na *Reversão* abaixo, tokens gerados ou validados por build, fica possível agora que há framework (`ADR-0014`) e bundler (`ADR-0015`), e é decidida na conversa sobre como construir a aplicação.
+
 ## Contexto
 
 O `DESIGN.md` nasceu em 2026-09-07 como rascunho de trabalho em português, em prosa com nove seções numeradas. Ele misturava três coisas: o sistema propriamente dito (tokens de cor como triplas RGB, três famílias tipográficas, escala de raios, sombras tingidas), a **procedência** do sistema e o **histórico das hipóteses**. A procedência era o método de tokens, a sombra tingida, a eyebrow e a pill mono, tomados da referência <https://studio.mjolnix.com.br/>, sem tomar nome, marca, estrutura de página nem texto. O histórico incluía o azul de planta trocado pelo roxo na segunda rodada, o marca-texto solar recusado na v4, a troca da Bricolage pela Montserrat e o playground estilizado apagado em 2026-09-11.

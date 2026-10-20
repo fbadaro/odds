@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0005 — npm workspaces, TypeScript e Vitest como ambiente de desenvolvimento
 
+> **Bundler decidido em 2026-10-20.** O bundler que este ADR deixou "para outro ADR" é o Vite (`ADR-0015`), e entra só na aplicação. O `tsc` segue como está, para checar tipos e construir as bibliotecas sem impor bundle a quem as consome. Uma consequência dele volta para cá: o Vitest precisa sair da linha 2.1 para acompanhar o Vite 8.
+
 ## Contexto
 
 A `HEALTH.md` §9.2 marca **R6.6** (ambiente de desenvolvimento) em 2 de 10: *"Só existe o `health_check.py`, que afere spec e não constrói nada. Sem build, sem lint, sem test runner, sem instrução de setup."* O `ADR-0004` decidiu a forma do repositório; falta o que a executa.

@@ -26,7 +26,7 @@ Duas consequências práticas, ambas já pagas caro nesta exploração:
 
 - **O desenho da renderização do diagrama.** Nós, arestas, tags nas linhas, as duas vistas do §4.4 — tudo depende da biblioteca de layout, que ainda não foi escolhida. Nos mocks a área do diagrama é wireframe neutro. Desenhá-la agora seria decidir a biblioteca por tabela.
 - **Os estados de degradação** (aresta tracejada, nó fantasma, diagrama congelado marcado como obsoleto). São exigência do `PRD.md` §5.2 e do `RULES-EN.md`, mas são desenho de render: entram na rodada seguinte, junto com a biblioteca.
-- **Escolher framework, bundler ou lib de layout.** Cada uma é ADR própria, depois desta exploração.
+- **Escolher framework, bundler ou lib de layout.** Cada uma é ADR própria, depois desta exploração. *Feitas:* layout e render no `ADR-0009` (2026-09-28), framework de UI e componentes no `ADR-0014` e bundler no `ADR-0015` (2026-10-20).
 
 ## Direção fixada (2026-09-07)
 
@@ -169,4 +169,4 @@ Nascidas fora do canvas porque dependem de uma engine de animação (GSAP 3 core
 - [x] Fork do achado 2 fechado (2026-10-07): **posição derivada do texto**. O problema que o abriu, o mapa se refazendo a cada edição, foi resolvido pela localidade da v4 (`ADR-0010`) e confirmado no teste de digitação humana que aceitou o `ADR-0009`
 - [ ] Decidir se `domain` deixa de ser cardinalidade 1 — e o que isso arrasta (`INVALID_DOMAIN_CARDINALITY`, `DOMAIN_WITHOUT_CORE`, posição do `external`, URL compartilhável)
 - [ ] Rodada de estados: degradação, diagrama obsoleto, vazio, arquivo novo
-- [ ] Só então: ADRs de framework, biblioteca de layout e bundler
+- [x] ADRs de framework, biblioteca de layout e bundler: layout no `ADR-0009` (2026-09-28); React no chrome com Base UI e CSS Modules no `ADR-0014`, e Vite no `ADR-0015` (2026-10-20). **Fora da ordem planejada:** o item vinha depois da cardinalidade de `domain` e da rodada de estados, e os dois seguem abertos. Nenhum deles dependia do framework do chrome, e a conversa sobre como construir a aplicação ficou para depois
