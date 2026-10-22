@@ -119,6 +119,7 @@ capture("empty", { file: "empty.odds", domains: [], mapping: [] }, []);
 /* ---- 3. o adaptador da bancada ---- */
 function benchCase(name, text, file) {
   const res = core.parseAndValidate(text);
+  if (!res.astGenerated) throw new Error(`bench-${name}: sem AST`);
   const anchors = bench.anchorsOf(res.ast);
   const diags = res.diagnostics.map((d) => ({ code: d.code, severity: d.severity, data: d.data, span: d.span, target: bench.targetOf(d, anchors) }));
   const model = bench.toModel(res.ast, new Map(), file);
@@ -134,5 +135,6 @@ function benchCase(name, text, file) {
 const m50Text = v3.sourceOf(v3.canon(M50), "rich").text + "\n";
 benchCase("marketplace50", m50Text, M50.file);
 benchCase("one", v3.sourceOf(v3.declared("one", "clean", 0, 0), "rich").text + "\n", "vendas.odds");
+benchCase("one-broken", v3.sourceOf(v3.canon(v3.declared("one", "broken", 0, 0)), "rich").text + "\n", "vendas.odds");
 
 for (const [n, s] of written) console.log(`${n}.json  ${(s / 1024).toFixed(1)} KB`);

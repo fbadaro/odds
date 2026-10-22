@@ -8,7 +8,7 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-    "./fixtures": { "types": "./dist/fixtures.d.ts", "default": "./dist/fixtures.js" },
+    "./fixtures": { "types": "./dist/fixtures/index.d.ts", "default": "./dist/fixtures/index.js" },
     "./map.css": "./src/map.css"
   },
   "scripts": { "build": "tsc --build" },

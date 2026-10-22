@@ -14,7 +14,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@odds/core": fileURLToPath(new URL("packages/core/src/index.ts", import.meta.url)),
-      "@odds/layout/fixtures": fileURLToPath(new URL("packages/layout/src/fixtures.ts", import.meta.url)),
+      "@odds/layout/fixtures": fileURLToPath(new URL("packages/layout/src/fixtures/index.ts", import.meta.url)),
       "@odds/layout": fileURLToPath(new URL("packages/layout/src/index.ts", import.meta.url)),
       "@odds/messages": fileURLToPath(new URL("packages/messages/src/index.ts", import.meta.url)),
     },
