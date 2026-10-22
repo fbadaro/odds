@@ -10,7 +10,7 @@
  *
  * Por que embutir, e por que script clássico inline: ver colmeia-ao-vivo.build.mjs.
  *
- *   embedBlocks()   →  { CORE, V3CSS, V3SRC, M50 }, os quatro blocos de texto
+ *   embedBlocks()   →  { CORE, TOKENS, V3CSS, V3SRC, M50 }, os cinco blocos de texto
  *   stamp(page, blocks, write)  regrava os marcadores <!--NOME-->…<!--/NOME--> e o
  *                    <!--BUILD:hash-->; sem `write`, sai com 1 se algo envelheceu
  *
@@ -42,11 +42,11 @@ const ALIAS = {
 };
 
 /* A ponte: o __v3 que as páginas chamam, montado do pacote embutido no CORE (que
-   por isso vem antes deste bloco na página). Os nomes são os do __v3 da v4; o
-   `build(geo, diags, src)` dela vira `renderSvg(geo, diags, state)`, e o `src` (a
-   fonte gerada, de onde a v4 ancorava diagnósticos) não serve mais. Do pacote vêm
-   também, com o nome do pacote, o que as páginas usam direto: renderSvg, modelOf,
-   topologyKeys, anchorsOf, targetOf e navOf. */
+   por isso vem antes deste bloco na página). Só nomes da v4, com a assinatura da
+   v4; o `build(geo, diags, src)` dela vira `renderSvg(geo, diags, state)`, e o `src`
+   (a fonte gerada, de onde a v4 ancorava diagnósticos) não serve mais. O que é do
+   pacote e não da v4 (renderSvg, modelOf, topologyKeys, anchorsOf, targetOf, navOf)
+   as páginas tomam direto de __odds["odds-layout/index.js"]. */
 const BRIDGE = `
 (function () {
   "use strict";
@@ -56,9 +56,7 @@ const BRIDGE = `
     state: state,
     MODELS: F.MODELS, BREAKS: F.BREAKS, EXTRA: F.EXTRA, declared: F.declared, canon: F.canon, sourceOf: F.sourceOf,
     layout: L.layout, placeLabels: L.placeLabels, measure: L.measure, tilesMoved: L.tilesMoved, tierOf: L.tierOf,
-    build: function (geo, diags) { return L.renderSvg(geo, diags, state); },
-    renderSvg: L.renderSvg, modelOf: L.modelOf, topologyKeys: L.topologyKeys,
-    anchorsOf: L.anchorsOf, targetOf: L.targetOf, navOf: L.navOf
+    build: function (geo, diags) { return L.renderSvg(geo, diags, state); }
   };
 })();
 `;
@@ -209,7 +207,14 @@ export async function embedBlocks() {
     "   especificidade que eles (que estão em :where), então vencem sempre. */\n" +
     ":root{\n" + Object.entries(ALIAS).map(([v, t]) => `  --odds-map-${v}:var(${t});`).join("\n") + "\n}";
 
-  /* ---- 3. o marketplace de 50, como texto ---- */
+  /* ---- 3. os tokens da bancada: um arquivo, as duas páginas ---- */
+  const tokensCss = read(path.join(here, "bancada-tokens.css")).trim();
+  if (/<\/style/i.test(tokensCss)) throw new Error("bancada-tokens.css contém </style");
+  const tokenNames = new Set([...tokensCss.matchAll(/(--[\w-]+)\s*:/g)].map((m) => m[1]));
+  const noToken = Object.values(ALIAS).filter((t) => !tokenNames.has(t));
+  if (noToken.length) throw new Error(`apelido para token que bancada-tokens.css não define: ${noToken.join(", ")}`);
+
+  /* ---- 4. o marketplace de 50, como texto ---- */
   /* A fonte sai do `marketplace()` das fixtures do pacote, o porte do gerador da v4
      (modo "rich", com description e owner de subdomínio) sobre o modelo documentado.
      Tem de validar limpa: a bancada começa sem erro, e os erros são os que quem
@@ -223,6 +228,7 @@ export async function embedBlocks() {
   /* ---- montagem ---- */
   const blocks = {
     CORE: `<script>\n${coreScript}\n</script>`,
+    TOKENS: `<style id="tokens">\n${tokensCss}\n</style>`,
     V3CSS: `<style id="v3css">\n${mapCss}\n${aliasCss}\n</style>`,
     V3SRC: `<script>${BRIDGE}</script>`,
     M50: `<script>globalThis.__M50 = ${JSON.stringify({ file: m50.file, text: m50.text })};</script>`,

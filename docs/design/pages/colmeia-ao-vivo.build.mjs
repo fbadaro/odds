@@ -4,7 +4,7 @@
  * que o que está embutido não envelheceu.
  *
  *   node docs/design/pages/colmeia-ao-vivo.build.mjs           confere; sai com 1 se algo envelheceu
- *   node docs/design/pages/colmeia-ao-vivo.build.mjs --write   regrava os três blocos gerados
+ *   node docs/design/pages/colmeia-ao-vivo.build.mjs --write   regrava os blocos gerados
  *
  * Por que embutir: a página tem de abrir por file:// (é assim que a skill page-shot
  * captura) e como artifact publicado, e nos dois casos não há servidor para resolver
@@ -20,10 +20,12 @@
  * formas reconhecidas são só as que o `tsc` e o Chevrotain emitem hoje; forma nova
  * derruba o build em vez de passar calada.
  *
- * Quatro blocos, delimitados por marcadores dentro da página:
+ * Cinco blocos, delimitados por marcadores dentro da página:
  *
  *   1. CORE   chevrotain + @odds/core (dist) + @odds/messages (dist, com o JSON inline)
  *             + @odds/layout (dist, com as fixtures; desde 2026-10-21)
+ *   ·  TOKENS os tokens de cor da bancada, de bancada-tokens.css: a mesma paleta nas
+ *             duas páginas vivas (desde 2026-10-21; antes vinham no V3CSS)
  *   2. V3CSS  o map.css do @odds/layout, com os apelidos que o vestem com os tokens da
  *             bancada (até 2026-10-21, o <style> da colmeia-v4.html, inteiro)
  *   3. V3SRC  a ponte que monta o __v3 a partir do pacote (até 2026-10-21, o <script>

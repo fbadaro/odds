@@ -1,11 +1,13 @@
 <title>Colmeia ao vivo</title>
-<!--BUILD:b12cc22dd121-->
+<!--BUILD:8aedd05d2637-->
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-<style id="tokens">
-/* Os tokens da bancada, os do DESIGN.md. Até 2026-10-21 vinham no bloco da
-   colmeia-v4 embutido (#v3css); desde que o mapa vem do @odds/layout, a paleta é
-   da página, e o mapa a veste pelos apelidos que o build põe no fim do #v3css. */
+<!--TOKENS--><style id="tokens">
+/* Os tokens da bancada, os do DESIGN.md: a fonte única das duas páginas vivas
+   (playground.html, colmeia-ao-vivo.html), que o colmeia-embed.mjs embute como o
+   bloco TOKENS. Até 2026-10-21 vinham no bloco da colmeia-v4 embutido (#v3css);
+   desde que o mapa vem do @odds/layout, a paleta é da bancada, e o mapa a veste
+   pelos apelidos que o build põe no fim do #v3css. */
 :root{
   color-scheme: light;
   --c-bg:250 250 253; --c-panel:255 255 255; --c-panel2:244 243 250; --c-border:230 228 242;
@@ -38,7 +40,7 @@
   --mix-core:10%; --mix-sup:10%; --mix-gen:7%;
   --tile-core:46%; --tile-sup:44%; --tile-gen:28%; --tile-edge:40%;
 }
-</style>
+</style><!--/TOKENS-->
 <style>
 /* A casca da colmeia-v4, inteira (2026-10-21): esta página é a v4 com o editor ao
    lado, e veste a mesma casca. Vinha no bloco embutido (#v3css); desde que o mapa
@@ -5902,9 +5904,7 @@ __exp.renderMessage = renderMessage; __exp.render = render; __exp.coveredCodes =
     state: state,
     MODELS: F.MODELS, BREAKS: F.BREAKS, EXTRA: F.EXTRA, declared: F.declared, canon: F.canon, sourceOf: F.sourceOf,
     layout: L.layout, placeLabels: L.placeLabels, measure: L.measure, tilesMoved: L.tilesMoved, tierOf: L.tierOf,
-    build: function (geo, diags) { return L.renderSvg(geo, diags, state); },
-    renderSvg: L.renderSvg, modelOf: L.modelOf, topologyKeys: L.topologyKeys,
-    anchorsOf: L.anchorsOf, targetOf: L.targetOf, navOf: L.navOf
+    build: function (geo, diags) { return L.renderSvg(geo, diags, state); }
   };
 })();
 </script><!--/V3SRC-->
