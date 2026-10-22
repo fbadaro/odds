@@ -238,6 +238,8 @@ The system runs at two densities. The **landing** is spacious — large display 
 
 All colors are implemented as CSS custom properties holding **RGB triplets**, consumed with `rgb(var(--token) / <alpha>)`. This lets any token take an opacity without defining a second color.
 
+The block below, and the `CSS --c-…` names in the lists that follow, are the bench's names (`docs/design/pages/`); the app's `tokens.css` is generated from the front matter and uses the front-matter names instead (`--c-canvas`, `--c-surface`, `--c-surface-muted`, `--c-hairline`, `--c-ink-mute`…) — the values bind, the names are free (ADR-0014, ADR-0018).
+
 ```css
 :root {
   color-scheme: light;

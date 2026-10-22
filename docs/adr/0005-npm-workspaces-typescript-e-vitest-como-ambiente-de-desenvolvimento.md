@@ -13,6 +13,8 @@ superseded-by: —
 
 > **Bundler decidido em 2026-10-20.** O bundler que este ADR deixou "para outro ADR" é o Vite (`ADR-0015`), e entra só na aplicação. O `tsc` segue como está, para checar tipos e construir as bibliotecas sem impor bundle a quem as consome. Uma consequência dele volta para cá: o Vitest precisa sair da linha 2.1 para acompanhar o Vite 8.
 
+> **Linter, em parte, desde 2026-10-22 (`ADR-0019`).** Existe ESLint, e só na aplicação (`apps/playground`, `npm run lint`): as regras de hooks do React, das quais o React Compiler depende, e a fronteira do Base UI que o `ADR-0014` pôs na *Reversão* dele. Os pacotes de `packages/` seguem sem linter. Isso não contraria o argumento deste ADR, ele o aplica: na aplicação, as duas regras tinham motivo concreto antes da primeira linha; nos pacotes, ninguém ainda propôs uma regra com motivo, e a fronteira que importa ali é garantida pelo grafo de dependências.
+
 ## Contexto
 
 A `HEALTH.md` §9.2 marca **R6.6** (ambiente de desenvolvimento) em 2 de 10: *"Só existe o `health_check.py`, que afere spec e não constrói nada. Sem build, sem lint, sem test runner, sem instrução de setup."* O `ADR-0004` decidiu a forma do repositório; falta o que a executa.

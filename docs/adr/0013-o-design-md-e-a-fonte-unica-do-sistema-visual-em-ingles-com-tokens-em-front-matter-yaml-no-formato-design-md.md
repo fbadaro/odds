@@ -13,6 +13,8 @@ superseded-by: —
 
 > **Leitura fixada em 2026-10-20 pelo `ADR-0014`.** O arquivo manda nos **valores** (cor, espaço, raio, sombra, tipografia), e os componentes que ele descreve são especificação visual, não nomes obrigatórios no código: um `<Button variant="primary">` que cumpra o `button-primary` está conforme. A saída prevista na *Reversão* abaixo, tokens gerados ou validados por build, fica possível agora que há framework (`ADR-0014`) e bundler (`ADR-0015`), e é decidida na conversa sobre como construir a aplicação.
 
+> **A saída da *Reversão*, tomada em 2026-10-22 pelo `ADR-0018`.** Os tokens da aplicação são gerados do front matter deste arquivo para `apps/playground/src/styles/tokens.css`, versionado e conferido por teste, como o `messages.json`. Sombras e gradiente entraram no front matter num grupo novo, `elevation`. O front matter continua sendo a única coisa que se edita, então a recusa de *dois arquivos para uma fonte única* continua de pé: o segundo arquivo é derivado, não um segundo original.
+
 ## Contexto
 
 O `DESIGN.md` nasceu em 2026-09-07 como rascunho de trabalho em português, em prosa com nove seções numeradas. Ele misturava três coisas: o sistema propriamente dito (tokens de cor como triplas RGB, três famílias tipográficas, escala de raios, sombras tingidas), a **procedência** do sistema e o **histórico das hipóteses**. A procedência era o método de tokens, a sombra tingida, a eyebrow e a pill mono, tomados da referência <https://studio.mjolnix.com.br/>, sem tomar nome, marca, estrutura de página nem texto. O histórico incluía o azul de planta trocado pelo roxo na segunda rodada, o marca-texto solar recusado na v4, a troca da Bricolage pela Montserrat e o playground estilizado apagado em 2026-09-11.

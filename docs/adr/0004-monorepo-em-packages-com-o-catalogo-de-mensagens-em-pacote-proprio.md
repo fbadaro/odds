@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0004 — Monorepo em packages/, com o catálogo de mensagens em pacote próprio
 
+> **Endereço da aplicação refinado em 2026-10-22 pelo `ADR-0016`.** O `@odds/playground` desta tabela mora em `apps/playground`, não em `packages/`, que passa a guardar só bibliotecas (`@odds/core`, `@odds/messages` e o `@odds/layout` do `ADR-0009`). A fronteira que este ADR decidiu, `@odds/core` sem dependência de `@odds/messages`, e a divisão entre núcleo e produto ficam como estão: o `ADR-0016` muda o endereço, não a decisão.
+
 ## Contexto
 
 O primeiro código do projeto precisa de um lugar. Duas coisas do modelo já existente pressionam a escolha, e a segunda é a que decide.
