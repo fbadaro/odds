@@ -9,7 +9,7 @@
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
     "./fixtures": { "types": "./dist/fixtures/index.d.ts", "default": "./dist/fixtures/index.js" },
-    "./map.css": "./src/map.css"
+    "./map.css": "./map.css"
   },
   "scripts": { "build": "tsc --build" },
   "dependencies": { "@odds/core": "*" }
