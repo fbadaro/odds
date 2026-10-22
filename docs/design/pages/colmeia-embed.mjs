@@ -39,6 +39,7 @@ const ALIAS = {
   "shadow-strength": "--shadow-strength",
   "mix-core": "--mix-core", "mix-sup": "--mix-sup", "mix-gen": "--mix-gen",
   "tile-core": "--tile-core", "tile-sup": "--tile-sup", "tile-gen": "--tile-gen", "tile-edge": "--tile-edge",
+  edge: "--c-edge",
 };
 
 /* A ponte: o __v3 que as páginas chamam, montado do pacote embutido no CORE (que

@@ -1,8 +1,9 @@
 @import "./tokens.css";
 @import "@odds/layout/map.css";
 
-/* Liga o mapa aos tokens da aplicação (ambos são triplets RGB). As --odds-map-tile-* e
-   --odds-map-mix-* não têm token na aplicação e ficam com os padrões do map.css. */
+/* Liga o mapa aos tokens da aplicação (ambos são triplets RGB). As --odds-map-tile-*,
+   --odds-map-mix-* e --odds-map-edge (a linha cinza em repouso) não têm token na
+   aplicação e ficam com os padrões do map.css. */
 :root {
   --odds-map-bg: var(--c-canvas);
   --odds-map-panel: var(--c-surface);

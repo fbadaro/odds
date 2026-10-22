@@ -2,13 +2,16 @@
    (playground.html, colmeia-ao-vivo.html), que o colmeia-embed.mjs embute como o
    bloco TOKENS. Até 2026-10-21 vinham no bloco da colmeia-v4 embutido (#v3css);
    desde que o mapa vem do @odds/layout, a paleta é da bancada, e o mapa a veste
-   pelos apelidos que o build põe no fim do #v3css. */
+   pelos apelidos que o build põe no fim do #v3css. --c-edge (a linha em repouso)
+   veio do #navcss das páginas em 2026-10-22, quando o mapa passou a consumi-la como
+   --odds-map-edge; as variantes -lit e -far, de interação, ficaram lá. */
 :root{
   color-scheme: light;
   --c-bg:250 250 253; --c-panel:255 255 255; --c-panel2:244 243 250; --c-border:230 228 242;
   --c-ink:27 26 36; --c-dim:107 104 128;
   --c-accent:108 64 217; --c-accent-lift:138 91 240; --c-azure:61 111 232; --c-pulse:35 168 205;
   --c-solar:255 197 61; --c-error:192 52 43; --c-warning:166 106 0; --c-info:91 107 124;
+  --c-edge:128 125 146;
   --shadow-strength:.14;
   --mix-core:17%; --mix-sup:9%; --mix-gen:6%;
   --tile-core:62%; --tile-sup:36%; --tile-gen:20%; --tile-edge:46%;
@@ -20,6 +23,7 @@
     --c-ink:236 235 245; --c-dim:154 151 174;
     --c-accent:173 141 255; --c-accent-lift:198 176 255; --c-azure:125 163 255; --c-pulse:94 208 238;
     --c-solar:255 209 99; --c-error:224 121 111; --c-warning:217 164 65; --c-info:147 163 179;
+    --c-edge:118 115 140;
     --shadow-strength:.5;
     --mix-core:10%; --mix-sup:10%; --mix-gen:7%;
     --tile-core:46%; --tile-sup:44%; --tile-gen:28%; --tile-edge:40%;
@@ -31,6 +35,7 @@
   --c-ink:236 235 245; --c-dim:154 151 174;
   --c-accent:173 141 255; --c-accent-lift:198 176 255; --c-azure:125 163 255; --c-pulse:94 208 238;
   --c-solar:255 209 99; --c-error:224 121 111; --c-warning:217 164 65; --c-info:147 163 179;
+  --c-edge:118 115 140;
   --shadow-strength:.5;
   --mix-core:10%; --mix-sup:10%; --mix-gen:7%;
   --tile-core:46%; --tile-sup:44%; --tile-gen:28%; --tile-edge:40%;
