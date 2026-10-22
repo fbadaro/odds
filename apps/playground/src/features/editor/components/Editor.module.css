@@ -1,0 +1,21 @@
+.editor {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: var(--space-md);
+  resize: none;
+  border: 0;
+  outline: none;
+  background: rgb(var(--c-surface));
+  color: rgb(var(--c-ink));
+  font: var(--font-mono-sm-weight) var(--font-mono-sm-size) / var(--font-mono-sm-line-height) var(--font-mono-sm-family);
+  letter-spacing: var(--font-mono-sm-letter-spacing);
+  font-variant-ligatures: none;
+  tab-size: 2;
+  white-space: pre;
+}
+
+.editor:focus-visible {
+  box-shadow: inset 0 0 0 2px rgb(var(--c-accent) / 0.6);
+}

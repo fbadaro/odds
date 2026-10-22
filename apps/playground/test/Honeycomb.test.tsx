@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { Honeycomb } from "../src/features/honeycomb/components/Honeycomb";
 import { createPlaygroundStore, usePlayground } from "../src/stores/playground";
@@ -9,7 +9,6 @@ const drawing = () => createPlaygroundStore().getState().drawing!;
 describe("Honeycomb", () => {
   beforeEach(() => usePlayground.setState({ ...initial, drawing: drawing(), stale: false }, true));
   afterEach(() => {
-    cleanup();
     usePlayground.setState(initial, true);
   });
 

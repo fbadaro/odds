@@ -40,7 +40,12 @@ export default defineConfig({
       {
         resolve: { alias },
         // Componentes (.tsx) precisam de DOM; a logica das apps (.ts) le arquivos e fica em node.
-        test: { name: "apps-dom", environment: "jsdom", include: ["apps/*/test/**/*.test.tsx"] },
+        test: {
+          name: "apps-dom",
+          environment: "jsdom",
+          include: ["apps/*/test/**/*.test.tsx"],
+          setupFiles: [at("apps/playground/test/setup-dom.ts")],
+        },
       },
     ],
   },
