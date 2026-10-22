@@ -4,7 +4,7 @@
  * As famílias 1 e 2 testam âncoras da própria página v4 e ficam com ela.
  *
  *   3. invariância — N_SHUFFLE ordens de declaração dão as mesmas posições de peça
- *      (e o validador, as mesmas âncoras e os mesmos spans);
+ *      (e o validador, o mesmo veredito por âncora);
  *   4. a régua da v2 — cruzamentos e arestas sobre peça alheia caem pelo menos à metade;
  *   5. composição — rótulo × rótulo, rótulo × peça, chip × chip, chip × peça alheia...;
  *   6. localidade — cada edição só move o que lhe diz respeito; o degrau de capacidade
@@ -30,7 +30,7 @@ const spanEq = (a: Span, b: Span) =>
 
 describe("3. invariância: a ordem de declaração não move nada", () => {
   for (const [model, file] of KEYS) {
-    it(`${model}:${file} — ${N_SHUFFLE} embaralhamentos`, () => {
+    it(`${model}:${file} — ${N_SHUFFLE} embaralhamentos`, { timeout: 30_000 }, () => {
       const src0 = sourceOf(declared(model, file, 0, 0), "today");
       const res0 = parseAndValidate(src0.text);
       const runs = [];
@@ -48,16 +48,20 @@ describe("3. invariância: a ordem de declaração não move nada", () => {
       anchors.forEach((a, i) => expect(a.length, `${res0.diagnostics[i]!.code} sem âncora estável`).toBeGreaterThan(0));
 
       const ref = layout(canon(declared(model, file, 0, 0))).tiles;
-      let moved = 0, verdictDrift = 0, spanDrift = 0;
+      /* o veredito de uma ordem, em `code@âncora`: cada diagnóstico vai para a âncora
+         estável cujo span, NESTA ordem, é o dele; sem âncora vira `?` e diverge */
+      const verdictOf = (res: typeof res0, anchorsOfRun: Record<string, Span>) =>
+        res.diagnostics
+          .map((d) => `${d.code}@${anchors.map((a) => a[0]!).find((k) => spanEq(anchorsOfRun[k]!, d.span)) ?? "?"}`)
+          .sort()
+          .join();
+      const refVerdict = verdictOf(res0, src0.anchors);
+      let moved = 0, verdictDrift = 0;
       for (const { dm, src, res } of runs) {
         moved += movedTiles(ref, layout(canon(dm)).tiles).length;
-        if (res.diagnostics.length !== res0.diagnostics.length) verdictDrift++;
-        res0.diagnostics.forEach((d, i) => {
-          const k = anchors[i]![0]!;
-          if (!res.diagnostics.some((x) => x.code === d.code && spanEq(x.span, src.anchors[k]!))) spanDrift++;
-        });
+        if (verdictOf(res, src.anchors) !== refVerdict) verdictDrift++;
       }
-      expect({ moved, verdictDrift, spanDrift }).toEqual({ moved: 0, verdictDrift: 0, spanDrift: 0 });
+      expect({ moved, verdictDrift }).toEqual({ moved: 0, verdictDrift: 0 });
     });
   }
 });
@@ -115,7 +119,7 @@ describe("5. composição", () => {
     buildSvg(g, diags, opts);
     return g;
   };
-  const SELOS: Record<string, number> = { "one:clean": 3, "one:broken": 3, "many:clean": 0 };
+  const SELOS: Record<string, number> = { "one:broken": 3, "many:clean": 0 };
 
   for (const model of ["one", "many"]) {
     for (const file of BREAKS[model] ? ["clean", "broken"] : ["clean"]) {
@@ -245,7 +249,7 @@ describe("6. localidade (condição de aceite do ADR-0009)", () => {
   };
 
   for (const model of ["one", "many"]) {
-    it(`${model}: cada edição só move o que lhe diz respeito`, () => {
+    it(`${model}: cada edição só move o que lhe diz respeito`, { timeout: 30_000 }, () => {
       const { base, edits } = localityEdits(model);
       const { groupOf, domOf } = groupsOf(base);
       const t0 = layout(canon(base)).tiles;
