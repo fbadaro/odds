@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --build",
     "health": "python3 .claude/skills/health-check/scripts/health_check.py",
-    "generate:messages": "node packages/messages/scripts/extract-messages.mjs"
+    "generate:messages": "node packages/messages/scripts/extract-messages.mjs",
+    "generate:tokens": "node apps/playground/scripts/generate-tokens.mjs"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

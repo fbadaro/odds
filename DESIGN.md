@@ -130,6 +130,16 @@ spacing:
   5xl: 64px
   6xl: 96px
 
+elevation:
+  shadow-strength: "0.14"
+  shadow-strength-dark: "0.5"
+  sm: "0 1px 2px rgb(27 27 25 / calc({elevation.shadow-strength} * .4))"
+  card: "0 18px 44px -22px rgb({colors.accent} / calc({elevation.shadow-strength} * 2))"
+  cta: "0 10px 30px -8px rgb({colors.accent} / calc({elevation.shadow-strength} * 4))"
+  island: "0 2px 10px rgb(27 27 25 / calc({elevation.shadow-strength} * .5))"
+  lift: "0 22px 48px -20px rgb({colors.accent} / calc({elevation.shadow-strength} * 5))"
+  gradient-primary: "linear-gradient(180deg, rgb({colors.accent-lift}), rgb({colors.accent}))"
+
 components:
   button-primary:
     backgroundColor: "{colors.accent}"
@@ -365,13 +375,7 @@ The landing is read once, so it breathes: 96px between sections, one idea per ba
 
 Shadows **tint, they don't darken**: the color comes from the accent and the spread is negative, so the shadow is smaller than the element and suggests height without dirtying the edge. A single variable per theme, `--shadow-strength`, scales every shadow — a tinted shadow that works in light mode disappears in dark mode, and one number fixes both.
 
-```css
---sh-sm:     0 1px 2px rgb(27 27 25 / calc(var(--shadow-strength) * .4));
---sh-card:   0 18px 44px -22px rgb(var(--c-accent) / calc(var(--shadow-strength) * 2));
---sh-cta:    0 10px 30px -8px rgb(var(--c-accent) / calc(var(--shadow-strength) * 4));
---sh-island: 0 2px 10px rgb(27 27 25 / calc(var(--shadow-strength) * .5));
---sh-lift:   0 22px 48px -20px rgb(var(--c-accent) / calc(var(--shadow-strength) * 5));
-```
+The five shadows live in the front matter's `elevation` group — `{elevation.sm}`, `{elevation.card}`, `{elevation.cta}`, `{elevation.island}` and `{elevation.lift}` — as CSS `--sh-sm`, `--sh-card`, `--sh-cta`, `--sh-island` and `--sh-lift`. Each is built from `{elevation.shadow-strength}` (`0.14` in light, `0.5` in dark, via `shadow-strength-dark`) and, when tinted, from `{colors.accent}`. The values are defined once, there; this section says what they are for.
 
 | Level | Token | Use |
 |---|---|---|
@@ -414,7 +418,7 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 - Hover: `filter: brightness(1.08)`.
 
 **`button-primary-gradient`** — the same button, opted into the gradient (CSS: `.primary.gradient`).
-- Replaces only the background: vertical gradient `{colors.accent-lift}` → `{colors.accent}`. The stops are tokens, so each theme draws its own gradient. Counts toward the gradient's twice-per-screen limit; everything else is `button-primary`.
+- Replaces only the background: the vertical gradient `{elevation.gradient-primary}` (CSS `--grad-primary`), `{colors.accent-lift}` → `{colors.accent}`. The stops are tokens, so each theme draws its own gradient. Counts toward the gradient's twice-per-screen limit; everything else is `button-primary`.
 
 **`button-secondary`** — the alternative action.
 - Background `{colors.surface}`, 1px `{colors.hairline}` border, text `{colors.ink}` in `{typography.button}`, same geometry, shadow `--sh-sm`.

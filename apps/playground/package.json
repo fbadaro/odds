@@ -1,0 +1,12 @@
+{
+  "name": "@odds/playground",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:tokens": "node scripts/generate-tokens.mjs"
+  },
+  "devDependencies": {
+    "yaml": "2.9.1"
+  }
+}
