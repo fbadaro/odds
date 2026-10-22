@@ -8,6 +8,7 @@ export { placeLabels } from "./labels.js";
 export { measure, movedTiles, tilesMoved, tierOf } from "./metrics.js";
 export type {
   Axial,
+  Badge,
   Box,
   CanonModel,
   CanonRelation,
@@ -35,5 +36,8 @@ export type {
   Region,
   RoutedRelation,
   SubSpot,
+  Target,
+  TargetedDiagnostic,
   TerritorySd,
+  ViewOptions,
 } from "./types.js";

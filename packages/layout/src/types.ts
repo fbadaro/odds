@@ -5,6 +5,8 @@
  * (`Mass.c`, `Group.cells`…): são preenchidos por fases sucessivas do layout.
  */
 
+import type { Diagnostic } from "@odds/core";
+
 /** Ponto em pixels. */
 export type Point = [number, number];
 /** Célula em coordenada axial `[q, r]`. */
@@ -207,6 +209,14 @@ export interface Geometry {
   congested: number;
   /** Escrito pelo render, não pelo layout (o build da v4 o escreve na geo). */
   viewBox?: [number, number, number, number];
+  /** Escrito pelo render: os selos de aresta já postos, que `badgeSpot` evita. */
+  badges?: Badge[];
+  /** Escrito pelo render: os rótulos que ele desenhou. */
+  labels?: LabelResult;
+}
+export interface Badge {
+  rk: string;
+  p: Point;
 }
 
 /* ---- rótulos ---- */
@@ -250,3 +260,28 @@ export interface Measure {
   tiles: number;
   rels: number;
 }
+
+/* ---- o desenho ---- */
+
+/** O estado da v4 que o `build` lia de `state`. */
+export interface ViewOptions {
+  view: "flow" | "contain";
+  tags: "on" | "off";
+  /** Os valores que a v4 aceita em `state.labels`: `"ctx"`, `"sub"` ou `"dom"`. */
+  labels: string;
+  /** O contexto selecionado. */
+  sel: string | null;
+  /** O subdomínio selecionado, `"Dominio/Subdominio"`. */
+  selSub: string | null;
+  /** O índice do diagnóstico selecionado em `diags`. */
+  selDiag: number | null;
+}
+/** Onde um diagnóstico mora no mapa. */
+export type Target =
+  | { kind: "dom"; dom: string }
+  | { kind: "sub"; sub: string }
+  | { kind: "tile"; ctx: string }
+  | { kind: "edge"; rk: string }
+  | { kind: "port"; rk: string; ctx: string }
+  | { kind: "file" };
+export type TargetedDiagnostic = Pick<Diagnostic, "code" | "severity" | "data" | "span"> & { target: Target };
