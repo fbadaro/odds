@@ -5,8 +5,10 @@
    para estas (ex.: accent: var(NOSSO-ACCENT)).
    Fora daqui, de proposito: casca de pagina (body, .wrap, .seg, botoes, cards, fonte,
    diagnosticos, legenda) e toda interacao da bancada (.lit, .focus, .mute, svg.far,
-   animacao de data-flow, mapeamento [data-type] -> --t). */
-:root{
+   animacao de data-flow, mapeamento [data-type] -> --t).
+   Os padroes tem especificidade zero (:where) de proposito: os aliases :root de quem
+   consome sempre vencem, em qualquer ordem. */
+:where(:root){
   color-scheme: light;
   --odds-map-bg:250 250 253; --odds-map-panel:255 255 255; --odds-map-panel2:244 243 250; --odds-map-border:230 228 242;
   --odds-map-ink:27 26 36; --odds-map-dim:107 104 128;
@@ -17,7 +19,7 @@
   --odds-map-tile-core:62%; --odds-map-tile-sup:36%; --odds-map-tile-gen:20%; --odds-map-tile-edge:46%;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :where(:root:not([data-theme="light"])){
     color-scheme: dark;
     --odds-map-bg:18 17 26; --odds-map-panel:26 25 38; --odds-map-panel2:35 33 47; --odds-map-border:50 47 69;
     --odds-map-ink:236 235 245; --odds-map-dim:154 151 174;
@@ -28,7 +30,7 @@
     --odds-map-tile-core:46%; --odds-map-tile-sup:44%; --odds-map-tile-gen:28%; --odds-map-tile-edge:40%;
   }
 }
-:root[data-theme="dark"]{
+:where(:root[data-theme="dark"]){
   color-scheme: dark;
   --odds-map-bg:18 17 26; --odds-map-panel:26 25 38; --odds-map-panel2:35 33 47; --odds-map-border:50 47 69;
   --odds-map-ink:236 235 245; --odds-map-dim:154 151 174;
