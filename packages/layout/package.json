@@ -1,0 +1,16 @@
+{
+  "name": "@odds/layout",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Layout em colmeia e desenho do mapa de contextos ODDS.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./fixtures": { "types": "./dist/fixtures.d.ts", "default": "./dist/fixtures.js" },
+    "./map.css": "./src/map.css"
+  },
+  "scripts": { "build": "tsc --build" },
+  "dependencies": { "@odds/core": "*" }
+}
