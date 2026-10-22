@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/core" },
     { "path": "packages/messages" },
-    { "path": "packages/layout" }
+    { "path": "packages/layout" },
+    { "path": "apps/playground" }
   ]
 }

@@ -66,3 +66,4 @@ docs/design/canvas/**/*.html
 # As specs do brainstorming terminam em -design.md, e no macOS (core.ignorecase) a
 # regra acima as pegaria também.
 !docs/superpowers/specs/*-design.md
+.tsbuild/
