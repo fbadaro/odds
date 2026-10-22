@@ -63,3 +63,6 @@ docs/design/canvas/**/*.html
 # DESIGN.md versionado é o da raiz, a fonte única do sistema visual (ADR-0013).
 *DESIGN.md
 !/DESIGN.md
+# As specs do brainstorming terminam em -design.md, e no macOS (core.ignorecase) a
+# regra acima as pegaria também.
+!docs/superpowers/specs/*-design.md
