@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { SubdomainType } from "@odds/core";
 import { layout, renderSvg } from "@odds/layout";
-import type { Geometry, LayoutModel, ViewOptions } from "@odds/layout";
+import type { Geometry, LayoutModel, TargetedDiagnostic, ViewOptions } from "@odds/layout";
 import { marketplace } from "@odds/layout/fixtures";
 import { analyze, type Analysis } from "../lib/analyze";
 
@@ -21,39 +21,63 @@ export interface PlaygroundState {
   drawing: Drawing | null;
   stale: boolean;
   waiting: boolean;
+  /** The message of the last `layout`/`renderSvg` throw; null after every successful draw (the bench's flag). */
+  layoutError: string | null;
   view: ViewOptions;
-  /** The bench's `onText`. */
+  /** The bench's `onText`. Never throws: a layout failure keeps the old drawing and sets `layoutError`. */
   setText(text: string): void;
   /** The end of the pause. */
   flush(): void;
 }
 
-const FILE = marketplace().file;
+const MARKETPLACE = marketplace();
+const FILE = MARKETPLACE.file;
 const INITIAL_VIEW: ViewOptions = { view: "flow", tags: "on", labels: "ctx", sel: null, selSub: null, selDiag: null };
 
 const hasMass = (m: LayoutModel) => m.domains.some((d) => d.subdomains.some((s) => s.contexts.length > 0) || (d.external?.length ?? 0) > 0);
+const messageOf = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
-export function createPlaygroundStore(initialText: string = marketplace().text) {
+type Keys = { topo: string; full: string };
+/** A draw either lands or fails with the message; the caller decides what to keep. */
+type Drawn = { ok: true; drawing: Drawing | null } | { ok: false; error: string };
+
+export function createPlaygroundStore(initialText: string = MARKETPLACE.text) {
   // per store instance: the memory modelOf reads and updates, and the pause
   const lastType = new Map<string, SubdomainType>();
-  let pending: { model: LayoutModel; keys: { topo: string; full: string } } | null = null;
+  let pending: { model: LayoutModel; keys: Keys } | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
+  // the diagnostics of the last text that had a tree: what a frozen map keeps showing (the bench's lastDiags)
+  let lastDiags: TargetedDiagnostic[] = [];
 
   const clearPending = () => {
     pending = null;
     clearTimeout(timer);
   };
 
-  return create<PlaygroundState>()((set, get) => {
-    const paint = (geo: Geometry, analysis: Analysis): string => renderSvg(geo, analysis.diagnostics, get().view);
-
-    /** Lay out and draw; returns the patch to apply. */
-    const relayout = (model: LayoutModel, keys: { topo: string; full: string }, analysis: Analysis): Partial<PlaygroundState> => {
+  /** Lay out and draw, guarded as the bench's `relayout` is: a throw becomes a message, never an exception. */
+  const draw = (model: LayoutModel, keys: Keys, diags: TargetedDiagnostic[], view: ViewOptions): Drawn => {
+    try {
       const geo = layout(model);
-      if (Object.keys(geo.tiles).length === 0) return { drawing: null, stale: false, waiting: false };
-      // the flag follows the current text: a pending layout can land while the text is broken
-      return { drawing: { geo, svg: paint(geo, analysis), topo: keys.topo, full: keys.full }, stale: !analysis.astGenerated, waiting: false };
-    };
+      if (Object.keys(geo.tiles).length === 0) return { ok: true, drawing: null };
+      return { ok: true, drawing: { geo, svg: renderSvg(geo, diags, view), topo: keys.topo, full: keys.full } };
+    } catch (e) {
+      return { ok: false, error: messageOf(e) };
+    }
+  };
+
+  /** New markers over the geometry already drawn; guarded the same way. */
+  const repaint = (cur: Drawing, diags: TargetedDiagnostic[], view: ViewOptions): Drawn => {
+    try {
+      return { ok: true, drawing: { ...cur, svg: renderSvg(cur.geo, diags, view) } };
+    } catch (e) {
+      return { ok: false, error: messageOf(e) };
+    }
+  };
+
+  return create<PlaygroundState>()((set, get) => {
+    /** The patch of a draw: on failure the previous drawing stays and the flag holds the message. */
+    const patchOf = (r: Drawn, extra: Partial<PlaygroundState> = {}): Partial<PlaygroundState> =>
+      r.ok ? { drawing: r.drawing, layoutError: null, ...extra } : { layoutError: r.error, waiting: false };
 
     const flush = () => {
       if (!pending) {
@@ -62,47 +86,58 @@ export function createPlaygroundStore(initialText: string = marketplace().text) 
       }
       const { model, keys } = pending;
       pending = null;
-      set(relayout(model, keys, get().analysis));
+      const { analysis, view } = get();
+      // the flag follows the current text: a pending layout can land while the text is broken,
+      // and then the frozen map keeps the last tree's markers, not the syntax error's
+      const r = draw(model, keys, analysis.astGenerated ? analysis.diagnostics : lastDiags, view);
+      set(patchOf(r, { stale: r.ok && r.drawing !== null && !analysis.astGenerated, waiting: false }));
     };
 
     const setText = (text: string) => {
       const analysis = analyze(text, FILE, lastType);
-      const cur = get().drawing;
+      const { drawing: cur, view } = get();
       if (!analysis.astGenerated || !analysis.model || !analysis.keys) {
-        // no tree: keep the last drawing, mark it stale (there may be none yet)
-        set({ text, analysis, stale: cur !== null });
+        // no tree: keep the last drawing, mark it stale (there may be none yet); the syntax banner takes the flag's place
+        set({ text, analysis, stale: cur !== null, layoutError: null });
         return;
       }
+      lastDiags = analysis.diagnostics;
       const { model, keys } = analysis;
+      const base = { text, analysis, stale: false, waiting: false };
       if (!hasMass(model)) {
         clearPending();
-        set({ text, analysis, drawing: null, stale: false, waiting: false });
+        set({ ...base, drawing: null, layoutError: null });
       } else if (cur && keys.full === cur.full) {
         clearPending();
-        set({ text, analysis, stale: false, waiting: false, drawing: { ...cur, svg: paint(cur.geo, analysis) } });
+        set({ ...base, ...patchOf(repaint(cur, analysis.diagnostics, view)) });
       } else if (cur && keys.topo === cur.topo) {
         clearPending();
-        set({ text, analysis, ...relayout(model, keys, analysis) });
+        set({ ...base, ...patchOf(draw(model, keys, analysis.diagnostics, view)) });
       } else if (!cur) {
         clearPending();
-        set({ text, analysis, ...relayout(model, keys, analysis) });
+        set({ ...base, ...patchOf(draw(model, keys, analysis.diagnostics, view)) });
       } else {
         // new topology: markers follow the text over the old geometry while the geometry waits
         pending = { model, keys };
         clearTimeout(timer);
         timer = setTimeout(flush, PAUSE_MS);
-        set({ text, analysis, stale: false, waiting: true, drawing: { ...cur, svg: paint(cur.geo, analysis) } });
+        set({ ...base, ...patchOf(repaint(cur, analysis.diagnostics, view)), waiting: true });
       }
     };
 
     const first = analyze(initialText, FILE, lastType);
-    let drawing: Drawing | null = null;
     const view = { ...INITIAL_VIEW };
-    if (first.model && first.keys && hasMass(first.model)) {
-      const geo = layout(first.model);
-      if (Object.keys(geo.tiles).length > 0) drawing = { geo, svg: renderSvg(geo, first.diagnostics, view), topo: first.keys.topo, full: first.keys.full };
+    let drawing: Drawing | null = null;
+    let layoutError: string | null = null;
+    if (first.model && first.keys) {
+      lastDiags = first.diagnostics;
+      if (hasMass(first.model)) {
+        const r = draw(first.model, first.keys, first.diagnostics, view);
+        if (r.ok) drawing = r.drawing;
+        else layoutError = r.error;
+      }
     }
-    return { text: initialText, analysis: first, drawing, stale: false, waiting: false, view, setText, flush };
+    return { text: initialText, analysis: first, drawing, stale: false, waiting: false, layoutError, view, setText, flush };
   });
 }
 

@@ -1,8 +1,20 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { layout, renderSvg } from "@odds/layout";
 import { marketplace } from "@odds/layout/fixtures";
 import { PAUSE_MS, createPlaygroundStore } from "../src/stores/playground";
 
+// pass-through spies, so a single test can make the layout throw
+vi.mock("@odds/layout", async (orig) => {
+  const m = await orig<typeof import("@odds/layout")>();
+  return { ...m, layout: vi.fn(m.layout), renderSvg: vi.fn(m.renderSvg) };
+});
+
 const base = marketplace().text;
+const boom = () => {
+  throw new Error("boom");
+};
+/** The diagnostic markers renderSvg drew (badges carry data-diag). */
+const markers = (svg: string) => (svg.match(/class="badge"/g) ?? []).length;
 
 /** A tag swapped for another one on the same side: same topology, new markers. */
 function tagSwapped(text: string): string {
@@ -154,5 +166,89 @@ describe("the text cycle", () => {
     a.getState().setText(withContext(base));
     expect(a.getState().waiting).toBe(true);
     expect(b.getState().waiting).toBe(false);
+  });
+});
+
+describe("a layout failure (the bench's try/catch around runLayout)", () => {
+  afterEach(() => {
+    // drop any unconsumed once-throw; mockReset goes back to the pass-through given to vi.fn
+    vi.mocked(layout).mockReset();
+    vi.mocked(renderSvg).mockReset();
+  });
+
+  it("setText does not throw: text and counts follow the keystroke, the drawing stays, the flag holds the message", () => {
+    const s = createPlaygroundStore();
+    const before = s.getState().drawing;
+    const broken = tagSwapped(base).replace(/^(\s*Affiliates.*Campaigns.*)$/m, "$1\n$1");
+    vi.mocked(layout).mockImplementationOnce(boom);
+    expect(() => s.getState().setText(broken)).not.toThrow();
+    const st = s.getState();
+    expect(st.text).toBe(broken);
+    expect(st.analysis.counts.error).toBeGreaterThan(0);
+    expect(st.drawing).toBe(before);
+    expect(st.layoutError).toBe("boom");
+    expect(st.waiting).toBe(false);
+    expect(st.stale).toBe(false);
+    // the next successful draw clears the flag
+    s.getState().setText(base);
+    expect(s.getState().layoutError).toBeNull();
+    expect(s.getState().drawing).not.toBe(before);
+  });
+
+  it("a throw in renderSvg is caught the same way", () => {
+    const s = createPlaygroundStore();
+    const before = s.getState().drawing;
+    vi.mocked(renderSvg).mockImplementationOnce(boom);
+    expect(() => s.getState().setText(tagSwapped(base))).not.toThrow();
+    expect(s.getState().text).toBe(tagSwapped(base));
+    expect(s.getState().drawing).toBe(before);
+    expect(s.getState().layoutError).toBe("boom");
+  });
+
+  it("a throw when the pause flushes: waiting clears, the old drawing stays, no exception escapes the timer", () => {
+    const s = createPlaygroundStore();
+    const before = s.getState().drawing!;
+    s.getState().setText(withContext(base));
+    expect(s.getState().waiting).toBe(true);
+    vi.mocked(layout).mockImplementationOnce(boom);
+    expect(() => vi.advanceTimersByTime(PAUSE_MS)).not.toThrow();
+    expect(s.getState().waiting).toBe(false);
+    expect(s.getState().drawing!.geo).toBe(before.geo);
+    expect(s.getState().layoutError).toBe("boom");
+  });
+
+  it("a throw on the initial draw: no drawing, the flag set, the store still built", () => {
+    vi.mocked(layout).mockImplementationOnce(boom);
+    const s = createPlaygroundStore();
+    expect(s.getState().drawing).toBeNull();
+    expect(s.getState().layoutError).toBe("boom");
+    s.getState().setText(base);
+    expect(s.getState().drawing).not.toBeNull();
+    expect(s.getState().layoutError).toBeNull();
+  });
+});
+
+describe("a late flush while the text is broken (the bench's flush paints lastDiags)", () => {
+  it("keeps the last tree's markers, not the syntax error's", () => {
+    const s = createPlaygroundStore();
+    // a drawn map with markers: a repeated line on a drawn pair
+    const line = /^\s*Affiliates.*Campaigns.*$/m.exec(base)!;
+    const marked = base.replace(line[0], line[0] + "\n" + line[0]);
+    s.getState().setText(marked);
+    expect(markers(s.getState().drawing!.svg)).toBeGreaterThan(0);
+    // topology change (the new context brings its own marker), then a syntax error before the pause ends
+    const grown = withContext(marked);
+    s.getState().setText(grown);
+    const { model: grownModel, diagnostics: treeDiags } = s.getState().analysis;
+    s.getState().setText(grown + "\ndomain {");
+    vi.advanceTimersByTime(PAUSE_MS);
+    const st = s.getState();
+    expect(st.stale).toBe(true);
+    // what the bench's flush paints: the pending geometry with the last tree's diagnostics
+    const bench = renderSvg(layout(grownModel!), treeDiags, st.view);
+    const syntaxOnly = renderSvg(layout(grownModel!), st.analysis.diagnostics, st.view);
+    expect(markers(bench)).toBeGreaterThan(markers(syntaxOnly));
+    expect(markers(st.drawing!.svg)).toBe(markers(bench));
+    expect(st.drawing!.svg).toBe(bench);
   });
 });

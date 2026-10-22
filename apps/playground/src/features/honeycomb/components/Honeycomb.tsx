@@ -10,6 +10,7 @@ import styles from "./Honeycomb.module.css";
 export function Honeycomb() {
   const svg = usePlayground((s) => s.drawing?.svg ?? null);
   const stale = usePlayground((s) => s.stale);
+  const layoutError = usePlayground((s) => s.layoutError);
   const mount = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -25,7 +26,15 @@ export function Honeycomb() {
     <div className={styles.root} data-testid="honeycomb" data-stale={isStale ? "true" : undefined} role="group" aria-label="Mapa de contextos">
       <div ref={mount} className={styles.mount} />
       {svg === null && <p className={styles.empty}>O mapa aparece quando o texto tiver uma árvore.</p>}
-      {isStale && (
+      {layoutError !== null && (
+        <div className={`${styles.banner} ${styles.flag}`} role="status">
+          <SeverityIcon severity="error" />
+          <span>
+            <b>Diagrama congelado.</b> O layout falhou: {layoutError}
+          </span>
+        </div>
+      )}
+      {layoutError === null && isStale && (
         <div className={styles.banner} role="status">
           <SeverityIcon severity="error" />
           <span>Erro de sintaxe — o mapa mostra o último texto válido</span>
