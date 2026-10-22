@@ -51,7 +51,8 @@ export function createPlaygroundStore(initialText: string = marketplace().text) 
     const relayout = (model: LayoutModel, keys: { topo: string; full: string }, analysis: Analysis): Partial<PlaygroundState> => {
       const geo = layout(model);
       if (Object.keys(geo.tiles).length === 0) return { drawing: null, stale: false, waiting: false };
-      return { drawing: { geo, svg: paint(geo, analysis), topo: keys.topo, full: keys.full }, stale: false, waiting: false };
+      // the flag follows the current text: a pending layout can land while the text is broken
+      return { drawing: { geo, svg: paint(geo, analysis), topo: keys.topo, full: keys.full }, stale: !analysis.astGenerated, waiting: false };
     };
 
     const flush = () => {

@@ -107,10 +107,52 @@ describe("the text cycle", () => {
     expect(s.getState().waiting).toBe(false);
   });
 
-  it("each store keeps its own lastType and timers", () => {
+  it("a syntax error during the pause: the pending layout lands, still stale", () => {
+    const s = createPlaygroundStore();
+    const topo0 = s.getState().drawing!.topo;
+    s.getState().setText(withContext(base));
+    s.getState().setText(withContext(base) + "\ndomain {");
+    expect(s.getState().waiting).toBe(true);
+    vi.advanceTimersByTime(PAUSE_MS);
+    expect(s.getState().stale).toBe(true);
+    expect(s.getState().waiting).toBe(false);
+    expect(s.getState().drawing!.topo).not.toBe(topo0);
+    s.getState().setText(withContext(base));
+    expect(s.getState().stale).toBe(false);
+  });
+
+  it("markers follow the text while the geometry waits", () => {
+    const s = createPlaygroundStore();
+    const topo0 = s.getState().drawing!.topo;
+    const grown = withContext(base);
+    s.getState().setText(grown);
+    const svg1 = s.getState().drawing!.svg;
+    // a repeated line on an existing pair: same pending topology, new diagnostic on a drawn edge
+    const line = /^\s*Affiliates.*Campaigns.*$/m.exec(grown);
+    if (!line) throw new Error("no Affiliates/Campaigns line in the fixture");
+    s.getState().setText(grown.replace(line[0], line[0] + "\n" + line[0]));
+    expect(s.getState().waiting).toBe(true);
+    expect(s.getState().analysis.diagnostics.length).toBeGreaterThan(0);
+    expect(s.getState().drawing!.svg).not.toBe(svg1);
+    expect(s.getState().drawing!.topo).toBe(topo0);
+  });
+
+  it("each store keeps its own lastType", () => {
+    const src = (type: string) => `domain T {\n  subdomain ${type} S {\n    context C\n  }\n}\n`;
+    const typeOf = (st: ReturnType<typeof createPlaygroundStore>) => st.getState().analysis.model!.domains[0]!.subdomains[0]!.type;
+    const a = createPlaygroundStore(src("core"));
+    const b = createPlaygroundStore(src("critical"));
+    expect(typeOf(b)).toBe("generic");
+    a.getState().setText(src("critical"));
+    expect(typeOf(a)).toBe("core");
+    expect(typeOf(b)).toBe("generic");
+  });
+
+  it("each store keeps its own timers", () => {
     const a = createPlaygroundStore();
     const b = createPlaygroundStore();
     a.getState().setText(withContext(base));
+    expect(a.getState().waiting).toBe(true);
     expect(b.getState().waiting).toBe(false);
   });
 });
