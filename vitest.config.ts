@@ -28,6 +28,7 @@ export default defineConfig({
         resolve: { alias },
         test: { name: "packages", environment: "node", include: ["packages/*/test/**/*.test.ts"] },
       },
+      // Regra nas apps: .tsx -> jsdom, .ts -> node; excecao usa o pragma `// @vitest-environment jsdom`.
       {
         resolve: { alias },
         test: {

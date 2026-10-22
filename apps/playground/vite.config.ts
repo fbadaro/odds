@@ -17,8 +17,13 @@ function designTokens(): Plugin {
       server.watcher.add(DESIGN_MD);
       server.watcher.on("change", (file) => {
         if (file !== DESIGN_MD) return;
-        const css = generateTokens(readFileSync(DESIGN_MD, "utf8"));
-        if (css !== readFileSync(TOKENS_CSS, "utf8")) writeFileSync(TOKENS_CSS, css);
+        try {
+          const css = generateTokens(readFileSync(DESIGN_MD, "utf8"));
+          if (css !== readFileSync(TOKENS_CSS, "utf8")) writeFileSync(TOKENS_CSS, css);
+        } catch (err) {
+          // DESIGN.md meio editado: mantem o tokens.css anterior e o servidor de pe.
+          server.config.logger.error(`[odds:design-tokens] ${err instanceof Error ? err.message : String(err)}`);
+        }
       });
     },
   };

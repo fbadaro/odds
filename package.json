@@ -16,9 +16,9 @@
     "health": "python3 .claude/skills/health-check/scripts/health_check.py",
     "generate:messages": "node packages/messages/scripts/extract-messages.mjs",
     "generate:tokens": "node apps/playground/scripts/generate-tokens.mjs",
-    "dev": "npm run dev -w @odds/playground",
-    "build:app": "npm run build -w @odds/playground",
-    "lint": "npm run lint -w @odds/playground"
+    "dev": "npm run dev -w @odds/playground --",
+    "build:app": "npm run build -w @odds/playground --",
+    "lint": "npm run lint -w @odds/playground --"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
