@@ -20,18 +20,21 @@
  * formas reconhecidas são só as que o `tsc` e o Chevrotain emitem hoje; forma nova
  * derruba o build em vez de passar calada.
  *
- * Três blocos, delimitados por marcadores dentro da página:
+ * Quatro blocos, delimitados por marcadores dentro da página:
  *
  *   1. CORE   chevrotain + @odds/core (dist) + @odds/messages (dist, com o JSON inline)
- *   2. V3CSS  o <style> da colmeia-v4.html, inteiro — o protótipo veste a mesma pele
- *   3. V3SRC  o <script> da colmeia-v4.html, inteiro, rodado sem DOM — o MESMO layout
- *   4. M50    o marketplace de 50 contextos do colmeia-50, com a documentação do
- *             colmeia-navegacao.docs.mjs, como texto .odds: o texto inicial da bancada
+ *             + @odds/layout (dist, com as fixtures; desde 2026-10-21)
+ *   2. V3CSS  o map.css do @odds/layout, com os apelidos que o vestem com os tokens da
+ *             bancada (até 2026-10-21, o <style> da colmeia-v4.html, inteiro)
+ *   3. V3SRC  a ponte que monta o __v3 a partir do pacote (até 2026-10-21, o <script>
+ *             da colmeia-v4.html, rodado sem DOM); vem depois do CORE na página
+ *   4. M50    o marketplace de 50 contextos documentado, como texto .odds: o texto
+ *             inicial da bancada (o marketplace() das fixtures do pacote)
  *
  * Desde 2026-10-16 a montagem mora em colmeia-embed.mjs, compartilhada com o
  * playground.build.mjs; aqui fica só o destino.
  *
- * Exige o core compilado (`npm run typecheck`).
+ * Exige os pacotes compilados (`npm run typecheck`).
  */
 import path from "node:path";
 import { fileURLToPath } from "node:url";
