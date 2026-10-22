@@ -19,6 +19,12 @@ colors:
   error: "#C0342B"
   warning: "#A66A00"
   info: "#5B6B7C"
+  edge: "#807D92"
+  edge-lit: "#343242"
+  edge-far: "#CCCAD8"
+  core-ink: "#B07800"
+  sup-ink: "#3D6FE8"
+  gen-ink: "#545266"
   canvas-dark: "#12111A"
   surface-dark: "#1A1926"
   surface-muted-dark: "#23212F"
@@ -34,6 +40,12 @@ colors:
   error-dark: "#E0796F"
   warning-dark: "#D9A441"
   info-dark: "#93A3B3"
+  edge-dark: "#76738C"
+  edge-lit-dark: "#DEDCEA"
+  edge-far-dark: "#403E52"
+  core-ink-dark: "#FFC85A"
+  sup-ink-dark: "#7DA3FF"
+  gen-ink-dark: "#C4C1D6"
 
 typography:
   display-hero:
@@ -296,6 +308,9 @@ The block below, and the `CSS --c-…` names in the lists that follow, are the b
 - **Ink** (`{colors.ink}` — `#1B1A24`, CSS `--c-ink`): Primary text; also the text color on solar surfaces.
 - **Ink Mute** (`{colors.ink-mute}` — `#6B6880`, CSS `--c-dim`): Secondary text, eyebrows, metadata, spans.
 - **On Accent** (`{colors.on-accent}` — `#FFFFFF`; dark `{colors.on-accent-dark}` — `#12111A`): Text on the primary button. The accent lightens in the dark theme, so white on it stops reading; the dark value is the dark canvas.
+
+- **Map line** (`{colors.edge}` — `#807D92`, CSS `--c-edge`; lit `{colors.edge-lit}` — `#343242`, `--c-edge-lit`; far `{colors.edge-far}` — `#CCCAD8`, `--c-edge-far`): The relationship line of the context map at rest, lit when hovered or selected, and seen from afar (zoomed out). Neutral, never the accent; the dark values are in `{colors.edge-dark}`, `{colors.edge-lit-dark}` and `{colors.edge-far-dark}`.
+- **Type inks** (`{colors.core-ink}` — `#B07800`, `{colors.sup-ink}` — `#3D6FE8`, `{colors.gen-ink}` — `#545266`; CSS `--c-core-ink`, `--c-sup-ink`, `--c-gen-ink`): The ink of each subdomain type (core, supporting, generic), used for borders and highlights on the map. Dark counterparts: `{colors.core-ink-dark}`, `{colors.sup-ink-dark}`, `{colors.gen-ink-dark}`.
 
 ### Semantic
 Severity is the product's verdict, and it has its own three colors. Each is always paired with its icon.

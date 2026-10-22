@@ -1,47 +1,48 @@
+/* A casca em tela inteira: o mapa atrás, as ilhas soltas por cima (bancada: .pg, .pg-map, .i-*). */
 .shell {
-  display: grid;
-  grid-template-columns: minmax(280px, 38%) 1fr;
-  grid-template-rows: 1fr auto;
-  grid-template-areas:
-    "editor main"
-    "footer footer";
-  height: 100vh;
-  height: 100dvh;
+  position: fixed;
+  inset: 0;
 }
 
-.editor {
-  grid-area: editor;
-  min-width: 0;
-  min-height: 0;
-  border-right: 1px solid rgb(var(--c-hairline));
+.map {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  background-color: rgb(var(--c-canvas));
+  background-image: radial-gradient(rgb(var(--c-ink) / 0.13) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
-.main {
-  grid-area: main;
-  min-width: 0;
-  min-height: 0;
-  position: relative;
+/* provisório até a Task 8: o editor onde fica o painel da bancada (.i-panel) */
+.code {
+  top: 78px;
+  left: 78px;
+  bottom: 20px;
+  width: min(400px, calc(100vw - 98px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.footer {
-  grid-area: footer;
+/* provisório até a Task 12: os contadores onde fica o dock (.i-diag) */
+.dock {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   padding: var(--space-xs) var(--space-md);
-  border-top: 1px solid rgb(var(--c-hairline));
-  background: rgb(var(--c-surface));
 }
 
-@media (max-width: 720px) {
-  .shell {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr auto;
-    grid-template-areas:
-      "editor"
-      "main"
-      "footer";
+@media (max-width: 760px) {
+  .code {
+    top: 128px;
+    bottom: 136px;
   }
 
-  .editor {
-    border-right: 0;
-    border-bottom: 1px solid rgb(var(--c-hairline));
+  .dock {
+    left: 20px;
+    right: 20px;
+    bottom: 78px;
+    transform: none;
   }
 }

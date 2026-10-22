@@ -1,3 +1,4 @@
+import { Island } from "./components/island/Island";
 import { SeverityCounters } from "./features/diagnostics/components/SeverityCounters";
 import { Editor } from "./features/editor/components/Editor";
 import { Honeycomb } from "./features/honeycomb/components/Honeycomb";
@@ -6,15 +7,15 @@ import styles from "./App.module.css";
 export function App() {
   return (
     <div className={styles.shell}>
-      <aside className={styles.editor}>
-        <Editor />
-      </aside>
-      <main className={styles.main}>
+      <main className={styles.map}>
         <Honeycomb />
       </main>
-      <footer className={styles.footer}>
+      <Island as="aside" className={styles.code}>
+        <Editor />
+      </Island>
+      <Island className={styles.dock}>
         <SeverityCounters />
-      </footer>
+      </Island>
     </div>
   );
 }

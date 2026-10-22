@@ -15,6 +15,12 @@
   --c-error: 192 52 43;
   --c-warning: 166 106 0;
   --c-info: 91 107 124;
+  --c-edge: 128 125 146;
+  --c-edge-lit: 52 50 66;
+  --c-edge-far: 204 202 216;
+  --c-core-ink: 176 120 0;
+  --c-sup-ink: 61 111 232;
+  --c-gen-ink: 84 82 102;
   --font-display-hero-family: Montserrat, Inter, system-ui, sans-serif;
   --font-display-hero-size: 62px;
   --font-display-hero-weight: 800;
@@ -117,5 +123,11 @@
   --c-error: 224 121 111;
   --c-warning: 217 164 65;
   --c-info: 147 163 179;
+  --c-edge: 118 115 140;
+  --c-edge-lit: 222 220 234;
+  --c-edge-far: 64 62 82;
+  --c-core-ink: 255 200 90;
+  --c-sup-ink: 125 163 255;
+  --c-gen-ink: 196 193 214;
   --shadow-strength: 0.5;
 }

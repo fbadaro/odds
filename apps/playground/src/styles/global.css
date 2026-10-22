@@ -1,29 +1,44 @@
 @import "./tokens.css";
 @import "@odds/layout/map.css";
+@import "./map-bridge.css";
 
-/* Liga o mapa aos tokens da aplicação (ambos são triplets RGB). As --odds-map-tile-*,
-   --odds-map-mix-* e --odds-map-edge (a linha cinza em repouso) não têm token na
-   aplicação e ficam com os padrões do map.css. */
-:root {
-  --odds-map-bg: var(--c-canvas);
-  --odds-map-panel: var(--c-surface);
-  --odds-map-panel2: var(--c-surface-muted);
-  --odds-map-border: var(--c-hairline);
-  --odds-map-dim: var(--c-ink-mute);
-  --odds-map-ink: var(--c-ink);
-  --odds-map-accent: var(--c-accent);
-  --odds-map-azure: var(--c-azure);
-  --odds-map-pulse: var(--c-pulse);
-  --odds-map-solar: var(--c-solar);
-  --odds-map-error: var(--c-error);
-  --odds-map-warning: var(--c-warning);
-  --odds-map-info: var(--c-info);
-  --odds-map-shadow-strength: var(--shadow-strength);
+/* Tabela bancada -> aplicação. A bancada (docs/design/pages/bancada-tokens.css) e a
+   aplicação (tokens.css, gerado do DESIGN.md) têm os mesmos valores e nomes diferentes;
+   ao portar CSS da bancada, traduza assim:
+     --c-bg      -> --c-canvas
+     --c-panel   -> --c-surface
+     --c-panel2  -> --c-surface-muted
+     --c-border  -> --c-hairline
+     --c-dim     -> --c-ink-mute
+     --c-ink, --c-accent, --c-accent-lift, --c-azure, --c-pulse, --c-solar,
+     --c-error, --c-warning, --c-info, --c-edge, --c-edge-lit, --c-edge-far,
+     --c-core-ink, --c-sup-ink, --c-gen-ink, --c-on-accent, --shadow-strength,
+     --sh-island (e as demais --sh-*)   -> o mesmo nome
+     --mix-*  -> lidos pelo map.css como --odds-map-mix-*
+     --tile-* -> lidos pelo map.css como --odds-map-tile-*
+   A ponte do mapa (--odds-map-*) fica em map-bridge.css. */
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
   background: rgb(var(--c-canvas));
   color: rgb(var(--c-ink));
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-ui-family);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+button {
+  font-family: inherit;
+}
+
+code,
+kbd,
+textarea {
+  font-family: var(--font-code-family);
 }
