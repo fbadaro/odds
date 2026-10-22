@@ -35,7 +35,7 @@ Libraries live in `packages/`; the app lives in `apps/`.
 |---|---|---|
 | `@odds/core` | Lexer, parser, AST, validator, the six phases | Message text, locale — it has no dependency on `@odds/messages`, and that is the point |
 | `@odds/messages` | Rendering `Diagnostic` + locale → sentence, from `MESSAGES.md` | Anything about parsing |
-| `@odds/layout` | Honeycomb geometry and SVG rendering of the context map (ADR-0009), plus `map.css` with its own `--odds-map-*` variables. The bench pages embed it too | The DOM and React — it is a pure function of the AST, diagnostics and view options |
+| `@odds/layout` | Honeycomb geometry and SVG rendering of the context map (ADR-0009), plus `map.css` with its own `--odds-map-*` variables. The bench pages embed it too | The DOM and React — no DOM, no global state; `renderSvg` annotates the geometry it receives |
 | `apps/playground` (`@odds/playground`) | The product: Vite + React 19 with the React Compiler, Zustand store, the honeycomb mounted outside React reconciliation (ADR-0014, ADR-0015, ADR-0019) | Inventing UI — it implements only what the bench (`docs/design/pages/playground.html`) has validated (ADR-0017) |
 | `golden-files/` | Stays at the **root**: it is the spec's executable suite, governed by `TEST_SUITE.md`, not a package's fixtures |
 

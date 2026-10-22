@@ -7,8 +7,9 @@
   --tone: var(--c-ink);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 10px;
+  gap: var(--space-xs);
+  /* no chip-padding token: the nearest spacing tokens, 4px 8px (the bench's .pg .cnt is 4px 8px 4px 6px) */
+  padding: var(--space-xxs) var(--space-sm);
   border-radius: var(--radius-pill);
   background: rgb(var(--tone) / 0.08);
   /* a darkened shade of the functional color: mixed toward the ink so it holds contrast on the 8% fill */
