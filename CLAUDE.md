@@ -39,6 +39,8 @@ Libraries live in `packages/`; the app lives in `apps/`.
 | `apps/playground` (`@odds/playground`) | The product: Vite + React 19 with the React Compiler, Zustand store, the honeycomb mounted outside React reconciliation (ADR-0014, ADR-0015, ADR-0019) | Inventing UI — it implements only what the bench (`docs/design/pages/playground.html`) has validated (ADR-0017) |
 | `golden-files/` | Stays at the **root**: it is the spec's executable suite, governed by `TEST_SUITE.md`, not a package's fixtures |
 
+A feature validated on the bench carries `data-feature="<id>"` on its root element, `apps/playground/test/parity.test.ts` requires a component with the same literal in the app (both directions, with a `PENDING` list like the conformance suite's), and the `portar-da-bancada` skill is the script for porting it (ADR-0020).
+
 The `core`/`messages` split makes the "a `Diagnostic` never carries `message`" rule a module boundary instead of a promise. Do not add a `@odds/messages` dependency to `@odds/core` — that is the one import that would undo it.
 
 - `PRD.md` — Product requirements for ODDS (Open Domain Driven Specification): a client-side, browser-only DSL and interactive "playground" for writing DDD (Domain-Driven Design) context maps as text and rendering them as diagrams.

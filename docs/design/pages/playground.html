@@ -656,11 +656,11 @@ body.pg{margin:0; background:rgb(var(--c-bg)); font-family:var(--f-sans); font-s
 }
 </style>
 <body class="pg nav">
-<div class="pg-map lv-map" id="map" tabindex="0" aria-label="Mapa: arraste para mover, roda ou pinça para aproximar, setas e + − 0 no teclado">
+<div data-feature="map" class="pg-map lv-map" id="map" tabindex="0" aria-label="Mapa: arraste para mover, roda ou pinça para aproximar, setas e + − 0 no teclado">
   <div id="svgHost" style="height:100%"></div>
 </div>
 
-<div class="isl i-file">
+<div data-feature="file-menu" class="isl i-file">
   <span class="word">odds</span>
   <button class="ibtn" id="fileBtn" aria-haspopup="menu" aria-expanded="false"><span id="fileName">marketplace.odds</span>
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg></button>
@@ -672,36 +672,36 @@ body.pg{margin:0; background:rgb(var(--c-bg)); font-family:var(--f-sans); font-s
   <button class="ibtn" id="btnReset" role="menuitem">restaurar o texto inicial <small></small></button>
 </div>
 
-<div class="isl i-view" role="group" aria-label="Vista" id="segView">
+<div class="isl i-view" role="group" aria-label="Vista" id="segView" data-feature="view-switch">
   <button class="ibtn" data-v="flow" aria-pressed="true">Fluxo</button>
   <button class="ibtn" data-v="contain" aria-pressed="false">Contenção</button>
 </div>
 
 <div class="isl i-act">
-  <button class="ibtn primary" id="btnShare"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V2.5M5 5l3-3 3 3M3 8.5V13h10V8.5"/></svg><span class="lbl">Compartilhar</span></button>
-  <button class="ibtn" id="btnExport" title="Exportar SVG, com os marcadores" aria-label="Exportar SVG"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5V10M5 7l3 3 3-3M3 13h10"/></svg></button>
-  <button class="ibtn" id="btnTheme" title="Tema" aria-label="Alternar tema"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9L13 13M3 13l1.1-1.1M11.9 4.1L13 3"/></svg></button>
+  <button class="ibtn primary" id="btnShare" data-feature="share"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V2.5M5 5l3-3 3 3M3 8.5V13h10V8.5"/></svg><span class="lbl">Compartilhar</span></button>
+  <button class="ibtn" id="btnExport" data-feature="export-svg" title="Exportar SVG, com os marcadores" aria-label="Exportar SVG"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5V10M5 7l3 3 3-3M3 13h10"/></svg></button>
+  <button class="ibtn" id="btnTheme" data-feature="theme-toggle" title="Tema" aria-label="Alternar tema"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9L13 13M3 13l1.1-1.1M11.9 4.1L13 3"/></svg></button>
 </div>
 
-<nav class="isl rail" aria-label="Painéis">
+<nav data-feature="rail" class="isl rail" aria-label="Painéis">
   <button class="sq" data-panel="code" aria-pressed="false" title="Código" aria-label="Código"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.5 4.5L2 8l3.5 3.5M10.5 4.5L14 8l-3.5 3.5"/></svg></button>
   <button class="sq" data-panel="tree" aria-pressed="false" title="Estrutura" aria-label="Estrutura"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="4" rx="1"/><rect x="9" y="7" width="5" height="3" rx="1"/><rect x="9" y="11.5" width="5" height="3" rx="1"/><path d="M4.5 6v7h4.5M4.5 8.5h4.5"/></svg></button>
   <button class="sq" data-panel="help" aria-pressed="false" title="Como ler" aria-label="Como ler"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.2a1.8 1.8 0 113 1.4c-.8.5-1.3.9-1.3 1.9"/><circle cx="8" cy="11.6" r=".5" fill="currentColor"/></svg></button>
 </nav>
 
-<section class="isl i-panel" id="pCode" hidden aria-label="Código">
+<section class="isl i-panel" id="pCode" data-feature="panel-code" hidden aria-label="Código">
   <div class="phead"><span class="t">Código</span><span class="sub" id="caret"></span><span class="grow"></span>
     <button class="ibtn" data-close aria-label="Fechar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
   <div class="pbody" style="overflow:hidden"><div class="ed"><div class="gut" id="gut" aria-hidden="true"></div>
     <textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off" aria-label="Fonte .odds"></textarea></div></div>
 </section>
-<section class="isl i-panel" id="pTree" hidden aria-label="Estrutura">
+<section class="isl i-panel" id="pTree" data-feature="panel-tree" hidden aria-label="Estrutura">
   <div class="phead"><span class="t">Estrutura</span><span class="grow"></span>
     <button class="ibtn" data-close aria-label="Fechar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
   <div class="pbody" id="tree"></div>
   <div class="pfoot">clicar enquadra no mapa · o mesmo quadrado fecha o painel</div>
 </section>
-<section class="isl i-panel" id="pHelp" hidden aria-label="Como ler">
+<section class="isl i-panel" id="pHelp" data-feature="panel-help" hidden aria-label="Como ler">
   <div class="phead"><span class="t">Como ler</span><span class="grow"></span>
     <button class="ibtn" data-close aria-label="Fechar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
   <div class="pbody"><div class="help">
@@ -718,17 +718,17 @@ body.pg{margin:0; background:rgb(var(--c-bg)); font-family:var(--f-sans); font-s
   </div></div>
 </section>
 
-<aside class="isl i-ficha" id="ficha" hidden aria-label="Ficha">
+<aside class="isl i-ficha" id="ficha" data-feature="ficha" hidden aria-label="Ficha">
   <div class="phead"><span class="t" id="fichaKind">Seleção</span><span class="grow"></span>
     <button class="ibtn" id="fichaClose" aria-label="Fechar a ficha"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div>
   <div class="pbody" id="selBox"></div>
 </aside>
 
-<div class="isl i-flag" id="flag" role="status" hidden><svg viewBox="-8 -8 16 16" aria-hidden="true"><g class="sev-error"><circle class="ic-bg" r="6.5"/><path class="ic-fg" d="M-2.7 -2.7L2.7 2.7M2.7 -2.7L-2.7 2.7"/></g></svg><span><b>Diagrama congelado.</b> <span id="flagMsg"></span></span></div>
-<div class="isl i-cap" id="selCap" aria-live="polite" hidden><b id="selName"></b><span id="selRest"></span></div>
-<div class="isl i-wait" id="wait"><span class="dot"></span>topologia mudou · o mapa redesenha na pausa</div>
+<div class="isl i-flag" id="flag" data-feature="frozen-flag" role="status" hidden><svg viewBox="-8 -8 16 16" aria-hidden="true"><g class="sev-error"><circle class="ic-bg" r="6.5"/><path class="ic-fg" d="M-2.7 -2.7L2.7 2.7M2.7 -2.7L-2.7 2.7"/></g></svg><span><b>Diagrama congelado.</b> <span id="flagMsg"></span></span></div>
+<div class="isl i-cap" id="selCap" data-feature="selection-caption" aria-live="polite" hidden><b id="selName"></b><span id="selRest"></span></div>
+<div class="isl i-wait" id="wait" data-feature="wait-indicator"><span class="dot"></span>topologia mudou · o mapa redesenha na pausa</div>
 
-<div class="dock" id="dock">
+<div class="dock" id="dock" data-feature="diagnostics-dock">
   <section class="isl i-diag" aria-label="Diagnósticos">
     <div class="dhead"><div class="counts" id="dcounts" style="display:flex;gap:6px"></div><span class="sum" id="dsum"></span>
       <button class="ibtn" id="dToggle" aria-expanded="true" aria-label="Recolher a lista"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 10l4-4 4 4"/></svg></button></div>
@@ -736,7 +736,7 @@ body.pg{margin:0; background:rgb(var(--c-bg)); font-family:var(--f-sans); font-s
   </section>
 </div>
 
-<div class="isl i-zoom">
+<div data-feature="zoom-controls" class="isl i-zoom">
   <button class="ibtn" id="zOut" aria-label="Afastar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 8h9"/></svg></button>
   <span class="pct" id="zoomOut">100%</span>
   <button class="ibtn" id="zIn" aria-label="Aproximar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 8h9M8 3.5v9"/></svg></button>
@@ -744,7 +744,7 @@ body.pg{margin:0; background:rgb(var(--c-bg)); font-family:var(--f-sans); font-s
   <button class="ibtn" id="zFit" title="Mapa inteiro (0)" aria-label="Mapa inteiro"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button>
 </div>
 
-<div class="isl toast" id="toast" role="status" hidden></div>
+<div class="isl toast" id="toast" data-feature="toast" role="status" hidden></div>
 <!--CORE--><script>
 var __odds = globalThis.__odds = {};
 /* ---- chevrotain ---- */
