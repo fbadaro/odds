@@ -92,6 +92,7 @@ export interface CanonModel extends PreparedModel {
 export interface TerritorySd {
   id: string;
   type: string;
+  title?: string;
   contexts: LayoutContext[];
   ids: string[];
 }

@@ -5,6 +5,11 @@
  */
 export { layout } from "./layout.js";
 export { placeLabels } from "./labels.js";
+export { renderSvg } from "./render.js";
+export { modelOf, topologyKeys, anchorsOf, targetOf } from "./ast.js";
+export type { Anchor } from "./ast.js";
+export { navOf } from "./nav.js";
+export type { Nav } from "./nav.js";
 export { measure, movedTiles, tilesMoved, tierOf } from "./metrics.js";
 export type {
   Axial,

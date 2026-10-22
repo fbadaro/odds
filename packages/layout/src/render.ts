@@ -10,6 +10,7 @@
 import { C, HIN, HR, corner, hexPath, kk } from "./hex.js";
 import { add, boxHit, dist, esc, f, unit } from "./geometry.js";
 import { placeLabels } from "./labels.js";
+import { navOf } from "./nav.js";
 import { fillOf, outline } from "./territories.js";
 import type {
   Axial,
@@ -236,8 +237,21 @@ export function subOf(m: CanonModel, key: string): SubInfo | null {
   return null;
 }
 
-/** O `build` da v4, com `state.*` lido de `opts`. */
-export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewOptions): string {
+/** O que a bancada acrescentava ao SVG depois de pronto (`decorate`), agora posto na
+    montagem: o sentido de cada relação, o tipo de cada peça e os rótulos de longe. */
+interface Deco {
+  flow: Record<string, string>;
+  /** Por `data-sub` já escapado; o que não está aqui é o bloco `external`. */
+  typeOfSub: Record<string, string>;
+  /** Por nome de contexto já escapado. */
+  typeOfCtx: Record<string, string>;
+  bad: Set<string>;
+  far: string;
+}
+const typeIn = (m: Record<string, string>, k: string) => (Object.hasOwn(m, k) ? m[k] : "external");
+
+/** O `build` da v4, com `state.*` lido de `opts`. `deco`, só para `renderSvg`. */
+export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewOptions, deco?: Deco): string {
   const m = geo.cm,
     flow = opts.view === "flow",
     showTags = opts.tags === "on";
@@ -389,7 +403,7 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
         const d = fillOf(g.cells, mass.pos),
           key = isl.dom.id + "/" + g.sd.id;
         s.push(
-          '<g class="sub' + (opts.selSub === key ? " hot on" : "") + '" data-sub="' + esc(key) + '"><path class="subwash" d="' + d + '"/>' + '<path class="bsub" d="' + outline(g.cells, g.set, mass.pos) + '"/></g>',
+          '<g class="sub' + (opts.selSub === key ? " hot on" : "") + '" data-sub="' + esc(key) + '"' + (deco ? ' data-type="' + typeIn(deco.typeOfSub, esc(key)) + '"' : "") + '><path class="subwash" d="' + d + '"/>' + '<path class="bsub" d="' + outline(g.cells, g.set, mass.pos) + '"/></g>',
         );
       });
       s.push('<path class="bmass' + (mass.external ? " ext" : "") + '" d="' + outline(cells, set, mass.pos) + '"/>');
@@ -418,9 +432,20 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
           (opts.selSub && (selSubIds.indexOf(rel.l) >= 0 || selSubIds.indexOf(rel.r) >= 0)) ||
           (selD && selT!.rk === E.rk);
       const faded = (opts.sel || opts.selSub || selD) && !lit;
-      let g = '<g class="rel' + (lit ? " lit" : "") + (faded ? " fade" : "") + '" data-rk="' + esc(E.rk) + '">';
+      /* a bancada só decorava o `<g class="rel">` pelado, sem lit nem fade */
+      const dr = deco && !lit && !faded ? deco : null;
+      let g =
+        '<g class="rel' +
+        (lit ? " lit" : "") +
+        (faded ? " fade" : "") +
+        (dr && dr.bad.has(esc(E.rk)) ? " invalid" : "") +
+        '" data-rk="' +
+        esc(E.rk) +
+        '"' +
+        (dr ? ' data-flow="' + (dr.flow[esc(E.rk)] || "none") + '"' : "") +
+        ">";
       const d = pathOf(E.path);
-      g += '<path class="ecase" d="' + d + '"/><path class="edge' + (rel.c === "-x-" ? " sep" : "") + '" d="' + d + '"/>';
+      g += '<path class="ecase" d="' + d + '"/>' + (dr ? '<path class="rhit" d="' + d + '"/>' : "") + '<path class="edge' + (rel.c === "-x-" ? " sep" : "") + '" d="' + d + '"/>';
       if (rel.c === "-x-") g += breakMark(E);
       [E.L, E.Rr].forEach(function (en) {
         if (en.chip && showTags) g += portSvg(en.chip, byPort[E.rk + ":" + en.id] || []);
@@ -466,7 +491,9 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
               esc(id) +
               '" data-sub="' +
               esc(key) +
-              '" tabindex="0" role="button" aria-label="context ' +
+              '"' +
+              (deco ? ' data-type="' + typeIn(deco.typeOfSub, esc(key)) + '"' : "") +
+              ' tabindex="0" role="button" aria-label="context ' +
               esc(id) +
               '">' +
               '<path class="tile ' +
@@ -489,7 +516,9 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
         (opts.selSub === sp.sub ? " subhot" : "") +
         '" data-sub="' +
         esc(sp.sub) +
-        '"><text class="snm" style="font-size:' +
+        '"' +
+        (deco ? ' data-type="' + typeIn(deco.typeOfSub, esc(sp.sub)) + '"' : "") +
+        '><text class="snm" style="font-size:' +
         size +
         'px" x="' +
         sp.p[0].toFixed(0) +
@@ -508,7 +537,7 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
   Object.keys(lab.labels).forEach(function (id) {
     const L = lab.labels[id],
       faded = (opts.sel && !near[id]) || (opts.selSub && subOfCtx[id] !== opts.selSub);
-    s.push('<text class="cnm' + (faded ? " fade" : "") + (opts.sel === id ? " on" : "") + '" x="' + L.x.toFixed(1) + '" y="' + L.y.toFixed(1) + '" text-anchor="' + L.a + '">' + esc(id) + "</text>");
+    s.push('<text class="cnm' + (faded ? " fade" : "") + (opts.sel === id ? " on" : "") + '"' + (deco ? ' data-type="' + typeIn(deco.typeOfCtx, esc(id)) + '"' : "") + ' x="' + L.x.toFixed(1) + '" y="' + L.y.toFixed(1) + '" text-anchor="' + L.a + '">' + esc(id) + "</text>");
   });
   /* veredito na peca: selo no canto superior direito, com anel da cor do painel
      para ler sobre o amarelo do core (o amarelo e chao, nunca fundo de marcador) */
@@ -553,7 +582,41 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
       s.push(sevIcon([cx - name.length * size * 0.29 - 14, by - size * 0.34], w.severity, 6.5));
     }
   });
+  if (deco) s.push(deco.far);
   s.push("</svg>");
   geo.labels = lab;
   return s.join("");
+}
+
+/**
+ * O SVG do mapa como a bancada o exibe: o `build` da v4 mais o que a navegação
+ * precisa nele (`data-type`, `data-flow`, a área de clique das relações, o selo de
+ * relação inválida e os nomes de subdomínio que aparecem ao afastar).
+ *
+ * Não escreve em `diags`: o `buildSvg` anota cada diagnóstico com `i`, e isso vai
+ * para cópias.
+ */
+export function renderSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewOptions): string {
+  const nav = navOf(geo),
+    typeOfSub: Record<string, string> = {};
+  Object.keys(nav.subs).forEach((k) => {
+    typeOfSub[esc(k)] = nav.subs[k].type;
+  });
+  const typeOfCtx: Record<string, string> = {};
+  Object.keys(nav.typeOfCtx).forEach((id) => {
+    typeOfCtx[esc(id)] = nav.typeOfCtx[id];
+  });
+  const far = placeLabels(geo, { edges: false, tags: false, ctxLabels: false, subLabels: true, subSize: 18 });
+  const farSvg = far.subSpots
+    .map(
+      (sp) =>
+        '<g class="sublab far-lab" data-sub="' + esc(sp.sub) + '" data-type="' + typeIn(typeOfSub, esc(sp.sub)) + '"><text class="snm" style="font-size:' + sp.size + 'px" x="' + sp.p[0].toFixed(0) + '" y="' + (sp.p[1] + sp.size * 0.36).toFixed(0) + '">' + esc(sp.id.toUpperCase()) + "</text></g>",
+    )
+    .join("");
+  const bad = new Set<string>();
+  diags.forEach((d) => {
+    const t = d.target as AnyTarget;
+    if (d.severity === "error" && t.rk) bad.add(t.rk);
+  });
+  return buildSvg(geo, diags.map((d) => ({ ...d })), opts, { flow: nav.flow, typeOfSub, typeOfCtx, bad, far: farSvg });
 }
