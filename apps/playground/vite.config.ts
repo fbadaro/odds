@@ -36,6 +36,10 @@ function designTokens(): Plugin {
  */
 export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] }), designTokens()],
+  // Os pacotes entram pela fonte (alias), e a varredura do Vite só descobre zustand e
+  // chevrotain no meio da primeira carga: ele re-otimiza, mistura dois bundles de React e
+  // o primeiro render quebra com "invalid hook call". Declarados aqui, a carga fria é limpa.
+  optimizeDeps: { include: ["react", "react-dom/client", "zustand", "chevrotain"] },
   resolve: {
     alias: [
       { find: "@odds/layout/map.css", replacement: here("../../packages/layout/map.css") },
