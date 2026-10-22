@@ -26,7 +26,10 @@ const PREFIX = { colors: "c", rounded: "radius", spacing: "space", elevation: "s
 const HEX = /^#([0-9a-fA-F]{6})$/;
 const REF = /\{([a-z0-9-]+)\.([a-z0-9-]+)\}/g;
 
-function rgbTriplet(hex) {
+function rgbTriplet(hex, token) {
+  if (typeof hex !== "string" || !HEX.test(hex)) {
+    throw new Error(`cor inválida em colors.${token}: ${JSON.stringify(hex)} (esperado #RRGGBB)`);
+  }
   const n = parseInt(HEX.exec(hex)[1], 16);
   return `${(n >> 16) & 255} ${(n >> 8) & 255} ${n & 255}`;
 }
@@ -41,8 +44,11 @@ function cssName(group, name) {
   return `${PREFIX[group]}-${name}`;
 }
 
-function resolveRefs(value) {
-  return String(value).replace(REF, (_, group, name) => `var(--${cssName(group, name)})`);
+function resolveRefs(value, fm) {
+  return String(value).replace(REF, (ref, group, name) => {
+    if (fm[group]?.[name] === undefined) throw new Error(`referência não resolvida: ${ref}`);
+    return `var(--${cssName(group, name)})`;
+  });
 }
 
 export function extractFrontMatter(markdown) {
@@ -58,9 +64,11 @@ export function generateTokens(designMd) {
 
   for (const [name, value] of Object.entries(fm.colors)) {
     if (name.endsWith("-dark")) {
-      dark.push(`--c-${name.slice(0, -5)}: ${rgbTriplet(value)};`);
+      const base = name.slice(0, -5);
+      if (fm.colors[base] === undefined) throw new Error(`colors.${name} não tem variante clara colors.${base}`);
+      dark.push(`--c-${base}: ${rgbTriplet(value, name)};`);
     } else {
-      light.push(`--c-${name}: ${rgbTriplet(value)};`);
+      light.push(`--c-${name}: ${rgbTriplet(value, name)};`);
     }
   }
 
@@ -83,7 +91,7 @@ export function generateTokens(designMd) {
   for (const [name, value] of Object.entries(fm.elevation)) {
     if (name === "shadow-strength") light.push(`--shadow-strength: ${value};`);
     else if (name === "shadow-strength-dark") dark.push(`--shadow-strength: ${value};`);
-    else light.push(`--${cssName("elevation", name)}: ${resolveRefs(value)};`);
+    else light.push(`--${cssName("elevation", name)}: ${resolveRefs(value, fm)};`);
   }
 
   const body = (lines) => lines.map((l) => `  ${l}`).join("\n");

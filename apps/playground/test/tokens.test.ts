@@ -1,6 +1,5 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-// @ts-expect-error — o gerador é .mjs sem declaração de tipos
 import { generateTokens } from "../scripts/generate-tokens.mjs";
 
 const designMd = readFileSync(new URL("../../../DESIGN.md", import.meta.url), "utf8");
@@ -41,5 +40,23 @@ describe("tokens.css é derivado do DESIGN.md, nunca escrito à mão", () => {
   it("é igual, byte a byte, ao tokens.css versionado", () => {
     const committed = readFileSync(new URL("../src/styles/tokens.css", import.meta.url), "utf8");
     expect(committed).toBe(css);
+  });
+});
+
+describe("o gerador falha alto", () => {
+  const fm = (colors: string, elevation = "  sm: \"0 0 {colors.accent}\"") =>
+    `---\ncolors:\n${colors}\ntypography: {}\nrounded: {}\nspacing: {}\nelevation:\n${elevation}\n---\n`;
+  const ok = '  accent: "#6C40D9"';
+
+  it("em referência a token inexistente", () => {
+    expect(() => generateTokens(fm(ok, '  sm: "0 0 {colors.nope}"'))).toThrow(/colors\.nope/);
+  });
+
+  it("em cor -dark sem a variante clara", () => {
+    expect(() => generateTokens(fm(`${ok}\n  foo-dark: "#000000"`))).toThrow(/foo-dark/);
+  });
+
+  it("em hex malformado, citando o token", () => {
+    expect(() => generateTokens(fm('  accent: "#6C40"'))).toThrow(/colors\.accent/);
   });
 });
