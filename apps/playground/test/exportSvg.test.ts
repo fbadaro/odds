@@ -37,6 +37,21 @@ describe("buildExportSvg", () => {
     expect(doc.querySelector("style")!.textContent).toContain(".x{color:red}");
   });
 
+  it("places the inner map on the outer viewBox, origin included", () => {
+    // the geometry's viewBox starts at (minX, minY), never at 0 0: a nested <svg> without
+    // x/y/width/height sits at the origin and the export comes out offset and cropped
+    const out = buildExportSvg(live(), [-412, -96, 1180, 744], "flow", "light", "");
+    const doc = new DOMParser().parseFromString(out, "image/svg+xml");
+    const root = doc.documentElement;
+    expect(root.getAttribute("viewBox")).toBe("-412 -96 1180 744");
+    const inner = root.querySelector("svg")!;
+    expect(inner.getAttribute("viewBox")).toBe("-412 -96 1180 744");
+    expect(inner.getAttribute("x")).toBe("-412");
+    expect(inner.getAttribute("y")).toBe("-96");
+    expect(inner.getAttribute("width")).toBe("1180");
+    expect(inner.getAttribute("height")).toBe("744");
+  });
+
   it("names the view class", () => {
     const flow = buildExportSvg(live(), [0, 0, 10, 10], "flow", "light", "");
     const contain = buildExportSvg(live(), [0, 0, 10, 10], "contain", "light", "");

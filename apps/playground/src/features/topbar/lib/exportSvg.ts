@@ -16,6 +16,8 @@ export function buildExportSvg(
 ): string {
   const inner = svg.cloneNode(true) as SVGSVGElement;
   inner.setAttribute("viewBox", viewBox.join(" "));
+  // um <svg> aninhado sem x/y/width/height fica na origem 0 0 do de fora; o quadro começa em minX, minY
+  (["x", "y", "width", "height"] as const).forEach((k, i) => inner.setAttribute(k, String(viewBox[i])));
   inner.setAttribute("class", view === "flow" ? "v-flow" : "v-contain");
   for (const el of inner.querySelectorAll(SELECTION.map((c) => `.${c}`).join(", "))) {
     el.classList.remove(...SELECTION);

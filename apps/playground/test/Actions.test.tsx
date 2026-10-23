@@ -68,6 +68,23 @@ describe("Actions and Toast", () => {
     host.remove();
   });
 
+  it("export says marcador, singular, for one marker", () => {
+    mount();
+    const host = document.createElement("div");
+    host.setAttribute("data-feature", "map");
+    host.innerHTML = '<svg class="v-flow" viewBox="0 0 10 10"></svg>';
+    document.body.appendChild(host);
+    Object.assign(URL, { createObjectURL: vi.fn(() => "blob:x"), revokeObjectURL: vi.fn() });
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    usePlayground.setState({
+      drawing: { geo: { viewBox: [0, 0, 100, 80] }, svg: "", fit: [0, 0, 100, 80] } as never,
+      markers: [{}] as never,
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Exportar SVG" }));
+    expect(screen.getByRole("status").textContent).toBe("Exportado: marketplace.svg, com 1 marcador.");
+    host.remove();
+  });
+
   it("the toast hides after 4200 ms", () => {
     vi.useFakeTimers();
     const { container } = mount();

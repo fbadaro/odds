@@ -6741,6 +6741,7 @@ $("btnExport").addEventListener("click", () => {
   const inner = svg.cloneNode(true), NS = "http://www.w3.org/2000/svg";
   const vb = cur.geo.viewBox;
   inner.setAttribute("viewBox", vb.join(" "));
+  inner.setAttribute("x", vb[0]); inner.setAttribute("y", vb[1]); inner.setAttribute("width", vb[2]); inner.setAttribute("height", vb[3]);
   inner.setAttribute("class", v3.state.view === "flow" ? "v-flow" : "v-contain");
   inner.querySelectorAll(".on, .fade, .lit, .focus, .mute, .hot, .subhot").forEach((el) =>
     el.classList.remove("on", "fade", "lit", "focus", "mute", "hot", "subhot"));
