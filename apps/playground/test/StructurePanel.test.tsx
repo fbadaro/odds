@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { StructurePanel } from "../src/features/structure/components/StructurePanel";
 import { usePlayground } from "../src/stores/playground";
 
@@ -71,6 +71,46 @@ describe("StructurePanel", () => {
     fireEvent.click(row);
     expect(st().reveal!.start.line).toBe(line);
     expect(st().selection).toBeNull();
+  });
+
+  it("duplicate declarations render every row, with no key collision", () => {
+    const warn = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      open(
+        [
+          "domain Test {",
+          "  subdomain core Sales {",
+          "    context PaymentGateway",
+          "  }",
+          "",
+          "  subdomain generic Sales {",
+          "    context PaymentGateway",
+          "  }",
+          "}",
+          "",
+        ].join("\n"),
+      );
+      const codes = st().analysis.diagnostics.map((d) => d.code);
+      expect(codes).toContain("DUPLICATE_SUBDOMAIN");
+      expect(rows('[data-ctx="PaymentGateway"]')).toHaveLength(2);
+      expect(rows('[data-sub="Test/Sales"]')).toHaveLength(2);
+      const keyWarnings = warn.mock.calls.filter((c) => c.some((a) => String(a).includes("same key")));
+      expect(keyWarnings).toEqual([]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("a context in the text but not on the map only reveals its line", () => {
+    open();
+    const ctx = st().ast!.domains[0]!.subdomains[0]!.contexts[0]!;
+    const d = st().drawing!;
+    act(() => usePlayground.setState({ drawing: { ...d, nav: { ...d.nav, tiles: {} } } }));
+    const row = rows(`[data-ctx="${ctx.name}"]`)[0]!;
+    expect(() => fireEvent.click(row)).not.toThrow();
+    expect(st().selection).toBeNull();
+    expect(st().openPanel).toBe("code");
+    expect(st().reveal!.start.line).toBe(ctx.span.start.line);
   });
 
   it("after a syntax error the tree still shows the last structure", () => {

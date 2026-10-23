@@ -25,6 +25,9 @@ function Sev({ s }: { s: Severity | undefined }) {
   );
 }
 
+/** Chave de React pela posição no texto: nomes repetidos são entrada válida (DUPLICATE_*). */
+const at = (n: { span: { start: { line: number; column: number } } }) => `${n.span.start.line}:${n.span.start.column}`;
+
 /** A linha de um contexto na AST; leva à linha dele quando não está no mapa. */
 function lineOfContext(ast: ProgramNode, name: string): number {
   for (const d of ast.domains) {
@@ -74,7 +77,7 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
   };
 
   const ctxRow = (c: ContextNode) => (
-    <button key={c.name} type="button" className={`${styles.tw} ${styles.d2}`} data-ctx={c.name} data-on={onCtx(c.name)}>
+    <button key={at(c)} type="button" className={`${styles.tw} ${styles.d2}`} data-ctx={c.name} data-on={onCtx(c.name)}>
       <span className={styles.nm}>{c.name}</span>
       <span className={styles.grow} />
       <Sev s={m.ctx[c.name]} />
@@ -87,7 +90,7 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
         const dk = "d:" + d.name;
         const rels = d.mapping ? d.mapping.relationships : [];
         return (
-          <div key={d.name}>
+          <div key={at(d)}>
             <div className={styles.sec}>
               <h5>Domínio</h5>
               <button type="button" className={styles.tw} data-tog={dk}>
@@ -102,7 +105,7 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
                     const sk = "s:" + key;
                     const ty = TYPES.includes(sd.subdomainType) ? sd.subdomainType : "";
                     return (
-                      <div key={key} style={{ display: "contents" }}>
+                      <div key={at(sd)} style={{ display: "contents" }}>
                         <button type="button" className={`${styles.tw} ${styles.d1}`} data-sub={key} data-on={onSub(key)}>
                           <span data-tog={sk}><Chev shut={shut.has(sk)} /></span>
                           <span className={styles.nm}>{sd.name}</span>
@@ -129,10 +132,10 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
             </div>
             <div className={styles.sec}>
               <h5>Relações <small>{rels.length}</small></h5>
-              {rels.map((r, i) => {
+              {rels.map((r) => {
                 const rk = pairKey(r.left, r.right);
                 return (
-                  <button key={i} type="button" className={styles.tw} data-rel={rk} data-line={r.span.start.line} data-on={onRel(rk)}>
+                  <button key={at(r)} type="button" className={styles.tw} data-rel={rk} data-line={r.span.start.line} data-on={onRel(rk)}>
                     <span className={styles.rl}>{r.left} {r.connector} {r.right}</span>
                     <span className={styles.grow} />
                     <Sev s={m.rel[rk]} />
