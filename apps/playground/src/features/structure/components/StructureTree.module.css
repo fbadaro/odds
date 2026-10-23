@@ -155,19 +155,6 @@
   flex: none;
   display: inline-flex;
   font-size: 14px;
-  color: rgb(var(--tone));
-}
-
-.sev[data-severity="error"] {
-  --tone: var(--c-error);
-}
-
-.sev[data-severity="warning"] {
-  --tone: var(--c-warning);
-}
-
-.sev[data-severity="info"] {
-  --tone: var(--c-info);
 }
 
 @media (prefers-reduced-motion: reduce) {

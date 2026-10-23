@@ -19,8 +19,8 @@ function Chev({ shut }: { shut: boolean }) {
 function Sev({ s }: { s: Severity | undefined }) {
   if (!s) return null;
   return (
-    <span className={styles.sev} data-severity={s} role="img" aria-label={s}>
-      <SeverityIcon severity={s} />
+    <span className={styles.sev}>
+      <SeverityIcon severity={s} label={s} />
     </span>
   );
 }

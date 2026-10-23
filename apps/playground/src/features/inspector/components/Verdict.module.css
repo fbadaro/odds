@@ -9,23 +9,11 @@
   border-top: 1px solid rgb(var(--c-hairline));
 }
 
+/* bancada: .vd svg 14x14, .sel .vd svg{margin-top:1px} */
 .icon {
   display: inline-flex;
   margin-top: 1px;
   font-size: 14px;
-  color: rgb(var(--tone));
-}
-
-.icon[data-severity="error"] {
-  --tone: var(--c-error);
-}
-
-.icon[data-severity="warning"] {
-  --tone: var(--c-warning);
-}
-
-.icon[data-severity="info"] {
-  --tone: var(--c-info);
 }
 
 .vd code {

@@ -1,7 +1,5 @@
 /* bancada: .i-ficha, com o .phead e o .pbody do painel */
-/* a bancada tem *{box-sizing:border-box}; a aplicação não, e a largura da ficha entra na área livre */
 .ficha {
-  box-sizing: border-box;
   top: 78px;
   right: 20px;
   bottom: 78px;

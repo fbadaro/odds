@@ -9,8 +9,8 @@ export function Verdict({ d }: { d: TargetedDiagnostic }) {
   const { line, column } = d.span.start;
   return (
     <div className={styles.vd} data-verdict={d.code}>
-      <span className={styles.icon} data-severity={d.severity} role="img" aria-label={d.severity}>
-        <SeverityIcon severity={d.severity} />
+      <span className={styles.icon}>
+        <SeverityIcon severity={d.severity} label={d.severity} />
       </span>
       <span>
         <Prose d={d} />

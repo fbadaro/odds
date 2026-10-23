@@ -18,6 +18,13 @@
      --tile-* -> lidos pelo map.css como --odds-map-tile-*
    A ponte do mapa (--odds-map-*) fica em map-bridge.css. */
 
+/* bancada: *{box-sizing:border-box} — as larguras das ilhas são as da bancada */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
