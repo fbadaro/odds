@@ -21,13 +21,16 @@ describe("CodePanel", () => {
   beforeEach(() => usePlayground.setState({ ...initial, text: "ab\ncde\nf" }, true));
   afterEach(() => usePlayground.setState(initial, true));
 
-  it("exists only while the code panel is open", () => {
+  it("stays mounted and hidden while closed, as the bench's #pCode", () => {
     const { container } = mount();
-    expect(container.querySelector('[data-feature="panel-code"]')).toBeNull();
+    const panel = () => container.querySelector<HTMLElement>('[data-feature="panel-code"]');
+    expect(panel()).not.toBeNull();
+    expect(panel()!.hidden).toBe(true);
     act(() => usePlayground.getState().togglePanel("code"));
-    expect(container.querySelector('[data-feature="panel-code"]')).not.toBeNull();
+    expect(panel()!.hidden).toBe(false);
     fireEvent.click(screen.getByRole("button", { name: "Fechar" }));
     expect(usePlayground.getState().openPanel).toBeNull();
+    expect(panel()!.hidden).toBe(true);
   });
 
   it("Tab inserts two spaces", () => {
@@ -83,15 +86,32 @@ describe("CodePanel", () => {
     expect(container.querySelector('[data-feature="panel-code"] [data-icon="error"]')).not.toBeNull();
   });
 
-  it("reopening the code panel shows L1:1", () => {
+  it("reopening the code panel keeps the caret, the scroll and the textarea", () => {
+    usePlayground.setState({ openPanel: "code" });
+    mount();
+    const ta = editor();
+    ta.setSelectionRange(4, 4);
+    fireEvent.keyUp(ta);
+    ta.scrollTop = 40;
+    expect(screen.getByText(`${MODELS.m50.file} · L2:2`)).toBeTruthy();
+    act(() => usePlayground.getState().closePanel());
+    act(() => usePlayground.getState().togglePanel("code"));
+    expect(editor()).toBe(ta);
+    expect(ta.selectionStart).toBe(4);
+    expect(ta.scrollTop).toBe(40);
+    expect(screen.getByText(`${MODELS.m50.file} · L2:2`)).toBeTruthy();
+  });
+
+  it("switching file with the panel closed still resets the caret", () => {
     usePlayground.setState({ openPanel: "code" });
     mount();
     editor().setSelectionRange(4, 4);
     fireEvent.keyUp(editor());
-    expect(screen.getByText(`${MODELS.m50.file} · L2:2`)).toBeTruthy();
     act(() => usePlayground.getState().closePanel());
+    act(() => usePlayground.getState().loadModel("m17"));
     act(() => usePlayground.getState().togglePanel("code"));
-    expect(screen.getByText(`${MODELS.m50.file} · L1:1`)).toBeTruthy();
+    expect(editor().selectionStart).toBe(0);
+    expect(screen.getByText(`${MODELS.m17.file} · L1:1`)).toBeTruthy();
   });
 
   it("switching file resets the caret to L1:1", () => {

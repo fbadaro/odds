@@ -8,6 +8,8 @@ type Props = {
   // literal em cada painel: a varredura de paridade (ADR-0020) lê o TSX
   "data-feature": "panel-code" | "panel-tree" | "panel-help";
   title: string;
+  /** O painel que fica montado fechado (o de código) se esconde em vez de sair. */
+  hidden?: boolean;
   sub?: ReactNode;
   foot?: ReactNode;
   bodyClassName?: string;
@@ -15,10 +17,10 @@ type Props = {
 };
 
 /** O `.i-panel` da bancada: cabeçalho (título, sub, espaço, fechar), corpo e rodapé opcional. */
-export function PanelIsland({ "data-feature": feature, title, sub, foot, bodyClassName, children }: Props) {
+export function PanelIsland({ "data-feature": feature, hidden, title, sub, foot, bodyClassName, children }: Props) {
   const closePanel = usePlayground((s) => s.closePanel);
   return (
-    <Island as="section" data-feature={feature} className={styles.panel!} aria-label={title}>
+    <Island as="section" data-feature={feature} hidden={hidden} className={styles.panel!} aria-label={title}>
       <div className={styles.head}>
         <span className={styles.title}>{title}</span>
         {sub !== undefined && <span className={styles.sub}>{sub}</span>}

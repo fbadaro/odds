@@ -67,6 +67,25 @@ describe("camera controller", () => {
     expect(vb()).toBe(whole);
   });
 
+  it("a hidden panel (the code panel stays mounted) does not narrow the free area", () => {
+    const cam = make(true);
+    cam.setDrawing(svg, fit, false);
+    const whole = vb();
+    const panel = document.body.appendChild(document.createElement("section"));
+    panel.setAttribute("data-feature", "panel-code");
+    panel.hidden = true;
+    panel.getBoundingClientRect = () => ({ left: 78, right: 478 }) as DOMRect;
+    try {
+      cam.safeChanged();
+      expect(vb()).toBe(whole);
+      panel.hidden = false;
+      cam.safeChanged();
+      expect(vb()).not.toBe(whole);
+    } finally {
+      panel.remove();
+    }
+  });
+
   it("zoom stops at five times the whole map", () => {
     const cam = make(true);
     cam.setDrawing(svg, fit, false);

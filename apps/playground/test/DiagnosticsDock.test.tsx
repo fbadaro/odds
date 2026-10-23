@@ -162,6 +162,34 @@ describe("DiagnosticsDock", () => {
     }
   });
 
+  it("ignores the hidden code panel that stays mounted while closed", () => {
+    const rect = (right: number, left: number) => ({ right, left }) as DOMRect;
+    const place = (id: string, r: DOMRect) => {
+      const el = document.body.appendChild(document.createElement("div"));
+      el.setAttribute("data-feature", id);
+      vi.spyOn(el, "getBoundingClientRect").mockReturnValue(r);
+      return el;
+    };
+    const w = window.innerWidth;
+    const rail = place("rail", rect(62, 20));
+    const zoom = place("zoom-controls", rect(w - 20, w - 170));
+    const panel = place("panel-code", rect(480, 78));
+    panel.hidden = true;
+    try {
+      render(<DiagnosticsDock />);
+      const el = dock() as HTMLElement;
+      expect(st().openPanel).toBeNull();
+      expect(el.style.getPropertyValue("--dl")).toBe("78px");
+      act(() => st().togglePanel("code"));
+      act(() => st().closePanel());
+      expect(el.style.getPropertyValue("--dl")).toBe("78px");
+    } finally {
+      rail.remove();
+      zoom.remove();
+      panel.remove();
+    }
+  });
+
   it("re-places itself when the ficha opens or closes, as the bench's safeChanged does", () => {
     const place = (id: string, right: number, left: number) => {
       const el = document.body.appendChild(document.createElement("div"));

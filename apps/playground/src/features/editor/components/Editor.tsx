@@ -6,9 +6,6 @@ import styles from "./Editor.module.css";
 
 const SEV_CLASS = { error: styles.sevError, warning: styles.sevWarning, info: styles.sevInfo } as const;
 
-// o último `reveal` já aplicado: reabrir o painel não repete um pedido antigo
-let handled = 0;
-
 export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
   const text = usePlayground((s) => s.text);
   const setText = usePlayground((s) => s.setText);
@@ -16,8 +13,10 @@ export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
   const reveal = usePlayground((s) => s.reveal);
   const ta = useRef<HTMLTextAreaElement>(null);
   const gut = useRef<HTMLDivElement>(null);
+  // o último `reveal` já aplicado: um pedido antigo não se repete
+  const handled = useRef(0);
 
-  // ao abrir o painel e a cada arquivo carregado (loadModel): cursor e rolagem no início, como na bancada
+  // a cada arquivo carregado (loadModel), e só então: cursor e rolagem no início, como na bancada
   const epoch = usePlayground((s) => s.epoch);
   useEffect(() => {
     const el = ta.current;
@@ -33,9 +32,9 @@ export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
   useEffect(() => {
     const el = ta.current;
     const r = usePlayground.getState().reveal;
-    if (!r) handled = 0;
-    if (!el || !r || r.seq === handled) return;
-    handled = r.seq;
+    if (!r) handled.current = 0;
+    if (!el || !r || r.seq === handled.current) return;
+    handled.current = r.seq;
     el.focus();
     el.setSelectionRange(offsetOf(el.value, r.start), offsetOf(el.value, r.end));
     el.scrollTop = Math.max(0, (r.start.line - 6) * 20);
