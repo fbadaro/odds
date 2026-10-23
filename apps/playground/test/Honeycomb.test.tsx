@@ -176,9 +176,29 @@ describe("Honeycomb", () => {
     fireEvent.keyDown(map(), { key: "+" });
     expect(svg.getAttribute("viewBox")).not.toBe(before);
     expect(usePlayground.getState().zoomPct).toBe(140);
-    fireEvent.keyDown(map(), { key: "0" });
-    act(() => usePlayground.getState().commandCamera("in"));
-    expect(usePlayground.getState().zoomPct).toBeGreaterThan(100);
+  });
+
+  it("camera commands zoom in, out and back to the whole map", () => {
+    // reduced motion: every camera move lands at once, so the percent reads the command alone
+    const mm = window.matchMedia;
+    window.matchMedia = ((q: string) => ({ matches: q.includes("reduce"), media: q }) as MediaQueryList);
+    try {
+      render(<Honeycomb />);
+      const pct = () => usePlayground.getState().zoomPct;
+      const command = (k: "in" | "out" | "fit") => act(() => usePlayground.getState().commandCamera(k));
+      expect(pct()).toBe(100);
+      command("in");
+      expect(pct()).toBe(140);
+      command("out");
+      expect(pct()).toBe(100);
+      command("in");
+      command("in");
+      expect(pct()).toBe(196);
+      command("fit");
+      expect(pct()).toBe(100);
+    } finally {
+      window.matchMedia = mm;
+    }
   });
 });
 
