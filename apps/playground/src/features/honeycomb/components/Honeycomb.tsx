@@ -36,7 +36,8 @@ const actions: MapActions = {
  * camera, selection, hover and FLIP touch that SVG imperatively.
  */
 export function Honeycomb() {
-  const svg = usePlayground((s) => s.drawing?.svg ?? null);
+  const drawing = usePlayground((s) => s.drawing);
+  const svg = drawing?.svg ?? null;
   const stale = usePlayground((s) => s.stale);
   const selection = usePlayground((s) => s.selection);
   const hover = usePlayground((s) => s.hover);
@@ -49,7 +50,7 @@ export function Honeycomb() {
   const mount = useRef<HTMLDivElement>(null);
   const camera = useRef<CameraController | null>(null);
   // what the camera already answered: a remount must not replay an old request
-  const seen = useRef({ epoch, frameSeq, command: cameraCommand?.seq ?? 0, safe: `${openPanel}|${hasFicha}` });
+  const seen = useRef({ epoch, frameSeq, command: cameraCommand?.seq ?? 0, safe: `${openPanel}|${hasFicha}`, svg: null as string | null });
 
   const isStale = svg !== null && stale;
 
@@ -76,19 +77,27 @@ export function Honeycomb() {
     camera.current?.reset();
   }, [epoch]);
 
-  // the bench's paint: mount, camera, selection, then the FLIP of a new topology
+  // the bench's paint: mount, camera, selection, then the FLIP of a new topology. It runs for
+  // every drawn text, as the bench's does: when the markup is the same the node stays, but an
+  // automatic camera is still fitted again to the free area as it is now
   useLayoutEffect(() => {
     const el = mount.current;
     if (!el) return;
+    if (svg === seen.current.svg) {
+      const node = el.querySelector("svg");
+      if (node && drawing) camera.current?.setDrawing(node, drawing.fit, false);
+      return;
+    }
+    seen.current.svg = svg;
     el.innerHTML = svg ?? "";
     const node = el.querySelector("svg");
-    const { drawing, selection: sel, hover: hov } = usePlayground.getState();
+    const { selection: sel, hover: hov } = usePlayground.getState();
     if (!node || !drawing) return;
     node.setAttribute("preserveAspectRatio", "xMidYMid meet");
     camera.current?.setDrawing(node, drawing.fit, drawing.prevTiles !== null);
     paintSelection(node, drawing.nav, sel, hov);
     if (drawing.prevTiles && !reducedMotion()) flip(node, drawing.prevTiles, drawing.geo.tiles);
-  }, [svg]);
+  }, [drawing, svg]);
 
   useLayoutEffect(() => {
     const node = mount.current?.querySelector("svg");

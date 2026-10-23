@@ -52,18 +52,20 @@ export function DiagnosticsDock() {
   const listOpen = usePlayground((s) => s.listOpen);
   const allOpen = usePlayground((s) => s.allOpen);
   const openPanel = usePlayground((s) => s.openPanel);
+  const hasFicha = usePlayground((s) => s.selection !== null);
   const toggleFilter = usePlayground((s) => s.toggleFilter);
   const setListOpen = usePlayground((s) => s.setListOpen);
   const toggleAll = usePlayground((s) => s.toggleAll);
   const dock = useRef<HTMLDivElement>(null);
 
-  // after the panels of the same commit are in the DOM; again on every resize
+  // after the panels of the same commit are in the DOM; again on every resize, and whenever
+  // the free area changes (the bench's safeChanged: a panel, or the ficha opening or closing)
   useLayoutEffect(() => {
     const place = () => layoutDock(dock.current!, openPanel);
     place();
     window.addEventListener("resize", place);
     return () => window.removeEventListener("resize", place);
-  }, [openPanel]);
+  }, [openPanel, hasFicha]);
 
   const n = diagnostics.length;
   const shown = diagnostics.filter((d) => filters[d.severity]);

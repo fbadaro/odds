@@ -161,4 +161,33 @@ describe("DiagnosticsDock", () => {
       zoom.remove();
     }
   });
+
+  it("re-places itself when the ficha opens or closes, as the bench's safeChanged does", () => {
+    const place = (id: string, right: number, left: number) => {
+      const el = document.body.appendChild(document.createElement("div"));
+      el.setAttribute("data-feature", id);
+      const spy = vi.spyOn(el, "getBoundingClientRect").mockReturnValue({ right, left } as DOMRect);
+      return { el, spy };
+    };
+    const w = window.innerWidth;
+    const rail = place("rail", 62, 20);
+    const zoom = place("zoom-controls", w - 20, w - 170);
+    // measured mid-animation (the panel slides in from -6px), then at rest
+    const panel = place("panel-code", 472, 72);
+    try {
+      render(<DiagnosticsDock />);
+      const el = dock() as HTMLElement;
+      act(() => st().togglePanel("code"));
+      expect(el.style.getPropertyValue("--dl")).toBe("488px");
+
+      panel.spy.mockReturnValue({ right: 478, left: 78 } as DOMRect);
+      act(() => st().select({ ctx: "Checkout" }));
+      expect(st().selection).not.toBeNull();
+      expect(el.style.getPropertyValue("--dl")).toBe("494px");
+    } finally {
+      rail.el.remove();
+      zoom.el.remove();
+      panel.el.remove();
+    }
+  });
 });

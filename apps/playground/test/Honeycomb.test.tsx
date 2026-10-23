@@ -30,6 +30,27 @@ describe("Honeycomb", () => {
     expect(screen.getByTestId("honeycomb").querySelector("svg")).toBe(first);
   });
 
+  it("fits an automatic camera again on a new drawing with the same markup, as the bench's paint does", () => {
+    render(<Honeycomb />);
+    const el = map();
+    Object.defineProperty(el, "clientWidth", { configurable: true, value: 1400 });
+    Object.defineProperty(el, "clientHeight", { configurable: true, value: 900 });
+    const svg = el.querySelector("svg")!;
+    act(() => usePlayground.setState({ drawing: { ...usePlayground.getState().drawing! } }));
+    const before = svg.getAttribute("viewBox");
+    // the free area changed after the last fit (a panel measured mid-animation, at rest now)
+    const panel = document.body.appendChild(document.createElement("section"));
+    panel.setAttribute("data-feature", "panel-code");
+    panel.getBoundingClientRect = () => ({ right: 478, left: 78 }) as DOMRect;
+    try {
+      act(() => usePlayground.setState({ drawing: { ...usePlayground.getState().drawing! } }));
+      expect(el.querySelector("svg")).toBe(svg);
+      expect(svg.getAttribute("viewBox")).not.toBe(before);
+    } finally {
+      panel.remove();
+    }
+  });
+
   it("replaces the svg when the string changes", () => {
     render(<Honeycomb />);
     const first = screen.getByTestId("honeycomb").querySelector("svg");
