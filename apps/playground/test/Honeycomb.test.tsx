@@ -58,11 +58,12 @@ describe("Honeycomb", () => {
     expect(screen.getByTestId("honeycomb").querySelector("svg")).not.toBe(first);
   });
 
-  it("shows the empty text without an svg when there is no drawing", () => {
+  it("shows an empty map, with no svg and no sentence, when there is no drawing (as the bench's #svgHost)", () => {
     usePlayground.setState({ drawing: null });
     render(<Honeycomb />);
-    expect(screen.getByText("O mapa aparece quando o texto tiver uma árvore.")).toBeTruthy();
-    expect(screen.getByTestId("honeycomb").querySelector("svg")).toBeNull();
+    const root = screen.getByTestId("honeycomb");
+    expect(root.querySelector("svg")).toBeNull();
+    expect(root.textContent).toBe("");
   });
 
   it("the map root carries data-feature=map", () => {

@@ -144,7 +144,6 @@ export function Honeycomb() {
       aria-label="Mapa: arraste para mover, roda ou pinça para aproximar, setas e + − 0 no teclado"
     >
       <div ref={mount} className={styles.mount} />
-      {svg === null && <p className={styles.empty}>O mapa aparece quando o texto tiver uma árvore.</p>}
     </div>
   );
 }
