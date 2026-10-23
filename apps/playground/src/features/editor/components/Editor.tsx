@@ -62,7 +62,7 @@ export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
       <textarea
         ref={ta}
         className={styles.editor}
-        aria-label="Texto .odds"
+        aria-label="Fonte .odds"
         value={text}
         onChange={(e) => {
           setText(e.target.value);

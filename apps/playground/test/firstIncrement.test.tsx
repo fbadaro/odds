@@ -9,7 +9,7 @@ const initial = usePlayground.getState();
 // the dock's counters: the button's title names the severity, its text is the number
 const counter = (severity: "erros" | "avisos" | "infos") => screen.getByTitle(`esconder ${severity}`);
 const wait = () => document.querySelector('[data-feature="wait-indicator"]')!;
-const editor = () => screen.getByLabelText("Texto .odds") as HTMLTextAreaElement;
+const editor = () => screen.getByLabelText("Fonte .odds") as HTMLTextAreaElement;
 const open = () => fireEvent.click(screen.getByRole("button", { name: "Código" })); // o painel começa fechado, como na bancada
 const type = (text: string) => act(() => void fireEvent.change(editor(), { target: { value: text } }));
 

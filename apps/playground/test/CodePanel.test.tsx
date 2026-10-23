@@ -6,7 +6,7 @@ import { MODELS } from "../src/lib/models";
 import { usePlayground } from "../src/stores/playground";
 
 const initial = usePlayground.getState();
-const editor = () => screen.getByLabelText("Texto .odds") as HTMLTextAreaElement;
+const editor = () => screen.getByLabelText("Fonte .odds") as HTMLTextAreaElement;
 
 function mount() {
   return render(
