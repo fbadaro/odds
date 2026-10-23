@@ -56,7 +56,9 @@
   gap: 6px;
   border-radius: var(--radius-pill);
   padding: 4px 8px 4px 6px;
-  font: var(--font-mono-xs-weight) var(--font-mono-xs-size) / var(--font-mono-xs-line-height) var(--font-mono-xs-family);
+  /* a bancada declara mono no .cnt, mas o .pg button{font-family:inherit} dela vence:
+     o contador sai em Inter, e é assim que ele foi validado */
+  font: var(--font-mono-xs-weight) var(--font-mono-xs-size) / var(--font-mono-xs-line-height) var(--font-ui-family);
   border: 1px solid transparent;
   appearance: none;
   cursor: pointer;

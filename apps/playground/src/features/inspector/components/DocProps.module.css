@@ -37,7 +37,7 @@
 
 .mat {
   display: inline-block;
-  font: 11px var(--font-code-family);
+  font: 11px / 1.4 var(--font-code-family);
   border-radius: var(--radius-pill);
   padding: 2px 9px;
   border: 1px solid rgb(var(--c-hairline));

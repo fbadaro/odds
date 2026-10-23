@@ -65,7 +65,8 @@ button.back {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  font: 12px var(--font-code-family);
+  /* a bancada dá só família e tamanho; a altura de linha é a herdada, 1.4 */
+  font: 12px / 1.4 var(--font-code-family);
 }
 
 .head .who {
@@ -103,7 +104,7 @@ button.back {
 }
 
 .chip {
-  font: 11px var(--font-code-family);
+  font: 11px / 1.4 var(--font-code-family);
   border: 1px solid rgb(var(--c-edge) / 0.75);
   border-radius: var(--radius-chip);
   padding: 1px 6px;

@@ -25,6 +25,7 @@
 .c {
   display: block;
   margin-top: 2px;
-  font: 11px var(--font-code-family);
+  /* herda o line-height 1.4 do .vd, como na bancada */
+  font: 11px / 1.4 var(--font-code-family);
   color: rgb(var(--c-ink-mute));
 }

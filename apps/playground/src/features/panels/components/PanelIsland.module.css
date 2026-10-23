@@ -35,7 +35,7 @@
 }
 
 .sub {
-  font: 11px var(--font-mono-xs-family);
+  font: 11px / 1.4 var(--font-mono-xs-family);
   color: rgb(var(--c-ink-mute));
 }
 

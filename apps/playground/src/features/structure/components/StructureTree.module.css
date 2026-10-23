@@ -48,6 +48,9 @@
   color: rgb(var(--c-ink));
   font: inherit;
   font-size: 13px;
+  /* a bancada só herda a família (.pg button{font-family:inherit}); a altura de linha fica a do
+     botão, normal, e não a 1.4 do body */
+  line-height: normal;
   text-align: left;
 }
 
@@ -96,8 +99,9 @@
   font-weight: 600;
 }
 
+/* bancada: .tw .badge e só as variantes core e supporting; generic fica no estilo base
+   (o --t do .nav [data-type="generic"] não chega ao .tw .badge, que não o lê) */
 .badge {
-  --t: var(--c-ink-mute);
   font-family: var(--font-mono-xs-family);
   font-size: 11px;
   line-height: 1.3;
@@ -108,25 +112,13 @@
 }
 
 .badge[data-type="core"] {
-  --t: var(--c-core-ink);
+  background: rgb(var(--c-core-ink) / 0.08);
+  color: rgb(var(--c-core-ink));
 }
 
 .badge[data-type="supporting"] {
-  --t: var(--c-sup-ink);
-}
-
-.badge[data-type="generic"] {
-  --t: var(--c-gen-ink);
-}
-
-.badge[data-type] {
-  background: rgb(var(--t) / 0.08);
-  color: rgb(var(--t));
-}
-
-.badge[data-type=""] {
-  background: rgb(var(--c-surface-muted));
-  color: rgb(var(--c-ink-mute));
+  background: rgb(var(--c-sup-ink) / 0.08);
+  color: rgb(var(--c-sup-ink));
 }
 
 .own {
