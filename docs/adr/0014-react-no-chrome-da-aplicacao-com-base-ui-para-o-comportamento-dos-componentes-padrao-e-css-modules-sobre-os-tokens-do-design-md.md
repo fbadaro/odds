@@ -13,6 +13,8 @@ superseded-by: —
 
 > **Os três pontos deixados em aberto foram respondidos em 2026-10-22.** A estrutura do código está no `ADR-0016`: a aplicação mora em `apps/playground`, e `packages/` fica só com bibliotecas. O `ADR-0018` decide como os tokens saem do `DESIGN.md`: são gerados do front matter, com um grupo `elevation`, e conferidos por teste. As práticas de React estão no `ADR-0019`: Zustand, React Compiler e ESLint, com a fronteira do Base UI imposta por `no-restricted-imports`. O destino do `playground.html` atual está no `ADR-0017`: ele continua como bancada, e a aplicação implementa o que ela valida. Nada do que este ADR decidiu muda.
 
+> **Nota de 2026-10-23: o toast é componente próprio, sem Base UI.** O store guarda uma só mensagem, e a API de gerente do Toast do Base UI (fila, ids) brigaria com isso, como explica o `src/components/ui/Toast.tsx`. A spec da paridade dava o toast como candidato ao Base UI, não como obrigação. Nada do que este ADR decidiu muda.
+
 ## Contexto
 
 O `ADR-0007` adiou o framework de UI até a exploração de tela produzir fatos, e o `HEALTH.md` §9.2 (R6.4) o mantinha, junto com o bundler, como uma das duas decisões de stack em aberto. Em 2026-10-20 a exploração já tinha os fatos que importavam: o `ADR-0009` fixou que o diagrama é SVG montado pelo `@odds/layout`, o `ADR-0011` fez da colmeia a vista principal, o `ADR-0013` fez do `DESIGN.md` a fonte do sistema visual, e o `docs/design/pages/playground.html` reunia tudo numa bancada única de cerca de 5 mil linhas de JavaScript sem framework.

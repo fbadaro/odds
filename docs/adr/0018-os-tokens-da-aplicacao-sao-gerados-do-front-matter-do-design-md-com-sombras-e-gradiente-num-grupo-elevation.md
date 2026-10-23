@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0018 — Os tokens da aplicação são gerados do front matter do DESIGN.md, com sombras e gradiente num grupo elevation
 
+> **Nota de 2026-10-23, só de contexto.** Na paridade com a bancada, o front matter do `DESIGN.md` ganhou a linha do mapa (`edge`, `edge-lit`, `edge-far`) e as tintas por tipo (`core-ink`, `sup-ink`, `gen-ink`), com as variantes escuras. O gerador os absorveu sem caso especial, então o sinal da *Reversão* não disparou. Mas o custo da volta cresceu como a *Reversão* previa: 32 `.module.css` de `apps/playground` constroem agora sobre os nomes do front matter. Nada do que este ADR decidiu muda.
+
 ## Contexto
 
 O `ADR-0013` fez do `DESIGN.md` a fonte única do sistema visual, com os tokens no front matter YAML do formato `design.md`. Ele recusou, por ora, um arquivo de tokens de máquina separado, porque dois arquivos para uma fonte única reabrem a deriva entre texto e valor e não havia build de UI que gerasse um a partir do outro. A *Reversão* dele deixou a saída nomeada: tokens num arquivo de máquina *gerado ou validado por build*, quando houvesse framework e bundler. O `ADR-0014` (React, CSS Modules sobre variáveis CSS globais) e o `ADR-0015` (Vite) tornaram isso possível, e o `ADR-0014` deixou a forma para a conversa sobre como construir a aplicação.
