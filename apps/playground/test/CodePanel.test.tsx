@@ -82,4 +82,25 @@ describe("CodePanel", () => {
     act(() => usePlayground.getState().setText(text.slice(0, i) + "[XYZ] " + text.slice(i)));
     expect(container.querySelector('[data-feature="panel-code"] [data-icon="error"]')).not.toBeNull();
   });
+
+  it("reopening the code panel shows L1:1", () => {
+    usePlayground.setState({ openPanel: "code" });
+    mount();
+    editor().setSelectionRange(4, 4);
+    fireEvent.keyUp(editor());
+    expect(screen.getByText(`${MODELS.m50.file} · L2:2`)).toBeTruthy();
+    act(() => usePlayground.getState().closePanel());
+    act(() => usePlayground.getState().togglePanel("code"));
+    expect(screen.getByText(`${MODELS.m50.file} · L1:1`)).toBeTruthy();
+  });
+
+  it("switching file resets the caret to L1:1", () => {
+    usePlayground.setState({ openPanel: "code" });
+    mount();
+    editor().setSelectionRange(4, 4);
+    fireEvent.keyUp(editor());
+    act(() => usePlayground.getState().loadModel("m17"));
+    expect(screen.getByText(`${MODELS.m17.file} · L1:1`)).toBeTruthy();
+    expect(editor().selectionStart).toBe(0);
+  });
 });

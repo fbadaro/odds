@@ -17,6 +17,18 @@ export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
   const ta = useRef<HTMLTextAreaElement>(null);
   const gut = useRef<HTMLDivElement>(null);
 
+  // ao abrir o painel e a cada arquivo carregado (loadModel): cursor e rolagem no início, como na bancada
+  const epoch = usePlayground((s) => s.epoch);
+  useEffect(() => {
+    const el = ta.current;
+    if (el) {
+      el.setSelectionRange(0, 0);
+      el.scrollTop = 0;
+    }
+    if (gut.current) gut.current.scrollTop = 0;
+    onCaret(0);
+  }, [epoch, onCaret]);
+
   const seq = reveal?.seq ?? 0;
   useEffect(() => {
     const el = ta.current;
