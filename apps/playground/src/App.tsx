@@ -2,6 +2,7 @@ import { Toast } from "./components/ui/Toast";
 import { Island } from "./components/island/Island";
 import { SeverityCounters } from "./features/diagnostics/components/SeverityCounters";
 import { CodePanel } from "./features/editor/components/CodePanel";
+import { StructurePanel } from "./features/structure/components/StructurePanel";
 import { Rail } from "./features/panels/components/Rail";
 import { Honeycomb } from "./features/honeycomb/components/Honeycomb";
 import { ZoomControls } from "./features/honeycomb/components/ZoomControls";
@@ -24,6 +25,7 @@ export function App() {
       <Actions />
       <Rail />
       <CodePanel />
+      <StructurePanel />
       <Island className={styles.dock}>
         <SeverityCounters />
       </Island>

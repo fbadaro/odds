@@ -14,7 +14,7 @@ export function CodePanel() {
   const [caret, setCaret] = useState(0);
   if (!open) return null;
   return (
-    <PanelIsland feature="panel-code" title="Código" sub={caretLabel(file, text, caret)} bodyClassName={styles.body!}>
+    <PanelIsland data-feature="panel-code" title="Código" sub={caretLabel(file, text, caret)} bodyClassName={styles.body!}>
       <Editor onCaret={setCaret} />
     </PanelIsland>
   );
