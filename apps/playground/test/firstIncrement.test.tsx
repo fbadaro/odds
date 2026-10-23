@@ -47,6 +47,6 @@ describe("first increment", () => {
     render(<App />);
     const text = initial.text;
     type(text.slice(0, text.lastIndexOf("}")));
-    expect(screen.getByTestId("honeycomb").getAttribute("data-stale")).toBe("true");
+    expect(screen.getByTestId("honeycomb").classList.contains("frozen")).toBe(true);
   });
 });

@@ -1,0 +1,61 @@
+/* bancada: .i-zoom, .ibtn, .vsep e o #zoomOut (o .nav #zoomOut vence o .i-zoom .pct) */
+.zoom {
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  height: 42px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgb(var(--c-ink-mute));
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 var(--space-sm);
+}
+
+.btn:hover {
+  color: rgb(var(--c-ink));
+  background: rgb(var(--c-surface-muted));
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 2px;
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.pct {
+  font: var(--font-mono-sm-weight) var(--font-mono-sm-size) / var(--font-mono-sm-line-height) var(--font-mono-sm-family);
+  color: rgb(var(--c-ink-mute));
+  min-width: 44px;
+  text-align: right;
+}
+
+.vsep {
+  width: 1px;
+  align-self: stretch;
+  background: rgb(var(--c-hairline));
+  margin: var(--space-xxs) 2px;
+}
+
+@media (max-width: 760px) {
+  .pct {
+    display: none;
+  }
+}

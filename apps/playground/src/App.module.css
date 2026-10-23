@@ -1,17 +1,7 @@
-/* A casca em tela inteira: o mapa atrás, as ilhas soltas por cima (bancada: .pg, .pg-map, .i-*). */
+/* A casca em tela inteira: o mapa atrás (o palco é do honeycomb.css), as ilhas soltas por cima (bancada: .pg, .i-*). */
 .shell {
   position: fixed;
   inset: 0;
-}
-
-.map {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-  background-color: rgb(var(--c-canvas));
-  background-image: radial-gradient(rgb(var(--c-ink) / 0.13) 1px, transparent 1px);
-  background-size: 22px 22px;
 }
 
 /* provisório até a Task 8: o editor onde fica o painel da bancada (.i-panel) */

@@ -1,23 +1,12 @@
-.root {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
+/* o palco, o fundo e os estados (arrasto, congelado) são do honeycomb.css; aqui só o miolo */
 .mount {
-  width: 100%;
   height: 100%;
-  transition: opacity 180ms;
 }
 
 .mount > svg {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.root[data-stale="true"] .mount {
-  opacity: .5;
 }
 
 .empty {
@@ -63,10 +52,4 @@
 .flag b {
   color: rgb(var(--c-error));
   font-weight: var(--font-title-weight);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mount {
-    transition: none;
-  }
 }
