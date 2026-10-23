@@ -1,8 +1,10 @@
+import { Toast } from "./components/ui/Toast";
 import { Island } from "./components/island/Island";
 import { SeverityCounters } from "./features/diagnostics/components/SeverityCounters";
 import { Editor } from "./features/editor/components/Editor";
 import { Honeycomb } from "./features/honeycomb/components/Honeycomb";
 import { ZoomControls } from "./features/honeycomb/components/ZoomControls";
+import { Actions } from "./features/topbar/components/Actions";
 import { FileMenu } from "./features/topbar/components/FileMenu";
 import { ViewSwitch } from "./features/topbar/components/ViewSwitch";
 import { useGlobalEscape } from "./features/honeycomb/useGlobalEscape";
@@ -18,6 +20,7 @@ export function App() {
       </main>
       <FileMenu />
       <ViewSwitch />
+      <Actions />
       <Island as="aside" className={styles.code}>
         <Editor />
       </Island>
@@ -25,6 +28,7 @@ export function App() {
         <SeverityCounters />
       </Island>
       <ZoomControls />
+      <Toast />
     </div>
   );
 }

@@ -42,6 +42,7 @@ export default defineConfig({
   optimizeDeps: { include: ["react", "react-dom/client", "zustand", "chevrotain"] },
   resolve: {
     alias: [
+      { find: "@odds/layout/map.css?raw", replacement: here("../../packages/layout/map.css") + "?raw" },
       { find: "@odds/layout/map.css", replacement: here("../../packages/layout/map.css") },
       { find: "@odds/layout/fixtures", replacement: here("../../packages/layout/src/fixtures/index.ts") },
       { find: "@odds/layout", replacement: here("../../packages/layout/src/index.ts") },

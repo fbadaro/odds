@@ -1,0 +1,10 @@
+/* bancada: .toast */
+.toast {
+  top: 78px;
+  right: var(--space-xl);
+  z-index: 5;
+  max-width: 340px;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 13px;
+  line-height: 1.4;
+}

@@ -14,6 +14,7 @@ const at = (p: string) => fileURLToPath(new URL(p, import.meta.url));
  */
 const alias = [
   { find: "@odds/core", replacement: at("packages/core/src/index.ts") },
+  { find: "@odds/layout/map.css?raw", replacement: at("packages/layout/map.css") + "?raw" },
   { find: "@odds/layout/map.css", replacement: at("packages/layout/map.css") },
   { find: "@odds/layout/fixtures", replacement: at("packages/layout/src/fixtures/index.ts") },
   { find: "@odds/layout", replacement: at("packages/layout/src/index.ts") },
