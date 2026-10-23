@@ -4,17 +4,6 @@
   inset: 0;
 }
 
-/* provisório até a Task 8: o editor onde fica o painel da bancada (.i-panel) */
-.code {
-  top: 78px;
-  left: 78px;
-  bottom: 20px;
-  width: min(400px, calc(100vw - 98px));
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 /* provisório até a Task 12: os contadores onde fica o dock (.i-diag) */
 .dock {
   bottom: 20px;
@@ -24,11 +13,6 @@
 }
 
 @media (max-width: 760px) {
-  .code {
-    top: 128px;
-    bottom: 136px;
-  }
-
   .dock {
     left: 20px;
     right: 20px;

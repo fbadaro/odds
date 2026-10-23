@@ -7,6 +7,7 @@ const initial = usePlayground.getState();
 
 const counter = (name: RegExp) => screen.getByLabelText(name);
 const editor = () => screen.getByLabelText("Texto .odds") as HTMLTextAreaElement;
+const open = () => fireEvent.click(screen.getByRole("button", { name: "Código" })); // o painel começa fechado, como na bancada
 const type = (text: string) => act(() => void fireEvent.change(editor(), { target: { value: text } }));
 
 describe("first increment", () => {
@@ -22,6 +23,7 @@ describe("first increment", () => {
 
   it("shows the marketplace with the three counters at zero", () => {
     render(<App />);
+    open();
     expect(editor().value).toBe(initial.text);
     expect(counter(/^0 erros$/).textContent).toBe("0");
     expect(counter(/^0 avisos$/).textContent).toBe("0");
@@ -36,6 +38,7 @@ describe("first increment", () => {
 
   it("an invalid tag raises the error counter without advancing the clock", () => {
     render(<App />);
+    open();
     const text = initial.text;
     const i = text.indexOf("-->");
     expect(i).toBeGreaterThan(0);
@@ -45,6 +48,7 @@ describe("first increment", () => {
 
   it("deleting the last brace leaves the map stale", () => {
     render(<App />);
+    open();
     const text = initial.text;
     type(text.slice(0, text.lastIndexOf("}")));
     expect(screen.getByTestId("honeycomb").classList.contains("frozen")).toBe(true);
