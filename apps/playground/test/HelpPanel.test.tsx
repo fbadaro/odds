@@ -34,7 +34,8 @@ describe("HelpPanel", () => {
     const ext = Object.keys(nav.tiles).filter((id) => !nav.ctxSub[id]).length;
     const rows = [...help().querySelectorAll("#legend > div")].map((r) => r.querySelector("span:last-child")!.textContent);
     expect(rows.some((t) => t === `core · ${n} subdomínio${n === 1 ? "" : "s"}`)).toBe(true);
-    if (ext) expect(rows).toContain(`external · ${ext} · fora da água territorial`);
+    expect(ext).toBe(0);
+    expect(rows.some((t) => t!.startsWith("external"))).toBe(false);
     expect(rows).toContain("A seta aponta para o downstream.");
     expect(rows).toContain("Relação acesa: tracejado correndo do upstream para o downstream.");
     expect(rows).toContain("Relação inválida: tracejado vermelho e parado.");
@@ -45,10 +46,13 @@ describe("HelpPanel", () => {
     expect(help().textContent).toContain("mapa inteiro");
   });
 
-  it("counts external contexts as outside the territorial waters", () => {
-    open("domain D {\n  subdomain core Vendas {\n    context A\n  }\n  external {\n    context X\n    context Y\n  }\n  mapping {\n    A <-- [OHS] X\n    X --> [OHS] Y\n  }\n}\n");
+  it("shows the external row for a tile with no ctxSub", () => {
+    open();
+    const d = st().drawing!;
+    const nav = { ...d.nav, tiles: { ...d.nav.tiles, ghost: [0, 0] as [number, number] } };
+    act(() => usePlayground.setState({ drawing: { ...d, nav } }));
     const rows = [...help().querySelectorAll("#legend > div")].map((r) => r.textContent);
-    expect(rows).toContain("external · 2 · fora da água territorial");
+    expect(rows).toContain("external · 1 · fora da água territorial");
   });
 
   it("singular for one subdomain", () => {

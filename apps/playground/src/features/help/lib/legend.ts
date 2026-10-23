@@ -9,11 +9,7 @@ export function legendOf(nav: Nav): { types: { type: SubdomainType; count: numbe
   const types = SUBDOMAIN_TYPES.map((type) => ({ type, count: subs.filter((s) => s.type === type).length })).filter(
     (r) => r.count > 0,
   );
-  // A bancada conta `!ctxSub[id]`, mas o navOf dá aos externos o grupo "D/external" (type "external"):
-  // lá a linha nunca aparece. Aqui contam os sem subdomínio e os de grupo external.
-  const external = Object.keys(nav.tiles).filter((id) => {
-    const sub = nav.ctxSub[id];
-    return !sub || nav.subs[sub]?.type === "external";
-  }).length;
+  // como o renderLegend da bancada: contexto sem subdomínio
+  const external = Object.keys(nav.tiles).filter((id) => !nav.ctxSub[id]).length;
   return { types, external };
 }

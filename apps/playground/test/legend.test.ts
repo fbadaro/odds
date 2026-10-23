@@ -6,7 +6,7 @@ describe("legendOf", () => {
   it("counts subdomains per type and external contexts", () => {
     const nav = createPlaygroundStore().getState().drawing!.nav;
     const by = (t: string) => Object.values(nav.subs).filter((s) => s.type === t).length;
-    const ext = Object.keys(nav.tiles).filter((id) => !nav.ctxSub[id] || nav.subs[nav.ctxSub[id]!]?.type === "external").length;
+    const ext = Object.keys(nav.tiles).filter((id) => !nav.ctxSub[id]).length;
     const legend = legendOf(nav);
     expect(legend.external).toBe(ext);
     const expected = (["core", "supporting", "generic"] as const)
@@ -16,13 +16,9 @@ describe("legendOf", () => {
     expect(legend.types.length).toBeGreaterThan(0);
   });
 
-  it("counts the external group the layout really emits", () => {
-    const nav = {
-      subs: { "D/external": { type: "external" } },
-      tiles: { x: {}, y: {} },
-      ctxSub: { x: "D/external", y: "D/external" },
-    } as never;
-    expect(legendOf(nav)).toEqual({ types: [], external: 2 });
+  it("counts a tile with no ctxSub entry as external", () => {
+    const nav = { subs: {}, tiles: { x: {}, y: {} }, ctxSub: { y: "D/a" } } as never;
+    expect(legendOf(nav)).toEqual({ types: [], external: 1 });
   });
 
   it("leaves out empty types", () => {
