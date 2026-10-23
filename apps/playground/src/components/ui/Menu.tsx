@@ -22,15 +22,17 @@ type Props = {
   onValueChange: (value: string) => void;
   /** Depois de um separador, as ações. */
   actions?: MenuAction[];
+  /** Contra o que o menu se posiciona; sem ele, o botão. */
+  anchor?: BaseMenu.Positioner.Props["anchor"];
 };
 
 /** O menu da bancada (.menu): um botão, escolhas de rádio com dica, um separador e ações. Fecha ao escolher. */
-export function Menu({ trigger, triggerClassName, radios, value, onValueChange, actions = [] }: Props) {
+export function Menu({ trigger, triggerClassName, radios, value, onValueChange, actions = [], anchor }: Props) {
   return (
     <BaseMenu.Root modal={false}>
       <BaseMenu.Trigger render={<Button className={triggerClassName} />}>{trigger}</BaseMenu.Trigger>
       <BaseMenu.Portal>
-        <BaseMenu.Positioner side="bottom" align="start" sideOffset={8} className={styles.positioner}>
+        <BaseMenu.Positioner anchor={anchor} side="bottom" align="start" sideOffset={8} className={styles.positioner}>
           <BaseMenu.Popup className={styles.menu}>
             <BaseMenu.RadioGroup value={value} onValueChange={(v) => onValueChange(String(v))}>
               {radios.map((r) => (

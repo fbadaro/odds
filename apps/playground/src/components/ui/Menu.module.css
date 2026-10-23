@@ -49,7 +49,10 @@
   color: rgb(var(--c-accent));
 }
 
+/* bancada: um .vsep com height:1px e margin:4px 0 no lugar do separador; a largura de 1px do
+   .vsep fica, então ele se lê como um vão de 9px, e não como uma linha */
 .sep {
+  width: 1px;
   height: 1px;
   background: rgb(var(--c-hairline));
   margin: 4px 0;

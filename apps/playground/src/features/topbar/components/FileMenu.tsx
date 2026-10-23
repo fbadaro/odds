@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Island } from "../../../components/island/Island";
 import { Menu } from "../../../components/ui/Menu";
 import { MODELS, type ModelKey } from "../../../lib/models";
@@ -11,8 +12,10 @@ export function FileMenu() {
   const modelKey = usePlayground((s) => s.modelKey);
   const loadModel = usePlayground((s) => s.loadModel);
   const resetText = usePlayground((s) => s.resetText);
+  // a bancada abre o menu sob a ilha inteira (.menu: top 70px, left 20px), não sob o botão
+  const island = useRef<HTMLElement>(null);
   return (
-    <Island data-feature="file-menu" className={styles.file}>
+    <Island ref={island} data-feature="file-menu" className={styles.file}>
       <span className={styles.word}>odds</span>
       <Menu
         triggerClassName={styles.trigger}
@@ -26,6 +29,7 @@ export function FileMenu() {
         value={modelKey}
         onValueChange={(k) => loadModel(k as ModelKey)}
         actions={[{ label: "restaurar o texto inicial", onSelect: resetText }]}
+        anchor={island}
       />
     </Island>
   );
