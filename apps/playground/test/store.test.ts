@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { layout, renderSvg } from "@odds/layout";
 import { marketplace } from "@odds/layout/fixtures";
+import { analyze } from "../src/lib/analyze";
+import { MODELS } from "../src/lib/models";
 import { PAUSE_MS, createPlaygroundStore } from "../src/stores/playground";
 
 // pass-through spies, so a single test can make the layout throw
@@ -250,5 +252,250 @@ describe("a late flush while the text is broken (the bench's flush paints lastDi
     expect(markers(bench)).toBeGreaterThan(markers(syntaxOnly));
     expect(markers(st.drawing!.svg)).toBe(markers(bench));
     expect(st.drawing!.svg).toBe(bench);
+  });
+});
+
+/** The text without `context Catalog { … }` and without every mapping line that names it. */
+function withoutCatalog(text: string): string {
+  const out = text.replace(/\n {4}context Catalog \{[\s\S]*?\n {4}\}/, "");
+  if (out === text) throw new Error("no Catalog block in the fixture");
+  return out
+    .split("\n")
+    .filter((l) => !(/\bCatalog\b/.test(l) && /(-->|<--|<->|-x-)/.test(l)))
+    .join("\n");
+}
+
+describe("the document: file, view, last tree", () => {
+  it("loadModel swaps text and file and drops the pending pause", () => {
+    const s = createPlaygroundStore();
+    const m17 = analyze(MODELS.m17.text, MODELS.m17.file, new Map()).keys!.full;
+    s.getState().select({ ctx: "Catalog" });
+    s.getState().setHover("RetailMarketplace/Discovery");
+    const epoch = s.getState().epoch;
+    s.getState().setText(withContext(base));
+    expect(s.getState().waiting).toBe(true);
+    s.getState().loadModel("m17");
+    vi.advanceTimersByTime(1000);
+    const st = s.getState();
+    expect(st.modelKey).toBe("m17");
+    expect(st.text).toBe(MODELS.m17.text);
+    expect(st.waiting).toBe(false);
+    expect(st.drawing!.full).toBe(m17);
+    expect(st.drawing!.svg).not.toContain("ZZNovo");
+    expect(st.selection).toBeNull();
+    expect(st.hover).toBeNull();
+    expect(st.epoch).toBe(epoch + 1);
+    expect(st.drawing!.prevTiles).toBeNull();
+  });
+
+  it("resetText puts the current model's text back", () => {
+    const s = createPlaygroundStore();
+    s.getState().loadModel("m17");
+    s.getState().setText(MODELS.m17.text + "\ndomain {");
+    s.getState().resetText();
+    expect(s.getState().modelKey).toBe("m17");
+    expect(s.getState().text).toBe(MODELS.m17.text);
+    expect(s.getState().stale).toBe(false);
+  });
+
+  it("a selection whose context is deleted is dropped on the next draw", () => {
+    const s = createPlaygroundStore();
+    s.getState().select({ ctx: "Catalog" });
+    s.getState().setText(withoutCatalog(base));
+    expect(s.getState().analysis.astGenerated).toBe(true);
+    expect(s.getState().analysis.counts.error).toBe(0);
+    // the geometry waits the pause: the old map still has Catalog
+    expect(s.getState().waiting).toBe(true);
+    expect(s.getState().selection).toEqual({ ctx: "Catalog" });
+    s.getState().flush();
+    expect(s.getState().drawing!.nav.tiles.Catalog).toBeUndefined();
+    expect(s.getState().selection).toBeNull();
+  });
+
+  it("a relation keeps itself but forgets an origin that left the map", () => {
+    const s = createPlaygroundStore();
+    const rk = s.getState().drawing!.nav.relOf["Cart|Checkout"]![0];
+    s.getState().select({ rel: rk, from: "Catalog" });
+    s.getState().setText(withoutCatalog(base));
+    s.getState().flush();
+    expect(s.getState().selection).toEqual({ rel: rk, from: null });
+  });
+
+  it("syntax error keeps the last ast and markers", () => {
+    const s = createPlaygroundStore();
+    const line = /^\s*Affiliates.*Campaigns.*$/m.exec(base)!;
+    s.getState().setText(base.replace(line[0], line[0] + "\n" + line[0]));
+    const { ast, markers: before } = s.getState();
+    expect(ast).not.toBeNull();
+    expect(before.length).toBeGreaterThan(0);
+    s.getState().setText(s.getState().text + "{");
+    expect(s.getState().analysis.astGenerated).toBe(false);
+    expect(s.getState().ast).toBe(ast);
+    expect(s.getState().markers).toBe(before);
+  });
+
+  it("setView repaints the current geometry in the other view", () => {
+    const s = createPlaygroundStore();
+    const before = s.getState().drawing!;
+    s.getState().setView("contain");
+    const after = s.getState().drawing!;
+    expect(s.getState().view.view).toBe("contain");
+    expect(after.svg).not.toBe(before.svg);
+    expect(after.geo).toBe(before.geo);
+    expect(after.nav).toBe(before.nav);
+    // the fit is the flow view's: renewed only in the flow view
+    expect(after.fit).toEqual(before.fit);
+    s.getState().setView("flow");
+    expect(s.getState().drawing!.fit).toEqual(s.getState().drawing!.geo.viewBox);
+  });
+
+  it("a drawing carries nav and fit; prevTiles only after a pause with a new topology", () => {
+    const s = createPlaygroundStore();
+    const first = s.getState().drawing!;
+    expect(first.prevTiles).toBeNull();
+    expect(first.fit).toEqual(first.geo.viewBox);
+    expect(first.fit).not.toBe(first.geo.viewBox);
+    expect(Object.keys(first.nav.tiles).length).toBe(Object.keys(first.geo.tiles).length);
+    s.getState().setText(tagSwapped(base));
+    const routed = s.getState().drawing!;
+    expect(routed.prevTiles).toBeNull();
+    s.getState().setText(withContext(tagSwapped(base)));
+    expect(s.getState().drawing!.prevTiles).toBeNull();
+    vi.advanceTimersByTime(PAUSE_MS);
+    expect(s.getState().drawing!.prevTiles).toBe(routed.geo.tiles);
+    expect(s.getState().drawing!.nav.tiles.ZZNovo).toBeDefined();
+  });
+});
+
+describe("the selection", () => {
+  it("select with frame bumps frameSeq; without, it does not", () => {
+    const s = createPlaygroundStore();
+    const seq = s.getState().frameSeq;
+    s.getState().select({ ctx: "Catalog" });
+    expect(s.getState().selection).toEqual({ ctx: "Catalog" });
+    expect(s.getState().frameSeq).toBe(seq);
+    s.getState().select({ ctx: "Cart" }, true);
+    expect(s.getState().selection).toEqual({ ctx: "Cart" });
+    expect(s.getState().frameSeq).toBe(seq + 1);
+  });
+
+  it("clickRelation goes to the relation, framed only when it has no origin, and back", () => {
+    const s = createPlaygroundStore();
+    const rk = s.getState().drawing!.nav.relOf["Cart|Catalog"]![0];
+    s.getState().select({ ctx: "Catalog" });
+    const seq = s.getState().frameSeq;
+    s.getState().clickRelation(rk);
+    expect(s.getState().selection).toEqual({ rel: rk, from: "Catalog" });
+    s.getState().clickRelation(rk);
+    expect(s.getState().selection).toEqual({ ctx: "Catalog" });
+    s.getState().select(null);
+    s.getState().clickRelation(rk);
+    expect(s.getState().selection).toEqual({ rel: rk, from: null });
+    expect(s.getState().frameSeq).toBeGreaterThan(seq);
+    const before = s.getState().selection;
+    s.getState().clickRelation("Nope|Zed");
+    expect(s.getState().selection).toBe(before);
+  });
+
+  it("escape steps back from relation to origin, then clears", () => {
+    const s = createPlaygroundStore();
+    const rk = s.getState().drawing!.nav.relOf["Cart|Catalog"]![0];
+    s.getState().select({ rel: rk, from: "Cart" });
+    s.getState().escape();
+    expect(s.getState().selection).toEqual({ ctx: "Cart" });
+    s.getState().escape();
+    expect(s.getState().selection).toBeNull();
+  });
+});
+
+describe("the chrome", () => {
+  it("togglePanel opens one at a time and the same name closes", () => {
+    const s = createPlaygroundStore();
+    expect(s.getState().openPanel).toBeNull();
+    s.getState().togglePanel("tree");
+    expect(s.getState().openPanel).toBe("tree");
+    s.getState().togglePanel("help");
+    expect(s.getState().openPanel).toBe("help");
+    s.getState().togglePanel("help");
+    expect(s.getState().openPanel).toBeNull();
+    s.getState().togglePanel("code");
+    s.getState().closePanel();
+    expect(s.getState().openPanel).toBeNull();
+  });
+
+  it("revealInEditor opens the code panel and bumps seq", () => {
+    const s = createPlaygroundStore();
+    s.getState().togglePanel("tree");
+    const start = { line: 3, column: 2 }, end = { line: 3, column: 9 };
+    s.getState().revealInEditor(start, end);
+    const r1 = s.getState().reveal!;
+    expect(s.getState().openPanel).toBe("code");
+    expect(r1).toMatchObject({ start, end });
+    s.getState().revealInEditor(start, end);
+    expect(s.getState().openPanel).toBe("code");
+    expect(s.getState().reveal!.seq).toBe(r1.seq + 1);
+  });
+
+  it("revealLine reveals the whole line", () => {
+    const s = createPlaygroundStore();
+    const line2 = base.split("\n")[1]!;
+    s.getState().revealLine(2);
+    expect(s.getState().reveal).toMatchObject({ start: { line: 2, column: 1 }, end: { line: 2, column: line2.length + 1 } });
+    expect(s.getState().openPanel).toBe("code");
+  });
+
+  it("toggleFilter reopens a closed list", () => {
+    const s = createPlaygroundStore();
+    expect(s.getState().filters).toEqual({ error: true, warning: true, info: true });
+    expect(s.getState().listOpen).toBe(true);
+    s.getState().setListOpen(false);
+    s.getState().toggleFilter("warning");
+    expect(s.getState().filters).toEqual({ error: true, warning: false, info: true });
+    expect(s.getState().listOpen).toBe(true);
+    s.getState().toggleFilter("warning");
+    expect(s.getState().filters.warning).toBe(true);
+  });
+
+  it("toggleAll flips the full list", () => {
+    const s = createPlaygroundStore();
+    expect(s.getState().allOpen).toBe(false);
+    s.getState().toggleAll();
+    expect(s.getState().allOpen).toBe(true);
+  });
+
+  it("theme, toast, zoom and camera commands are plain state", () => {
+    const s = createPlaygroundStore();
+    expect(s.getState().theme).toBe("light");
+    s.getState().toggleTheme();
+    expect(s.getState().theme).toBe("dark");
+    s.getState().toggleTheme();
+    expect(s.getState().theme).toBe("light");
+
+    expect(s.getState().toast).toBeNull();
+    s.getState().showToast("oi");
+    const t = s.getState().toast!;
+    expect(t.message).toBe("oi");
+    s.getState().showToast("oi");
+    expect(s.getState().toast!.seq).toBe(t.seq + 1);
+    s.getState().dismissToast();
+    expect(s.getState().toast).toBeNull();
+
+    s.getState().setZoomPct(140);
+    expect(s.getState().zoomPct).toBe(140);
+
+    expect(s.getState().cameraCommand).toBeNull();
+    s.getState().commandCamera("in");
+    const c = s.getState().cameraCommand!;
+    expect(c.kind).toBe("in");
+    s.getState().commandCamera("fit");
+    expect(s.getState().cameraCommand).toEqual({ kind: "fit", seq: c.seq + 1 });
+  });
+
+  it("setHover holds a subdomain key or nothing", () => {
+    const s = createPlaygroundStore();
+    s.getState().setHover("RetailMarketplace/Sales");
+    expect(s.getState().hover).toBe("RetailMarketplace/Sales");
+    s.getState().setHover(null);
+    expect(s.getState().hover).toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import { parseAndValidate, type Severity, type SubdomainType } from "@odds/core";
+import { parseAndValidate, type ProgramNode, type Severity, type SubdomainType } from "@odds/core";
 import { anchorsOf, modelOf, targetOf, topologyKeys } from "@odds/layout";
 import type { LayoutModel, TargetedDiagnostic } from "@odds/layout";
 
@@ -6,6 +6,8 @@ export type Counts = Record<Severity, number>;
 
 export interface Analysis {
   astGenerated: boolean;
+  /** The tree of this text; null when it has none. */
+  ast: ProgramNode | null;
   diagnostics: TargetedDiagnostic[];
   counts: Counts;
   model: LayoutModel | null;
@@ -24,10 +26,10 @@ export function analyze(text: string, file: string, lastType: Map<string, Subdom
 
   if (!res.astGenerated || !res.ast) {
     const diagnostics = res.diagnostics.map((d) => ({ code: d.code, severity: d.severity, data: d.data, span: d.span, target: { kind: "file" } as const }));
-    return { astGenerated: false, diagnostics, counts, model: null, keys: null };
+    return { astGenerated: false, ast: null, diagnostics, counts, model: null, keys: null };
   }
   const anchors = anchorsOf(res.ast);
   const diagnostics = res.diagnostics.map((d) => ({ code: d.code, severity: d.severity, data: d.data, span: d.span, target: targetOf(d, anchors) }));
   const model = modelOf(res.ast, file, lastType);
-  return { astGenerated: true, diagnostics, counts, model, keys: topologyKeys(model) };
+  return { astGenerated: true, ast: res.ast, diagnostics, counts, model, keys: topologyKeys(model) };
 }

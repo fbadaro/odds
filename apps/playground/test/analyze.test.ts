@@ -8,6 +8,7 @@ describe("analyze", () => {
     const { file, text } = marketplace();
     const a = analyze(text, file, new Map<string, SubdomainType>());
     expect(a.astGenerated).toBe(true);
+    expect(a.ast).not.toBeNull();
     expect(a.model).not.toBeNull();
     expect(a.keys).not.toBeNull();
     expect(a.counts).toEqual({ error: 0, warning: 0, info: 0 });
@@ -16,6 +17,7 @@ describe("analyze", () => {
   it("without a tree: no model, no keys, every diagnostic targets the file", () => {
     const a = analyze("domain {", "x.odds", new Map<string, SubdomainType>());
     expect(a.astGenerated).toBe(false);
+    expect(a.ast).toBeNull();
     expect(a.model).toBeNull();
     expect(a.keys).toBeNull();
     expect(a.counts.error).toBe(1);
