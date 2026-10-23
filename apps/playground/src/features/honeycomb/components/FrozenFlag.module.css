@@ -1,0 +1,32 @@
+/* bancada: .i-flag */
+.flag {
+  top: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(560px, calc(100vw - 40px));
+  padding: 8px 16px 8px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  border-color: rgb(var(--c-error) / 0.5);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.flag > svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 1px;
+}
+
+.flag b {
+  color: rgb(var(--c-error));
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .flag {
+    top: 128px;
+  }
+}

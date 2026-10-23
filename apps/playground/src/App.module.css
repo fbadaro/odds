@@ -3,20 +3,3 @@
   position: fixed;
   inset: 0;
 }
-
-/* provisório até a Task 12: os contadores onde fica o dock (.i-diag) */
-.dock {
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: var(--space-xs) var(--space-md);
-}
-
-@media (max-width: 760px) {
-  .dock {
-    left: 20px;
-    right: 20px;
-    bottom: 78px;
-    transform: none;
-  }
-}

@@ -18,38 +18,3 @@
   color: rgb(var(--c-ink-mute));
   font: var(--font-ui-weight) var(--font-ui-size) / var(--font-ui-line-height) var(--font-ui-family);
 }
-
-.banner {
-  position: absolute;
-  top: var(--space-md);
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-xs) var(--space-md);
-  border: 1px solid rgb(var(--c-hairline));
-  border-radius: var(--radius-pill);
-  background: rgb(var(--c-surface));
-  box-shadow: var(--sh-island);
-  color: rgb(var(--c-error));
-  font: var(--font-ui-weight) var(--font-ui-size) / var(--font-ui-line-height) var(--font-ui-family);
-}
-
-/* the bench's flag (playground.html .i-flag): ink text, the bold prefix in error */
-.flag {
-  align-items: flex-start;
-  max-width: calc(100% - 2 * var(--space-lg));
-  border-color: rgb(var(--c-error) / .5);
-  color: rgb(var(--c-ink));
-}
-
-.flag > svg {
-  flex: none;
-  color: rgb(var(--c-error));
-}
-
-.flag b {
-  color: rgb(var(--c-error));
-  font-weight: var(--font-title-weight);
-}

@@ -2,13 +2,26 @@ import { describe, expect, it } from "vitest";
 import { parseAndValidate } from "@odds/core";
 import { layout, modelOf, navOf } from "@odds/layout";
 import { MODELS } from "../src/lib/models";
-import { aliveSelection, escapeSelection, framePoints, pairKey, relationClick } from "../src/lib/selection";
+import { aliveSelection, escapeSelection, framePoints, pairKey, relationClick, targetSelection } from "../src/lib/selection";
 
 const nav = navOf(layout(modelOf(parseAndValidate(MODELS.m17.text).ast!, "vendas.odds", new Map())));
 const [rk, a, b] = nav.rels[0]!;
 const lonely = Object.keys(nav.tiles).find((id) => id !== a && id !== b && !nav.near[id]!.includes(a) && !nav.near[a]!.includes(id));
 
 describe("selection", () => {
+  it("targetSelection: the relation, else the context, else the subdomain, only when drawn", () => {
+    const sub = Object.keys(nav.subs)[0]!;
+    expect(targetSelection({ kind: "edge", rk }, nav)).toEqual({ rel: rk, from: null });
+    expect(targetSelection({ kind: "port", rk, ctx: a }, nav)).toEqual({ rel: rk, from: null });
+    expect(targetSelection({ kind: "port", rk: "Ghost|" + a, ctx: a }, nav)).toEqual({ ctx: a });
+    expect(targetSelection({ kind: "port", rk: "Ghost|" + a, ctx: "Ghost" }, nav)).toBeNull();
+    expect(targetSelection({ kind: "tile", ctx: a }, nav)).toEqual({ ctx: a });
+    expect(targetSelection({ kind: "sub", sub }, nav)).toEqual({ sub });
+    expect(targetSelection({ kind: "sub", sub: "Nope/Nope" }, nav)).toBeNull();
+    expect(targetSelection({ kind: "dom", dom: "D" }, nav)).toBeNull();
+    expect(targetSelection({ kind: "file" }, nav)).toBeNull();
+  });
+
   it("pairKey is the unordered pair", () => {
     expect(pairKey(a, b)).toBe(rk);
     expect(pairKey(b, a)).toBe(rk);

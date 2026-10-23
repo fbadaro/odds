@@ -1,4 +1,4 @@
-import type { Nav } from "@odds/layout";
+import type { Nav, Target } from "@odds/layout";
 
 /** A point of the map, in the geometry's units. */
 export type Point = [number, number];
@@ -45,4 +45,13 @@ export function relationClick(sel: Selection, rk: string, nav: Nav): Selection {
 /** The bench's `escape`: from a relation seen from a context back to it, otherwise nothing. */
 export function escapeSelection(sel: Selection): Selection {
   return sel && "rel" in sel && sel.from ? { ctx: sel.from } : null;
+}
+
+/** The bench's dock click: where a diagnostic's target is on the map — its relation, else its context,
+ *  else its subdomain; null when none of them is drawn (a domain, the file, something discarded). */
+export function targetSelection(t: Target, nav: Nav): Selection {
+  if ("rk" in t && nav.relOf[t.rk]) return { rel: t.rk, from: null };
+  if ("ctx" in t && nav.tiles[t.ctx]) return { ctx: t.ctx };
+  if ("sub" in t && nav.subs[t.sub]) return { sub: t.sub };
+  return null;
 }

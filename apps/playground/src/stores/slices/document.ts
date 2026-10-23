@@ -104,7 +104,7 @@ export function createDocumentSlice(initialText: string): StateCreator<Playgroun
       const analysis = analyze(text, file, lastType);
       const { view } = get();
       if (!analysis.astGenerated || !analysis.model || !analysis.keys) {
-        // no tree: keep the last drawing, ast and markers, mark it stale (there may be none yet); the syntax banner takes the flag's place
+        // no tree: keep the last drawing, ast and markers, mark it stale (there may be none yet); the flag now speaks of the syntax error
         return { text, analysis, stale: cur !== null, layoutError: null };
       }
       const { model, keys, diagnostics } = analysis;

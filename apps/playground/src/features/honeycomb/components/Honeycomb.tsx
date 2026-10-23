@@ -1,5 +1,4 @@
 import { useLayoutEffect, useRef } from "react";
-import { SeverityIcon } from "../../../components/icons/SeverityIcon";
 import { framePoints } from "../../../lib/selection";
 import { usePlayground } from "../../../stores/playground";
 import { createCameraController, type CameraController } from "../lib/cameraController";
@@ -39,7 +38,6 @@ const actions: MapActions = {
 export function Honeycomb() {
   const svg = usePlayground((s) => s.drawing?.svg ?? null);
   const stale = usePlayground((s) => s.stale);
-  const layoutError = usePlayground((s) => s.layoutError);
   const selection = usePlayground((s) => s.selection);
   const hover = usePlayground((s) => s.hover);
   const frameSeq = usePlayground((s) => s.frameSeq);
@@ -138,20 +136,6 @@ export function Honeycomb() {
     >
       <div ref={mount} className={styles.mount} />
       {svg === null && <p className={styles.empty}>O mapa aparece quando o texto tiver uma árvore.</p>}
-      {layoutError !== null && (
-        <div className={`${styles.banner} ${styles.flag}`} role="status">
-          <SeverityIcon severity="error" />
-          <span>
-            <b>Diagrama congelado.</b> O layout falhou: {layoutError}
-          </span>
-        </div>
-      )}
-      {layoutError === null && isStale && (
-        <div className={styles.banner} role="status">
-          <SeverityIcon severity="error" />
-          <span>Erro de sintaxe — o mapa mostra o último texto válido</span>
-        </div>
-      )}
     </div>
   );
 }

@@ -17,11 +17,9 @@ const SEVENTEEN = [
   "zoom-controls", "toast",
 ];
 
-// Cada task de paridade remove daqui os ids que implementa.
-const PORTED = new Set(["map", "zoom-controls", "file-menu", "view-switch", "share", "export-svg", "theme-toggle", "toast", "rail", "panel-code", "panel-tree", "panel-help", "ficha", "selection-caption"]);
-const PENDING: Record<string, string> = Object.fromEntries(
-  SEVENTEEN.filter((id) => !PORTED.has(id)).map((id) => [id, "paridade 2026-10-22: ainda não portado"]),
-);
+// Uma feature que a bancada validou e a aplicação ainda não tem entra aqui, com a razão.
+// A paridade de 2026-10-22 portou as 17: vazio.
+const PENDING: Record<string, string> = {};
 
 const ids = (text: string) => new Set([...text.matchAll(MARK)].map((m) => m[1]!));
 

@@ -1,13 +1,14 @@
 import { Toast } from "./components/ui/Toast";
-import { Island } from "./components/island/Island";
-import { SeverityCounters } from "./features/diagnostics/components/SeverityCounters";
+import { DiagnosticsDock } from "./features/diagnostics/components/DiagnosticsDock";
 import { CodePanel } from "./features/editor/components/CodePanel";
 import { HelpPanel } from "./features/help/components/HelpPanel";
 import { Ficha } from "./features/inspector/components/Ficha";
 import { SelectionCaption } from "./features/inspector/components/SelectionCaption";
 import { StructurePanel } from "./features/structure/components/StructurePanel";
 import { Rail } from "./features/panels/components/Rail";
+import { FrozenFlag } from "./features/honeycomb/components/FrozenFlag";
 import { Honeycomb } from "./features/honeycomb/components/Honeycomb";
+import { WaitIndicator } from "./features/honeycomb/components/WaitIndicator";
 import { ZoomControls } from "./features/honeycomb/components/ZoomControls";
 import { Actions } from "./features/topbar/components/Actions";
 import { FileMenu } from "./features/topbar/components/FileMenu";
@@ -31,10 +32,10 @@ export function App() {
       <StructurePanel />
       <HelpPanel />
       <Ficha />
+      <FrozenFlag />
       <SelectionCaption />
-      <Island className={styles.dock}>
-        <SeverityCounters />
-      </Island>
+      <WaitIndicator />
+      <DiagnosticsDock />
       <ZoomControls />
       <Toast />
     </div>

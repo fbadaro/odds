@@ -1,11 +1,14 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { App } from "../src/App";
-import { usePlayground } from "../src/stores/playground";
+import { PAUSE_MS, usePlayground } from "../src/stores/playground";
+import waitStyles from "../src/features/honeycomb/components/WaitIndicator.module.css";
 
 const initial = usePlayground.getState();
 
-const counter = (name: RegExp) => screen.getByLabelText(name);
+// the dock's counters: the button's title names the severity, its text is the number
+const counter = (severity: "erros" | "avisos" | "infos") => screen.getByTitle(`esconder ${severity}`);
+const wait = () => document.querySelector('[data-feature="wait-indicator"]')!;
 const editor = () => screen.getByLabelText("Texto .odds") as HTMLTextAreaElement;
 const open = () => fireEvent.click(screen.getByRole("button", { name: "Código" })); // o painel começa fechado, como na bancada
 const type = (text: string) => act(() => void fireEvent.change(editor(), { target: { value: text } }));
@@ -25,15 +28,15 @@ describe("first increment", () => {
     render(<App />);
     open();
     expect(editor().value).toBe(initial.text);
-    expect(counter(/^0 erros$/).textContent).toBe("0");
-    expect(counter(/^0 avisos$/).textContent).toBe("0");
-    expect(counter(/^0 informações$/).textContent).toBe("0");
+    expect(counter("erros").textContent).toBe("0");
+    expect(counter("avisos").textContent).toBe("0");
+    expect(counter("infos").textContent).toBe("0");
   });
 
   it("each counter has its icon", () => {
     render(<App />);
-    for (const s of ["error", "warning", "info"])
-      expect(document.querySelector(`[data-icon="${s}"]`)).not.toBeNull();
+    const icons = (["erros", "avisos", "infos"] as const).map((s) => counter(s).querySelector("svg")!.getAttribute("data-icon"));
+    expect(icons).toEqual(["error", "warning", "info"]);
   });
 
   it("an invalid tag raises the error counter without advancing the clock", () => {
@@ -43,7 +46,7 @@ describe("first increment", () => {
     const i = text.indexOf("-->");
     expect(i).toBeGreaterThan(0);
     type(text.slice(0, i) + "[XYZ] " + text.slice(i));
-    expect(counter(/^1 erro$/).textContent).toBe("1");
+    expect(counter("erros").textContent).toBe("1");
   });
 
   it("deleting the last brace leaves the map stale", () => {
@@ -52,5 +55,18 @@ describe("first increment", () => {
     const text = initial.text;
     type(text.slice(0, text.lastIndexOf("}")));
     expect(screen.getByTestId("honeycomb").classList.contains("frozen")).toBe(true);
+  });
+
+  it("visible during the pause, gone after it", () => {
+    render(<App />);
+    open();
+    expect(wait().textContent).toBe("topologia mudou · o mapa redesenha na pausa");
+    expect(wait().classList.contains(waitStyles.on!)).toBe(false);
+    const text = initial.text;
+    type(text.replace("    context Catalog {", "    context Lonely {}\n    context Catalog {"));
+    expect(usePlayground.getState().waiting).toBe(true);
+    expect(wait().classList.contains(waitStyles.on!)).toBe(true);
+    act(() => void vi.advanceTimersByTime(PAUSE_MS));
+    expect(wait().classList.contains(waitStyles.on!)).toBe(false);
   });
 });
