@@ -1,0 +1,42 @@
+/* bancada: .sel .vd */
+.vd {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  border-top: 1px solid rgb(var(--c-hairline));
+}
+
+.icon {
+  display: inline-flex;
+  margin-top: 1px;
+  font-size: 14px;
+  color: rgb(var(--tone));
+}
+
+.icon[data-severity="error"] {
+  --tone: var(--c-error);
+}
+
+.icon[data-severity="warning"] {
+  --tone: var(--c-warning);
+}
+
+.icon[data-severity="info"] {
+  --tone: var(--c-info);
+}
+
+.vd code {
+  font-size: 12px;
+  padding: 0 4px;
+  color: rgb(var(--c-ink));
+}
+
+.c {
+  display: block;
+  margin-top: 2px;
+  font: 11px var(--font-code-family);
+  color: rgb(var(--c-ink-mute));
+}

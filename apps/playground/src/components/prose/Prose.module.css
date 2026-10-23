@@ -1,0 +1,8 @@
+/* bancada: code (a casca herdada da v4) */
+.code {
+  font-family: var(--font-code-family);
+  font-size: 0.88em;
+  background: rgb(var(--c-surface-muted));
+  border-radius: var(--radius-chip);
+  padding: 1px 5px;
+}

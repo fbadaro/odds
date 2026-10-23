@@ -1,0 +1,140 @@
+/* bancada: o miolo .sel da ficha (casca herdada da v4, com a escala de tipo do .pg por cima,
+   e o .nav .sel .golink.plain do #navcss), o que os três cartões dividem */
+.kind,
+.sect {
+  font: 500 11px / 1 var(--font-eyebrow-family);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(var(--c-ink-mute));
+}
+
+.kind {
+  margin-bottom: 6px;
+}
+
+.sect {
+  margin: 16px 0 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(var(--c-hairline));
+}
+
+.name {
+  margin: 0;
+  font: 500 13px / 20px var(--font-code-family);
+  letter-spacing: 0;
+  color: rgb(var(--c-ink));
+}
+
+.title {
+  font-size: 12px;
+  color: rgb(var(--c-ink-mute));
+}
+
+.big {
+  font-size: 13px;
+  color: rgb(var(--c-ink));
+  margin: 2px 0 0;
+}
+
+.meta {
+  margin: 6px 0 12px;
+  font-size: 12px;
+  color: rgb(var(--c-ink-mute));
+}
+
+.meta b {
+  color: rgb(var(--c-ink));
+  font-weight: 600;
+}
+
+.nofill {
+  font-size: 12px;
+  color: rgb(var(--c-ink-mute));
+  line-height: 1.5;
+  margin: 6px 0 0;
+}
+
+.nofill code {
+  font-size: 11px;
+}
+
+.nofill b {
+  font-weight: 600;
+}
+
+.none {
+  font-size: 12px;
+  color: rgb(var(--c-ink-mute));
+  margin-top: 8px;
+}
+
+.golink {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: rgb(var(--c-accent));
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--c-accent) / 0.35);
+  text-underline-offset: 2px;
+}
+
+.plain {
+  font-weight: 500;
+  color: rgb(var(--c-ink));
+  text-decoration-color: rgb(var(--c-ink) / 0.3);
+}
+
+/* .i-ficha .lnk: o arquivo e a linha, que levam ao editor */
+.lnk {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgb(var(--c-ink-mute) / 0.4);
+  text-underline-offset: 2px;
+}
+
+.lnk:hover {
+  color: rgb(var(--c-accent));
+}
+
+.golink:focus-visible,
+.lnk:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 2px;
+}
+
+.tg {
+  color: rgb(var(--c-pulse));
+}
+
+.fence {
+  margin: 14px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgb(var(--c-hairline));
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgb(var(--c-ink-mute));
+}
+
+.fence b {
+  color: rgb(var(--c-ink));
+  font-weight: 600;
+}
+
+/* o título do subdomínio ao lado do tipo: frase, em sans */
+.pv {
+  font-family: var(--font-ui-family);
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgb(var(--c-ink));
+  word-break: break-word;
+}

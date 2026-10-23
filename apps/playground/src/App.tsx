@@ -3,6 +3,8 @@ import { Island } from "./components/island/Island";
 import { SeverityCounters } from "./features/diagnostics/components/SeverityCounters";
 import { CodePanel } from "./features/editor/components/CodePanel";
 import { HelpPanel } from "./features/help/components/HelpPanel";
+import { Ficha } from "./features/inspector/components/Ficha";
+import { SelectionCaption } from "./features/inspector/components/SelectionCaption";
 import { StructurePanel } from "./features/structure/components/StructurePanel";
 import { Rail } from "./features/panels/components/Rail";
 import { Honeycomb } from "./features/honeycomb/components/Honeycomb";
@@ -28,6 +30,8 @@ export function App() {
       <CodePanel />
       <StructurePanel />
       <HelpPanel />
+      <Ficha />
+      <SelectionCaption />
       <Island className={styles.dock}>
         <SeverityCounters />
       </Island>

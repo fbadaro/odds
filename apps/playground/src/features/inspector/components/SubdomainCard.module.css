@@ -1,0 +1,54 @@
+/* bancada: .sel .tally, .sel .ctxrow */
+.tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 10px;
+}
+
+.tally span {
+  font: 11px var(--font-code-family);
+  border: 1px solid rgb(var(--c-hairline));
+  border-radius: var(--radius-pill);
+  padding: 3px 9px;
+  color: rgb(var(--c-ink-mute));
+  background: rgb(var(--c-surface-muted));
+}
+
+.ctxrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: baseline;
+  width: 100%;
+  text-align: left;
+  appearance: none;
+  cursor: pointer;
+  border: 0;
+  border-top: 1px solid rgb(var(--c-hairline));
+  background: transparent;
+  padding: 7px 0;
+  font-family: inherit;
+}
+
+.ctxrow:hover {
+  background: rgb(var(--c-accent) / 0.06);
+}
+
+.ctxrow:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 2px;
+}
+
+.nm {
+  grid-column: 1;
+  font: 12px var(--font-code-family);
+  color: rgb(var(--c-ink));
+}
+
+.cnt {
+  grid-row: 1;
+  grid-column: 2;
+  font: 11px var(--font-code-family);
+  color: rgb(var(--c-ink-mute));
+}
