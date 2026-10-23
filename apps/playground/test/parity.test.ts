@@ -8,7 +8,8 @@ const BENCH = fileURLToPath(
   new URL("../../../docs/design/pages/playground.html", import.meta.url),
 );
 const SRC = fileURLToPath(new URL("../src", import.meta.url));
-const MARK = /data-feature="([a-z0-9-]+)"/g;
+// Só o atributo: um seletor como '[data-feature="map"]' não prova que o componente existe.
+const MARK = /(?<![[\w-])data-feature="([a-z0-9-]+)"/g;
 
 const SEVENTEEN = [
   "map", "file-menu", "view-switch", "share", "export-svg", "theme-toggle",
@@ -31,6 +32,13 @@ for (const rel of readdirSync(SRC, { recursive: true }) as string[]) {
 }
 
 describe("bench/app parity", () => {
+  it("counts only the attribute, never a selector string", () => {
+    expect([...ids('<div data-feature="x">')]).toEqual(["x"]);
+    expect([...ids('<div\n  data-feature="x"\n>')]).toEqual(["x"]);
+    expect([...ids(`document.querySelector('[data-feature="x"]')`)]).toEqual([]);
+    expect([...ids('[data-feature="x"] svg')]).toEqual([]);
+  });
+
   it("the bench still marks the 17 features of 2026-10-22", () => {
     expect([...B]).toEqual(expect.arrayContaining(SEVENTEEN));
   });
