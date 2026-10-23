@@ -3,6 +3,8 @@ import { SeverityCounters } from "./features/diagnostics/components/SeverityCoun
 import { Editor } from "./features/editor/components/Editor";
 import { Honeycomb } from "./features/honeycomb/components/Honeycomb";
 import { ZoomControls } from "./features/honeycomb/components/ZoomControls";
+import { FileMenu } from "./features/topbar/components/FileMenu";
+import { ViewSwitch } from "./features/topbar/components/ViewSwitch";
 import { useGlobalEscape } from "./features/honeycomb/useGlobalEscape";
 import styles from "./App.module.css";
 
@@ -14,6 +16,8 @@ export function App() {
       <main>
         <Honeycomb />
       </main>
+      <FileMenu />
+      <ViewSwitch />
       <Island as="aside" className={styles.code}>
         <Editor />
       </Island>

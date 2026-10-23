@@ -1,0 +1,23 @@
+/* bancada: .i-view */
+.view {
+  top: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px;
+  height: 42px;
+  display: flex;
+}
+
+.group {
+  display: flex;
+  gap: 2px;
+}
+
+@media (max-width: 760px) {
+  .view {
+    top: 70px;
+    left: auto;
+    right: var(--space-xl);
+    transform: none;
+  }
+}

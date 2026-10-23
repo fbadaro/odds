@@ -18,7 +18,7 @@ const SEVENTEEN = [
 ];
 
 // Cada task de paridade remove daqui os ids que implementa.
-const PORTED = new Set(["map", "zoom-controls"]);
+const PORTED = new Set(["map", "zoom-controls", "file-menu", "view-switch"]);
 const PENDING: Record<string, string> = Object.fromEntries(
   SEVENTEEN.filter((id) => !PORTED.has(id)).map((id) => [id, "paridade 2026-10-22: ainda não portado"]),
 );

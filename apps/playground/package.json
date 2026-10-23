@@ -11,6 +11,7 @@
     "generate:tokens": "node scripts/generate-tokens.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "1.9.0",
     "@odds/core": "*",
     "@odds/layout": "*",
     "@odds/messages": "*",

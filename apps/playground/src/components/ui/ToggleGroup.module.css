@@ -1,0 +1,9 @@
+/* bancada: .i-view button */
+.item {
+  padding: 0 12px;
+}
+
+.item[data-pressed] {
+  background: rgb(var(--c-accent) / 0.08);
+  color: rgb(var(--c-accent));
+}
