@@ -430,7 +430,7 @@ describe("the chrome", () => {
     s.getState().revealInEditor(start, end);
     const r1 = s.getState().reveal!;
     expect(s.getState().openPanel).toBe("code");
-    expect(r1).toMatchObject({ start, end });
+    expect(r1).toMatchObject({ start, end, lead: 6 });
     s.getState().revealInEditor(start, end);
     expect(s.getState().openPanel).toBe("code");
     expect(s.getState().reveal!.seq).toBe(r1.seq + 1);
@@ -440,7 +440,7 @@ describe("the chrome", () => {
     const s = createPlaygroundStore();
     const line2 = base.split("\n")[1]!;
     s.getState().revealLine(2);
-    expect(s.getState().reveal).toMatchObject({ start: { line: 2, column: 1 }, end: { line: 2, column: line2.length + 1 } });
+    expect(s.getState().reveal).toMatchObject({ start: { line: 2, column: 1 }, end: { line: 2, column: line2.length + 1 }, lead: 4 });
     expect(s.getState().openPanel).toBe("code");
   });
 

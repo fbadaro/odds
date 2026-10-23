@@ -7,6 +7,8 @@ export type PanelName = "code" | "tree" | "help";
 export interface Reveal {
   start: Position;
   end: Position;
+  /** Lines kept above `start` when scrolling: the dock's 6, the bench's jumpTo 4. */
+  lead: number;
   seq: number;
 }
 export interface CameraCommand {
@@ -32,8 +34,8 @@ export interface ChromeSlice {
   togglePanel(name: PanelName): void;
   closePanel(): void;
   /** From the map or a diagnostic to the text: the code panel opens if needed. */
-  revealInEditor(start: Position, end: Position): void;
-  /** The bench's jumpTo: the whole line `line`. */
+  revealInEditor(start: Position, end: Position, lead?: number): void;
+  /** The bench's jumpTo (tree, ficha links): the whole line `line`, four lines of lead. */
   revealLine(line: number): void;
   /** A hidden list opens again when a counter is pressed. */
   toggleFilter(s: Severity): void;
@@ -58,10 +60,11 @@ export const createChromeSlice: StateCreator<PlaygroundState, [], [], ChromeSlic
   cameraCommand: null,
   togglePanel: (name) => set((s) => ({ openPanel: s.openPanel === name ? null : name })),
   closePanel: () => set({ openPanel: null }),
-  revealInEditor: (start, end) => set((s) => ({ openPanel: "code", reveal: { start, end, seq: (s.reveal?.seq ?? 0) + 1 } })),
+  revealInEditor: (start, end, lead = 6) =>
+    set((s) => ({ openPanel: "code", reveal: { start, end, lead, seq: (s.reveal?.seq ?? 0) + 1 } })),
   revealLine: (line) => {
     const text = get().text.split("\n")[line - 1] ?? "";
-    get().revealInEditor({ line, column: 1 }, { line, column: text.length + 1 });
+    get().revealInEditor({ line, column: 1 }, { line, column: text.length + 1 }, 4);
   },
   toggleFilter: (sev) => set((s) => ({ filters: { ...s.filters, [sev]: !s.filters[sev] }, listOpen: true })),
   setListOpen: (listOpen) => set({ listOpen }),

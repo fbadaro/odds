@@ -37,7 +37,7 @@ export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
     handled.current = r.seq;
     el.focus();
     el.setSelectionRange(offsetOf(el.value, r.start), offsetOf(el.value, r.end));
-    el.scrollTop = Math.max(0, (r.start.line - 6) * 20);
+    el.scrollTop = Math.max(0, (r.start.line - r.lead) * 20);
     if (gut.current) gut.current.scrollTop = el.scrollTop;
     onCaret(el.selectionStart);
   }, [seq, onCaret]);

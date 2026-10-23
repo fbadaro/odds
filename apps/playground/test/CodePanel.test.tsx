@@ -76,6 +76,15 @@ describe("CodePanel", () => {
     expect(document.activeElement).toBe(ta);
   });
 
+  it("the tree and the ficha keep four lines above, the dock six, as the bench's jumpTo and dlist", () => {
+    usePlayground.setState({ text: Array.from({ length: 40 }, (_, i) => `l${i + 1}`).join("\n") });
+    mount();
+    act(() => usePlayground.getState().revealLine(20));
+    expect(editor().scrollTop).toBe((20 - 4) * 20);
+    act(() => usePlayground.getState().revealInEditor({ line: 20, column: 1 }, { line: 20, column: 4 }));
+    expect(editor().scrollTop).toBe((20 - 6) * 20);
+  });
+
   it("gutter shows a severity icon on a line with a diagnostic", () => {
     usePlayground.setState({ openPanel: "code" });
     const { container } = mount();
