@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0020 — A paridade entre bancada e aplicação é um contrato: data-feature na bancada, teste de paridade na aplicação
 
+> **Nota de 2026-10-23: a paridade é de funcionalidade.** O `ADR-0021` substituiu o `ADR-0017`. A bancada valida o que a feature faz, e a aplicação a constrói com os componentes do Base UI e o visual do `DESIGN.md`, não com o markup e o CSS da bancada. A marca `data-feature` passa a afirmar que a funcionalidade existe na aplicação, não que a tela é igual, e a conferência lado a lado compara comportamento, não pixels. Nada do mecanismo que este ADR decidiu muda.
+
 ## Contexto
 
 O `ADR-0017` fez da bancada (`docs/design/pages/playground.html`) a especificação e da aplicação (`apps/playground`) a implementação só do que foi validado. Faltava um mecanismo: nada dizia, em código, o que a bancada já tinha validado, nem acusava uma feature validada que a aplicação ainda não tinha. A primeira aplicação nasceu com uma fração da bancada, e a diferença só era visível a quem comparasse as duas telas a olho.

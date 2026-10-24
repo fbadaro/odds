@@ -1,15 +1,17 @@
 ---
 adr: 0017
 title: A bancada experimenta e a aplicação implementa só ideia validada
-status: accepted
+status: superseded
 date: 2026-10-22
 deciders: Fabio Badaro, Claude
 tags: processo, ui, playground, bancada
 supersedes: —
-superseded-by: —
+superseded-by: 0021
 ---
 
 # ADR-0017 — A bancada experimenta e a aplicação implementa só ideia validada
+
+> **Substituído em 2026-10-23 pelo `ADR-0021`.** A bancada deixa de ser "especificação visual e de comportamento" e passa a validar só a funcionalidade: o que atravessa para a aplicação é o comportamento, e a aplicação o constrói com os componentes do Base UI e o visual do `DESIGN.md`. Todo o resto deste ADR fica de pé no `ADR-0021`: a bancada como lugar barato de errar, a aplicação sem feature inventada, biblioteca compartilhada e tela não.
 
 ## Contexto
 
