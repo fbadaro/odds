@@ -6,8 +6,8 @@ import waitStyles from "../src/features/honeycomb/components/WaitIndicator.modul
 
 const initial = usePlayground.getState();
 
-// the dock's counters: the button's title names the severity, its text is the number
-const counter = (severity: "erros" | "avisos" | "infos") => screen.getByTitle(`esconder ${severity}`);
+// the dock's counters: the button's name is the severity and the number, its text is the number
+const counter = (severity: "erros" | "avisos" | "infos") => screen.getByRole("button", { name: new RegExp(`^${severity}: `) });
 const wait = () => document.querySelector('[data-feature="wait-indicator"]')!;
 const editor = () => screen.getByLabelText("Fonte .odds") as HTMLTextAreaElement;
 const open = () => fireEvent.click(screen.getByRole("button", { name: "Código" })); // o painel começa fechado, como na bancada

@@ -249,6 +249,12 @@ Primeiro código do projeto, iniciado em 2026-09-05 na branch `feat/core-parser`
   - **A varredura de paridade ficou mais estrita.** Ela contava também seletores como `'[data-feature="map"]'`, de modo que um componente apagado ainda passaria por um `querySelector` que o procurasse. Agora só conta o atributo, e um teste cobra a diferença.
   - **Quatro acertos menores da revisão final:** o editor se chama "Fonte .odds", como na bancada; a árvore de estrutura usa a posição no texto como chave, porque nome repetido é entrada válida (`DUPLICATE_*`); a árvore e a ficha rolam o editor deixando quatro linhas acima e o rodapé seis, como o `jumpTo` e a lista da bancada; e o mapa vazio fica vazio, sem a frase que a bancada não tem. O `ADR-0014` ganhou uma nota de topo: o toast é componente próprio, sem Base UI.
   - **O placar não se move.** Nenhum documento normativo mudou; o `health_check.py` segue em 16 de 16, e o `HEALTH.md` só atualiza a evidência do R6.4 (v0.6.9). **417 testes.**
+- **2026-10-23 · as features portadas passam pelo Base UI** (`ADR-0021`). A primeira revisão sob a regra nova trocou o comportamento escrito à mão pelos componentes do Base UI, sem mudar o que a feature faz:
+  - **Três wrappers novos em `src/components/ui/`:** `Tooltip` (com o `TooltipProvider` no `App`), `Toggle` e `Collapsible`. O `ToggleGroup` ganhou `allowEmpty`, para o botão apertado poder soltar, além de ícone com `aria-label`, dica e `orientation`.
+  - **O trilho** é um `ToggleGroup` vertical: um painel por vez, o mesmo quadrado fecha, e as setas andam entre os quadrados. **Os contadores do rodapé** são `Toggle`, com nome acessível próprio (`erros: 0`). **A lista do rodapé** recolhe por `Collapsible`, e o `aria-controls` aponta para ela.
+  - **As dicas da bancada** (`title` no trilho, nos contadores, no export, no tema e no mapa inteiro) são `Tooltip`: abrem com o mouse e com o foco do teclado, e o `Esc` as fecha. Num grupo vertical, abrem ao lado. O estilo da dica é decisão da aplicação, porque o `DESIGN.md` não especifica uma.
+  - **O `Esc` global não lê mais o DOM do menu.** O Base UI chama `preventDefault()` no `Esc` com que fecha o menu ou a dica, antes do listener do documento, e o `ev.defaultPrevented` que já existia basta.
+  - **Conferido no Chrome por CDP**, além dos testes: dica ao passar o mouse, clique que abre e fecha painel, `ArrowDown` no trilho, a lista que recolhe, e o `Esc` que fecha o menu. O `Toast` continua próprio, pela exceção já escrita nele. **195 testes na aplicação, 423 no repositório.**
 
 ---
 

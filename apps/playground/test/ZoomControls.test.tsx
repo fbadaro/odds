@@ -15,7 +15,7 @@ describe("ZoomControls", () => {
     fireEvent.click(screen.getByRole("button", { name: "Afastar" }));
     expect(usePlayground.getState().cameraCommand?.kind).toBe("out");
     const fit = screen.getByRole("button", { name: "Mapa inteiro" });
-    expect(fit.getAttribute("title")).toBe("Mapa inteiro (0)");
+    expect(fit.hasAttribute("title")).toBe(false);
     fireEvent.click(fit);
     expect(usePlayground.getState().cameraCommand).toEqual({ kind: "fit", seq: 3 });
   });

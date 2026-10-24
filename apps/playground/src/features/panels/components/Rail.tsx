@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Island } from "../../../components/island/Island";
+import { ToggleGroup } from "../../../components/ui/ToggleGroup";
 import { usePlayground, type PanelName } from "../../../stores/playground";
 import styles from "./Rail.module.css";
 
@@ -34,23 +35,27 @@ const SQUARES: { name: PanelName; label: string; icon: ReactNode }[] = [
 export function Rail() {
   const openPanel = usePlayground((s) => s.openPanel);
   const togglePanel = usePlayground((s) => s.togglePanel);
+  const closePanel = usePlayground((s) => s.closePanel);
   return (
     <Island as="nav" className={styles.rail} data-feature="rail" aria-label="Painéis">
-      {SQUARES.map((q) => (
-        <button
-          key={q.name}
-          type="button"
-          className={styles.sq}
-          aria-pressed={openPanel === q.name}
-          title={q.label}
-          aria-label={q.label}
-          onClick={() => togglePanel(q.name)}
-        >
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-            {q.icon}
-          </svg>
-        </button>
-      ))}
+      <ToggleGroup<PanelName>
+        allowEmpty
+        orientation="vertical"
+        className={styles.squares}
+        itemClassName={styles.sq}
+        value={openPanel}
+        onValueChange={(name) => (name === null ? closePanel() : togglePanel(name))}
+        items={SQUARES.map((q) => ({
+          value: q.name,
+          label: q.label,
+          hint: q.label,
+          content: (
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              {q.icon}
+            </svg>
+          ),
+        }))}
+      />
     </Island>
   );
 }

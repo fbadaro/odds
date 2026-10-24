@@ -1,9 +1,10 @@
 import type { SourceSpan } from "@odds/core";
 import type { TargetedDiagnostic } from "@odds/layout";
 import { useLayoutEffect, useRef } from "react";
-import { Button } from "../../../components/button/Button";
 import { Island } from "../../../components/island/Island";
 import { SeverityIcon, type Severity } from "../../../components/icons/SeverityIcon";
+import { Collapsible } from "../../../components/ui/Collapsible";
+import { Toggle } from "../../../components/ui/Toggle";
 import { targetSelection } from "../../../lib/selection";
 import { usePlayground, type PanelName } from "../../../stores/playground";
 import { DiagnosticRow } from "./DiagnosticRow";
@@ -74,48 +75,45 @@ export function DiagnosticsDock() {
   return (
     <div ref={dock} data-feature="diagnostics-dock" className={styles.dock}>
       <Island as="section" aria-label="Diagnósticos" className={styles.diag}>
-        <div className={styles.head}>
-          <div className={styles.counts}>
-            {SEVERITIES.map((s) => (
-              <button
-                key={s}
-                type="button"
-                className={`${styles.cnt} ${styles[s]}`}
-                aria-pressed={filters[s]}
-                title={`${filters[s] ? "esconder" : "mostrar"} ${PLURAL[s]}`}
-                onClick={() => toggleFilter(s)}
-              >
-                <SeverityIcon severity={s} />
-                {counts[s]}
-              </button>
-            ))}
+        <Collapsible.Root open={listOpen} onOpenChange={setListOpen}>
+          <div className={styles.head}>
+            <div className={styles.counts}>
+              {SEVERITIES.map((s) => (
+                <Toggle
+                  key={s}
+                  className={`${styles.cnt} ${styles[s]}`}
+                  aria-label={`${PLURAL[s]}: ${counts[s]}`}
+                  hint={`${filters[s] ? "esconder" : "mostrar"} ${PLURAL[s]}`}
+                  pressed={filters[s]}
+                  onPressedChange={() => toggleFilter(s)}
+                >
+                  <SeverityIcon severity={s} />
+                  {counts[s]}
+                </Toggle>
+              ))}
+            </div>
+            <span className={styles.sum}>{n ? `${n} diagnóstico${n === 1 ? "" : "s"}` : "nenhum diagnóstico · o modelo é coerente"}</span>
+            <Collapsible.Trigger className={styles.toggle} aria-label={listOpen ? "Recolher a lista" : "Abrir a lista"}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className={listOpen ? undefined : styles.shut}>
+                <path d="M4 10l4-4 4 4" />
+              </svg>
+            </Collapsible.Trigger>
           </div>
-          <span className={styles.sum}>{n ? `${n} diagnóstico${n === 1 ? "" : "s"}` : "nenhum diagnóstico · o modelo é coerente"}</span>
-          <Button
-            className={styles.toggle}
-            aria-expanded={listOpen}
-            aria-label={listOpen ? "Recolher a lista" : "Abrir a lista"}
-            onClick={() => setListOpen(!listOpen)}
-          >
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true" className={listOpen ? undefined : styles.shut}>
-              <path d="M4 10l4-4 4 4" />
-            </svg>
-          </Button>
-        </div>
-        {listOpen && n > 0 && (
-          <div className={styles.list}>
-            {rows.length ? (
-              rows.map((d, i) => <DiagnosticRow key={i} d={d} onClick={() => go(d)} />)
-            ) : (
-              <div className={styles.empty}>Os filtros escondem todos os diagnósticos.</div>
-            )}
-            {shown.length > 3 && (
-              <button type="button" className={styles.more} onClick={toggleAll}>
-                {allOpen ? "mostrar só os três primeiros" : `ver os ${shown.length} diagnósticos`}
-              </button>
-            )}
-          </div>
-        )}
+          {n > 0 && (
+            <Collapsible.Panel className={styles.list}>
+              {rows.length ? (
+                rows.map((d, i) => <DiagnosticRow key={i} d={d} onClick={() => go(d)} />)
+              ) : (
+                <div className={styles.empty}>Os filtros escondem todos os diagnósticos.</div>
+              )}
+              {shown.length > 3 && (
+                <button type="button" className={styles.more} onClick={toggleAll}>
+                  {allOpen ? "mostrar só os três primeiros" : `ver os ${shown.length} diagnósticos`}
+                </button>
+              )}
+            </Collapsible.Panel>
+          )}
+        </Collapsible.Root>
       </Island>
     </div>
   );

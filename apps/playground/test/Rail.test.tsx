@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { TooltipProvider } from "../src/components/ui/Tooltip";
 import { Rail } from "../src/features/panels/components/Rail";
 import { usePlayground } from "../src/stores/playground";
 
@@ -24,5 +25,26 @@ describe("Rail", () => {
     fireEvent.click(tree);
     expect(usePlayground.getState().openPanel).toBeNull();
     expect(tree.getAttribute("aria-pressed")).toBe("false");
+  });
+
+  it("arrows move between the squares, top to bottom", async () => {
+    render(<Rail />);
+    const code = screen.getByRole("button", { name: "Código" });
+    const tree = screen.getByRole("button", { name: "Estrutura" });
+    act(() => code.focus());
+    fireEvent.keyDown(code, { key: "ArrowDown" });
+    await waitFor(() => expect(document.activeElement).toBe(tree));
+  });
+
+  it("each square has its name as a hint, not a title", async () => {
+    render(
+      <TooltipProvider delay={0}>
+        <Rail />
+      </TooltipProvider>,
+    );
+    const help = screen.getByRole("button", { name: "Como ler" });
+    expect(help.hasAttribute("title")).toBe(false);
+    await act(async () => void fireEvent.mouseEnter(help));
+    expect((await screen.findAllByText("Como ler")).length).toBeGreaterThan(0);
   });
 });

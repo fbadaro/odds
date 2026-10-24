@@ -1,46 +1,20 @@
-/* bancada: .rail e .sq */
+/* bancada: .rail e .sq. O estado apertado vem do ToggleGroup ([data-pressed]). */
 .rail {
   top: 78px;
   left: 20px;
   padding: 5px;
+}
+
+.squares {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
+/* o quadrado: o Button, sem o respiro lateral do rótulo */
 .sq {
-  appearance: none;
   width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  border-radius: var(--radius-control);
-  color: rgb(var(--c-ink-mute));
-}
-
-.sq:hover {
-  color: rgb(var(--c-ink));
-  background: rgb(var(--c-surface-muted));
-}
-
-.sq[aria-pressed="true"] {
-  background: rgb(var(--c-accent) / 0.08);
-  color: rgb(var(--c-accent));
-}
-
-.sq:focus-visible {
-  outline: 2px solid rgb(var(--c-accent));
-  outline-offset: 2px;
-}
-
-.sq svg {
-  width: 16px;
-  height: 16px;
-  flex: none;
+  padding: 0;
 }
 
 @media (max-width: 760px) {

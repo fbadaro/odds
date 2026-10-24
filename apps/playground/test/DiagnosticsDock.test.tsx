@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { TooltipProvider } from "../src/components/ui/Tooltip";
 import { DiagnosticsDock } from "../src/features/diagnostics/components/DiagnosticsDock";
 import { usePlayground } from "../src/stores/playground";
 
@@ -30,8 +31,9 @@ describe("DiagnosticsDock", () => {
     const section = screen.getByRole("region", { name: "Diagnósticos" });
     expect(section.textContent).toContain("nenhum diagnóstico · o modelo é coerente");
     expect(rows()).toHaveLength(0);
-    for (const [t, n] of [["esconder erros", "0"], ["esconder avisos", "0"], ["esconder infos", "0"]] as const) {
-      const b = screen.getByTitle(t);
+    for (const [name, n] of [["erros: 0", "0"], ["avisos: 0", "0"], ["infos: 0", "0"]] as const) {
+      const b = screen.getByRole("button", { name });
+      expect(b.hasAttribute("title")).toBe(false);
       expect(b.textContent).toBe(n);
       expect(b.getAttribute("aria-pressed")).toBe("true");
       expect(b.querySelector("svg[data-icon]")).not.toBeNull();
@@ -50,10 +52,10 @@ describe("DiagnosticsDock", () => {
     expect(rows()).toHaveLength(0);
 
     // a counter pressed with the list collapsed opens it again, with the filter applied
-    fireEvent.click(screen.getByTitle("esconder infos"));
+    fireEvent.click(screen.getByRole("button", { name: "infos: 2" }));
     expect(toggle().getAttribute("aria-label")).toBe("Recolher a lista");
     expect(toggle().getAttribute("aria-expanded")).toBe("true");
-    const info = screen.getByTitle("mostrar infos");
+    const info = screen.getByRole("button", { name: "infos: 2" });
     expect(info.getAttribute("aria-pressed")).toBe("false");
     expect(info.textContent).toBe("2");
     expect(rows()).toHaveLength(0);
@@ -61,6 +63,30 @@ describe("DiagnosticsDock", () => {
 
     fireEvent.click(info);
     expect(rows()).toHaveLength(2);
+  });
+
+  it("a counter's hint says what pressing it does", async () => {
+    render(
+      <TooltipProvider delay={0}>
+        <DiagnosticsDock />
+      </TooltipProvider>,
+    );
+    const errors = screen.getByRole("button", { name: "erros: 0" });
+    await act(async () => void fireEvent.mouseEnter(errors));
+    expect(await screen.findByText("esconder erros")).toBeTruthy();
+    // pressing closes the hint, as any Base UI tooltip; hovering again reads the new state
+    fireEvent.click(errors);
+    expect(errors.getAttribute("aria-pressed")).toBe("false");
+    await act(async () => void fireEvent.mouseLeave(errors));
+    await act(async () => void fireEvent.mouseEnter(errors));
+    expect(await screen.findByText("mostrar erros")).toBeTruthy();
+  });
+
+  it("the list toggle controls the list it collapses", () => {
+    lonely(1);
+    render(<DiagnosticsDock />);
+    const list = rows()[0]!.parentElement!;
+    expect(toggle().getAttribute("aria-controls")).toBe(list.id);
   });
 
   it("shows three rows and expands to all", () => {

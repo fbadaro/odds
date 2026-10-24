@@ -144,7 +144,7 @@ describe("Honeycomb", () => {
     expect(usePlayground.getState().selection).toBeNull();
   });
 
-  it("Escape from the textarea, or with a menu open, leaves the selection", () => {
+  it("Escape from the textarea, or one a menu already handled, leaves the selection", () => {
     render(
       <>
         <WithEscape />
@@ -155,10 +155,11 @@ describe("Honeycomb", () => {
     act(() => usePlayground.getState().select({ ctx: id }));
     fireEvent.keyDown(screen.getByLabelText("Fonte .odds"), { key: "Escape" });
     expect(usePlayground.getState().selection).toEqual({ ctx: id });
-    const menu = document.body.appendChild(document.createElement("div"));
-    menu.setAttribute("role", "menu");
+    // a Base UI menu or tooltip closes on Escape and calls preventDefault before the document hears it
+    const handled = (ev: Event) => ev.preventDefault();
+    map().addEventListener("keydown", handled);
     fireEvent.keyDown(map(), { key: "Escape" });
-    menu.remove();
+    map().removeEventListener("keydown", handled);
     expect(usePlayground.getState().selection).toEqual({ ctx: id });
   });
 

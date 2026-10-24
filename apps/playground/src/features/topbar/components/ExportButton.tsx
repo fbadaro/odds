@@ -3,6 +3,7 @@ import bridge from "../../../styles/map-bridge.css?raw";
 import mapBase from "@odds/layout/map.css?raw";
 import honeycomb from "../../honeycomb/honeycomb.css?raw";
 import { Button } from "../../../components/button/Button";
+import { Tooltip } from "../../../components/ui/Tooltip";
 import { MODELS } from "../../../lib/models";
 import { usePlayground } from "../../../stores/playground";
 import { buildExportSvg } from "../lib/exportSvg";
@@ -31,10 +32,12 @@ export function ExportButton() {
   }
 
   return (
-    <Button data-feature="export-svg" title="Exportar SVG, com os marcadores" aria-label="Exportar SVG" onClick={onExport}>
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-        <path d="M8 2.5V10M5 7l3 3 3-3M3 13h10" />
-      </svg>
-    </Button>
+    <Tooltip label="Exportar SVG, com os marcadores">
+      <Button data-feature="export-svg" aria-label="Exportar SVG" onClick={onExport}>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+          <path d="M8 2.5V10M5 7l3 3 3-3M3 13h10" />
+        </svg>
+      </Button>
+    </Tooltip>
   );
 }

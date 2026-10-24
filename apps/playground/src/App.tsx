@@ -1,4 +1,5 @@
 import { Toast } from "./components/ui/Toast";
+import { TooltipProvider } from "./components/ui/Tooltip";
 import { DiagnosticsDock } from "./features/diagnostics/components/DiagnosticsDock";
 import { CodePanel } from "./features/editor/components/CodePanel";
 import { HelpPanel } from "./features/help/components/HelpPanel";
@@ -19,25 +20,27 @@ import styles from "./App.module.css";
 export function App() {
   useGlobalEscape();
   return (
-    <div className={styles.shell}>
-      {/* o mapa é o palco em tela inteira (honeycomb.css); as ilhas flutuam por cima */}
-      <main>
-        <Honeycomb />
-      </main>
-      <FileMenu />
-      <ViewSwitch />
-      <Actions />
-      <Rail />
-      <CodePanel />
-      <StructurePanel />
-      <HelpPanel />
-      <Ficha />
-      <FrozenFlag />
-      <SelectionCaption />
-      <WaitIndicator />
-      <DiagnosticsDock />
-      <ZoomControls />
-      <Toast />
-    </div>
+    <TooltipProvider>
+      <div className={styles.shell}>
+        {/* o mapa é o palco em tela inteira (honeycomb.css); as ilhas flutuam por cima */}
+        <main>
+          <Honeycomb />
+        </main>
+        <FileMenu />
+        <ViewSwitch />
+        <Actions />
+        <Rail />
+        <CodePanel />
+        <StructurePanel />
+        <HelpPanel />
+        <Ficha />
+        <FrozenFlag />
+        <SelectionCaption />
+        <WaitIndicator />
+        <DiagnosticsDock />
+        <ZoomControls />
+        <Toast />
+      </div>
+    </TooltipProvider>
   );
 }
