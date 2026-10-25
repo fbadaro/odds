@@ -114,6 +114,8 @@ Two admission criteria are mandatory for any new rule (`RULES.md` §0.4): it mus
 
 Issues live in GitHub Issues (github.com/fbadaro/odds). See `docs/agents/issue-tracker.md`.
 
+**Branch names follow git flow's naming (the naming only, not the flow):** `feature/XXXX-name`, where `XXXX` is the GitHub issue number zero-padded to four digits — issue #9 → `feature/0009-enxugar-docs-agents-md`. Every branch starts from an issue; if none exists, open one first. Older branches (`feat/…`, `design/…`) predate the rule.
+
 ### Domain docs
 
 Single-context layout — `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
