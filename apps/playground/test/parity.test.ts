@@ -13,7 +13,7 @@ const MARK = /(?<![[\w-])data-feature="([a-z0-9-]+)"/g;
 
 const SEVENTEEN = [
   "map", "file-menu", "view-switch", "share", "export-svg", "theme-toggle",
-  "rail", "panel-code", "panel-tree", "panel-help", "ficha",
+  "rail", "panel-code", "panel-tree", "panel-help", "inspector",
   "selection-caption", "frozen-flag", "wait-indicator", "diagnostics-dock",
   "zoom-controls", "toast",
 ];

@@ -1,4 +1,4 @@
-/** The bench's TAGS: name and one-line meaning of each tag, as the ficha of a relation shows them. */
+/** The bench's TAGS: name and one-line meaning of each tag, as the inspector of a relation shows them. */
 export const TAGS: Record<string, [string, string]> = {
   OHS: ["Open-Host Service", "Oferece uma API bem desenhada, para que outros times operem sobre o modelo com confiança."],
   PL: ["Published Language", "Publica um esquema documentado para a troca de dados; costuma andar junto com o OHS."],

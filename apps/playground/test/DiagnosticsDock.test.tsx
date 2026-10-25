@@ -216,7 +216,7 @@ describe("DiagnosticsDock", () => {
     }
   });
 
-  it("re-places itself when the ficha opens or closes, as the bench's safeChanged does", () => {
+  it("re-places itself when the inspector opens or closes, as the bench's safeChanged does", () => {
     const place = (id: string, right: number, left: number) => {
       const el = document.body.appendChild(document.createElement("div"));
       el.setAttribute("data-feature", id);

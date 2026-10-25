@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { DocInfo } from "../lib/ficha";
+import type { DocInfo } from "../lib/inspectorData";
 import styles from "./DocProps.module.css";
 
 function Prop({ k, children }: { k: string; children: ReactNode }) {

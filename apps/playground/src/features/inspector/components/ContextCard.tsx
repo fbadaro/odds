@@ -1,6 +1,6 @@
 import type { Nav, TargetedDiagnostic } from "@odds/layout";
 import { usePlayground } from "../../../stores/playground";
-import { roleText, type DocInfo, type Ficha } from "../lib/ficha";
+import { roleText, type DocInfo, type InspectorData } from "../lib/inspectorData";
 import card from "./Card.module.css";
 import styles from "./ContextCard.module.css";
 import { DocProps, hasDoc } from "./DocProps";
@@ -12,7 +12,7 @@ const touches = (d: TargetedDiagnostic, id: string) =>
   ("ctx" in d.target && d.target.ctx === id) || ("rk" in d.target && d.target.rk.split("|").includes(id));
 
 /** The bench's context panel: title, home, verdict, contract, properties and the fence. */
-export function ContextCard({ id, f, nav, markers }: { id: string; f: Ficha; nav: Nav; markers: TargetedDiagnostic[] }) {
+export function ContextCard({ id, f, nav, markers }: { id: string; f: InspectorData; nav: Nav; markers: TargetedDiagnostic[] }) {
   const clickRelation = usePlayground((s) => s.clickRelation);
   const home = nav.ctxSub[id], hs = home ? nav.subs[home] : undefined, cd: Partial<DocInfo> = f.ctx[id] ?? {};
   const mine = Object.values(f.rels).filter((r) => r.l === id || r.r === id).sort((a, b) => a.line - b.line);

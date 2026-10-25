@@ -2,7 +2,7 @@
    Porte de docs/design/pages/playground.html: o palco (.pg-map), o FLIP (.lv-anim,
    .lv-enter, .born) e as regras de mapa do <style id="navcss">, com o prefixo .nav/.lv-map
    da bancada trocado pela classe global .odds-map e as cores em tokens. As regras de
-   navcss que vestem a ficha, a legenda e o zoom ficam nos módulos desses componentes.
+   navcss que vestem o inspetor, a legenda e o zoom ficam nos módulos desses componentes.
    Global de propósito, e auto-suficiente com tokens.css + map.css + map-bridge.css:
    a Task 7 embute este arquivo no SVG exportado. Por isso o palco é div.odds-map —
    num SVG exportado com class="odds-map", só as regras do desenho valem. */

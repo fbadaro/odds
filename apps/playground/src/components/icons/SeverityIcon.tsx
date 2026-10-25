@@ -4,7 +4,7 @@ export type Severity = "error" | "warning" | "info";
 
 type Props = {
   severity: Severity;
-  /** Names the icon for assistive tech (the bench's tree and ficha); without it, the icon is decoration beside a text that says it. */
+  /** Names the icon for assistive tech (the bench's tree and inspector); without it, the icon is decoration beside a text that says it. */
   label?: string;
 };
 

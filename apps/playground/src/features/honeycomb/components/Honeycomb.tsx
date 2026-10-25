@@ -45,12 +45,12 @@ export function Honeycomb() {
   const cameraCommand = usePlayground((s) => s.cameraCommand);
   const epoch = usePlayground((s) => s.epoch);
   const openPanel = usePlayground((s) => s.openPanel);
-  const hasFicha = usePlayground((s) => s.selection !== null);
+  const hasInspector = usePlayground((s) => s.selection !== null);
   const root = useRef<HTMLDivElement>(null);
   const mount = useRef<HTMLDivElement>(null);
   const camera = useRef<CameraController | null>(null);
   // what the camera already answered: a remount must not replay an old request
-  const seen = useRef({ epoch, frameSeq, command: cameraCommand?.seq ?? 0, safe: `${openPanel}|${hasFicha}`, svg: null as string | null });
+  const seen = useRef({ epoch, frameSeq, command: cameraCommand?.seq ?? 0, safe: `${openPanel}|${hasInspector}`, svg: null as string | null });
 
   const isStale = svg !== null && stale;
 
@@ -109,13 +109,13 @@ export function Honeycomb() {
     root.current!.classList.toggle("frozen", isStale);
   }, [isStale]);
 
-  // the free area changed (a panel or the ficha opened or closed); before framing, as in the bench
+  // the free area changed (a panel or the inspector opened or closed); before framing, as in the bench
   useLayoutEffect(() => {
-    const key = `${openPanel}|${hasFicha}`;
+    const key = `${openPanel}|${hasInspector}`;
     if (key === seen.current.safe) return;
     seen.current.safe = key;
     camera.current?.safeChanged();
-  }, [openPanel, hasFicha]);
+  }, [openPanel, hasInspector]);
 
   useLayoutEffect(() => {
     if (frameSeq === seen.current.frameSeq) return;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseAndValidate } from "@odds/core";
-import { fichaOf, relLabel, roleText, type RelInfo } from "../src/features/inspector/lib/ficha";
+import { inspectorDataOf, relLabel, roleText, type RelInfo } from "../src/features/inspector/lib/inspectorData";
 import { FORMS, TAGS } from "../src/features/inspector/lib/glossary";
 import { MODELS } from "../src/lib/models";
 
@@ -30,9 +30,9 @@ const TEXT = `domain Shop {
 
 const rel = (c: RelInfo["c"]): RelInfo => ({ rk: "A|B", l: "A", lt: [], c, rt: [], r: "B", line: 1 });
 
-describe("fichaOf", () => {
-  it("fichaOf collects contexts, subdomains and the first line of each relation pair", () => {
-    const f = fichaOf(parseAndValidate(TEXT).ast!);
+describe("inspectorDataOf", () => {
+  it("inspectorDataOf collects contexts, subdomains and the first line of each relation pair", () => {
+    const f = inspectorDataOf(parseAndValidate(TEXT).ast!);
     expect(f.dom).toBe("Loja");
     expect(f.sub["Shop/Sales"]).toEqual({ title: "Vendas", description: "Vender", owner: "Comercial", line: 3 });
     expect(f.ctx.Cart).toEqual({ title: "Carrinho", team: "Squad", responsibilities: ["Manter itens"], line: 7 });
@@ -44,12 +44,12 @@ describe("fichaOf", () => {
   });
 
   it("the domain falls back to its name without a title", () => {
-    const f = fichaOf(parseAndValidate(TEXT.replace('  title: "Loja"\n', "")).ast!);
+    const f = inspectorDataOf(parseAndValidate(TEXT.replace('  title: "Loja"\n', "")).ast!);
     expect(f.dom).toBe("Shop");
   });
 
   it("reads the m50 model", () => {
-    const f = fichaOf(parseAndValidate(MODELS.m50.text).ast!);
+    const f = inspectorDataOf(parseAndValidate(MODELS.m50.text).ast!);
     expect(f.rels["Inventory|Shipping"]!.lt).toEqual(["SK"]);
     expect(f.ctx.Catalog!.type).toBe("aggregate");
   });
@@ -57,7 +57,7 @@ describe("fichaOf", () => {
 
 describe("relLabel", () => {
   it("relLabel orders by direction", () => {
-    const f = fichaOf(parseAndValidate(TEXT).ast!);
+    const f = inspectorDataOf(parseAndValidate(TEXT).ast!);
     expect(relLabel("Cart|Checkout", f)).toBe("Cart → Checkout");
     // `<--`: the right side is upstream, so it comes first
     expect(relLabel("Checkout|Stripe", f)).toBe("Stripe → Checkout");

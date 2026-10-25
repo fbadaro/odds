@@ -3,21 +3,21 @@ import type { Box, Point } from "../../../lib/selection";
 /** Os limites da câmera, como na bancada. */
 export const LIM = { pad: 78, maxFrame: 3, maxZoom: 5, tagPx: 1.15 } as const;
 
-/** A área livre, em pixels da tela: o que sobra entre trilho/painel, ficha, topo e rodapé. */
+/** A área livre, em pixels da tela: o que sobra entre trilho/painel, inspetor, topo e rodapé. */
 export interface Safe { l: number; t: number; w: number; h: number }
 /** O mapa (w x h, em pixels) e a sua área livre. */
 export interface Viewport { w: number; h: number; safe: Safe }
 export interface RectLike { left: number; right: number }
 
 /** `safe()` da bancada; os retângulos são `null` quando o elemento não existe ou está oculto. */
-export function safeArea(w: number, h: number, rail: RectLike | null, panel: RectLike | null, ficha: RectLike | null): Safe {
+export function safeArea(w: number, h: number, rail: RectLike | null, panel: RectLike | null, inspector: RectLike | null): Safe {
   const narrow = w <= 760;
   let l = 32, r = 32;
   const t = narrow ? 116 : 76, b = narrow ? 124 : 72;
   if (!narrow) {
     if (panel) l = panel.right + 24;
     else if (rail) l = rail.right + 24;
-    if (ficha) r = w - ficha.left + 24;
+    if (inspector) r = w - inspector.left + 24;
   }
   return { l, t, w: Math.max(w - l - r, 120), h: Math.max(h - t - b, 120) };
 }

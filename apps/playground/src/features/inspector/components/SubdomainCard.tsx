@@ -1,6 +1,6 @@
 import type { Nav } from "@odds/layout";
 import { usePlayground } from "../../../stores/playground";
-import type { Ficha } from "../lib/ficha";
+import type { InspectorData } from "../lib/inspectorData";
 import card from "./Card.module.css";
 import styles from "./SubdomainCard.module.css";
 import { SubProp } from "./DocProps";
@@ -9,7 +9,7 @@ import { LineLink } from "./Links";
 const plural = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
 
 /** The bench's subdomain panel: type and title, description and owner, the derived tally and its contexts. */
-export function SubdomainCard({ sub, f, nav }: { sub: string; f: Ficha; nav: Nav }) {
+export function SubdomainCard({ sub, f, nav }: { sub: string; f: InspectorData; nav: Nav }) {
   const select = usePlayground((s) => s.select);
   const s = nav.subs[sub];
   if (!s) return null;

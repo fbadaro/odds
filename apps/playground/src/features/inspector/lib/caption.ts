@@ -1,11 +1,11 @@
 import type { Nav } from "@odds/layout";
 import type { Selection } from "../../../lib/selection";
-import { relLabel, type Ficha } from "./ficha";
+import { relLabel, type InspectorData } from "./inspectorData";
 
 const plural = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
 
 /** The three caption lines at the end of the bench's `paintSel`. */
-export function captionOf(nav: Nav, sel: Selection, f: Ficha | null): { name: string; rest: string } | null {
+export function captionOf(nav: Nav, sel: Selection, f: InspectorData | null): { name: string; rest: string } | null {
   if (!sel) return null;
   if ("ctx" in sel) {
     const k = nav.near[sel.ctx]?.length ?? 0;

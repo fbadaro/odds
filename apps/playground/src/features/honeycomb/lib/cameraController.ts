@@ -13,7 +13,7 @@ export interface CameraController {
   /** Zoom com o ponto (px, py) do mapa fixo. */
   zoomAtPx(f: number, px: number, py: number): void;
   pan(dx: number, dy: number): void;
-  /** Painel ou ficha abriu ou fechou: quem não mexeu na câmera segue vendo o mapa inteiro. */
+  /** Painel ou inspetor abriu ou fechou: quem não mexeu na câmera segue vendo o mapa inteiro. */
   safeChanged(): void;
   /** Um arquivo novo: a câmera volta a ser automática e enquadra o mapa inteiro, sem animar. */
   reset(): void;
@@ -29,7 +29,7 @@ export interface CameraOptions {
 /**
  * A câmera da bancada (`apply`, `go`, `frameTo`, `toFit`, `safeChanged` e o
  * `ResizeObserver`): só o `viewBox` muda, e `camAuto` quer dizer "quem navega ainda não
- * mexeu". Todo enquadramento mira a área livre que trilho, painel e ficha deixam.
+ * mexeu". Todo enquadramento mira a área livre que trilho, painel e inspetor deixam.
  * Fica fora do store: só a porcentagem de zoom é publicada.
  */
 export function createCameraController(mapEl: HTMLElement, opts: CameraOptions): CameraController {
@@ -47,7 +47,7 @@ export function createCameraController(mapEl: HTMLElement, opts: CameraOptions):
   const vp = (): Viewport => {
     const w = W(), h = H();
     const panel = [...doc.querySelectorAll('[data-feature^="panel-"]')].find((el) => !(el as HTMLElement).hidden);
-    const safe = safeArea(w, h, rectOf(doc.querySelector('[data-feature="rail"]')), rectOf(panel), rectOf(doc.querySelector('[data-feature="ficha"]')));
+    const safe = safeArea(w, h, rectOf(doc.querySelector('[data-feature="rail"]')), rectOf(panel), rectOf(doc.querySelector('[data-feature="inspector"]')));
     return { w, h, safe };
   };
 

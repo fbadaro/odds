@@ -35,7 +35,7 @@ export interface ChromeSlice {
   closePanel(): void;
   /** From the map or a diagnostic to the text: the code panel opens if needed. */
   revealInEditor(start: Position, end: Position, lead?: number): void;
-  /** The bench's jumpTo (tree, ficha links): the whole line `line`, four lines of lead. */
+  /** The bench's jumpTo (tree, inspector links): the whole line `line`, four lines of lead. */
   revealLine(line: number): void;
   /** A hidden list opens again when a counter is pressed. */
   toggleFilter(s: Severity): void;

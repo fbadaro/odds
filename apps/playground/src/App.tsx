@@ -3,7 +3,7 @@ import { TooltipProvider } from "./components/ui/Tooltip";
 import { DiagnosticsDock } from "./features/diagnostics/components/DiagnosticsDock";
 import { CodePanel } from "./features/editor/components/CodePanel";
 import { HelpPanel } from "./features/help/components/HelpPanel";
-import { Ficha } from "./features/inspector/components/Ficha";
+import { Inspector } from "./features/inspector/components/Inspector";
 import { SelectionCaption } from "./features/inspector/components/SelectionCaption";
 import { StructurePanel } from "./features/structure/components/StructurePanel";
 import { Rail } from "./features/panels/components/Rail";
@@ -33,7 +33,7 @@ export function App() {
         <CodePanel />
         <StructurePanel />
         <HelpPanel />
-        <Ficha />
+        <Inspector />
         <FrozenFlag />
         <SelectionCaption />
         <WaitIndicator />

@@ -10,7 +10,7 @@ describe("camera", () => {
     expect(safeArea(700, 800, { left: 16, right: 72 }, { left: 88, right: 420 }, { left: 400, right: 690 })).toEqual({ l: 32, t: 116, w: 636, h: 560 });
   });
 
-  it("safeArea leaves room for the open panel and the ficha", () => {
+  it("safeArea leaves room for the open panel and the inspector", () => {
     expect(safeArea(1400, 900, { left: 16, right: 72 }, { left: 88, right: 420 }, { left: 1040, right: 1384 })).toEqual({ l: 444, t: 76, w: 572, h: 752 });
   });
 

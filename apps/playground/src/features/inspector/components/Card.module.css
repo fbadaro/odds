@@ -1,4 +1,4 @@
-/* bancada: o miolo .sel da ficha (casca herdada da v4, com a escala de tipo do .pg por cima,
+/* bancada: o miolo .sel do inspetor (casca herdada da v4, com a escala de tipo do .pg por cima,
    e o .nav .sel .golink.plain do #navcss), o que os três cartões dividem */
 .kind,
 .sect {
@@ -84,7 +84,7 @@
   text-decoration-color: rgb(var(--c-ink) / 0.3);
 }
 
-/* .i-ficha .lnk: o arquivo e a linha, que levam ao editor */
+/* .lnk: o arquivo e a linha, que levam ao editor */
 .lnk {
   appearance: none;
   border: 0;

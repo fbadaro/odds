@@ -1,5 +1,5 @@
-/* bancada: .i-ficha, com o .phead e o .pbody do painel */
-.ficha {
+/* bancada: (o inspetor), com o .phead e o .pbody do painel */
+.inspector {
   top: 78px;
   right: 20px;
   bottom: 78px;
@@ -7,10 +7,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: ficha-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
+  animation: inspector-in 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-@keyframes ficha-in {
+@keyframes inspector-in {
   from {
     opacity: 0;
     transform: translateX(6px);
@@ -52,14 +52,14 @@
 }
 
 @media (max-width: 760px) {
-  .ficha {
+  .inspector {
     top: 128px;
     bottom: 136px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ficha {
+  .inspector {
     animation: none;
   }
 }

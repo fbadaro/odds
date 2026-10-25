@@ -1,6 +1,6 @@
 import type { Nav, TargetedDiagnostic } from "@odds/layout";
 import { FORMS, TAGS } from "../lib/glossary";
-import { relLabel, type DocInfo, type Ficha } from "../lib/ficha";
+import { relLabel, type DocInfo, type InspectorData } from "../lib/inspectorData";
 import card from "./Card.module.css";
 import styles from "./RelationCard.module.css";
 import { DocProps, hasDoc } from "./DocProps";
@@ -15,7 +15,7 @@ const homeOf = (nav: Nav, id: string): Home => {
 const nameOf = (key: string) => key.split("/")[1];
 
 /** The bench's `sideHtml`: one end of the relation, its role, its tags read from the glossary, and its documentation. */
-function Side({ id, role, tags, f, nav }: { id: string; role: string; tags: string[]; f: Ficha; nav: Nav }) {
+function Side({ id, role, tags, f, nav }: { id: string; role: string; tags: string[]; f: InspectorData; nav: Nav }) {
   const d: Partial<DocInfo> = f.ctx[id] ?? {}, [home, hs] = homeOf(nav, id), type = hs ? hs.type : "external";
   return (
     <div className={styles.side} data-side={id} data-type={type}>
@@ -44,7 +44,7 @@ function Side({ id, role, tags, f, nav }: { id: string; role: string; tags: stri
 }
 
 /** The bench's `relPanel`: the way back, the form, the source line, verdict, boundary, both sides and the fence. */
-export function RelationCard({ rk, from, f, nav, markers }: { rk: string; from: string | null; f: Ficha; nav: Nav; markers: TargetedDiagnostic[] }) {
+export function RelationCard({ rk, from, f, nav, markers }: { rk: string; from: string | null; f: InspectorData; nav: Nav; markers: TargetedDiagnostic[] }) {
   const r = f.rels[rk];
   if (!r) return <div className={styles.empty}>A relação <code>{rk}</code> não está mais no texto.</div>;
   const form = FORMS[r.c], [subL, sL] = homeOf(nav, r.l), [subR, sR] = homeOf(nav, r.r);

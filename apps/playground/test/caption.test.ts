@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { captionOf } from "../src/features/inspector/lib/caption";
-import { fichaOf } from "../src/features/inspector/lib/ficha";
+import { inspectorDataOf } from "../src/features/inspector/lib/inspectorData";
 import { createPlaygroundStore } from "../src/stores/playground";
 
 const s = createPlaygroundStore().getState();
 const nav = s.drawing!.nav;
-const f = fichaOf(s.ast!);
+const f = inspectorDataOf(s.ast!);
 
 describe("captionOf", () => {
   it("nothing selected, no caption", () => {

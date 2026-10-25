@@ -5,14 +5,14 @@ import { pairKey } from "../../../lib/selection";
 export interface RelInfo { rk: string; l: string; lt: string[]; c: "-->" | "<--" | "<->" | "-x-"; rt: string[]; r: string; line: number }
 /** What a context documents: its title and properties, and where it is declared. */
 export interface DocInfo { title?: string; description?: string; responsibilities?: string[]; type?: string; maturity?: string; team?: string; technology?: string; line: number }
-export interface Ficha { rels: Record<string, RelInfo>; ctx: Record<string, DocInfo>; sub: Record<string, { title?: string; description?: string; owner?: string; line: number }>; dom: string }
+export interface InspectorData { rels: Record<string, RelInfo>; ctx: Record<string, DocInfo>; sub: Record<string, { title?: string; description?: string; owner?: string; line: number }>; dom: string }
 
 // an absent key stays absent (exactOptionalPropertyTypes)
 const docOf = (c: ContextNode): DocInfo => ({ ...c.properties, ...(c.title !== undefined && { title: c.title }), line: c.span.start.line });
 
-/** The bench's `fichaOf`: what the ficha reads from the text, not from the map. */
-export function fichaOf(ast: ProgramNode): Ficha {
-  const rels: Ficha["rels"] = {}, ctx: Ficha["ctx"] = {}, sub: Ficha["sub"] = {};
+/** The bench's `inspectorDataOf`: what the inspector reads from the text, not from the map. */
+export function inspectorDataOf(ast: ProgramNode): InspectorData {
+  const rels: InspectorData["rels"] = {}, ctx: InspectorData["ctx"] = {}, sub: InspectorData["sub"] = {};
   for (const d of ast.domains) {
     for (const sd of d.subdomains) {
       sub[d.name + "/" + sd.name] = {
@@ -35,7 +35,7 @@ export function fichaOf(ast: ProgramNode): Ficha {
 }
 
 /** Upstream first on a directional line; the pair as written otherwise. */
-export function relLabel(rk: string, f: Ficha | null): string {
+export function relLabel(rk: string, f: InspectorData | null): string {
   const r = f?.rels[rk];
   if (!r) return rk.replace("|", " · ");
   if (r.c === "-->") return r.l + " → " + r.r;

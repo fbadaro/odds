@@ -76,7 +76,7 @@ describe("CodePanel", () => {
     expect(document.activeElement).toBe(ta);
   });
 
-  it("the tree and the ficha keep four lines above, the dock six, as the bench's jumpTo and dlist", () => {
+  it("the tree and the inspector keep four lines above, the dock six, as the bench's jumpTo and dlist", () => {
     usePlayground.setState({ text: Array.from({ length: 40 }, (_, i) => `l${i + 1}`).join("\n") });
     mount();
     act(() => usePlayground.getState().revealLine(20));

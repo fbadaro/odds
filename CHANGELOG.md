@@ -255,6 +255,7 @@ Primeiro código do projeto, iniciado em 2026-09-05 na branch `feat/core-parser`
   - **As dicas da bancada** (`title` no trilho, nos contadores, no export, no tema e no mapa inteiro) são `Tooltip`: abrem com o mouse e com o foco do teclado, e o `Esc` as fecha. Num grupo vertical, abrem ao lado. O estilo da dica é decisão da aplicação, porque o `DESIGN.md` não especifica uma.
   - **O `Esc` global não lê mais o DOM do menu.** O Base UI chama `preventDefault()` no `Esc` com que fecha o menu ou a dica, antes do listener do documento, e o `ev.defaultPrevented` que já existia basta.
   - **Conferido no Chrome por CDP**, além dos testes: dica ao passar o mouse, clique que abre e fecha painel, `ArrowDown` no trilho, a lista que recolhe, e o `Esc` que fecha o menu. O `Toast` continua próprio, pela exceção já escrita nele. **195 testes na aplicação, 423 no repositório.**
+- **2026-10-24 · a ficha vira `Inspector` no código.** Era o único componente com nome em português. O componente é `Inspector`, os dados que ele lê do texto são `InspectorData` (`inspectorDataOf`, `useInspectorData`), e a marca de paridade passa de `ficha` para `inspector`, na bancada e na aplicação, no mesmo passe. Os textos da interface ("Ficha", "Fechar a ficha") e os identificadores próprios da bancada (`#ficha`, `.i-ficha`) não mudam.
 
 ---
 
