@@ -18,6 +18,8 @@ ehthumbs.db
 # Claude Code local configuration (machine-specific, not shared with the team)
 .claude/settings.local.json
 .claude/local/
+# A CLAUDE.local.md (or any CLAUDE.md) on the path stops Claude Code from reading
+# AGENTS.md, unless /config sets project instructions to claude-md-and-agents-md (ADR-0022).
 CLAUDE.local.md
 
 # Environment / secrets

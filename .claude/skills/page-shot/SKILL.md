@@ -1,6 +1,8 @@
 ---
 name: page-shot
 description: Captura em PNG uma página de docs/design/pages/ para poder olhar a composição, sem depender da extensão do navegador. Use antes de dar uma rodada de design por encerrada, ao suspeitar de corte, sobreposição ou contraste, e sempre que precisar comparar tema claro e escuro ou um estado que só existe depois de clicar num controle.
+paths: "docs/design/**"
+allowed-tools: Bash(${CLAUDE_SKILL_DIR}/scripts/shot.sh *)
 ---
 
 # Olhar a página, não só medir
@@ -12,8 +14,8 @@ O `claude-in-chrome` depende de permissão por site e costuma estar bloqueado pa
 ## Como usar
 
 ```bash
-.claude/skills/page-shot/scripts/shot.sh \
-  --page docs/design/pages/colmeia-v2.html \
+${CLAUDE_SKILL_DIR}/scripts/shot.sh \
+  --page docs/design/pages/playground.html \
   --out  /tmp/.../mapa.png
 ```
 

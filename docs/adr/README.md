@@ -2,7 +2,7 @@
 
 Toda decisão tomada deste ponto em diante mora aqui, uma por arquivo, numerada e imutável.
 
-**Por que ADR e não mais uma seção num documento existente.** O `GRILLING.md` guarda o *porquê* de D1–D25 e o `PROPAGATION-MAP.md` guarda o *onde* — mas os dois são registros **fechados**, de uma sessão que terminou. Uma decisão tomada hoje não tinha onde morar, e é isso que a rubrica do `HEALTH.md` §9.1 desconta em **R3.6**. `D1–D25` é um conjunto fechado: decisão nova vem para cá, nunca para aquela tabela.
+**Por que ADR e não mais uma seção num documento existente.** As decisões D1–D25, de antes de 2026-09-05, ficaram num registro **fechado**, de uma sessão que terminou, e uma decisão tomada depois não tinha onde morar — é isso que a rubrica do `HEALTH.md` §9.1 desconta em **R3.6**. Aquele registro saiu da árvore pelo `ADR-0023` e vive no histórico do git. Decisão nova vem para cá.
 
 ## Como ler
 
@@ -53,3 +53,5 @@ A skill `adr` governa o resto: quando um ADR é devido, quando não é, e como f
 | [ADR-0019](0019-zustand-para-o-estado-de-interface-react-compiler-para-a-memoizacao-e-eslint-na-aplicacao.md) | Zustand para o estado de interface, React Compiler para a memoização e ESLint na aplicação | accepted | 2026-10-22 |
 | [ADR-0020](0020-a-paridade-entre-bancada-e-aplicacao-e-um-contrato-data-feature-na-bancada-teste-de-paridade-na-aplicacao.md) | A paridade entre bancada e aplicação é um contrato: data-feature na bancada, teste de paridade na aplicação | accepted | 2026-10-22 |
 | [ADR-0021](0021-a-bancada-valida-a-funcionalidade-e-a-aplicacao-a-constroi-com-os-componentes-do-base-ui.md) | A bancada valida a funcionalidade, e a aplicação a constrói com os componentes do Base UI | accepted | 2026-10-23 |
+| [ADR-0022](0022-as-instrucoes-de-agente-moram-num-agents-md-enxuto-com-regras-por-caminho-em-claude-rules.md) | As instruções de agente moram num AGENTS.md enxuto, com regras por caminho em .claude/rules/ | accepted | 2026-10-24 |
+| [ADR-0023](0023-registros-fechados-saem-da-arvore-de-trabalho-e-passam-a-viver-no-historico-do-git.md) | Registros fechados saem da árvore de trabalho e passam a viver no histórico do git | accepted | 2026-10-24 |

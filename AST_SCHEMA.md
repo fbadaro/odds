@@ -200,7 +200,7 @@ A tabela abaixo é **normativa** e é a fonte de verdade de três coisas ao mesm
 
 - `CONFORMIST_CORE.trigger`: `"conformist"` (o lado Downstream `core` carrega `[CF]`) ou `"bbm"` (o lado Upstream carrega `[BBM]`).
 - `INCOMPLETE_MUTUAL_TAG.declaredSide` e `INCOMPLETE_CUSTOMER_SUPPLIER` (`declared`/`missing`): `"left"`/`"right"` para o lado; `"C"`/`"S"` para a tag.
-- `MALFORMED_SUPPRESSION.reason`: `"unknown-code"` (o code nomeado não existe neste catálogo), `"missing-justification"` (a diretiva não traz `: <justificativa>`) ou `"not-suppressible"` (o code nomeado tem severidade `error`, que por D3 nunca é suprimível).
+- `MALFORMED_SUPPRESSION.reason`: `"unknown-code"` (o code nomeado não existe neste catálogo), `"missing-justification"` (a diretiva não traz `: <justificativa>`) ou `"not-suppressible"` (o code nomeado tem severidade `error`, que pela `RULES-EN.md` §4 nunca é suprimível).
 - `REMOVED_CONSTRUCT.removedIn`: a `ODDS Language Version` em que a construção deixou de existir (ver `CHANGELOG.md`).
 - `REMOVED_CONSTRUCT.construct` e `REMOVED_CONSTRUCT.replacement`: **tokens literais da linguagem**, sem prosa em volta e sem crases — a construção removida como se escreve (`[SW]`) e a que ocupa seu lugar (`-x-`). A instrução de *como* usar a substituta é do template, não do dado.
 - `SYNTAX_ERROR.expected`: a **lista de tokens literais** aceitos naquela posição, separados por `", "` (ex.: `"-->, <--, <->, -x-"`). Nunca uma descrição em prosa da categoria esperada — a palavra "conector" que nomeia o conjunto vive no template. Um conjunto aberto é esperado aqui: ao contrário dos demais valores fechados desta lista, `expected` varia com a posição do parser, e por isso é a lista que é normativa, não os seus membros.
@@ -215,7 +215,7 @@ Um elemento que produziu um diagnóstico de severidade **`error`** é registrado
 Duas obrigações que isso impõe a esta AST, e que são a razão de os campos existirem:
 
 1. `SymbolTableEntry.valid` (§5) — uma declaração descartada pelo panic-mode ainda **entra** na tabela de símbolos, marcada como inválida. É isso que mata a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` (o contexto *foi* declarado, só que no lugar errado) e o que permite ao renderizador desenhar o nó fantasma pontilhado em vez de nada.
-2. `astGenerated` **deixou de ser proxy de "renderizável"**. Desde D17 a renderização degrada por elemento: a AST parcial sempre desenha o que for desenhável, e o elemento problemático aparece marcado. `astGenerated: false` significa apenas *"não existe árvore"* — ou seja, `SYNTAX_ERROR` puro —, não *"nada será exibido"*.
+2. `astGenerated` **deixou de ser proxy de "renderizável"**. Desde a v0.2.0 a renderização degrada por elemento (`RULES-EN.md` §5): a AST parcial sempre desenha o que for desenhável, e o elemento problemático aparece marcado. `astGenerated: false` significa apenas *"não existe árvore"* — ou seja, `SYNTAX_ERROR` puro —, não *"nada será exibido"*.
 
 ### 1.5 Quem produz o quê
 
@@ -538,4 +538,4 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.1**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

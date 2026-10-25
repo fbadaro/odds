@@ -29,7 +29,9 @@
  *   2. V3CSS  o map.css do @odds/layout, com os apelidos que o vestem com os tokens da
  *             bancada (até 2026-10-21, o <style> da colmeia-v4.html, inteiro)
  *   3. V3SRC  a ponte que monta o __v3 a partir do pacote (até 2026-10-21, o <script>
- *             da colmeia-v4.html, rodado sem DOM); vem depois do CORE na página
+ *             da colmeia-v4.html, rodado sem DOM); vem depois do CORE na página.
+ *             A colmeia-v4.html foi apagada em 2026-10-24, depois de validada, e
+ *             segue no git em e282c83
  *   4. M50    o marketplace de 50 contextos documentado, como texto .odds: o texto
  *             inicial da bancada (o marketplace() das fixtures do pacote)
  *

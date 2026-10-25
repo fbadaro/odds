@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0011 — A colmeia é a vista principal, e fluxo e contenção são dois modos da mesma geografia
 
+> **Fechado em 2026-10-24.** A v3 e a v4, que este ADR cita como o que desenha as duas vistas na mesma geografia, foram apagadas depois de validadas (`ADR-0023`). As duas vistas vivem no `@odds/layout`, e as páginas seguem no git, no commit `e282c83`.
+
 ## Contexto
 
 O `PRD.md` §4.4 exige duas vistas que respondem a perguntas diferentes e mostram coisas diferentes de propósito. A de **fluxo** ("como isto se integra?") desenha nós e arestas, com conectores e tags. A de **contenção** ("como isto está organizado?") desenha domínio, subdomínios e contextos aninhados, com o `external` fora da fronteira. O PRD foi escrito imaginando dois desenhos distintos: um grafo e caixas aninhadas.

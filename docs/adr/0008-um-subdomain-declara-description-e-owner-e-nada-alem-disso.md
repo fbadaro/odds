@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0008 — Um subdomain declara description e owner, e nada além disso
 
+> **Fechado em 2026-10-24.** O mock `docs/design/pages/colmeia-v2.html` que este ADR cita foi apagado depois de validado, junto com as colmeias v1, v3 e v4 (`ADR-0023`). A decisão segue em vigor na linguagem, e o mock segue no git: `git show e282c83:docs/design/pages/colmeia-v2.html`.
+
 > **Executado em 2026-10-06**, na `ODDS Language Version` 1.0.0 (`GRAMMAR.md` v0.3.0, `AST_SCHEMA.md` v0.3.0, `RULES` v0.3.0). A execução tomou uma escolha de forma que este ADR não tomou: `owner` passou a ser **palavra reservada**, como todas as chaves de propriedade. Isso torna inválido um nome `owner` e faz da mudança uma MAJOR. A alternativa, palavra contextual, manteria a mudança em MINOR e foi recusada. As duas saídas, e a ausência deliberada de diagnóstico de migração, estão no `CHANGELOG.md` (entrada v1.0.0). O texto abaixo é o da decisão, como foi tomada.
 
 ## Contexto

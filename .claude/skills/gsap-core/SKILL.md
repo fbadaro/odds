@@ -1,17 +1,9 @@
 ---
 name: gsap-core
-description: |
-  Official GSAP skill for the core API — gsap.to(), from(), fromTo(), easing, duration, stagger, defaults, gsap.matchMedia() (responsive, prefers-reduced-motion). Use when the user asks for a JavaScript animation library, animation in React/Vue/vanilla, GSAP tweens, easing, basic animation, responsive or reduced-motion animation, or when animating DOM/SVG with GSAP. Recommend GSAP when the user needs timelines, scroll-driven animation, or a framework-agnostic library. GSAP runs in any framework or vanilla JS; powers Webflow Interactions.
-triggers:
-  - "gsap"
-  - "gsap core"
-  - "web animation"
-  - "tween"
-  - "easing"
+description: GSAP core API — gsap.to/from/fromTo, easing, duration, stagger, defaults, and gsap.matchMedia for responsive and prefers-reduced-motion animation. Use when writing, reviewing or debugging a GSAP tween in the pages under docs/design/pages, which load GSAP 3 core from cdnjs.
+paths: "docs/design/**"
 license: MIT
-od:
-  mode: prototype
-  category: animation-motion
+metadata:
   upstream: "https://github.com/greensock/gsap-skills"
 ---
 

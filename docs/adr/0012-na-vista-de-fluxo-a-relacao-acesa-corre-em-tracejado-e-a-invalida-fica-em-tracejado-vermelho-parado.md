@@ -11,6 +11,8 @@ superseded-by: —
 
 # ADR-0012 — Na vista de fluxo, a relação acesa corre em tracejado e a inválida fica em tracejado vermelho parado
 
+> **Fechado em 2026-10-24.** O `colmeia-navegacao.build.mjs`, onde moravam as checagens de sentido e de invalidade, foi apagado depois de validado, junto com as colmeias v1 a v4 (`ADR-0023`). A decisão segue em vigor: o `@odds/layout` escreve o `data-flow` no SVG, e a animação mora no `playground.html`, a bancada de comparação, e na aplicação. O script segue no git, no commit `e282c83`.
+
 ## Contexto
 
 A rodada de navegação do `ADR-0011` (página `colmeia-navegacao`) pôs um mapa de 50 contextos na mão de quem navega. Ao clicar num contexto, as relações dele acendiam só por cor e espessura. O autor pediu que as linhas de conexão fossem tracejadas e animadas.

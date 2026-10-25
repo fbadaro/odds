@@ -28,9 +28,8 @@ ROOT = Path(__file__).resolve().parents[4]  # .../.claude/skills/health-check/sc
 CODE_ARTIFACTS = ("MESSAGES.md", "RULES-EN.md", "RULES-PT.md")
 
 # Termos que saíram da linguagem e não podem voltar a um documento normativo.
-# `GRILLING.md` é isento por ser registro histórico: reescrevê-lo apagaria o que
-# se pensava no momento da decisão. O preço da isenção é o glossário de
-# vocabulário superado daquele arquivo, que a C15 cobra.
+# Registro histórico (CHANGELOG, HEALTH, ADRs) pode citá-los: é ali que se conta
+# que eles existiram.
 DEAD_TERMS = (
     "ExternalContextNode",
     "CONFORMIST_CORE_WARNING",
@@ -320,103 +319,28 @@ def check_message_templates(catalogue: dict[str, dict[str, str]]) -> Check:
 
 
 # --------------------------------------------------------------------------
-# Rastreabilidade das decisões e vocabulário histórico
+# Citações de artefato
 # --------------------------------------------------------------------------
 
-MAP_ROW = re.compile(r"^\|\s*\*\*D(\d+)\*\*\s*\|")
-# Numa célula do mapa, um arquivo `X.md` ou uma seção `§N`. Uma seção vale para o
-# arquivo imediatamente anterior — ou para o par, quando dois vêm colados por `/`
+# Num texto, um arquivo `X.md` ou uma seção `§N`. Uma seção vale para o arquivo
+# imediatamente anterior — ou para o par, quando dois vêm colados por `/`
 # (`RULES-EN.md`/`RULES-PT.md` §4). Arquivos separados por ` · ` são citações distintas.
 CITATION = re.compile(r"`([A-Za-z_-]+\.md)`|§(\d+(?:\.\d+)*)")
-DECISIONS = 25
+
+# Arquivos que saíram da árvore por decisão registrada, com o ADR que os retirou.
+# Um ADR é imutável e cita o repositório como ele era quando foi escrito: citar
+# um destes é história, não apodrecimento. O conteúdo segue no histórico do git.
+RETIRED = {
+    "CLAUDE.md": "0022",
+    "GRILLING.md": "0023",
+    "PROPAGATION-MAP.md": "0023",
+}
 
 
 def has_heading(doc: str, section: str) -> bool:
     """A seção existe como cabeçalho? Aceita `### 4.6.` e `### 0.5` para §4.6/§0.5."""
     pattern = re.compile(r"^#{1,6} " + re.escape(section) + r"\.?(\s|$)", re.MULTILINE)
     return bool(pattern.search(read(doc)))
-
-
-def check_propagation_map() -> Check:
-    """O mapa D1–D25 é a evidência de que a propagação do GRILLING fechou.
-
-    Duas coisas o apodrecem, e as duas são baratas de pegar: uma seção citada
-    que muda de número, e uma linha que some. Nenhuma das duas se anuncia.
-    """
-    c = Check("C14", 1, "mapa de propagação (PROPAGATION-MAP.md)")
-    try:
-        text = read("PROPAGATION-MAP.md")
-    except FileNotFoundError:
-        return c.fail("PROPAGATION-MAP.md não existe — o débito D-004 reabriu")
-
-    rows = {int(m.group(1)): line for line in text.splitlines() if (m := MAP_ROW.match(line))}
-    problems: list[str] = []
-    missing = [n for n in range(1, DECISIONS + 1) if n not in rows]
-    if missing:
-        problems.append(f"decisões sem linha no mapa: {', '.join(f'D{n}' for n in missing)}")
-    for extra in sorted(set(rows) - set(range(1, DECISIONS + 1))):
-        problems.append(f"D{extra}: fora de D1–D{DECISIONS} — decisão nova vai para docs/adr/, não para o mapa")
-
-    citations = 0
-    for n, line in sorted(rows.items()):
-        group: list[str] = []
-        previous_end: int | None = None
-        for m in CITATION.finditer(line):
-            doc, section = m.group(1), m.group(2)
-            if doc:
-                glued = previous_end is not None and line[previous_end:m.start()] == "/"
-                group = group + [doc] if glued else [doc]
-                previous_end = m.end()
-                if not (ROOT / doc).is_file():
-                    problems.append(f"D{n}: cita `{doc}`, que não existe no repositório")
-                continue
-            for target in group:
-                citations += 1
-                if (ROOT / target).is_file() and not has_heading(target, section):
-                    problems.append(f"D{n}: `{target}` §{section} não corresponde a nenhum cabeçalho")
-
-    if problems:
-        return c.fail(f"{len(problems)} problema(s)", problems)
-    return c.passed(
-        f"D1–D{DECISIONS} mapeadas, {citations} referências de seção resolvidas",
-        [f"D{n}: {len(CITATION.findall(line))} citações" for n, line in sorted(rows.items())],
-    )
-
-
-GLOSSARY_HEADING = "## 📕 Vocabulário superado neste arquivo"
-GLOSSARY_ROW = re.compile(r"^\|\s*[`*\"]*([^|`*\"]+)")
-
-
-def check_historical_glossary() -> Check:
-    """`GRILLING.md` é isento da varredura de termo morto (C7) por ser registro.
-
-    A isenção só é honesta se o arquivo avisar o leitor. O glossário é o preço
-    dela, e esta checagem é quem cobra.
-    """
-    c = Check("C15", 2, "glossário de vocabulário superado (GRILLING.md)")
-    text = read("GRILLING.md")
-    if GLOSSARY_HEADING not in text:
-        return c.fail("GRILLING.md não traz o glossário de vocabulário superado — o débito D-006 reabriu")
-
-    section = text.split(GLOSSARY_HEADING, 1)[1].split("\n## ", 1)[0]
-    listed = {m.group(1).strip() for line in section.splitlines() if (m := GLOSSARY_ROW.match(line))}
-    body = text.split(GLOSSARY_HEADING, 1)[0] + section.split("\n\n", 1)[-1]
-
-    problems: list[str] = []
-    for term in DEAD_TERMS:
-        if term in text and term not in listed:
-            problems.append(f"{term}: usado no arquivo e ausente do glossário")
-    for term in sorted(listed & set(DEAD_TERMS)):
-        if text.count(term) < 2:
-            problems.append(f"{term}: no glossário mas em nenhum outro ponto do arquivo — linha morta")
-
-    if problems:
-        return c.fail(f"{len(problems)} problema(s)", problems)
-    covered = [t for t in DEAD_TERMS if t in text]
-    return c.passed(
-        f"{len(covered)} termos mortos do arquivo cobertos pelo glossário",
-        [f"{t}: {text.count(t)} ocorrência(s), com tradução" for t in covered],
-    )
 
 
 # --------------------------------------------------------------------------
@@ -437,11 +361,13 @@ def adr_field(text: str, key: str) -> str:
 
 
 def check_decision_ledger() -> Check:
-    """`docs/adr/` é o único lugar onde decisão nova mora (D1-D25 é conjunto fechado).
+    """`docs/adr/` é o único lugar onde decisão nova mora.
 
     Um razão de decisões apodrece de três formas, todas silenciosas: um número
     reusado, um par supersedes/superseded-by ligado só de um lado, e um índice
-    que para de bater com os arquivos. Nenhuma se anuncia na leitura.
+    que para de bater com os arquivos. Nenhuma se anuncia na leitura. Uma quarta
+    é a citação a um arquivo que sumiu, e ela só é aceita quando um ADR registrou
+    a retirada (`RETIRED`) e o ADR que cita é anterior a ela.
     """
     c = Check("C16", 1, "razão de decisões (docs/adr/)")
     adr_dir = ROOT / "docs" / "adr"
@@ -504,12 +430,21 @@ def check_decision_ledger() -> Check:
                 glued = previous_end is not None and text[previous_end:m.start()] == "/"
                 group = group + [doc] if glued else [doc]
                 previous_end = m.end()
-                if not (ROOT / doc).is_file():
+                if (ROOT / doc).is_file():
+                    continue
+                retired_by = RETIRED.get(doc)
+                if retired_by is None:
                     problems.append(f"{name}: cita `{doc}`, que não existe no repositório")
+                elif n > int(retired_by):
+                    problems.append(f"{name}: cita `{doc}`, retirado antes dele pelo ADR-{retired_by}")
                 continue
             for target in group:
                 if (ROOT / target).is_file() and not has_heading(target, section):
                     problems.append(f"{name}: `{target}` §{section} não corresponde a nenhum cabeçalho")
+
+    for doc, retired_by in RETIRED.items():
+        if int(retired_by) not in files:
+            problems.append(f"`{doc}` retirado pelo ADR-{retired_by}, que não existe")
 
     index_path = adr_dir / "README.md"
     if not index_path.is_file():
@@ -778,8 +713,6 @@ def run() -> list[Check]:
         check_message_templates(catalogue),
         check_rubrics(rows, rubrics),
         check_history(history, headline),
-        check_propagation_map(),
-        check_historical_glossary(),
         check_decision_ledger(),
     ]
 

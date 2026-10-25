@@ -11,6 +11,8 @@ superseded-by: 0021
 
 # ADR-0017 — A bancada experimenta e a aplicação implementa só ideia validada
 
+> **Fechado em 2026-10-24.** A `colmeia-v4.html`, que este ADR congelou como registro do `ADR-0010`, foi apagada depois de validada (`ADR-0023`). O que ela desenhava ficou congelado nos goldens do `@odds/layout`, e a página segue no git: `git show e282c83:docs/design/pages/colmeia-v4.html`.
+
 > **Substituído em 2026-10-23 pelo `ADR-0021`.** A bancada deixa de ser "especificação visual e de comportamento" e passa a validar só a funcionalidade: o que atravessa para a aplicação é o comportamento, e a aplicação o constrói com os componentes do Base UI e o visual do `DESIGN.md`. Todo o resto deste ADR fica de pé no `ADR-0021`: a bancada como lugar barato de errar, a aplicação sem feature inventada, biblioteca compartilhada e tela não.
 
 ## Contexto
