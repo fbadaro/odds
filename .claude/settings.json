@@ -7,6 +7,10 @@
           {
             "type": "command",
             "command": "jq -r '.tool_input.file_path // empty' | { read -r f; b=$(basename \"$f\" 2>/dev/null); case \"$b\" in GRAMMAR.md|AST_SCHEMA.md|TEST_SUITE.md) jq -n --arg b \"$b\" '{systemMessage: ($b + \" is version-tracked in CHANGELOG.md. Update its entry there (section header \\\"## \" + $b + \"\\\"), bump the current-version line in that section, and update the current-version pointer in the Changelog section of \" + $b + \" itself.\")}' ;; esac; }"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | { read -r f; case \"$f\" in */docs/design/pages/playground.html) jq -n '{systemMessage: \"playground.html é a bancada (ADR-0020/0021): ela valida a funcionalidade, não o markup. Se esta edição valida uma feature, marque o elemento-raiz com data-feature=\\\"<id>\\\" e porte para apps/playground pela skill portar-da-bancada, construindo com os componentes do Base UI — o apps/playground/test/parity.test.ts vai exigir o componente.\"}' ;; esac; }"
           }
         ]
       }

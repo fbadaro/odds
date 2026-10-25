@@ -10,24 +10,36 @@ Specification is complete and coherent; **implementation has just begun**. The s
 
 ```bash
 npm install          # npm workspaces, no other package manager needed (ADR-0005)
-npm test             # vitest, all packages
+npm test             # vitest, all packages and apps/playground
 npm run test:watch   # the loop for reconciling golden-file spans
 npm run typecheck    # tsc --build across the project references
+npm run lint         # ESLint — apps/playground only (ADR-0019)
+npm run dev          # the app's Vite dev server (apps/playground)
+npm run build:app    # the app as a static site, in apps/playground/dist
 npm run health       # the spec's own 16 checks — unrelated to the code, still Python/stdlib
 npm run generate:messages   # re-derive packages/messages/src/messages.json from MESSAGES.md
+npm run generate:tokens     # re-derive apps/playground/src/styles/tokens.css from DESIGN.md
 ```
 
 `messages.json` is **generated, never hand-edited** (`MESSAGES.md` §8 specifies it). Edit the tables in `MESSAGES.md`, then regenerate; a test fails if the two drift.
 
-There is deliberately **no linter yet** (ADR-0005): choosing rules before there is code to argue about would be deciding in a vacuum.
+`tokens.css` is **generated, never hand-edited**, the same way (ADR-0018): edit the front matter of `DESIGN.md`, then regenerate — `npm run dev` does it on save. A test fails if the two drift. Variable names follow the front matter (`--c-canvas`, `--c-surface`), not the bench's `--c-bg`/`--c-panel`.
 
-### Code layout (ADR-0004)
+**Lint covers the app, not the packages.** The app's two rules each have a concrete reason: the React hooks rules, which the React Compiler relies on, and `no-restricted-imports` keeping `@base-ui/react` inside `src/components/ui/**` (ADR-0014). `packages/` is still unlinted, by ADR-0005's own argument: no rule there has been argued for yet.
+
+### Code layout (ADR-0004, ADR-0016)
+
+Libraries live in `packages/`; the app lives in `apps/`.
 
 | Package | Owns | Must not know about |
 |---|---|---|
 | `@odds/core` | Lexer, parser, AST, validator, the six phases | Message text, locale — it has no dependency on `@odds/messages`, and that is the point |
 | `@odds/messages` | Rendering `Diagnostic` + locale → sentence, from `MESSAGES.md` | Anything about parsing |
+| `@odds/layout` | Honeycomb geometry and SVG rendering of the context map (ADR-0009), plus `map.css` with its own `--odds-map-*` variables. The bench pages embed it too | The DOM and React — no DOM, no global state; `renderSvg` annotates the geometry it receives |
+| `apps/playground` (`@odds/playground`) | The product: Vite + React 19 with the React Compiler, Zustand store, the honeycomb mounted outside React reconciliation (ADR-0014, ADR-0015, ADR-0019) | Inventing UI — it implements only the *functionality* the bench (`docs/design/pages/playground.html`) has validated, built from Base UI components and `DESIGN.md`, never by transcribing the bench's markup or CSS (ADR-0021) |
 | `golden-files/` | Stays at the **root**: it is the spec's executable suite, governed by `TEST_SUITE.md`, not a package's fixtures |
+
+A feature validated on the bench carries `data-feature="<id>"` on its root element, `apps/playground/test/parity.test.ts` requires a component with the same literal in the app (both directions, with a `PENDING` list like the conformance suite's), and the `portar-da-bancada` skill is the script for porting it (ADR-0020). What crosses over is behaviour — states, triggers, keyboard, timings, interface text — not HTML: the bench may use any styled markup, and the app rebuilds each feature on the matching Base UI component (`Tooltip`, `Toggle`, `Collapsible`, `Menu`, `Dialog`…), with an own component only where Base UI has none, and any exception written in the component with its reason (ADR-0021).
 
 The `core`/`messages` split makes the "a `Diagnostic` never carries `message`" rule a module boundary instead of a promise. Do not add a `@odds/messages` dependency to `@odds/core` — that is the one import that would undo it.
 

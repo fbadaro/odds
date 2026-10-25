@@ -1,0 +1,106 @@
+/* O mapa: a interação da bancada sobre o que o @odds/layout desenha.
+   Porte de docs/design/pages/playground.html: o palco (.pg-map), o FLIP (.lv-anim,
+   .lv-enter, .born) e as regras de mapa do <style id="navcss">, com o prefixo .nav/.lv-map
+   da bancada trocado pela classe global .odds-map e as cores em tokens. As regras de
+   navcss que vestem o inspetor, a legenda e o zoom ficam nos módulos desses componentes.
+   Global de propósito, e auto-suficiente com tokens.css + map.css + map-bridge.css:
+   a Task 7 embute este arquivo no SVG exportado. Por isso o palco é div.odds-map —
+   num SVG exportado com class="odds-map", só as regras do desenho valem. */
+
+/* ---------- o palco: a colmeia na tela inteira ---------- */
+div.odds-map {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  z-index: 0;
+  background-color: rgb(var(--c-canvas));
+  background-image: radial-gradient(rgb(var(--c-ink) / .13) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* na bancada, .nav .lv-map:focus-visible vence o inset da .pg-map */
+div.odds-map:focus-visible { box-shadow: 0 0 0 2px rgb(var(--c-accent)); }
+div.odds-map.dragging { cursor: grabbing; }
+div.odds-map.frozen svg { opacity: .42; filter: saturate(.2); }
+div.odds-map.frozen { background-image: repeating-linear-gradient(135deg, rgb(var(--c-ink) / .045) 0 10px, transparent 10px 20px); }
+
+/* ---------- FLIP: peças deslizam, chão e linhas chegam por fade ---------- */
+.odds-map .lv-anim g.node, .odds-map .lv-anim text.cnm { transition: transform .46s cubic-bezier(.2, .75, .2, 1); }
+.odds-map .lv-anim :is(g.rel, path.terr, g.sub, path.bmass, g.sublab, path.bdom, path.dregion, g.badge, text.dnm, text.did) { transition: opacity .3s ease .3s; }
+.odds-map .lv-enter :is(g.rel, path.terr, g.sub, path.bmass, g.sublab, path.bdom, path.dregion, g.badge, text.dnm, text.did) { opacity: 0 !important; }
+.odds-map .lv-anim g.node.born { transition: transform .46s cubic-bezier(.2, .75, .2, 1), opacity .3s ease .25s; }
+.odds-map .lv-enter g.node.born { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .odds-map .lv-anim :is(g.node, text.cnm, g.rel, path.terr, g.sub, path.bmass, g.sublab, path.bdom, path.dregion, g.badge, text.dnm, text.did) { transition: none !important; }
+}
+
+/* ---------- detalhe por zoom ---------- */
+/* Longe demais para ler uma tag, ela só faz ruído. A relação acesa mostra as suas em
+   qualquer zoom, porque é para ler aquela que se clicou. */
+.odds-map svg.far g.rel:not(.lit) .port { display: none; }
+/* Traço de espessura fixa na tela; de longe, o nome de contexto some e o do subdomínio
+   cresce, para o mapa se ler como territórios. Com algo selecionado, os nomes que a
+   seleção deixa acesos voltam, em tamanho fixo na tela (--k, escrito pela câmera). */
+.odds-map svg :is(path, rect, line, polyline, circle) { vector-effect: non-scaling-stroke; }
+.odds-map svg.far text.cnm { display: none; }
+.odds-map svg.far.sel-on text.cnm:not(.fade) { display: inline; font-size: calc(var(--k) * 11px); stroke-width: calc(var(--k) * 3.5px); }
+.odds-map svg.far g.sublab:not(.far-lab), .odds-map svg:not(.far) g.far-lab { display: none; }
+.odds-map svg.far g.far-lab .snm { fill: rgb(var(--c-ink) / .58); stroke-width: 5px; }
+.odds-map svg.far g.far-lab.subhot .snm { fill: rgb(var(--t)); }
+/* de longe a linha afina: com traço fixo na tela, as linhas pesavam mais que os territórios */
+.odds-map svg.far .edge { stroke-width: 1; }
+.odds-map svg.far .ecase { stroke-width: 2.6; }
+.odds-map svg.far g.rel.lit .edge { stroke-width: 1.8; }
+
+/* ---------- cor por tipo de subdomínio ---------- */
+/* O roxo fica só na interface. Linha é cinza; acesa, quase tinta. Peça e território
+   tomam o tom do próprio tipo. A inválida segue vermelha. */
+.odds-map [data-type="core"] { --t: var(--c-core-ink); }
+.odds-map [data-type="supporting"] { --t: var(--c-sup-ink); }
+.odds-map [data-type="generic"], .odds-map [data-type="external"] { --t: var(--c-gen-ink); }
+.odds-map .edge { stroke: rgb(var(--c-edge)); }
+.odds-map .head { fill: rgb(var(--c-edge)); }
+.odds-map g.rel.lit .edge { stroke: rgb(var(--c-edge-lit)); stroke-width: 2; }
+.odds-map g.rel.lit .head { fill: rgb(var(--c-edge-lit)); }
+.odds-map .port:not([class*="sev-"]) rect { stroke: rgb(var(--c-edge) / .75); }
+.odds-map .port:not([class*="sev-"]) text { fill: rgb(var(--c-ink) / .82); }
+.odds-map g.node:hover .tile, .odds-map g.node.subhot .tile { stroke: rgb(var(--t)); }
+.odds-map g.node:focus-visible .tile, .odds-map g.node.on .tile { stroke: rgb(var(--t)); }
+.odds-map text.cnm.on { fill: rgb(var(--t)); }
+.odds-map g.sub.hot .subwash { fill: rgb(var(--t) / .12); }
+.odds-map g.sub.hot .bsub { stroke: rgb(var(--t) / .85); }
+.odds-map g.sub.on .subwash { fill: rgb(var(--t) / .10); }
+.odds-map g.sub.on .bsub { stroke: rgb(var(--t)); }
+.odds-map g.sublab.subhot .snm { fill: rgb(var(--t)); }
+.odds-map g.rel.invalid.lit .head { fill: rgb(var(--c-error)); }
+/* de longe, a linha em repouso é um cinza clarinho: as linhas só sugerem a trama */
+.odds-map svg.far g.rel:not(.lit):not(.invalid) .edge { stroke: rgb(var(--c-edge-far)); }
+.odds-map svg.far g.rel:not(.lit):not(.invalid) .head { fill: rgb(var(--c-edge-far)); }
+.odds-map svg.far g.rel.invalid .edge { stroke-width: 1.6; }
+
+/* ---------- linha (ADR-0012) ---------- */
+/* Acesa, a válida vira tracejado correndo do upstream para o downstream; a mútua fica
+   tracejada e parada. A inválida é tracejado vermelho e parado, sempre. */
+.odds-map g.rel.lit .edge:not(.sep) { stroke-dasharray: 7 5; animation: odds-dash-run .7s linear infinite; }
+.odds-map g.rel.lit[data-flow="rev"] .edge { animation-direction: reverse; }
+.odds-map g.rel.lit[data-flow="both"] .edge { animation: none; }
+@keyframes odds-dash-run { to { stroke-dashoffset: -12; } }
+.odds-map g.rel.invalid .edge, .odds-map g.rel.invalid.lit .edge { stroke: rgb(var(--c-error)); stroke-width: 1.8; stroke-dasharray: 6 4; animation: none; }
+.odds-map g.rel.invalid .head { fill: rgb(var(--c-error)); }
+@media (prefers-reduced-motion: reduce) { .odds-map g.rel .edge { animation: none !important; } }
+
+/* ---------- uma relação por vez ---------- */
+/* A linha é clicável por um traço invisível de 12 px na tela; sob o mouse, escurece. Em
+   foco, fica mais grossa; as outras do contexto de onde se veio seguem acesas, num cinza
+   mais claro, clicáveis e mostrando o sentido. */
+.odds-map g.rel .rhit { fill: none; stroke: transparent; stroke-width: 12px; pointer-events: stroke; cursor: pointer; }
+.odds-map g.rel:hover .edge { stroke: rgb(var(--c-edge-lit)); }
+.odds-map g.rel:hover .head { fill: rgb(var(--c-edge-lit)); }
+.odds-map g.rel.focus .edge, .odds-map svg.far g.rel.focus .edge { stroke-width: 3; }
+.odds-map g.rel.lit.mute:not(.invalid) .edge { stroke: rgb(var(--c-edge) / .6); stroke-width: 1.6; }
+.odds-map g.rel.lit.mute:not(.invalid) .head { fill: rgb(var(--c-edge) / .6); }
+.odds-map g.rel.lit.mute .port { opacity: .6; }
+.odds-map svg.far g.rel.mute .port { display: none; }
+.odds-map g.rel.fade .rhit { cursor: pointer; }

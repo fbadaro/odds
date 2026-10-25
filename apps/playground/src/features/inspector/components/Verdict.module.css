@@ -1,0 +1,31 @@
+/* bancada: .sel .vd */
+.vd {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  border-top: 1px solid rgb(var(--c-hairline));
+}
+
+/* bancada: .vd svg 14x14, .sel .vd svg{margin-top:1px} */
+.icon {
+  display: inline-flex;
+  margin-top: 1px;
+  font-size: 14px;
+}
+
+.vd code {
+  font-size: 12px;
+  padding: 0 4px;
+  color: rgb(var(--c-ink));
+}
+
+.c {
+  display: block;
+  margin-top: 2px;
+  /* herda o line-height 1.4 do .vd, como na bancada */
+  font: 11px / 1.4 var(--font-code-family);
+  color: rgb(var(--c-ink-mute));
+}

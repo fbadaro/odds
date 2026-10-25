@@ -11,6 +11,10 @@ superseded-by: —
 
 # ADR-0007 — A UI/UX do playground é explorada em mocks descartáveis antes de escolher framework e biblioteca de render
 
+> **Cumprido em 2026-10-20.** As três escolhas de stack que este ADR adiou estão feitas: layout e render no `ADR-0009`, framework de UI e componentes no `ADR-0014`, bundler no `ADR-0015`. A exploração em mocks continua como bancada de UI/UX (`docs/design/pages/playground.html`), mas deixou de anteceder decisão de stack. Uma ressalva honesta: a rodada de estados (degradação, diagrama obsoleto, vazio) que o `docs/design/README.md` punha antes destas ADRs ainda não foi feita. Ela é desenho de render, não de chrome, e nada nela dependia do framework do chrome.
+
+> **Continuado em 2026-10-22 pelo `ADR-0017`.** A bancada que esta exploração deixou passa a ter um protocolo próprio: ideia de interface nasce e é validada nela, e a aplicação (`apps/playground`, `ADR-0016`) implementa só o que foi validado. As duas compartilham biblioteca, nunca tela.
+
 ## Contexto
 
 Com a `@odds/core` e a `@odds/messages` fechadas — 44 golden files verdes, o diagnóstico virando frase —, a Fase 1 do `PRD.md` §9.3 estava entregue e a Fase 2, o playground, era o próximo trabalho. Três decisões de stack seguiam em aberto, nomeadas na rubrica do `HEALTH.md` §9.2 sob o critério R6.4: framework de UI, biblioteca de layout/render do diagrama e bundler.

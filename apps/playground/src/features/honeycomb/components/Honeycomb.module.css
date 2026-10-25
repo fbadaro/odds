@@ -1,0 +1,10 @@
+/* o palco, o fundo e os estados (arrasto, congelado) são do honeycomb.css; aqui só o miolo */
+.mount {
+  height: 100%;
+}
+
+.mount > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

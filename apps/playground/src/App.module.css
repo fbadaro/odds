@@ -1,0 +1,5 @@
+/* A casca em tela inteira: o mapa atrás (o palco é do honeycomb.css), as ilhas soltas por cima (bancada: .pg, .i-*). */
+.shell {
+  position: fixed;
+  inset: 0;
+}

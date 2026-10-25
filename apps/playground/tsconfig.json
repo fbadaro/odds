@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["vite/client", "node"],
+    "rootDir": ".",
+    "outDir": "./.tsbuild",
+    "emitDeclarationOnly": true,
+    "declarationMap": false
+  },
+  "include": ["src", "test", "vite.config.ts", "scripts/*.d.mts"],
+  "references": [{ "path": "../../packages/core" }, { "path": "../../packages/messages" }, { "path": "../../packages/layout" }]
+}

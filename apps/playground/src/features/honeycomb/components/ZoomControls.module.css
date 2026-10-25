@@ -1,0 +1,31 @@
+/* bancada: .i-zoom, .vsep e o #zoomOut (o .nav #zoomOut vence o .i-zoom .pct) */
+.zoom {
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  height: 42px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pct {
+  /* a altura de linha é a herdada do body da bancada (1.4), não a do token */
+  font: var(--font-mono-sm-weight) var(--font-mono-sm-size) / 1.4 var(--font-mono-sm-family);
+  color: rgb(var(--c-ink-mute));
+  min-width: 44px;
+  text-align: right;
+}
+
+.vsep {
+  width: 1px;
+  align-self: stretch;
+  background: rgb(var(--c-hairline));
+  margin: var(--space-xxs) 2px;
+}
+
+@media (max-width: 760px) {
+  .pct {
+    display: none;
+  }
+}

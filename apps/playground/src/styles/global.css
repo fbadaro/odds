@@ -1,0 +1,53 @@
+@import "./tokens.css";
+@import "@odds/layout/map.css";
+@import "./map-bridge.css";
+
+/* Tabela bancada -> aplicação. A bancada (docs/design/pages/bancada-tokens.css) e a
+   aplicação (tokens.css, gerado do DESIGN.md) têm os mesmos valores e nomes diferentes;
+   ao portar CSS da bancada, traduza assim:
+     --c-bg      -> --c-canvas
+     --c-panel   -> --c-surface
+     --c-panel2  -> --c-surface-muted
+     --c-border  -> --c-hairline
+     --c-dim     -> --c-ink-mute
+     --c-ink, --c-accent, --c-accent-lift, --c-azure, --c-pulse, --c-solar,
+     --c-error, --c-warning, --c-info, --c-edge, --c-edge-lit, --c-edge-far,
+     --c-core-ink, --c-sup-ink, --c-gen-ink, --c-on-accent, --shadow-strength,
+     --sh-island (e as demais --sh-*)   -> o mesmo nome
+     --mix-*  -> lidos pelo map.css como --odds-map-mix-*
+     --tile-* -> lidos pelo map.css como --odds-map-tile-*
+   A ponte do mapa (--odds-map-*) fica em map-bridge.css. */
+
+/* bancada: *{box-sizing:border-box} — as larguras das ilhas são as da bancada */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: rgb(var(--c-canvas));
+  color: rgb(var(--c-ink));
+  font-family: var(--font-ui-family);
+  font-size: 13px;
+  line-height: 1.4;
+  /* bancada: body{-webkit-font-smoothing:antialiased} */
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+code,
+kbd,
+textarea {
+  font-family: var(--font-code-family);
+}

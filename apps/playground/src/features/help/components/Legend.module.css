@@ -1,0 +1,56 @@
+/* bancada: .leg, .leg .row, .leg .sw.*, .pg .leg (13px vence os 12.5px) */
+.leg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+  color: rgb(var(--c-ink-mute));
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row b {
+  color: rgb(var(--c-ink));
+  font-weight: 600;
+}
+
+.row svg {
+  flex: none;
+}
+
+.sep {
+  margin-top: 6px;
+  border-top: 1px solid rgb(var(--c-hairline));
+  padding-top: 10px;
+}
+
+.sw {
+  width: 23px;
+  height: 20px;
+  flex: none;
+  border: 1px solid rgb(var(--c-ink) / 0.16);
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+
+/* as mesmas misturas do mapa: lidas das variáveis do map.css */
+.core {
+  background: color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-tile-core), rgb(var(--c-surface)));
+}
+
+.supporting {
+  background: color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-tile-sup), rgb(var(--c-surface)));
+}
+
+.generic {
+  background: color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-tile-gen), rgb(var(--c-surface)));
+}
+
+.external {
+  background: rgb(var(--c-surface-muted));
+  border-style: dashed;
+  border-color: rgb(var(--c-ink-mute) / 0.7);
+}

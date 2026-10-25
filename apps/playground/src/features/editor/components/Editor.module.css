@@ -1,0 +1,67 @@
+/* bancada: .ed, .ed .gut, .ed textarea */
+.ed {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  height: 100%;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.gut {
+  overflow: hidden;
+  padding: 12px 0;
+  background: rgb(var(--c-surface-muted));
+  border-right: 1px solid rgb(var(--c-hairline));
+  color: rgb(var(--c-ink-mute) / 0.7);
+  text-align: right;
+  user-select: none;
+  font-family: var(--font-mono-xs-family);
+  font-size: 11px;
+}
+
+.gut div {
+  position: relative;
+  padding-right: 8px;
+  height: 20px;
+}
+
+.gut svg {
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+}
+
+.sevError {
+  color: rgb(var(--c-error));
+  font-weight: 500;
+}
+
+.sevWarning {
+  color: rgb(var(--c-warning));
+  font-weight: 500;
+}
+
+.sevInfo {
+  color: rgb(var(--c-info));
+  font-weight: 500;
+}
+
+.editor {
+  margin: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  padding: 12px;
+  background: rgb(var(--c-surface));
+  color: rgb(var(--c-ink));
+  font-family: var(--font-mono-sm-family);
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre;
+  overflow: auto;
+  tab-size: 2;
+  caret-color: rgb(var(--c-accent));
+  font-variant-ligatures: none;
+}

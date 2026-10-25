@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  /* noUncheckedIndexedAccess desligado SO aqui (plano, "Regra do porte"): o layout e
+     um porte literal de um script ES5 que indexa arrays e mapas a cada linha, e com
+     a opcao ligada cada acesso pediria um `!` ou um desvio que o legado nao tem. */
+  "compilerOptions": { "rootDir": "src", "outDir": "dist", "noUncheckedIndexedAccess": false },
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../core" }]
+}

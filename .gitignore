@@ -58,3 +58,12 @@ __pycache__/
 #                          são versionadas normalmente.
 docs/design/canvas/**/*.html
 !docs/design/canvas/**/*.dc.html
+
+# Design systems de referência (ex.: stripe-DESIGN.md) ficam só na máquina. O único
+# DESIGN.md versionado é o da raiz, a fonte única do sistema visual (ADR-0013).
+*DESIGN.md
+!/DESIGN.md
+# As specs do brainstorming terminam em -design.md, e no macOS (core.ignorecase) a
+# regra acima as pegaria também.
+!docs/superpowers/specs/*-design.md
+.tsbuild/

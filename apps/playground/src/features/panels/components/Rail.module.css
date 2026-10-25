@@ -1,0 +1,24 @@
+/* bancada: .rail e .sq. O estado apertado vem do ToggleGroup ([data-pressed]). */
+.rail {
+  top: 78px;
+  left: 20px;
+  padding: 5px;
+}
+
+.squares {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* o quadrado: o Button, sem o respiro lateral do rótulo */
+.sq {
+  width: 30px;
+  padding: 0;
+}
+
+@media (max-width: 760px) {
+  .rail {
+    top: 128px;
+  }
+}

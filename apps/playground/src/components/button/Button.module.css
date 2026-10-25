@@ -1,0 +1,50 @@
+/* bancada: .ibtn e .ibtn.primary */
+.btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgb(var(--c-ink-mute));
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  min-width: 30px;
+  padding: 0 var(--space-sm);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.btn:hover {
+  color: rgb(var(--c-ink));
+  background: rgb(var(--c-surface-muted));
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 2px;
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.primary,
+.primary:hover {
+  background: rgb(var(--c-accent));
+  color: rgb(var(--c-on-accent));
+}
+
+.primary {
+  padding: 0 12px;
+  box-shadow: var(--sh-cta);
+}
+
+.primary:hover {
+  filter: brightness(1.08);
+}

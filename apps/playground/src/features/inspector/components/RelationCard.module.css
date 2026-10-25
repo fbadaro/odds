@@ -1,0 +1,119 @@
+/* bancada: o inspetor da relação no #navcss (back, relsrc, rside, rs-head, role, rs-meta,
+   tagrow, tgchip, rs-doc) e o .sel-empty */
+.empty {
+  font-size: 13px;
+  color: rgb(var(--c-ink-mute));
+  line-height: 1.55;
+}
+
+.empty code {
+  font: 0.88em var(--font-code-family);
+  background: rgb(var(--c-surface-muted));
+  border-radius: var(--radius-chip);
+  padding: 1px 5px;
+}
+
+/* button.back vence o .golink, que vem de outro módulo */
+button.back {
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 0 0 12px;
+  display: block;
+}
+
+.relsrc {
+  font: 11px / 1.5 var(--font-code-family);
+  color: rgb(var(--c-ink));
+  background: rgb(var(--c-surface-muted));
+  border: 1px solid rgb(var(--c-hairline));
+  border-radius: var(--radius-control);
+  padding: 6px 8px;
+  word-break: break-word;
+}
+
+.src {
+  display: block;
+  font-size: 11px;
+  color: rgb(var(--c-ink-mute));
+  margin-top: 4px;
+}
+
+.side {
+  border: 1px solid rgb(var(--t, var(--c-ink-mute)) / 0.3);
+  background: rgb(var(--t, var(--c-ink-mute)) / 0.05);
+  border-radius: var(--radius-control);
+  padding: 8px 12px;
+  margin: 0 0 8px;
+}
+
+/* a cor do tipo: a tinta do subdomínio, e a do genérico para o externo */
+.side[data-type="core"] {
+  --t: var(--c-core-ink);
+}
+
+.side[data-type="supporting"] {
+  --t: var(--c-sup-ink);
+}
+
+.side[data-type="generic"],
+.side[data-type="external"] {
+  --t: var(--c-gen-ink);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  /* a bancada dá só família e tamanho; a altura de linha é a herdada, 1.4 */
+  font: 12px / 1.4 var(--font-code-family);
+}
+
+.head .who {
+  color: rgb(var(--c-ink));
+  text-decoration-color: rgb(var(--c-ink) / 0.3);
+}
+
+.role {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(var(--t, var(--c-ink-mute)));
+}
+
+.meta {
+  font-size: 12px;
+  color: rgb(var(--c-ink-mute));
+  margin: 4px 0 6px;
+}
+
+.tagrow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgb(var(--c-ink-mute));
+  padding: 4px 0;
+}
+
+.tagrow b {
+  color: rgb(var(--c-ink));
+  font-weight: 600;
+}
+
+.chip {
+  font: 11px / 1.4 var(--font-code-family);
+  border: 1px solid rgb(var(--c-edge) / 0.75);
+  border-radius: var(--radius-chip);
+  padding: 1px 6px;
+  color: rgb(var(--c-ink));
+  background: rgb(var(--c-surface));
+}
+
+.doc {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed rgb(var(--c-hairline));
+}

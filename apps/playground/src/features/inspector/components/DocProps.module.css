@@ -1,0 +1,46 @@
+/* bancada: .sel .prop, .pk, .pv, .pv.lit, .rlist, .mat */
+.prop {
+  padding: 5px 0;
+  font-size: 12px;
+}
+
+.pk {
+  display: block;
+  font: 500 11px / 1 var(--font-eyebrow-family);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(var(--c-ink-mute));
+  margin-bottom: 4px;
+}
+
+/* o valor de uma propriedade é frase de quem escreveu, e frase é sans; o enum (type) é dado */
+.pv,
+.rlist {
+  font-family: var(--font-ui-family);
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgb(var(--c-ink));
+}
+
+.pv {
+  word-break: break-word;
+}
+
+.lit {
+  font-family: var(--font-code-family);
+}
+
+.rlist {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.mat {
+  display: inline-block;
+  font: 11px / 1.4 var(--font-code-family);
+  border-radius: var(--radius-pill);
+  padding: 2px 9px;
+  border: 1px solid rgb(var(--c-hairline));
+  background: rgb(var(--c-surface-muted));
+  color: rgb(var(--c-ink));
+}

@@ -1,0 +1,142 @@
+/* ODDS -- folha de estilo do mapa em colmeia (saida de renderSvg).
+   Porte literal das regras de SVG de docs/design/pages/colmeia-v4.html, com as
+   variaveis proprias, prefixo odds-map (triplets RGB, lidos como rgb(var(NOME) / alfa)).
+   Auto-contida, sem depender de variaveis de fora. Quem consome mapeia as suas
+   para estas (ex.: accent: var(NOSSO-ACCENT)).
+   Fora daqui, de proposito: casca de pagina (body, .wrap, .seg, botoes, cards, fonte,
+   diagnosticos, legenda) e toda interacao da bancada (.lit, .focus, .mute, svg.far,
+   animacao de data-flow, mapeamento [data-type] -> --t).
+   Os padroes tem especificidade zero (:where) de proposito: os aliases :root de quem
+   consome sempre vencem, em qualquer ordem.
+   O repouso e o que a bancada validou em 2026-10-09 (docs/design/README.md): o roxo
+   saiu do mapa e ficou so na interface. Linha, ponta e borda de tag em --odds-map-edge
+   (cinza), texto de tag em tinta; e traco de espessura fixa na tela. */
+:where(:root){
+  color-scheme: light;
+  --odds-map-bg:250 250 253; --odds-map-panel:255 255 255; --odds-map-panel2:244 243 250; --odds-map-border:230 228 242;
+  --odds-map-ink:27 26 36; --odds-map-dim:107 104 128;
+  --odds-map-accent:108 64 217; --odds-map-azure:61 111 232; --odds-map-pulse:35 168 205;
+  --odds-map-solar:255 197 61; --odds-map-error:192 52 43; --odds-map-warning:166 106 0; --odds-map-info:91 107 124;
+  --odds-map-edge:128 125 146;
+  --odds-map-shadow-strength:.14;
+  --odds-map-mix-core:17%; --odds-map-mix-sup:9%; --odds-map-mix-gen:6%;
+  --odds-map-tile-core:62%; --odds-map-tile-sup:36%; --odds-map-tile-gen:20%; --odds-map-tile-edge:46%;
+}
+@media (prefers-color-scheme: dark){
+  :where(:root:not([data-theme="light"])){
+    color-scheme: dark;
+    --odds-map-bg:18 17 26; --odds-map-panel:26 25 38; --odds-map-panel2:35 33 47; --odds-map-border:50 47 69;
+    --odds-map-ink:236 235 245; --odds-map-dim:154 151 174;
+    --odds-map-accent:173 141 255; --odds-map-azure:125 163 255; --odds-map-pulse:94 208 238;
+    --odds-map-solar:255 209 99; --odds-map-error:224 121 111; --odds-map-warning:217 164 65; --odds-map-info:147 163 179;
+    --odds-map-edge:118 115 140;
+    --odds-map-shadow-strength:.5;
+    --odds-map-mix-core:10%; --odds-map-mix-sup:10%; --odds-map-mix-gen:7%;
+    --odds-map-tile-core:46%; --odds-map-tile-sup:44%; --odds-map-tile-gen:28%; --odds-map-tile-edge:40%;
+  }
+}
+:where(:root[data-theme="dark"]){
+  color-scheme: dark;
+  --odds-map-bg:18 17 26; --odds-map-panel:26 25 38; --odds-map-panel2:35 33 47; --odds-map-border:50 47 69;
+  --odds-map-ink:236 235 245; --odds-map-dim:154 151 174;
+  --odds-map-accent:173 141 255; --odds-map-azure:125 163 255; --odds-map-pulse:94 208 238;
+  --odds-map-solar:255 209 99; --odds-map-error:224 121 111; --odds-map-warning:217 164 65; --odds-map-info:147 163 179;
+  --odds-map-edge:118 115 140;
+  --odds-map-shadow-strength:.5;
+  --odds-map-mix-core:10%; --odds-map-mix-sup:10%; --odds-map-mix-gen:7%;
+  --odds-map-tile-core:46%; --odds-map-tile-sup:44%; --odds-map-tile-gen:28%; --odds-map-tile-edge:40%;
+}
+
+.dregion{fill:rgb(var(--odds-map-ink) / .026)}
+.bdom{fill:none; stroke:rgb(var(--odds-map-ink) / .30); stroke-width:1.8; stroke-linecap:round}
+.terr{transition:opacity .18s}
+.terr.core{fill:color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-mix-core), rgb(var(--odds-map-panel)))}
+.terr.supporting{fill:color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-mix-sup), rgb(var(--odds-map-panel)))}
+.terr.generic{fill:color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-mix-gen), rgb(var(--odds-map-panel)))}
+.terr.external{fill:rgb(var(--odds-map-panel2))}
+/* Na vista de fluxo o chao recua e a linha avanca; na de contencao, o contrario.
+   Mesma geografia nas duas — e isso que preserva o mapa mental na troca. */
+svg.v-flow .terr{opacity:.62}
+svg.v-flow .bsub{opacity:.7}
+.bsub{fill:none; stroke:rgb(var(--odds-map-ink) / .16); stroke-width:1; stroke-linecap:round;
+  transition:stroke .14s, stroke-width .14s}
+.subwash{fill:rgb(var(--odds-map-accent) / 0); transition:fill .14s; pointer-events:all}
+g.sub.hot .subwash{fill:rgb(var(--odds-map-accent) / .09)}
+g.sub.hot .bsub{stroke:rgb(var(--odds-map-accent) / .8); stroke-width:1.8; opacity:1}
+g.sub.on .subwash{fill:rgb(var(--odds-map-accent) / .07)}
+g.sub.on .bsub{stroke:rgb(var(--odds-map-accent)); stroke-width:2; opacity:1}
+g.sublab.subhot .snm{fill:rgb(var(--odds-map-accent))}
+g.node.subhot .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2}
+.bmass{fill:none; stroke:rgb(var(--odds-map-ink) / .26); stroke-width:1.2; stroke-linecap:round}
+.bmass.ext{stroke:rgb(var(--odds-map-dim) / .85); stroke-dasharray:4 3}
+
+/* A peca agora se destaca do chao por tres sinais e nao por um: tom mais
+   concentrado, borda propria e sombra de peca sobre tabuleiro. Na v2 era so o tom,
+   e 77% das celulas eram chao da mesma forma e do mesmo tamanho. */
+.tile{stroke-width:1.2; transition:fill .14s, stroke .14s}
+.tile.core{fill:color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-tile-core), rgb(var(--odds-map-panel)));
+  stroke:color-mix(in srgb, rgb(var(--odds-map-ink)) var(--odds-map-tile-edge), color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-tile-core), rgb(var(--odds-map-panel))));}
+.tile.supporting{fill:color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-tile-sup), rgb(var(--odds-map-panel)));
+  stroke:color-mix(in srgb, rgb(var(--odds-map-ink)) var(--odds-map-tile-edge), color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-tile-sup), rgb(var(--odds-map-panel))));}
+.tile.generic{fill:color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-tile-gen), rgb(var(--odds-map-panel)));
+  stroke:color-mix(in srgb, rgb(var(--odds-map-ink)) var(--odds-map-tile-edge), color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-tile-gen), rgb(var(--odds-map-panel))));}
+.tile.external{fill:color-mix(in srgb, rgb(var(--odds-map-dim)) 14%, rgb(var(--odds-map-panel)));
+  stroke:rgb(var(--odds-map-dim)); stroke-dasharray:5 3;}
+g.node{cursor:pointer; outline:none}
+g.node:hover .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.4}
+g.node:focus-visible .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.8; stroke-dasharray:none}
+g.node.on .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.8; stroke-dasharray:none}
+.hit{fill:transparent; stroke:none}
+
+.cnm{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; fill:rgb(var(--odds-map-ink) / .92);
+  pointer-events:none; user-select:none;
+  paint-order:stroke; stroke:rgb(var(--odds-map-bg)); stroke-width:3.5px; stroke-linejoin:round}
+.snm{font-family:"JetBrains Mono",Menlo,monospace; letter-spacing:.16em; text-anchor:middle;
+  fill:rgb(var(--odds-map-ink) / .42); pointer-events:none; user-select:none; transition:fill .14s;
+  paint-order:stroke; stroke:rgb(var(--odds-map-panel)); stroke-width:3.5px; stroke-linejoin:round}
+.dnm{font-family:"Inter",system-ui,sans-serif; font-weight:600; letter-spacing:-.01em;
+  text-anchor:middle; fill:rgb(var(--odds-map-ink) / .78)}
+.did{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.16em;
+  text-anchor:middle; fill:rgb(var(--odds-map-dim) / .85)}
+
+.ecase{fill:none; stroke:rgb(var(--odds-map-bg) / .9); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
+/* Linha em repouso: cinza, inclusive a de -x- (na bancada, .nav .edge vence a cor de .edge.sep). */
+.edge{fill:none; stroke:rgb(var(--odds-map-edge)); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.edge.sep{stroke-width:1.4}
+.head{fill:rgb(var(--odds-map-edge))}
+.tick{stroke:rgb(var(--odds-map-dim)); stroke-width:1.6; stroke-linecap:round; fill:none}
+/* A porta: a tag encostada no lado do hexagono a que ela pertence. */
+/* Sem diagnostico, a tag e cinza com texto em tinta; a de so [BBM] tambem (na bancada,
+   .nav .port:not([class*="sev-"]) rect vence a cor de .port.only-bbm rect). */
+.port rect{fill:rgb(var(--odds-map-panel)); stroke:rgb(var(--odds-map-edge) / .75)}
+.port text{font-family:"JetBrains Mono",Menlo,monospace; font-size:9px; font-weight:500;
+  fill:rgb(var(--odds-map-ink) / .82); dominant-baseline:central}
+.port text .bbm{fill:rgb(var(--odds-map-dim)); font-weight:400}
+.port.only-bbm rect{stroke-dasharray:3 2}
+.port.sev-error rect{stroke:rgb(var(--odds-map-error)); stroke-width:1.4}
+.port.sev-error text{fill:rgb(var(--odds-map-error))}
+.port.sev-warning rect{stroke:rgb(var(--odds-map-warning)); stroke-width:1.4}
+.port.sev-warning text{fill:rgb(var(--odds-map-warning))}
+.port.sev-info rect{stroke:rgb(var(--odds-map-info)); stroke-width:1.4}
+.port.sev-info text{fill:rgb(var(--odds-map-info))}
+.sev-error .ic-bg{fill:rgb(var(--odds-map-error))}
+.sev-warning .ic-bg{fill:rgb(var(--odds-map-warning))}
+.sev-info .ic-bg{fill:rgb(var(--odds-map-info))}
+.ic-fg{stroke:rgb(var(--odds-map-panel)); stroke-width:1.5; stroke-linecap:round; fill:none}
+.ic-dot{fill:rgb(var(--odds-map-panel))}
+.badge .ring{fill:rgb(var(--odds-map-panel))}
+g.fade{opacity:.12}
+text.cnm.fade{opacity:.14}
+text.cnm.on{fill:rgb(var(--odds-map-accent)); font-weight:500}
+g.rel.lit .edge{stroke:rgb(var(--odds-map-accent)); stroke-width:2.2}
+g.rel.lit .port rect{stroke-width:1.4}
+
+/* Estado de repouso do que renderSvg emite alem da v4 (antes decorado pela bancada). */
+/* Traco de espessura fixa na tela: sem isso, no mapa inteiro (~0,5-0,7 px por unidade)
+   o contorno de destaque e a linha invalida somem, e com zoom ficam grossos. */
+svg:is(.v-flow, .v-contain) :is(path, rect, line, polyline, circle){vector-effect:non-scaling-stroke}
+svg:not(.far) g.far-lab{display:none}
+.rhit{fill:none; stroke:transparent; stroke-width:12px; pointer-events:stroke; cursor:pointer}
+g.rel.invalid .edge{stroke:rgb(var(--odds-map-error)); stroke-width:1.8; stroke-dasharray:6 4}
+g.rel.invalid .head{fill:rgb(var(--odds-map-error))}
+@media (prefers-reduced-motion: reduce){ .terr, .bsub, .subwash, .tile, .snm{transition:none !important} }

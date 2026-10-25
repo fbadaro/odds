@@ -1,279 +1,534 @@
-# DESIGN
+---
+version: alpha
+name: odds-design-system
+description: The visual system of ODDS (Open Domain Driven Specification), a browser-only linter and playground for DDD context maps. A cool, violet-tinted neutral canvas carries a single purple accent for action and selection, an azure counterpoint used only in the purple-to-azure gradient, and a solar yellow that is always surface and never ink. Three type families with fixed jobs — Montserrat for display, Inter for interface and reading, JetBrains Mono for anything that is literal data — and three functional severity colors that never borrow the accent. One system with two densities, a spacious landing page that is read once and a dense playground that is lived in.
 
-O sistema visual do produto ODDS: cor, tipografia, elevação, forma, ritmo e os componentes que se repetem. Vale para as duas telas que o `PRD.md` descreve — a página de apresentação e o playground — e para tudo que vier depois delas.
+colors:
+  canvas: "#FAFAFD"
+  surface: "#FFFFFF"
+  surface-muted: "#F4F3FA"
+  hairline: "#E6E4F2"
+  ink: "#1B1A24"
+  ink-mute: "#6B6880"
+  accent: "#6C40D9"
+  accent-lift: "#8A5BF0"
+  azure: "#3D6FE8"
+  pulse: "#23A8CD"
+  solar: "#FFC53D"
+  on-accent: "#FFFFFF"
+  error: "#C0342B"
+  warning: "#A66A00"
+  info: "#5B6B7C"
+  edge: "#807D92"
+  edge-lit: "#343242"
+  edge-far: "#CCCAD8"
+  core-ink: "#B07800"
+  sup-ink: "#3D6FE8"
+  gen-ink: "#545266"
+  canvas-dark: "#12111A"
+  surface-dark: "#1A1926"
+  surface-muted-dark: "#23212F"
+  hairline-dark: "#322F45"
+  ink-dark: "#ECEBF5"
+  ink-mute-dark: "#9A97AE"
+  accent-dark: "#AD8DFF"
+  accent-lift-dark: "#C6B0FF"
+  azure-dark: "#7DA3FF"
+  pulse-dark: "#5ED0EE"
+  solar-dark: "#FFD163"
+  on-accent-dark: "#12111A"
+  error-dark: "#E0796F"
+  warning-dark: "#D9A441"
+  info-dark: "#93A3B3"
+  edge-dark: "#76738C"
+  edge-lit-dark: "#DEDCEA"
+  edge-far-dark: "#403E52"
+  core-ink-dark: "#FFC85A"
+  sup-ink-dark: "#7DA3FF"
+  gen-ink-dark: "#C4C1D6"
 
-**O que este arquivo é.** Normativo para a interface: quando um mock ou um componente divergir daqui, quem está errado é o mock. **O que ele não é:** não faz parte da `ODDS Language Version`, não muda o significado de nenhum `.odds`, e não entra no ciclo fixo de adicionar regra do `CLAUDE.md`. Onde ele encostar num requisito de produto, o `PRD.md` manda.
+typography:
+  display-hero:
+    fontFamily: "Montserrat, Inter, system-ui, sans-serif"
+    fontSize: 62px
+    fontWeight: 800
+    lineHeight: 1.05
+    letterSpacing: -0.04em
+  display-section:
+    fontFamily: "Montserrat, Inter, system-ui, sans-serif"
+    fontSize: 38px
+    fontWeight: 700
+    lineHeight: 1.1
+    letterSpacing: -0.03em
+  title:
+    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
+    fontSize: 20px
+    fontWeight: 600
+    lineHeight: 1.3
+    letterSpacing: -0.01em
+  body-lg:
+    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 1.65
+    letterSpacing: 0
+  body:
+    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: 0
+  button:
+    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
+    fontSize: 16px
+    fontWeight: 600
+    lineHeight: 1.0
+    letterSpacing: 0
+  ui:
+    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
+  ui-sm:
+    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
+    fontSize: 12px
+    fontWeight: 400
+    lineHeight: 1.35
+    letterSpacing: 0
+  code:
+    fontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 20px
+    letterSpacing: 0
+  mono-sm:
+    fontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+    fontSize: 12px
+    fontWeight: 400
+    lineHeight: 1.3
+    letterSpacing: 0
+  mono-xs:
+    fontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+    fontSize: 11px
+    fontWeight: 400
+    lineHeight: 1.3
+    letterSpacing: 0
+  eyebrow:
+    fontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+    fontSize: 11px
+    fontWeight: 500
+    lineHeight: 1.0
+    letterSpacing: 0.22em
 
-Estado: **rascunho de trabalho**. A origem está registrada abaixo porque decisão de origem some primeiro e é a que mais gera discussão depois.
+rounded:
+  mark: 3px
+  chip: 6px
+  control: 8px
+  button: 12px
+  card: 10px
+  pill: 999px
 
+spacing:
+  xxs: 4px
+  xs: 6px
+  sm: 8px
+  md: 12px
+  lg: 16px
+  xl: 20px
+  2xl: 24px
+  3xl: 32px
+  4xl: 40px
+  5xl: 64px
+  6xl: 96px
+
+elevation:
+  shadow-strength: "0.14"
+  shadow-strength-dark: "0.5"
+  sm: "0 1px 2px rgb(27 27 25 / calc({elevation.shadow-strength} * .4))"
+  card: "0 18px 44px -22px rgb({colors.accent} / calc({elevation.shadow-strength} * 2))"
+  cta: "0 10px 30px -8px rgb({colors.accent} / calc({elevation.shadow-strength} * 4))"
+  island: "0 2px 10px rgb(27 27 25 / calc({elevation.shadow-strength} * .5))"
+  lift: "0 22px 48px -20px rgb({colors.accent} / calc({elevation.shadow-strength} * 5))"
+  gradient-primary: "linear-gradient(180deg, rgb({colors.accent-lift}), rgb({colors.accent}))"
+
+components:
+  button-primary:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.on-accent}"
+    typography: "{typography.button}"
+    rounded: "{rounded.button}"
+    padding: 12px 24px
+  button-primary-gradient:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.on-accent}"
+    typography: "{typography.button}"
+    rounded: "{rounded.button}"
+    padding: 12px 24px
+  button-secondary:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.button}"
+    padding: 12px 24px
+  card:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.card}"
+    padding: 24px
+  card-large:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.card}"
+    padding: 32px
+  island:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.card}"
+  pill-mono:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink-mute}"
+    typography: "{typography.mono-sm}"
+    rounded: "{rounded.pill}"
+    padding: 6px 14px
+  eyebrow:
+    textColor: "{colors.ink-mute}"
+    typography: "{typography.eyebrow}"
+  severity-counter-error:
+    textColor: "{colors.error}"
+    typography: "{typography.mono-xs}"
+    rounded: "{rounded.pill}"
+  severity-counter-warning:
+    textColor: "{colors.warning}"
+    typography: "{typography.mono-xs}"
+    rounded: "{rounded.pill}"
+  severity-counter-info:
+    textColor: "{colors.info}"
+    typography: "{typography.mono-xs}"
+    rounded: "{rounded.pill}"
+  code-chip:
+    typography: "{typography.mono-xs}"
+    rounded: "{rounded.chip}"
+  control:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+  solar-block:
+    backgroundColor: "{colors.solar}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.card}"
 ---
 
-## 1. Origem, e a linha que não se cruza
+## Overview
 
-O vocabulário abaixo foi extraído de uma referência trazida pelo autor: <https://studio.mjolnix.com.br/>. O que foi tomado é o **método** — como o sistema é construído — e não a identidade.
+ODDS is an architecture tool, and its interface reads like one: a light, cool canvas, generous air, and color spent only where it carries meaning. The canvas (`{colors.canvas}`) is a near-white with a breath of violet; content sits on white surfaces (`{colors.surface}`) separated by 1px hairlines, with depth expressed by tinted shadows rather than heavy borders.
 
-**Tomado:**
+Color has three jobs and they never overlap. **Purple** (`{colors.accent}`) is action and selection — the primary button, the selected item, the focused control, inline links. **Severity** belongs to three functional colors (`{colors.error}`, `{colors.warning}`, `{colors.info}`), each paired with its own icon. **Solar yellow** (`{colors.solar}`) is surface: a block, a band, the ground a numeral sits on — never text, never a mark. Azure (`{colors.azure}`) exists to close the purple-to-azure gradient and is not used on its own.
 
-| Coisa | O que é |
-|---|---|
-| Arquitetura de tokens | Cores como *triplas RGB* em variável CSS (`--c-accent: 43 76 140`), consumidas com `rgb(var(--c-accent) / <alpha>)`. É o que permite opacidade sem duplicar cor |
-| `--shadow-strength` por tema | Uma variável por tema multiplicando a opacidade de toda sombra. Sombra colorida que funciona no claro fica invisível no escuro; um número resolve os dois |
-| Três famílias com papéis fixos | display / sans / mono, cada uma com um trabalho e nenhuma sobreposição |
-| A *eyebrow* monoespaçada | 11px, caixa alta, `letter-spacing: .22em`, cor secundária. Sinaliza seção sem gastar tamanho |
-| A *pill* monoespaçada | Borda 1px, fundo de painel, raio total, texto 12px mono. O elemento mais repetido da referência, e o mais barato de acertar |
-| Sombra colorida com espalhamento negativo | `0 18px 44px -22px rgb(accent / .28)` — sombra que tinge em vez de escurecer |
-| Malha de fundo | Grade de 28px a ~7% do acento, atrás do herói e do canvas |
+Typography separates prose from data. **Montserrat** sets display headlines only. **Inter** sets every word of interface and reading. **JetBrains Mono** sets anything that is literal data: `.odds` source, a `DiagnosticCode`, a span like `L24:5`, a tag like `[OHS]`, a context name quoted in a sentence. The boundary is the same one `MESSAGES.md` keeps between a diagnostic's `data` and its rendered prose, and the screen makes it visible.
 
-**Também tomado, por decisão do autor em 2026-09-07 (segunda rodada):** a *direção* de paleta — **roxo como cor principal, com gradientes entre azul e roxo** — e o **fundo de manchas desfocadas**. A primeira versão deste arquivo dizia que a paleta não seria tomada e que o acento seria o azul de planta dos mocks; isso mudou por escolha explícita, e fica registrado aqui em vez de sumir. Os valores são nossos, harmonizados para esta interface — não os hexadecimais da referência.
+The system runs at two densities. The **landing** is spacious — large display type, cards, comfortable 44px controls. The **playground** is dense — 13px interface type, 30px controls, floating islands over the diagram canvas. Same palette, same families, same radii; only the rhythm changes.
 
-**Não tomado, e segue não sendo:** o nome, a marca, a estrutura das páginas, a ilustração e qualquer texto. Uma referência ensina como um sistema se organiza e que temperatura ele tem; a identidade continua sendo coisa de cada produto — e a ODDS tem uma tese própria para comunicar, a de um linter que julga desenho estratégico.
+**Key Characteristics:**
+- Cool, violet-tinted neutrals; the dark theme is the same family inverted, never a separate palette.
+- A single purple accent for action and selection; severity never borrows it.
+- Severity always carries an icon — circled X, triangle, circled i — so it never depends on color alone.
+- Solar yellow is always surface, with `{colors.ink}` text on it.
+- One purple → azure gradient, at most twice per screen.
+- Mono means data, sans means prose.
+- 1px borders everywhere; emphasis comes from fill, text color or shadow, never from a thicker line.
+- Shadows tint with the accent instead of darkening, with negative spread.
 
-**Consequência, resolvida em 2026-09-11:** o canvas do playground estilizado mostrava o acento antigo (azul de planta) e ficou incoerente com este arquivo. Em vez de refazê-lo, ele foi **apagado** — vestir a tela de novo antes de a área do diagrama ter desenho seria gastar estilo no que ainda é wireframe. O playground volta a partir da base sem estilo (`docs/design/canvas/playground-base/`), e a cor entra junto com o render.
+**Scope.** This version covers the landing page and the playground chrome. Diagram rendering — node and edge colors per subdomain type, lit and invalid relationship strokes, and the degraded states required by `PRD.md` §5.2 — is not part of the system yet.
 
----
+## Colors
 
-## 2. Tipografia
+All colors are implemented as CSS custom properties holding **RGB triplets**, consumed with `rgb(var(--token) / <alpha>)`. This lets any token take an opacity without defining a second color.
 
-Três famílias, três trabalhos. Nenhuma faz o trabalho da outra.
-
-| Papel | Família | Onde |
-|---|---|---|
-| **Display** | **Montserrat** (a partir da v3) | Título de herói, títulos de seção grandes. Só isso |
-| **Sans** | **Inter** | Todo texto de interface e de leitura: corpo, botões, rótulos, painéis |
-| **Mono** | **JetBrains Mono** | Editor `.odds`, `DiagnosticCode`, spans (`L24:5`), pills, eyebrows, qualquer coisa que seja *dado* e não prosa |
-
-Fallbacks com métrica próxima, sempre: `"Montserrat", "Inter", system-ui, sans-serif` · `"Inter", "Segoe UI", system-ui, sans-serif` · `"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace`.
-
-### Escala
-
-| Token | Tamanho / entrelinha | Peso | Ajuste | Uso |
-|---|---|---|---|---|
-| `display-hero` | 42px → 62px (≥640px) / 1.05 | 800 | `-0.04em` | Uma vez por página, no herói |
-| `display-section` | 30px → 38px / 1.1 | 700 | `-0.03em` | Abertura de seção |
-
-**Por que o ajuste de tracking mudou junto com a face.** A Montserrat é geométrica e **larga**: as contraformas redondas (`o`, `e`, `a`) ocupam mais espaço horizontal que as da Bricolage no mesmo corpo. Sem apertar o tracking para `-0.04em` e sem baixar o herói de 68px para 62px, a mesma frase quebra em uma linha a mais e o bloco perde a densidade. Peso 800 no herói, não 700: a Montserrat em 700 lê mais leve do que a Bricolage no mesmo número.
-| `title` | 20px / 1.3 | 600 | `-0.01em` | Título de card |
-| `body-lg` | 18px / 1.65 | 400 | — | Subtítulo do herói, parágrafo de destaque |
-| `body` | 16px / 1.6 | 400 | — | Texto corrente |
-| `ui` | 13px / 1.4 | 400–500 | — | Interface densa: botões, rótulos, listas do playground |
-| `ui-sm` | 12px / 1.35 | 400–500 | — | Metadados, contadores |
-| `code` | 13px / 20px | 400 | — | Editor e trechos `.odds` |
-| `eyebrow` | 11px / 1 | 500 | `+0.22em`, caixa alta | Rótulo de seção, mono |
-| `mono-xs` | 11px / 1.3 | 400 | — | `DiagnosticCode`, span de linha/coluna |
-
-Pesos usados: **400, 500, 600, 700**. Não há 300 nem 800 — quatro pesos cobrem tudo e um quinto só cria discussão.
-
-**Regra de mono.** Monoespaçado é sinal de *dado literal*, não de estilo. Um `DiagnosticCode`, um nome de contexto citado, um span, uma tag `[OHS]`: mono. Uma frase sobre eles: sans. Essa fronteira é a mesma que o `MESSAGES.md` mantém entre `data` e prosa, e vale a pena que a tela a torne visível.
-
----
-
-## 3. Cor
-
-Tokens como triplas RGB, para que a opacidade não exija uma segunda cor.
-
-### Tema claro (padrão)
+The block below, and the `CSS --c-…` names in the lists that follow, are the bench's names (`docs/design/pages/`); the app's `tokens.css` is generated from the front matter and uses the front-matter names instead (`--c-canvas`, `--c-surface`, `--c-surface-muted`, `--c-hairline`, `--c-ink-mute`…) — the values bind, the names are free (ADR-0014, ADR-0018).
 
 ```css
 :root {
   color-scheme: light;
-  --c-bg:        250 250 253;  /* #FAFAFD  fundo da página */
-  --c-panel:     255 255 255;  /* #FFFFFF  card, ilha, painel */
-  --c-panel2:    244 243 250;  /* #F4F3FA  faixa, trilho, estado inativo */
-  --c-border:    230 228 242;  /* #E6E4F2 */
-  --c-ink:        27  26  36;  /* #1B1A24  texto primário */
-  --c-dim:       107 104 128;  /* #6B6880  texto secundário */
-  --c-accent:    108  64 217;  /* #6C40D9  roxo: ação e seleção */
-  --c-accent-lift:138  91 240; /* #8A5BF0  topo do gradiente do botão primário */
-  --c-azure:      61 111 232;  /* #3D6FE8  ponta azul do gradiente azul→roxo */
-  --c-pulse:      35 168 205;  /* #23A8CD  segundo acento, uso escasso */
-  --c-solar:     255 197  61;  /* #FFC53D  terceira cor: superfície, nunca tinta */
-  --c-error:     192  52  43;  /* #C0342B */
-  --c-warning:   166 106   0;  /* #A66A00 */
-  --c-info:       91 107 124;  /* #5B6B7C */
+  --c-bg: 250 250 253;       /* canvas */
+  --c-panel: 255 255 255;    /* surface */
+  --c-panel2: 244 243 250;   /* surface-muted */
+  --c-border: 230 228 242;   /* hairline */
+  --c-ink: 27 26 36;         /* ink */
+  --c-dim: 107 104 128;      /* ink-mute */
+  --c-accent: 108 64 217;    /* accent */
+  --c-accent-lift: 138 91 240;
+  --c-azure: 61 111 232;
+  --c-pulse: 35 168 205;
+  --c-solar: 255 197 61;
+  --c-error: 192 52 43;
+  --c-warning: 166 106 0;
+  --c-info: 91 107 124;
   --shadow-strength: .14;
 }
-```
-
-### Tema escuro
-
-```css
 [data-theme="dark"] {
   color-scheme: dark;
-  --c-bg:         18  17  26;  /* #12111A */
-  --c-panel:      26  25  38;  /* #1A1926 */
-  --c-panel2:     35  33  47;  /* #23212F */
-  --c-border:     50  47  69;  /* #322F45 */
-  --c-ink:       236 235 245;  /* #ECEBF5 */
-  --c-dim:       154 151 174;  /* #9A97AE */
-  --c-accent:    173 141 255;  /* #AD8DFF */
-  --c-accent-lift:198 176 255; /* #C6B0FF */
-  --c-azure:     125 163 255;  /* #7DA3FF */
-  --c-pulse:      94 208 238;  /* #5ED0EE */
-  --c-solar:     255 209  99;  /* #FFD163 */
-  --c-error:     224 121 111;  /* #E0796F */
-  --c-warning:   217 164  65;  /* #D9A441 */
-  --c-info:      147 163 179;  /* #93A3B3 */
+  --c-bg: 18 17 26;
+  --c-panel: 26 25 38;
+  --c-panel2: 35 33 47;
+  --c-border: 50 47 69;
+  --c-ink: 236 235 245;
+  --c-dim: 154 151 174;
+  --c-accent: 173 141 255;
+  --c-accent-lift: 198 176 255;
+  --c-azure: 125 163 255;
+  --c-pulse: 94 208 238;
+  --c-solar: 255 209 99;
+  --c-error: 224 121 111;
+  --c-warning: 217 164 65;
+  --c-info: 147 163 179;
   --shadow-strength: .5;
 }
 ```
 
-Os neutros são **frios, com um sopro de violeta** (o cinza tem hue de roxo, não de bege): neutro quente ao lado de acento roxo lê como sujeira. O escuro é a mesma família invertida. Acento e pulse clareiam no escuro; manter o mesmo hex nos dois temas é o erro clássico, e ele aparece como um botão que some no fundo.
+### Brand & Accent
+- **Accent** (`{colors.accent}` — `#6C40D9`, CSS `--c-accent`): Action and selection. Primary button fill, selected state, focus ring, inline links.
+- **Accent Lift** (`{colors.accent-lift}` — `#8A5BF0`, CSS `--c-accent-lift`): Top stop of `button-primary-gradient`'s vertical gradient; link hover.
+- **Azure** (`{colors.azure}` — `#3D6FE8`, CSS `--c-azure`): The far stop of the purple → azure gradient. Not used as a standalone color.
+- **Pulse** (`{colors.pulse}` — `#23A8CD`, CSS `--c-pulse`): Secondary accent, used sparingly.
+- **Solar** (`{colors.solar}` — `#FFC53D`, CSS `--c-solar`): Third brand color. Surface only — blocks, bands, numeral grounds.
 
-### O amarelo: superfície, nunca tinta
+### Surface
+- **Canvas** (`{colors.canvas}` — `#FAFAFD`, CSS `--c-bg`): Page background.
+- **Surface** (`{colors.surface}` — `#FFFFFF`, CSS `--c-panel`): Cards, islands, panels.
+- **Surface Muted** (`{colors.surface-muted}` — `#F4F3FA`, CSS `--c-panel2`): Bands, rails, panel headers, inactive states.
+- **Hairline** (`{colors.hairline}` — `#E6E4F2`, CSS `--c-border`): Every border in the system, always 1px.
 
-`--c-solar` (#FFC53D) é a terceira cor, e existe para **descaracterizar**: roxo com azul é a assinatura de meio mundo, e o amarelo quebra a temperatura sem brigar com nenhum dos dois — ele é o complementar aproximado do violeta-azul, então soma contraste em vez de disputar.
+### Text
+- **Ink** (`{colors.ink}` — `#1B1A24`, CSS `--c-ink`): Primary text; also the text color on solar surfaces.
+- **Ink Mute** (`{colors.ink-mute}` — `#6B6880`, CSS `--c-dim`): Secondary text, eyebrows, metadata, spans.
+- **On Accent** (`{colors.on-accent}` — `#FFFFFF`; dark `{colors.on-accent-dark}` — `#12111A`): Text on the primary button. The accent lightens in the dark theme, so white on it stops reading; the dark value is the dark canvas.
 
-A regra que governa o uso dele é uma divisão de papéis, e ela é mais estreita do que parece:
+- **Map line** (`{colors.edge}` — `#807D92`, CSS `--c-edge`; lit `{colors.edge-lit}` — `#343242`, `--c-edge-lit`; far `{colors.edge-far}` — `#CCCAD8`, `--c-edge-far`): The relationship line of the context map at rest, lit when hovered or selected, and seen from afar (zoomed out). Neutral, never the accent; the dark values are in `{colors.edge-dark}`, `{colors.edge-lit-dark}` and `{colors.edge-far-dark}`.
+- **Type inks** (`{colors.core-ink}` — `#B07800`, `{colors.sup-ink}` — `#3D6FE8`, `{colors.gen-ink}` — `#545266`; CSS `--c-core-ink`, `--c-sup-ink`, `--c-gen-ink`): The ink of each subdomain type (core, supporting, generic), used for borders and highlights on the map. Dark counterparts: `{colors.core-ink-dark}`, `{colors.sup-ink-dark}`, `{colors.gen-ink-dark}`.
 
-> **Roxo e azul são a tinta** — ação, seleção, arestas, gradiente. **Amarelo nunca é tinta: é o chão em que se desenha.** Bloco, faixa, painel, superfície de numeral. Quando carrega texto, o texto é `--c-ink`.
+### Semantic
+Severity is the product's verdict, and it has its own three colors. Each is always paired with its icon.
 
-O que essa fronteira resolve de uma vez:
+| Severity | Token | Light | Dark | Icon |
+|---|---|---|---|---|
+| Error | `{colors.error}` | `#C0342B` | `#E0796F` | Circle with X |
+| Warning | `{colors.warning}` | `#A66A00` | `#D9A441` | Triangle |
+| Info | `{colors.info}` | `#5B6B7C` | `#93A3B3` | Circle with i |
 
-- **Amarelo nunca é texto.** #FFC53D sobre branco não passa em contraste nenhum, e a regra torna isso estrutural em vez de uma lembrança.
-- **A única cor de aviso continua sendo `--c-warning` (#A66A00)** — bem mais escura e menos saturada. E a confusão entre as duas só é possível na escala de chip: uma *faixa inteira* de cor nunca é lida como severidade. Amarelo grande é seguro; amarelo pequeno, ao lado de um diagnóstico, não é.
-- **Amarelo nunca fica atrás nem embaixo de texto.** Marca-texto, sublinhado, realce de trecho — são todos tinta, e estão todos fora.
+Tinted fills (counters, chips) use the functional color at 8% opacity: `rgb(var(--c-error) / .08)`.
 
-**O que a v3 tentou e por que caiu**, registrado aqui porque decisão de origem some primeiro: a redação anterior desta seção dizia apenas "grafismo, nunca estado", e por essa fresta passaram uma risca de marca-texto sob a última linha do título do herói e um fundo solar a 55% atrás dos numerais `01`/`02`/`03`. As duas foram recusadas na v4. O defeito não era a cor: era gastar em enfeite o gesto mais carregado deste produto — **marcar alguma coisa aqui é um veredito com severidade** —, numa cor a um passo do `--c-warning`.
+### Dark Theme
+Every token has a dark counterpart (`{colors.canvas-dark}`, `{colors.accent-dark}`, …), switched by `[data-theme="dark"]`. Neutrals keep the violet hue. Accent, pulse and the functional colors **lighten** in the dark theme rather than reusing the light hex, which would sink into the background. Light is the default theme.
 
-**Uma prova de que a regra fecha**, e é o motivo de a composição do herói ser o que é: o marcador de erro da ilustração é vermelho e viraria lama sobre amarelo. Por isso o mapa vive num painel branco *à frente* do bloco solar, nunca em cima dele. O amarelo é o espaço atrás; o veredito acontece no branco.
+## Typography
 
-### Três regras de cor, e elas não são estéticas
+### Font Family
 
-1. **Acento nunca comunica severidade.** Azul é *ação e seleção*; erro, aviso e info têm as três cores funcionais e mais nada. Um botão azul dentro de uma linha de erro não vira "erro azul" — continua sendo um botão.
-2. **Severidade nunca depende só de cor.** Cada uma carrega ícone próprio — círculo com X, triângulo, círculo com i —, porque daltonismo e export em escala de cinza são reais, e o `PRD.md` §5.2 manda o export sair *com* os marcadores.
-3. **O gradiente é sempre roxo → azul**, na mesma ordem (`--c-accent` → `--c-azure`), e aparece no máximo **duas vezes por tela**: uma no botão primário, uma numa expressão do título de herói. A partir da terceira ele deixa de ser ênfase e vira textura. Gradiente nunca atravessa texto de leitura — só título de display e superfície de botão.
-
----
-
-## 4. Elevação
-
-Sombra aqui **tinge**, não escurece: a cor sai do acento e o espalhamento é negativo, de modo que a sombra fica menor que o elemento e sugere altura sem sujar a borda.
-
-```css
---sh-sm:    0 1px 2px rgb(27 27 25 / calc(var(--shadow-strength) * .4));
---sh-card:  0 18px 44px -22px rgb(var(--c-accent) / calc(var(--shadow-strength) * 2));
---sh-cta:   0 10px 30px  -8px rgb(var(--c-accent) / calc(var(--shadow-strength) * 4));
---sh-island:0 2px 10px       rgb(27 27 25 / calc(var(--shadow-strength) * .5));
---sh-lift:  0 22px 48px -20px rgb(var(--c-accent) / calc(var(--shadow-strength) * 5));  /* :hover de card */
-```
-
-Quatro níveis e nada mais: **repouso** (`sm`, borda de 1px faz o trabalho), **card**, **ação** (`cta`) e **ilha** (o chrome flutuante do playground, que precisa se separar do canvas sem parecer marketing). `lift` é estado, não nível.
-
-Sombra nunca sai de cor funcional: não existe sombra vermelha em elemento com erro. O marcador comunica; a sombra é profundidade.
-
----
-
-## 4.1 Atmosfera: manchas desfocadas
-
-O fundo da landing não é chapado. Quatro a cinco **manchas** circulares, muito desfocadas e muito esmaecidas, ficam atrás de tudo e derivam devagar. É o que dá profundidade sem sujar nenhuma superfície de leitura.
-
-```css
-.blob { position: absolute; border-radius: 50%; filter: blur(64px);
-        background: radial-gradient(circle, <cor>, transparent 65%); }
-@keyframes blob {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(3%, -4%) scale(1.06); }
-  66%      { transform: translate(-3%, 3%) scale(.97); }
-}
-/* 16s ease-in-out infinite, com delay NEGATIVO diferente em cada mancha */
-```
-
-Regras que fazem a diferença entre atmosfera e borrão:
-
-- **Tamanho grande, opacidade baixa:** 22–34rem de diâmetro, opacidade entre **0,28 e 0,50**. Mancha pequena e forte vira bola; grande e fraca vira luz.
-- **Blur de 64px, sempre.** Menos que isso deixa a borda visível e o efeito vira adesivo.
-- **Delay negativo por mancha** (`-5s`, `-9s`, `-12s`): sem isso as quatro pulsam em uníssono e o fundo respira como um bicho.
-- **Paleta pálida, dentro da família azul→roxo:** violeta claro, azul claro, ciano claro. Uma quarta mancha pode sair da família para dar variação, nunca duas — o fundo é atmosfera, não arco-íris.
-- **Nunca atrás de texto pequeno.** Manchas vivem no herói, no CTA final e nas bordas das seções; texto de leitura fica sobre superfície plana.
-- Em `prefers-reduced-motion: reduce` elas **param** — continuam ali, sem deriva.
-
-## 4.1.1 A prancheta em perspectiva
-
-O motivo gráfico da casa: uma **grade em perspectiva** que recua até o horizonte, atrás do herói e atrás do CTA final. É uma prancheta vista de lado — e para uma ferramenta que desenha arquitetura, ela diz mais do que qualquer ilustração.
-
-Feita sem imagem e sem biblioteca: um `div` com duas `linear-gradient` de 1px formando a malha, `transform: perspective(600px) rotateX(62deg)`, e um `mask-image` que dissolve a grade antes do horizonte. Linhas a ~8% do acento; mais que isso vira papel milimetrado.
-
-## 4.2 Arte do herói
-
-O herói é um **editor e um mapa lado a lado, ligados por uma passada de animação de 3,4 s**. A cena, fixada na v4 e chamada *o lado da linha*: uma tag está do lado errado do conector — o que é `UPSTREAM_ONLY_TAG_MISPLACED`, fase 4, severidade `error` — e um único gesto a atravessa para o outro lado. O mapa se cura: a aresta costura de vermelho para roxo, o marcador recolhe, o contador rola `1 → 0`.
-
-Ela conta *o que a ferramenta faz* e depois sai da frente: uma passada, nunca um laço.
-
-Quatro restrições, e as duas últimas importam mais do que parecem:
-
-1. Sem dependência: SVG inline, animado em CSS. Nada de biblioteca de animação por causa de uma ilustração.
-2. **A arte do herói é ilustração, não especificação de render.** Ela é deliberadamente abstrata — sem rótulo de contexto, sem tag desenhada na linha — porque o desenho do diagrama de verdade espera a escolha da biblioteca (`ADR-0007`). Se a ilustração ficar fiel demais, ela decide por antecipação o que aquele ADR mantém em aberto.
-3. **O que se move é o texto; o mapa reage.** A tag atravessa o conector *no editor*, não sobre a aresta. Isso mantém a restrição 2 ao pé da letra e diz, sem legenda, o que o `ADR-0003` defende: o texto é a fonte única e o diagrama nunca escreve de volta.
-4. **O estado natural do CSS é o mapa curado.** A animação parte do estado acusado e volta ao natural, em vez do contrário. Consequência prática: `prefers-reduced-motion: reduce` desliga tudo e sobra o frame final legível, sem nenhuma media query duplicando valores — e esse frame final é a composição do herói, que é o que a maioria das pessoas vai ver.
-
-## 5. Forma
-
-| Token | Valor | Uso |
+| Role | Family | Job |
 |---|---|---|
-| `r-pill` | 999px | Pills, contadores de severidade, badges |
-| `r-card` | 16px | Cards, painéis grandes, ilhas do playground |
-| `r-button` | 12px | Botões e campos altos |
-| `r-control` | 8px | Controles densos: segmented, botão de ícone, quadrados do trilho |
-| `r-chip` | 6px | Chip de code, chip de tag `[OHS]` |
-| `r-mark` | 3px | Nó do diagrama, marcador no canvas |
+| Display | **Montserrat** | Hero headline and large section openers. Nothing else |
+| Sans | **Inter** | All interface and reading text: body, buttons, labels, panels |
+| Mono | **JetBrains Mono** | `.odds` editor, `DiagnosticCode`, spans, tags, pills, eyebrows — anything that is data |
 
-Borda é sempre **1px** e sempre `--c-border`. Não há borda de 2px no sistema: ênfase se faz com fundo, cor de texto ou sombra — nunca engrossando linha, que é o caminho mais rápido para uma tela parecer um formulário antigo.
+All three are open-source and loaded from Google Fonts. Fallback stacks are part of the token: `Montserrat, Inter, system-ui, sans-serif` · `Inter, 'Segoe UI', system-ui, sans-serif` · `'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace`.
 
----
+In the editor, disable ligatures (`font-variant-ligatures: none`): JetBrains Mono draws `<--` as a single arrow, and a DSL editor must show exactly what was typed.
 
-## 6. Espaçamento e ritmo
+### Hierarchy
 
-Base **4px**. A escala usada é `4 · 6 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 64 · 96`.
+| Token | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---|---|---|---|
+| `{typography.display-hero}` | 62px (42px < 640px) | 800 | 1.05 | -0.04em | Hero headline, once per page |
+| `{typography.display-section}` | 38px (30px < 640px) | 700 | 1.1 | -0.03em | Section opener |
+| `{typography.title}` | 20px | 600 | 1.3 | -0.01em | Card title |
+| `{typography.body-lg}` | 18px | 400 | 1.65 | 0 | Hero subtitle, lead paragraph |
+| `{typography.body}` | 16px | 400 | 1.6 | 0 | Running text |
+| `{typography.button}` | 16px | 600 | 1.0 | 0 | Landing button label |
+| `{typography.ui}` | 13px | 400 / 500 | 1.4 | 0 | Dense interface: buttons, labels, playground lists |
+| `{typography.ui-sm}` | 12px | 400 / 500 | 1.35 | 0 | Metadata, counters |
+| `{typography.code}` | 13px | 400 | 20px | 0 | Editor and `.odds` excerpts |
+| `{typography.mono-sm}` | 12px | 400 | 1.3 | 0 | Pill text |
+| `{typography.mono-xs}` | 11px | 400 | 1.3 | 0 | `DiagnosticCode`, line/column span |
+| `{typography.eyebrow}` | 11px | 500 | 1.0 | 0.22em, uppercase | Section label, panel name |
 
-| Contexto | Valor |
-|---|---|
-| Largura de leitura (landing) | 1152px, gutter 24px |
-| Respiro de seção (landing) | 96px vertical (64px abaixo de 640px) |
-| Padding de card | 24px, 32px nos cards grandes |
-| Gap padrão dentro de pill/linha | 8px |
-| Altura de controle | 30px denso (playground), 44px confortável (landing) |
-| Alvo de toque mínimo | 44px |
-| Linha de lista (diagnósticos) | 34px |
-| Cabeçalho de painel | 36px |
+### Principles
+- **Mono is data, sans is prose.** A `DiagnosticCode`, a quoted context name, a span, a tag: mono. A sentence about them: sans.
+- **Display is Montserrat, and only display.** Never set interface or body text in Montserrat.
+- **Five weights, each with a place.** 400 and 500 for text and interface, 600 for titles and buttons, 700 for section display, 800 only for the hero headline.
+- **Tight tracking on display.** Montserrat is wide and geometric; -0.04em at hero size and -0.03em at section size keep headlines dense.
 
-O playground é **denso**; a landing é **espaçosa**. É a mesma paleta e a mesma tipografia com duas densidades, e a diferença é deliberada: uma tela é lida uma vez, a outra é habitada.
+## Layout
 
----
+### Spacing System
+- **Base unit**: 4px.
+- **Tokens**: `{spacing.xxs}` 4px · `{spacing.xs}` 6px · `{spacing.sm}` 8px · `{spacing.md}` 12px · `{spacing.lg}` 16px · `{spacing.xl}` 20px · `{spacing.2xl}` 24px · `{spacing.3xl}` 32px · `{spacing.4xl}` 40px · `{spacing.5xl}` 64px · `{spacing.6xl}` 96px.
 
-## 7. Componentes
+### Densities
 
-**Pill mono** — o elemento mais repetido do sistema.
-`r-pill` · borda 1px `--c-border` · fundo `--c-panel` · padding `6px 14px` · mono 12px · `--sh-sm` · gap 8px quando leva ícone ou ponto de status.
+| Context | Landing (spacious) | Playground (dense) |
+|---|---|---|
+| Control height | 44px | 30px |
+| Interface type | `{typography.body}` | `{typography.ui}` |
+| Section padding | 96px vertical (64px < 640px) | — |
+| Card padding | 24px, 32px on large cards | — |
+| Panel header | — | 36px |
+| List row (diagnostics) | — | 34px |
+| Inline gap (pill, row) | 8px | 8px |
 
-**Eyebrow** — mono 11px, caixa alta, `letter-spacing: .22em`, `--c-dim`. Abre seção na landing e nomeia painel no playground.
+### Grid & Container
+- Landing content centers in a **1152px** container with a **24px** gutter.
+- The playground is full-viewport: the diagram canvas fills the screen and the chrome floats over it as islands.
 
-**Card** — `r-card` · borda 1px · fundo `--c-panel` · padding 24–32px · `--sh-card`. No hover (só na landing): `--sh-lift` e elevação de 4px, com `prefers-reduced-motion` respeitado.
+### Whitespace Philosophy
+The landing is read once, so it breathes: 96px between sections, one idea per band. The playground is lived in, so it packs: dense type and short controls, with air concentrated around the diagram rather than inside the chrome.
 
-**Botão primário** — `r-button` · gradiente vertical `--c-accent-lift` → `--c-accent` · texto branco 600 · padding `12px 24px` · `--sh-cta` · hover `brightness(1.08)`.
+## Elevation & Depth
 
-**Botão secundário** — mesma caixa, fundo `--c-panel`, borda 1px, texto `--c-ink` 600, `--sh-sm`; hover troca a borda para `rgb(var(--c-accent) / .5)`.
+Shadows **tint, they don't darken**: the color comes from the accent and the spread is negative, so the shadow is smaller than the element and suggests height without dirtying the edge. A single variable per theme, `--shadow-strength`, scales every shadow — a tinted shadow that works in light mode disappears in dark mode, and one number fixes both.
 
-**Contador de severidade** — `r-pill`, fundo com 8% da cor funcional, texto na cor funcional escurecida, ícone à esquerda, número em mono. Três deles lado a lado no rodapé do playground, e eles são filtro, não enfeite.
+The five shadows live in the front matter's `elevation` group — `{elevation.sm}`, `{elevation.card}`, `{elevation.cta}`, `{elevation.island}` and `{elevation.lift}` — as CSS `--sh-sm`, `--sh-card`, `--sh-cta`, `--sh-island` and `--sh-lift`. Each is built from `{elevation.shadow-strength}` (`0.14` in light, `0.5` in dark, via `shadow-strength-dark`) and, when tinted, from `{colors.accent}`. The values are defined once, there; this section says what they are for.
 
-**Chip de code** — `r-chip`, mono 11px, fundo com 8% da cor funcional. Carrega o `DiagnosticCode` literal, nunca a frase.
+| Level | Token | Use |
+|---|---|---|
+| 0 | Flat, 1px `{colors.hairline}` border | Default surface |
+| 1 | `--sh-sm` | Resting controls, pills, secondary button |
+| 2 | `--sh-card` | Cards |
+| 3 | `--sh-cta` | Primary button |
+| 4 | `--sh-island` | Playground islands floating over the canvas |
+| state | `--sh-lift` | Card hover (landing only) |
 
-**Ilha** — `r-card`, borda 1px, fundo `--c-panel`, `--sh-island`. É o chrome flutuante do playground: identidade, troca de vista, ações, zoom, diagnósticos.
+Shadows never take a functional color: an element with an error gets a marker, not a red shadow.
 
-**Malha de fundo** — grade de 28px na landing (`rgb(var(--c-accent) / .07)`) e de 22px no canvas do playground, em pontos em vez de linhas. A landing usa linha porque é atmosfera; o playground usa ponto porque é referência de posição.
+### Decorative Depth
+- **Grid backdrop.** The landing uses a 28px line grid at `rgb(var(--c-accent) / .07)` behind the hero and canvas; the playground uses a 22px **dot** grid. Lines are atmosphere; dots are a position reference.
+- **Blurred blobs.** Behind the landing hero, final CTA and section edges: four or five large circular blobs, `filter: blur(64px)`, 22–34rem in diameter, opacity 0.28–0.50, in pale violet, pale azure and pale cyan (at most one blob outside that family). They drift on a 16s `ease-in-out` loop with a different **negative** delay each, so they never pulse in unison.
+- **Perspective drafting board.** A line grid receding to the horizon behind the hero and the final CTA, built without images: two 1px `linear-gradient`s, `transform: perspective(600px) rotateX(62deg)`, and a `mask-image` that dissolves it before the horizon. Lines at ~8% of the accent.
 
----
+## Shapes
 
-## 8. Movimento
+### Border Radius Scale
 
-Duas animações e nenhum enfeite: **rise** na entrada do herói (translação de 8px + opacidade, 0.7s, `cubic-bezier(.2,.7,.2,1)`, escalonada em 80ms por elemento) e **lift** no hover de card. O playground não anima nada além do estritamente funcional — abrir e fechar painel, 180ms.
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.mark}` | 3px | Canvas markers |
+| `{rounded.chip}` | 6px | Code chip, tag chip `[OHS]` |
+| `{rounded.control}` | 8px | Dense controls: segmented control, icon button, rail squares |
+| `{rounded.button}` | 12px | Buttons and tall fields |
+| `{rounded.card}` | 10px | Cards, large panels, playground islands |
+| `{rounded.pill}` | 999px | Pills, severity counters, badges |
 
-Tudo isso desliga em `prefers-reduced-motion: reduce`. Não é acessibilidade opcional: um diagrama que se move enquanto alguém lê um erro atrapalha a única tarefa da tela.
+### Borders
+Every border is **1px** and `{colors.hairline}`. There is no 2px border in the system.
 
----
+## Components
 
-## 9. Onde isto se aplica
+### Buttons
 
-- **Landing** — página de apresentação, com link para o playground. Densidade espaçosa, display grande, pills e cards.
-- **Playground** — a tela do produto. A base de layout é a variante D do canvas de exploração (`docs/design/README.md`); este arquivo dá a ela cor, tipo, elevação e forma.
+**`button-primary`** — the main call to action.
+- Solid `{colors.accent}`, text `{colors.on-accent}` in `{typography.button}`, padding 12px 24px, rounded `{rounded.button}`, shadow `--sh-cta`.
+- Hover: `filter: brightness(1.08)`.
 
-Ainda **em aberto**, e propositalmente: o desenho da renderização do diagrama e os estados de degradação do `PRD.md` §5.2, que esperam a escolha da biblioteca (`ADR-0007`).
+**`button-primary-gradient`** — the same button, opted into the gradient (CSS: `.primary.gradient`).
+- Replaces only the background: the vertical gradient `{elevation.gradient-primary}` (CSS `--grad-primary`), `{colors.accent-lift}` → `{colors.accent}`. The stops are tokens, so each theme draws its own gradient. Counts toward the gradient's twice-per-screen limit; everything else is `button-primary`.
+
+**`button-secondary`** — the alternative action.
+- Background `{colors.surface}`, 1px `{colors.hairline}` border, text `{colors.ink}` in `{typography.button}`, same geometry, shadow `--sh-sm`.
+- Hover: border becomes `rgb(var(--c-accent) / .5)`.
+
+**`control`** — dense playground controls (segmented control, icon button, rail square).
+- `{typography.ui}`, rounded `{rounded.control}`, 30px tall. The selected state uses the accent.
+
+### Cards & Containers
+
+**`card`** — the landing's content container.
+- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, padding 24px (`card-large`: 32px), shadow `--sh-card`.
+- Hover (landing only): shadow `--sh-lift` and a 4px rise.
+
+**`island`** — the playground's floating chrome: identity, view switch, actions, zoom, panels, diagnostics.
+- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, shadow `--sh-island`. Islands float over the canvas with a margin; none is docked to the viewport edge.
+
+**`solar-block`** — the yellow surface.
+- Background `{colors.solar}`, text `{colors.ink}`. A band, a block, the ground of a numeral. Content that carries a severity marker sits on a white surface placed in front of the block, never on the yellow itself.
+
+### Pills, Tags and Chips
+
+**`pill-mono`** — the most repeated element of the system.
+- Background `{colors.surface}`, 1px `{colors.hairline}` border, text `{colors.ink-mute}` in `{typography.mono-sm}`, padding 6px 14px, rounded `{rounded.pill}`, shadow `--sh-sm`, 8px gap when it carries an icon or status dot.
+
+**`eyebrow`** — section label on the landing, panel name in the playground.
+- `{typography.eyebrow}` (mono 11px, uppercase, 0.22em tracking) in `{colors.ink-mute}`.
+
+**`code-chip`** — the literal `DiagnosticCode`.
+- `{typography.mono-xs}`, rounded `{rounded.chip}`, fill at 8% of the functional color, text in the functional color. Carries the code, never the sentence.
+
+### Diagnostics
+
+**`severity-counter`** — one per severity (`-error`, `-warning`, `-info`), side by side in the playground's diagnostics footer.
+- Rounded `{rounded.pill}`, fill at 8% of the functional color, text in a darkened shade of the functional color, severity icon on the left, count in `{typography.mono-xs}`.
+- The counters are filters: toggling one hides or shows that severity in the list.
+
+### Motion
+
+Two animations and no ornament:
+- **Rise** — hero entrance: 8px translate + opacity, 0.7s, `cubic-bezier(.2,.7,.2,1)`, staggered 80ms per element.
+- **Lift** — card hover on the landing (`--sh-lift` + 4px rise).
+
+The playground animates only what is functional: opening and closing a panel, 180ms.
+
+Everything stops under `prefers-reduced-motion: reduce`, including blob drift (the blobs remain, still).
+
+## Do's and Don'ts
+
+### Do
+- Reserve `{colors.accent}` for action and selection.
+- Pair every severity color with its icon — circled X, triangle, circled i.
+- Run the gradient purple → azure (`{colors.accent}` → `{colors.azure}`), in that order.
+- Use `{colors.solar}` as surface, with `{colors.ink}` text on it.
+- Set literal data in JetBrains Mono and prose in Inter.
+- Consume colors through RGB-triplet variables with an alpha: `rgb(var(--c-accent) / .08)`.
+- Give every token its dark value; lighten accent and functional colors in dark mode.
+- Keep reading text on flat surfaces.
+- Respect `prefers-reduced-motion` in every animation.
+
+### Don't
+- Don't use the accent to communicate severity — a purple button inside an error row is still a button.
+- Don't let severity depend on color alone; exports in grayscale and color-blind readers are real, and the export carries the markers.
+- Don't use the gradient more than twice per screen (a `button-primary-gradient`, one hero expression), and never across reading text.
+- Don't use `{colors.solar}` as text, highlight, underline, or behind small text — and never at chip scale next to a diagnostic, where it reads as a warning.
+- Don't add 2px borders; emphasize with fill, text color or shadow.
+- Don't give shadows a functional color.
+- Don't place blobs behind small text.
+- Don't use warm neutrals next to the violet accent.
+- Don't set interface text in Montserrat.
+
+## Responsive Behavior
+
+### Breakpoints
+
+| Name | Width | Key Changes |
+|---|---|---|
+| Desktop | ≥ 640px | Hero 62px, section display 38px, section padding 96px |
+| Mobile | < 640px | Hero 42px, section display 30px, section padding 64px |
+
+### Touch Targets
+- Minimum touch target is **44px**. Landing controls are 44px tall.
+
+### Collapsing Strategy
+- Display type and section padding step down at 640px (see Breakpoints).
+- In the playground, islands keep their margin from the viewport edge at every width.
+
+## Iteration Guide
+
+1. Change one component at a time.
+2. Reference tokens by name (`{colors.accent}`, `{rounded.card}`, `{typography.ui}`), never by raw value.
+3. Add a token to the front matter before using it in a page; a value that exists only in a stylesheet is not part of the system.
+4. Add variants as separate entries (`card-large`, `severity-counter-warning`).
+5. Default interface text to `{typography.ui}` in the playground and `{typography.body}` on the landing.
+6. Check every change in both themes.
+7. When a page and this file disagree, the page is wrong.

@@ -1,0 +1,13 @@
+.island {
+  position: fixed;
+  z-index: 2;
+  background: rgb(var(--c-surface));
+  border: 1px solid rgb(var(--c-hairline));
+  border-radius: var(--radius-card);
+  box-shadow: var(--sh-island);
+  color: rgb(var(--c-ink));
+}
+
+.island[hidden] {
+  display: none;
+}

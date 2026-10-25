@@ -1,0 +1,16 @@
+/* O DESIGN.md não especifica dica: uma ilha pequena, com os tokens dela. */
+.positioner {
+  z-index: 5;
+}
+
+.tip {
+  background: rgb(var(--c-surface));
+  border: 1px solid rgb(var(--c-hairline));
+  border-radius: var(--radius-control);
+  box-shadow: var(--sh-sm);
+  color: rgb(var(--c-ink));
+  padding: var(--space-xxs) var(--space-sm);
+  font: var(--font-ui-sm-weight) var(--font-ui-sm-size) / var(--font-ui-sm-line-height) var(--font-ui-sm-family);
+  letter-spacing: var(--font-ui-sm-letter-spacing);
+  white-space: nowrap;
+}
