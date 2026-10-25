@@ -72,7 +72,7 @@ These are choices, not oversights. They are written down so nobody has to redisc
 
 1. **A Bounded Context belongs to exactly one Subdomain.** In real DDD, problem space and solution space are related n:m — one context can serve two subdomains. ODDS keeps 1:1 deliberately: n:m would destroy the nested containment view the product requires, and this is the same simplification comparable tools make.
 2. **One file, one `domain`.** Maps that span multiple domains are impossible by construction. This is what makes "one file = one shareable URL" coherent.
-3. **Third-party systems are first class, via the `external { }` block** — you no longer have to lie that Stripe or another company's ERP is a context of one of *your* subdomains. **Assumed contradiction:** the `external` block is declared *inside* `domain { }`, which by definition does not contain it. It is nested there for syntactic reasons (it preserves the invariant that every `context` lives inside a declared block, and the "one file = one domain" premise). The contradiction is named rather than hidden — and it is cancelled in the only place the user would see it: the containment view draws the external block **outside** the domain boundary, touching it (§5).
+3. **Third-party systems are first class, via the `external { }` block** — you no longer have to lie that Stripe or another company's ERP is a context of one of *your* subdomains. **Assumed contradiction:** the `external` block is declared *inside* `domain { }`, which by definition does not contain it. It is nested there for syntactic reasons (it preserves the invariant that every `context` lives inside a declared block, and the "one file = one domain" premise). The contradiction is named rather than hidden — and it is cancelled in the only place the user would see it: the containment view draws the external block **outside** the domain's subdomain territories, as a landmass of its own beside them (§5).
 4. **`[BBM]` must be repeated on every line** touching that system (§0.3), mitigated by `INCONSISTENT_BBM`.
 5. **The two views have different expressive power, deliberately.** `[BBM]` is an annotation *of a relationship*, and the containment view has no lines — so a swamp system looks like any other context there. Deriving the mark on the node (marking a context that carries `[BBM]` on *any* relationship) was rejected: it would build a visual inference on data that `INCONSISTENT_BBM` itself admits may be contradictory, making the drawing assert more than the text. The two views answer different questions — *"how is this organised?"* and *"how does this integrate?"* — and integration risk is by definition a question for the second.
 
@@ -439,7 +439,7 @@ The rule is therefore **degradation per element**:
 * In a duplicated pair, **the first occurrence is the one that draws** — consistent with the span convention that blames the second.
 * **Exporting with errors is allowed, and the export includes the markers.** The exported image is exactly what is on the canvas; there is no "clean" variant. An export without markers would become documentation asserting a model that was never valid.
 
-The containment view draws the `external { }` block **outside** the domain boundary, touching it — cancelling the syntactic contradiction recorded in §0.5 in the one place the user would perceive it.
+The containment view draws the `external { }` block **outside** the domain's subdomain territories, as a landmass of its own beside them — cancelling the syntactic contradiction recorded in §0.5 in the one place the user would perceive it. The honeycomb draws no line around a domain (`ADR-0011`), so "outside" is measured against its territories.
 
 ---
 
@@ -478,4 +478,4 @@ Finally, sort the whole array by the keys in §3.3. The emitted order is part of
 
 ## Changelog
 
-Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## RULES-EN.md / RULES-PT.md`). Current version: **v0.3.0** — this file and `RULES-PT.md` version together. Any change here must get a new entry there, not here, and must be mirrored in the other language in the same pass.
+Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## RULES-EN.md / RULES-PT.md`). Current version: **v0.3.1** — this file and `RULES-PT.md` version together. Any change here must get a new entry there, not here, and must be mirrored in the other language in the same pass.

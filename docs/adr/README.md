@@ -55,3 +55,4 @@ A skill `adr` governa o resto: quando um ADR é devido, quando não é, e como f
 | [ADR-0021](0021-a-bancada-valida-a-funcionalidade-e-a-aplicacao-a-constroi-com-os-componentes-do-base-ui.md) | A bancada valida a funcionalidade, e a aplicação a constrói com os componentes do Base UI | accepted | 2026-10-23 |
 | [ADR-0022](0022-as-instrucoes-de-agente-moram-num-agents-md-enxuto-com-regras-por-caminho-em-claude-rules.md) | As instruções de agente moram num AGENTS.md enxuto, com regras por caminho em .claude/rules/ | accepted | 2026-10-24 |
 | [ADR-0023](0023-registros-fechados-saem-da-arvore-de-trabalho-e-passam-a-viver-no-historico-do-git.md) | Registros fechados saem da árvore de trabalho e passam a viver no histórico do git | accepted | 2026-10-24 |
+| [ADR-0024](0024-a-interface-sai-em-portugues-no-mvp-e-o-ingles-entra-depois-como-seletor.md) | A interface sai em português no MVP, e o inglês entra depois como seletor | accepted | 2026-10-24 |
