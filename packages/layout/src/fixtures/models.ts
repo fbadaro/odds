@@ -1,6 +1,6 @@
 /**
- * Os modelos de amostra da colmeia-v4 (`MODELS`, `BREAKS`, `EXTRA`), copiados
- * literalmente do script da v4. São o banco de prova do layout: as propriedades e
+ * Os modelos de amostra (`MODELS`, `BREAKS`, `EXTRA`), copiados literalmente do
+ * protótipo v4. São o banco de prova do layout: as propriedades e
  * os goldens são medidos sobre eles.
  */
 import type { LayoutContext, LayoutModel, LayoutRelation } from "../types.js";

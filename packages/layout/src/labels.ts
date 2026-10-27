@@ -1,5 +1,5 @@
 /**
- * Rótulos da colmeia-v4: o nome de cada contexto e o título de cada território,
+ * Rótulos da colmeia: o nome de cada contexto e o título de cada território,
  * postos onde não cobrem peça, chip nem outro rótulo. Porte literal de `placeLabels`.
  */
 import { DIRS, HIN, HR, kk, px } from "./hex.js";

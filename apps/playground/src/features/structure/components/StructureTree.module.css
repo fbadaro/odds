@@ -1,4 +1,3 @@
-/* bancada: #tree, .sec, .tw, .badge, .own, .chev, .sev, .rl, .dempty */
 .empty {
   padding: 12px 14px;
   font-size: 13px;
@@ -48,8 +47,7 @@
   color: rgb(var(--c-ink));
   font: inherit;
   font-size: 13px;
-  /* a bancada só herda a família (.pg button{font-family:inherit}); a altura de linha fica a do
-     botão, normal, e não a 1.4 do body */
+  /* só a família é herdada; a altura de linha fica a do botão, normal, e não a 1.4 do body */
   line-height: normal;
   text-align: left;
 }
@@ -99,8 +97,7 @@
   font-weight: 600;
 }
 
-/* bancada: .tw .badge e só as variantes core e supporting; generic fica no estilo base
-   (o --t do .nav [data-type="generic"] não chega ao .tw .badge, que não o lê) */
+/* só as variantes core e supporting; generic fica no estilo base */
 .badge {
   font-family: var(--font-mono-xs-family);
   font-size: 11px;

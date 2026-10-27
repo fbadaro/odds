@@ -1,5 +1,5 @@
 /**
- * Territórios da colmeia-v4: o empacotamento de cada subdomínio dentro da sua
+ * Territórios da colmeia: o empacotamento de cada subdomínio dentro da sua
  * massa, o preenchimento de buracos, a erosão e o contorno. Porte literal.
  */
 import { C, DIRS, EDGE_OF_DIR, corner, hexPath, kk, pixelToAxial, px, spiral, unkk } from "./hex.js";

@@ -3,7 +3,7 @@ import type { ReactElement, ReactNode } from "react";
 import styles from "./Tooltip.module.css";
 
 type Props = {
-  /** O texto da dica, o mesmo da bancada. Não substitui o `aria-label` do gatilho. */
+  /** O texto da dica. Não substitui o `aria-label` do gatilho. */
   label: string;
   /** O gatilho: o nosso `Button`, ou a parte de outro wrapper (um `Toggle`). */
   children: ReactElement;
@@ -11,7 +11,7 @@ type Props = {
   side?: "top" | "right" | "bottom" | "left";
 };
 
-/** A dica da bancada (o `title` dos botões): abre ao passar o mouse ou focar pelo teclado, e o `Esc` a fecha. */
+/** A dica dos botões: abre ao passar o mouse ou focar pelo teclado, e o `Esc` a fecha. */
 export function Tooltip({ label, children, side = "bottom" }: Props) {
   return (
     <BaseTooltip.Root>

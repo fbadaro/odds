@@ -4,7 +4,7 @@ const NS = "http://www.w3.org/2000/svg";
 const SELECTION = ["on", "fade", "lit", "focus", "mute", "hot", "subhot"];
 
 /**
- * O mapa inteiro, em repouso, com o tema e os marcadores (bancada: btnExport).
+ * O mapa inteiro, em repouso, com o tema e os marcadores.
  * `viewBox` é o quadro completo da geometria, nunca o da câmera.
  */
 export function buildExportSvg(

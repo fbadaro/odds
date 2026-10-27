@@ -1,5 +1,5 @@
 /**
- * A fonte `.odds` de um modelo, com âncoras: `Src` e `sourceOf` da colmeia-v4.
+ * A fonte `.odds` de um modelo, com âncoras: `Src` e `sourceOf`.
  * Porte literal.
  */
 import { pairKey } from "../geometry.js";

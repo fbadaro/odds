@@ -1,4 +1,3 @@
-/* bancada: .sel .vd */
 .vd {
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr);
@@ -9,7 +8,7 @@
   border-top: 1px solid rgb(var(--c-hairline));
 }
 
-/* bancada: .vd svg 14x14, .sel .vd svg{margin-top:1px} */
+/* ícone de 14x14, 1px abaixo do topo */
 .icon {
   display: inline-flex;
   margin-top: 1px;
@@ -25,7 +24,7 @@
 .c {
   display: block;
   margin-top: 2px;
-  /* herda o line-height 1.4 do .vd, como na bancada */
+  /* herda o line-height 1.4 do veredito */
   font: 11px / 1.4 var(--font-code-family);
   color: rgb(var(--c-ink-mute));
 }

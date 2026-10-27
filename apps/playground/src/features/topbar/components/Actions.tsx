@@ -4,7 +4,7 @@ import { ShareButton } from "./ShareButton";
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./Actions.module.css";
 
-/** A ilha do canto direito: compartilhar, exportar, tema (bancada: .i-act). */
+/** A ilha do canto direito: compartilhar, exportar, tema. */
 export function Actions() {
   return (
     <Island className={styles.act}>

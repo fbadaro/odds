@@ -1,25 +1,17 @@
 /**
- * O marketplace de 50 contextos, documentado: o porte de
- * docs/design/pages/colmeia-50.model.mjs (o modelo nu) e de
- * docs/design/pages/colmeia-navegacao.docs.mjs (a documentação), montado como o
- * colmeia-embed.mjs o monta — `documented(BARE, MODELS)`, e a fonte rica do modelo
- * canônico. Dados copiados literalmente.
- *
- * Os dois módulos foram apagados em 2026-10-24, depois de validados, com os builds da
- * colmeia-50 e da colmeia-navegacao que os liam (seguem no git em e282c83). Desde então
- * a fonte é esta, e quem a lê é a bancada, o playground.html, pelo `marketplace()`.
+ * O marketplace de 50 contextos, documentado: o modelo nu e a documentação, montados
+ * como `documented(BARE, MODELS)`, e a fonte rica do modelo canônico. A aplicação o
+ * lê pelo `marketplace()`.
  */
 import { canon } from "../canon.js";
 import type { LayoutContext, LayoutModel } from "../types.js";
 import { MODELS } from "./models.js";
 import { sourceOf } from "./source.js";
 
-/* ---- colmeia-50.model.mjs ---- */
+/* ---- o modelo nu ---- */
 /**
- * O marketplace de 50 contextos, no formato de modelo da colmeia v4. Morava num módulo
- * próprio porque dois instrumentos o liam: o colmeia-50.build.mjs, que media o mapa
- * parado, e o colmeia-navegacao.build.mjs, que o punha na mão de quem navega. Os dois
- * precisavam do MESMO mapa, senão o antes e o depois deixavam de ser comparáveis.
+ * O marketplace de 50 contextos, no formato de modelo do layout. É um mapa só, para
+ * que medidas do mapa parado e da navegação continuem comparáveis.
  *
  * O modelo é sintético mas não aleatório: um marketplace de varejo com doze
  * subdomínios e um bloco external, e relações com vizinhança — a maioria dentro de
@@ -77,16 +69,14 @@ R("Reporting", "DataLake"); R("Experiments", "DataLake"); R("Recommendations", "
 const nCtx = MARKETPLACE_MODEL.domains[0]!.subdomains.reduce((a, s) => a + s.contexts.length, 0) + MARKETPLACE_MODEL.domains[0]!.external!.length;
 if (nCtx !== 50) throw new Error(`o modelo tem ${nCtx} contextos, não 50`);
 
-/* ---- colmeia-navegacao.docs.mjs ---- */
+/* ---- a documentação ---- */
 /**
  * A documentação preenchida do marketplace de 50 contextos: as propriedades de
  * contexto (GRAMMAR.md §3) e de subdomínio (ADR-0008) que a ficha da relação mostra.
  *
- * Vinte e dois contextos e seis subdomínios já têm documentação nos modelos da v4,
+ * Vinte e dois contextos e seis subdomínios já têm documentação nos `MODELS`,
  * com os mesmos nomes; o `documented()` lê de lá, e este bloco só preenche o resto.
- * Ficava fora do colmeia-50.model.mjs de propósito: propriedade não move peça (o
- * colmeia-navegacao.build.mjs conferia), mas o colmeia-50 media o mapa parado e não
- * precisava dela.
+ * Fica fora do modelo nu de propósito: propriedade não move peça.
  *
  * Os valores vão sem aspas aqui; o `documented()` as põe, como a fonte .odds pede.
  */
@@ -150,12 +140,10 @@ export const CTX_DOCS: Record<string, Omit<LayoutContext, "id">> = {
   SegmentCdp: { description: "Coleta de eventos de navegação", technology: "Segment" },
 };
 
-/* O marketplace documentado: o modelo nu do colmeia-50 com as propriedades de cada
-   contexto e subdomínio. O que os modelos da v4 já documentam, com os mesmos nomes,
-   vem de lá (`v4models` é o MODELS do __v3); o resto, das tabelas acima. Os valores
-   da v4 já trazem as aspas da fonte; os daqui ganham agora. Dois builds usavam isto, o
-   do colmeia-navegacao (apagado em 2026-10-24) e o do colmeia-ao-vivo, para
-   documentarem o mesmo mapa; hoje é o `marketplace()` abaixo que usa. */
+/* O marketplace documentado: o modelo nu com as propriedades de cada contexto e
+   subdomínio. O que os `MODELS` já documentam, com os mesmos nomes, vem de lá
+   (`v4models`); o resto, das tabelas acima. Os valores dos `MODELS` já trazem as
+   aspas da fonte; os daqui ganham agora. Quem usa é o `marketplace()` abaixo. */
 export function documented(bare: LayoutModel, v4models: Record<string, LayoutModel>): { model: LayoutModel; undocumented: string[] } {
   const q = (t: string) => '"' + t + '"';
   const fromV4: { ctx: Record<string, LayoutContext>; sub: Record<string, { description: string; owner: string | undefined }> } = { ctx: {}, sub: {} };
@@ -183,8 +171,8 @@ export function documented(bare: LayoutModel, v4models: Record<string, LayoutMod
 }
 
 /**
- * O marketplace como a bancada o embute: o arquivo e a fonte `.odds` rica do modelo
- * documentado, em forma canônica (colmeia-embed.mjs, passo 4).
+ * O marketplace como a aplicação o abre: o arquivo e a fonte `.odds` rica do modelo
+ * documentado, em forma canônica.
  */
 export function marketplace(): { file: string; text: string } {
   const { model: M50, undocumented } = documented(MARKETPLACE_MODEL, MODELS);

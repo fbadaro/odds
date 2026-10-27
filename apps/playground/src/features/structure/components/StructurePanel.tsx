@@ -3,7 +3,7 @@ import { usePlayground } from "../../../stores/playground";
 import { PanelIsland } from "../../panels/components/PanelIsland";
 import { StructureTree } from "./StructureTree";
 
-/** O `#pTree` da bancada: só existe no DOM enquanto aberto; o recolhido de cada nó vive aqui e sobrevive à digitação. */
+/** O painel de estrutura: só existe no DOM enquanto aberto; o recolhido de cada nó vive aqui e sobrevive à digitação. */
 export function StructurePanel() {
   const open = usePlayground((s) => s.openPanel === "tree");
   const [shut, setShut] = useState<ReadonlySet<string>>(() => new Set());

@@ -3,7 +3,7 @@ import { PanelIsland } from "../../panels/components/PanelIsland";
 import { Legend } from "./Legend";
 import styles from "./HelpPanel.module.css";
 
-/** O `#pHelp` da bancada: só existe no DOM enquanto aberto. */
+/** O painel de ajuda: só existe no DOM enquanto aberto. */
 export function HelpPanel() {
   const open = usePlayground((s) => s.openPanel === "help");
   if (!open) return null;

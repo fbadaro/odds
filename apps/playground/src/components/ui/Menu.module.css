@@ -1,4 +1,4 @@
-/* bancada: .menu (uma .isl com botões .ibtn). O Base UI põe o estado em data-*. */
+/* uma ilha com botões de ilha. O Base UI põe o estado em data-*. */
 .positioner {
   z-index: 4;
 }
@@ -49,8 +49,7 @@
   color: rgb(var(--c-accent));
 }
 
-/* bancada: um .vsep com height:1px e margin:4px 0 no lugar do separador; a largura de 1px do
-   .vsep fica, então ele se lê como um vão de 9px, e não como uma linha */
+/* o separador é um vão de 9px (1px de altura e 4px de margem), não uma linha */
 .sep {
   width: 1px;
   height: 1px;

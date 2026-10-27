@@ -1,4 +1,3 @@
-/* bancada: .ed, .ed .gut, .ed textarea */
 .ed {
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr);

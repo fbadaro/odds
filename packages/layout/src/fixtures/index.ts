@@ -1,8 +1,7 @@
 /**
- * `@odds/layout/fixtures` — o banco de prova da colmeia-v4: os modelos de amostra,
+ * `@odds/layout/fixtures` — o banco de prova da colmeia: os modelos de amostra,
  * o gerador do modelo "como o autor o escreveu", a forma canônica, o gerador de
- * fonte com âncoras e o marketplace de 50 contextos. Para testes e para a bancada;
- * a aplicação usa o `marketplace()` e o `declared` + `sourceOf`, os dois arquivos de
+ * fonte com âncoras e o marketplace de 50 contextos. Para testes; a aplicação usa o `marketplace()` e o `declared` + `sourceOf`, os dois arquivos de
  * amostra do menu de arquivo (entram no bundle).
  */
 export { BREAKS, EXTRA, MODELS, type Break } from "./models.js";

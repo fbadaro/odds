@@ -8,7 +8,7 @@ const ITEMS = [
   { value: "contain" as const, label: "Contenção" },
 ];
 
-/** A ilha da vista da bancada (.i-view): fluxo ou contenção. */
+/** A ilha da vista: fluxo ou contenção. */
 export function ViewSwitch() {
   const view = usePlayground((s) => s.view.view);
   const setView = usePlayground((s) => s.setView);

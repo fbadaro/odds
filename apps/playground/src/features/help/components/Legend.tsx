@@ -2,7 +2,7 @@ import { usePlayground } from "../../../stores/playground";
 import { legendOf } from "../lib/legend";
 import styles from "./Legend.module.css";
 
-/** O `renderLegend` da bancada: a legenda sai do mapa atual (`nav`), não de um texto fixo. */
+/** A legenda sai do mapa atual (`nav`), não de um texto fixo. */
 export function Legend() {
   const nav = usePlayground((s) => s.drawing?.nav);
   if (!nav) return <div className={styles.leg} id="legend" />;

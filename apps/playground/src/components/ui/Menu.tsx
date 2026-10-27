@@ -26,7 +26,7 @@ type Props = {
   anchor?: BaseMenu.Positioner.Props["anchor"];
 };
 
-/** O menu da bancada (.menu): um botão, escolhas de rádio com dica, um separador e ações. Fecha ao escolher. */
+/** O menu: um botão, escolhas de rádio com dica, um separador e ações. Fecha ao escolher. */
 export function Menu({ trigger, triggerClassName, radios, value, onValueChange, actions = [], anchor }: Props) {
   return (
     <BaseMenu.Root modal={false}>

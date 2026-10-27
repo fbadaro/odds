@@ -1,7 +1,7 @@
 /**
- * Os tipos do @odds/layout. Descrevem o que o script ES5 da colmeia-v4 constrói e
- * muta: a forma de cada objeto é a do legado, campo por campo, porque o porte é
- * literal (plano, "Regra do porte"). Por isso vários campos nascem depois do objeto
+ * Os tipos do @odds/layout. Descrevem o que o script ES5 do protótipo v4
+ * construía e mutava: a forma de cada objeto é a do legado, campo por campo, porque o
+ * porte é literal. Por isso vários campos nascem depois do objeto
  * (`Mass.c`, `Group.cells`…): são preenchidos por fases sucessivas do layout.
  */
 
@@ -197,7 +197,7 @@ export interface RoutedRelation {
   cells: string[];
 }
 
-/** O que `layout` devolve: a geo da v4, com tudo que o render (Task 4) lê dela. */
+/** O que `layout` devolve: a geo, com tudo que o render lê dela. */
 export interface Geometry {
   cm: CanonModel;
   islands: Island[];

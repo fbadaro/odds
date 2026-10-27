@@ -1,4 +1,4 @@
-/* bancada: .rail e .sq. O estado apertado vem do ToggleGroup ([data-pressed]). */
+/* o estado apertado vem do ToggleGroup ([data-pressed]) */
 .rail {
   top: 78px;
   left: 20px;

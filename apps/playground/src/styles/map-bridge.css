@@ -1,6 +1,6 @@
 /* Liga o mapa aos tokens da aplicação (ambos são triplets RGB). As --odds-map-tile-* e
    --odds-map-mix-* não têm token na aplicação e ficam com os padrões do map.css.
-   A Task 7 embute este arquivo no SVG exportado. */
+   O export embute este arquivo no SVG exportado. */
 :root {
   --odds-map-bg: var(--c-canvas);
   --odds-map-panel: var(--c-surface);

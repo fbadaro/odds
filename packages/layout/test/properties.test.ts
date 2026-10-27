@@ -1,6 +1,6 @@
 /**
- * As propriedades da colmeia como testes do pacote: as famílias 3 a 6 de
- * docs/design/pages/colmeia-v4.check.mjs, com os mesmos limites e as mesmas contagens.
+ * As propriedades da colmeia como testes do pacote: as famílias 3 a 6 do check do
+ * protótipo v4, com os mesmos limites e as mesmas contagens.
  * As famílias 1 e 2 testavam âncoras da própria página v4 e saíram com ela: a página e
  * o check foram apagados em 2026-10-24, depois de validados, e seguem no git em e282c83.
  *

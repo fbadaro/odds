@@ -1,5 +1,5 @@
 /**
- * Geometria plana e utilitários da colmeia-v4: distância, segmento × segmento,
+ * Geometria plana e utilitários da colmeia: distância, segmento × segmento,
  * segmento × caixa, o desempate `tieLess`. Porte literal.
  */
 import type { Axial, Box, Point } from "./types.js";

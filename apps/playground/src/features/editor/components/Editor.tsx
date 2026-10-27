@@ -16,7 +16,7 @@ export function Editor({ onCaret }: { onCaret: (offset: number) => void }) {
   // o último `reveal` já aplicado: um pedido antigo não se repete
   const handled = useRef(0);
 
-  // a cada arquivo carregado (loadModel), e só então: cursor e rolagem no início, como na bancada
+  // a cada arquivo carregado (loadModel), e só então: cursor e rolagem no início
   const epoch = usePlayground((s) => s.epoch);
   useEffect(() => {
     const el = ta.current;

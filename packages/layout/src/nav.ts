@@ -1,6 +1,6 @@
 /**
  * O que a navegação por teclado precisa saber do mapa: vizinhos, subdomínios,
- * sentido de cada relação. Porte literal do `navOf` da bancada, sem o `farSvg`
+ * sentido de cada relação. Sem o `farSvg`
  * (os rótulos de longe são desenhados dentro de `renderSvg`).
  */
 import type { Geometry, Point } from "./types.js";

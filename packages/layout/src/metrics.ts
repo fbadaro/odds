@@ -1,5 +1,5 @@
 /**
- * Métricas da colmeia-v4 — a mesma régua que mediu a v2 — e o degrau de território.
+ * Métricas da colmeia — a mesma régua que mediu a v2 — e o degrau de território.
  * Porte literal.
  */
 import { C, SQ3 } from "./hex.js";

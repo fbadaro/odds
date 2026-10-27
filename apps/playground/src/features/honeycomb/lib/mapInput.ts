@@ -2,7 +2,7 @@ import type { CameraController } from "./cameraController";
 
 /** O que o mapa pede ao resto da aplicação; o Honeycomb liga isto ao store. */
 export interface MapActions {
-  /** Há desenho: sem ele, o mapa não reage (o `!cur` da bancada). */
+  /** Há desenho: sem ele, o mapa não reage. */
   ready(): boolean;
   /** Clique ou Enter numa peça: seleciona e enquadra o contexto. */
   pickContext(id: string): void;
@@ -17,7 +17,7 @@ export interface MapActions {
 const closest = (t: EventTarget | null, sel: string): Element | null => (t instanceof Element ? t.closest(sel) : null);
 
 /**
- * O bloco "mapa: arrasto, roda, teclado" da bancada: arrastar a partir de 4 px move,
+ * Arrasto, roda e teclado no mapa: arrastar a partir de 4 px move,
  * soltar sem ter arrastado é um clique; a roda do mouse dá zoom, a do trackpad move,
  * e a pinça (`ctrlKey`) dá zoom; `+ = - _ 0` e as setas no teclado. Devolve o desligar.
  */
