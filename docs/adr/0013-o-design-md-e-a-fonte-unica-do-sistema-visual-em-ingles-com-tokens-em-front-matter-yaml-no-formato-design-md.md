@@ -20,7 +20,7 @@ O `DESIGN.md` nasceu em 2026-09-07 como rascunho de trabalho em português, em p
 
 Enquanto isso, a exploração de UI em mocks descartáveis produziu páginas que não seguiam o arquivo, e não precisavam: as colmeias e a bancada do playground eram testes de hipótese. O playground de 2026-10-16 chegou a vestir a pele da variante D (azul de planta, IBM Plex, neutros quentes), e a landing v5 usa raios de 20px e 14px onde o arquivo diz 16px e 12px. O autor confirmou que o `DESIGN.md` sempre foi a fonte da verdade e que, a partir daqui, tudo passa a considerá-lo: o site e o playground.
 
-Para isso o arquivo precisava ser consumível como âncora de implementação, e havia mais de um jeito de chegar lá. O autor trouxe como referência um design system no formato `design.md` (o da Stripe, em `stripe-DESIGN.md`, fora do versionamento): um front matter YAML com `colors`, `typography`, `rounded`, `spacing` e `components` referenciando os outros por `{grupo.token}`, seguido de seções padronizadas (Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts, Responsive Behavior, Iteration Guide).
+Para isso o arquivo precisava ser consumível como âncora de implementação, e havia mais de um jeito de chegar lá. O autor trouxe como referência um design system no formato `design.md` (o da Stripe, guardado fora do versionamento): um front matter YAML com `colors`, `typography`, `rounded`, `spacing` e `components` referenciando os outros por `{grupo.token}`, seguido de seções padronizadas (Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts, Responsive Behavior, Iteration Guide).
 
 ## Decisão
 
