@@ -143,9 +143,3 @@ Quando a implementação começar, este catálogo deve ser extraído para um `me
 ```
 
 **Comportamento obrigatório em caso de falta:** se um code não tiver template no locale pedido, caia para `en`; se não tiver em `en`, renderize o próprio `code` mais o `data` serializado. Nunca lance exceção e nunca renderize string vazia — uma mensagem faltando é um bug de catálogo, e engolir o diagnóstico inteiro por causa dele esconderia um problema real do modelo do usuário atrás de um problema de tradução.
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.3**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

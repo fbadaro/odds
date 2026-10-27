@@ -4,7 +4,7 @@
 
 Este arquivo é o **contrato de dados** entre as três camadas do sistema: Parser → Validador (Visitor) → Visualizador. Define, em TypeScript, a forma exata da Árvore Sintática Abstrata (AST) que o parser produz a partir de um arquivo `.odds` válido sintaticamente (ver `GRAMMAR.md`), e que o Visitor percorre para aplicar as regras semânticas (ver `RULES-EN.md`).
 
-Esta AST corresponde 1:1 à gramática do **`GRAMMAR.md`**, sempre na versão atual dos dois arquivos. O número de cada um fica só no `## Changelog` dele, porque um número copiado para cá vence no próximo incremento. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`) e com o catálogo de mensagens (`MESSAGES.md`).
+Esta AST corresponde 1:1 à gramática do **`GRAMMAR.md`**. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`) e com o catálogo de mensagens (`MESSAGES.md`).
 
 **Convenção:** cada nó carrega um campo `span` com a posição de início/fim no arquivo-fonte. Isso é o que viabiliza a navegação clique-a-clique do painel de validação (PRD §5.2 / GH-002) — tanto para erros sintáticos quanto semânticos.
 
@@ -533,9 +533,3 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 // ContextNode ganharia:
 // tactical?: AggregateNode[];
 ```
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

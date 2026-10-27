@@ -5,7 +5,7 @@
 ### 1.1 Document title and version
 
 - PRD: Open Domain Driven Specification (ODDS)
-- Version: in the [Changelog](#changelog) at the end of this file
+- Language version: the ODDS Language Version in [`CHANGELOG.md`](./CHANGELOG.md)
 
 ### 1.2 Product summary
 
@@ -394,9 +394,3 @@ The project changes how product and engineering teams align on system architectu
 - **Acceptance criteria**:
   - The application validates and renders the diagram purely within the user's browser.
   - No network requests containing the design content are sent to external servers.
-
----
-
-## Changelog
-
-Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## PRD.md`). Current version: **1.3.1**. Any change to this file must get a new entry there, not here.

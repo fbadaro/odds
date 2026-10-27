@@ -447,7 +447,7 @@ A vista de contenção desenha o bloco `external { }` **fora** dos territórios 
 
 ### 6. Versão da linguagem e compatibilidade
 
-`GRAMMAR.md`, `AST_SCHEMA.md` e este arquivo carregam cada um sua versão editorial própria, mas o que um `.odds` *significa* é definido pelos três juntos. Esse significado conjunto tem número próprio, a **ODDS Language Version**, mantida no `CHANGELOG.md` e incrementada apenas quando o comportamento observável de um `.odds` muda.
+O que um `.odds` *significa* é definido pelo `GRAMMAR.md`, pelo `AST_SCHEMA.md` e por este arquivo juntos. Esse significado conjunto tem um número, a **ODDS Language Version**, mantida no `CHANGELOG.md` e incrementada apenas quando o comportamento observável de um `.odds` muda.
 
 Ela segue SemVer, com o corte na **validade do arquivo**:
 
@@ -475,9 +475,3 @@ Ao construir o seu *Visitor* (a função que percorre a árvore gerada pelo Pars
 5. **Passo 4 — supressão (fase 6).** Aplique as diretivas coletadas em `ProgramNode.suppressions` sobre o array produzido até aqui, emitindo `MALFORMED_SUPPRESSION` e `UNUSED_SUPPRESSION`.
 
 Por fim, ordene o array inteiro pelas chaves da §3.3. A ordem emitida faz parte do contrato.
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.3.1** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.

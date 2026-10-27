@@ -303,9 +303,3 @@ Todas as pendências originais foram resolvidas. Nenhuma pendência em aberto ne
 ### Ação pendente fora desta gramática
 
 Nenhuma. As duas ações que constavam aqui — formalizar "exatamente um `domain` por arquivo" e a unicidade de nomes de `context` — **já foram propagadas** para `RULES-EN.md`/`RULES-PT.md` §1.A, como `INVALID_DOMAIN_CARDINALITY` e `DUPLICATE_CONTEXT`, ambas com golden file próprio. Esta seção existia porque a gramática decidiu duas regras semânticas antes de o `RULES.md` as registrar; a defasagem acabou.
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## GRAMMAR.md`). Versão atual: **v0.3.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
