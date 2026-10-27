@@ -39,5 +39,5 @@ Um ADR substituído na árvore é lido como se valesse, que é o problema que j�
 ## Consequências
 
 - Chegar ao porquê de uma decisão substituída exige `git log -- docs/adr/` e um `git show`.
-- Nada confere mecanicamente que um passe que mudou o significado de um `.odds` registrou a versão. Isso fica com quem revisa o passe.
+- A C17 de `check:spec` confere a versão contra `main`: se a EBNF, o catálogo de `AST_SCHEMA.md` §1.3, as tabelas de mensagem ou um golden file existente mudaram, a versão sobe ao menos o incremento que a tabela pede e ganha entrada. Um hook do Claude Code roda a C17 antes de `git commit`, `git push` e `gh pr create`, e bloqueia se ela falhar. A prosa das regras fica de fora: uma mudança de gatilho que não toca catálogo nem golden file ainda depende de quem revisa o passe.
 - Uma ideia de interface deixa de ter um lugar para ser comparada lado a lado antes de entrar. Se isso fizer falta, uma página descartável numa branch resolve sem voltar ao contrato.

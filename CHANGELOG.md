@@ -2,7 +2,7 @@
 
 A **ODDS Language Version** é a versão do que um arquivo `.odds` *significa*, definida pelos documentos normativos em conjunto (`GRAMMAR.md` + `RULES-EN.md`/`RULES-PT.md` + `AST_SCHEMA.md`). Ela viaja no payload da URL compartilhável e responde à pergunta de quem reabre um diagrama antigo: *"esses avisos novos são meus ou da ferramenta?"*. O resto do histórico está no git.
 
-Um passe que muda o que um `.odds` significa acrescenta aqui uma entrada curta. As entradas estão em ordem cronológica (mais antiga primeiro).
+Um passe que muda o que um `.odds` significa acrescenta aqui uma entrada curta; a C17 de `npm run check:spec` cobra isso. As entradas estão em ordem cronológica (mais antiga primeiro).
 
 ---
 

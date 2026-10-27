@@ -2,12 +2,13 @@
 """Checagens da especificação ODDS.
 
 Confere o que é mecanicamente verificável nos documentos normativos, nos golden
-files e em `docs/adr/`, e reporta. Não julga.
+files, em `docs/adr/` e no `CHANGELOG.md`, e reporta. Não julga.
 
 Uso:
     npm run check:spec                  # relatório compacto
     python3 scripts/check_spec.py -v    # detalha o que passou
     python3 scripts/check_spec.py --json
+    python3 scripts/check_spec.py --only C17
 
 Saída 0 = tudo conforme. Saída 1 = ao menos uma checagem falhou.
 Sem dependências além da stdlib.
@@ -18,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -437,6 +439,92 @@ def check_decision_ledger() -> Check:
 
 
 # --------------------------------------------------------------------------
+# C17 — a ODDS Language Version acompanha a superfície da linguagem
+# --------------------------------------------------------------------------
+
+# O que um `.odds` significa, na parte que se lê sem interpretar prosa, e o
+# incremento mínimo que mudar cada parte exige. A prosa das regras fica de fora:
+# uma mudança de gatilho que não toca catálogo nem golden file passa por aqui.
+PATCH, MINOR, MAJOR = 0, 1, 2
+LEVELS = ("PATCH", "MINOR", "MAJOR")
+EBNF_BLOCK = re.compile(r"^```ebnf\n(.*?)^```", re.M | re.S)
+MESSAGE_ROW = re.compile(r"^\|\s*`[A-Z_]+`\s*\|.*$", re.M)
+CURRENT_VERSION = re.compile(r"Versão atual: \*\*v(\d+)\.(\d+)\.(\d+)\*\*")
+
+
+def git(*args: str) -> str | None:
+    try:
+        r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True)
+    except OSError:
+        return None
+    return r.stdout if r.returncode == 0 else None
+
+
+def language_surface(doc: str, text: str) -> list[str]:
+    if doc == "GRAMMAR.md":
+        blocks = EBNF_BLOCK.findall(text)
+    elif doc == "AST_SCHEMA.md":
+        blocks = [line for line in text.splitlines() if CODE_ROW.match(line)]
+    else:
+        blocks = MESSAGE_ROW.findall(text)
+    return [" ".join(b.split()) for b in blocks]
+
+
+SURFACE = (
+    ("GRAMMAR.md", "a EBNF", MINOR),
+    ("AST_SCHEMA.md", "o catálogo §1.3", MINOR),
+    ("MESSAGES.md", "as tabelas de mensagem", PATCH),
+)
+
+
+def check_language_version() -> Check:
+    c = Check("C17", "versão da linguagem (CHANGELOG.md)")
+    base = next(
+        (b.strip() for ref in ("main", "origin/main") if (b := git("merge-base", "HEAD", ref))),
+        None,
+    )
+    if not base:
+        return c.passed("sem main para comparar; nada conferido")
+
+    changed: list[tuple[str, int]] = []
+    for doc, what, floor in SURFACE:
+        before = git("show", f"{base}:{doc}")
+        if before is not None and language_surface(doc, before) != language_surface(doc, read(doc)):
+            changed.append((f"{what} ({doc})", floor))
+    goldens = (git("diff", "--name-only", "--diff-filter=MD", base, "--", "golden-files/") or "").split()
+    if goldens:
+        changed.append((f"{len(goldens)} golden file(s) existente(s)", MINOR))
+
+    old = CURRENT_VERSION.search(git("show", f"{base}:CHANGELOG.md") or "")
+    new = CURRENT_VERSION.search(read("CHANGELOG.md"))
+    if not new:
+        return c.fail("CHANGELOG.md sem a linha 'Versão atual: **vX.Y.Z**'")
+    current = tuple(int(n) for n in new.groups())
+    version = "v" + ".".join(map(str, current))
+    previous = tuple(int(n) for n in old.groups()) if old else current
+
+    if current < previous:
+        return c.fail(f"a versão recuou de v{'.'.join(map(str, previous))} para {version}")
+    if current != previous and not re.search(rf"^- \*\*{re.escape(version)}\*\*", read("CHANGELOG.md"), re.M):
+        return c.fail(f"{version} é a versão atual, mas não tem entrada '- **{version}** — …'")
+    if not changed:
+        return c.passed(f"superfície da linguagem igual à de main; {version}")
+
+    floor = max(level for _, level in changed)
+    details = [f"mudou {what}: pede ao menos {LEVELS[level]}" for what, level in changed]
+    if current == previous:
+        return c.fail(
+            f"a superfície da linguagem mudou e a versão segue {version}; "
+            f"acrescente uma entrada em ODDS Language Version (ao menos {LEVELS[floor]})",
+            details,
+        )
+    bump = next(i for i in (MAJOR, MINOR, PATCH) if current[MAJOR - i] != previous[MAJOR - i])
+    if bump < floor:
+        return c.fail(f"{version} é {LEVELS[bump]}, mas a mudança pede ao menos {LEVELS[floor]}", details)
+    return c.passed(f"a superfície mudou e {version} registra a mudança ({LEVELS[bump]})", details)
+
+
+# --------------------------------------------------------------------------
 # Relatório
 # --------------------------------------------------------------------------
 
@@ -453,6 +541,7 @@ def run() -> list[Check]:
         check_dead_terms(),
         check_message_templates(catalogue),
         check_decision_ledger(),
+        check_language_version(),
     ]
 
 
@@ -460,9 +549,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Checagens da especificação ODDS.")
     parser.add_argument("-v", "--verbose", action="store_true", help="detalhar também o que passou")
     parser.add_argument("--json", action="store_true", help="saída estruturada")
+    parser.add_argument("--only", metavar="ID", help="rodar só uma checagem, como C17")
     args = parser.parse_args()
 
-    checks = run()
+    checks = [c for c in run() if not args.only or c.id == args.only]
     failures = [c for c in checks if not c.ok]
 
     if args.json:

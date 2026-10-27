@@ -18,7 +18,7 @@ npm run generate:messages   # MESSAGES.md → packages/messages/src/messages.jso
 npm run generate:tokens     # DESIGN.md front matter → apps/playground/src/styles/tokens.css
 ```
 
-A pass is done when `npm test` and `npm run typecheck` are green, plus `npm run lint` if it touched the app and `npm run check:spec` if it touched a normative document. If it changed what a `.odds` file means, it also adds a short entry under *ODDS Language Version* in `CHANGELOG.md` (ADR-0025).
+A pass is done when `npm test` and `npm run typecheck` are green, plus `npm run lint` if it touched the app and `npm run check:spec` if it touched a normative document. If it changed what a `.odds` file means, it also adds a short entry under *ODDS Language Version* in `CHANGELOG.md` (ADR-0025). Check C17 enforces this against `main` (EBNF, the §1.3 catalogue, message tables, existing golden files), and a hook runs it before every `git commit`, `git push` and `gh pr create`.
 
 ## Layout (ADR-0004, ADR-0016)
 
