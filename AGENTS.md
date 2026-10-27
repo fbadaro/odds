@@ -9,16 +9,16 @@ The specification was written first and is normative: the code conforms to it. W
 ```bash
 npm install                 # npm workspaces (ADR-0005)
 npm test                    # vitest: every package and apps/playground, the 44 golden files included
-npm run typecheck           # tsc --build over the project references; the bench builds read its dist/
+npm run typecheck           # tsc --build over the project references
 npm run lint                # ESLint, apps/playground only (ADR-0019)
 npm run dev                 # the app's Vite dev server
 npm run build:app           # the app as a static site, in apps/playground/dist
-npm run health              # the spec's own checks (HEALTH.md §8), Python stdlib
+npm run check:spec          # the spec's mechanical checks (scripts/check_spec.py), Python stdlib
 npm run generate:messages   # MESSAGES.md → packages/messages/src/messages.json
 npm run generate:tokens     # DESIGN.md front matter → apps/playground/src/styles/tokens.css
 ```
 
-A pass is done when `npm test` and `npm run typecheck` are green, plus `npm run lint` if it touched the app and `npm run health` if it touched a normative document.
+A pass is done when `npm test` and `npm run typecheck` are green, plus `npm run lint` if it touched the app and `npm run check:spec` if it touched a normative document. If it changed what a `.odds` file means, it also adds a short entry under *ODDS Language Version* in `CHANGELOG.md` (ADR-0025).
 
 ## Layout (ADR-0004, ADR-0016)
 
@@ -27,9 +27,9 @@ A pass is done when `npm test` and `npm run typecheck` are green, plus `npm run 
 | `packages/core` | Lexer, parser, AST, validator, the six phases | Message text and locale: no dependency on `@odds/messages`, and that missing import is the boundary |
 | `packages/messages` | `Diagnostic` + locale → sentence, generated from `MESSAGES.md` | Parsing |
 | `packages/layout` | Honeycomb geometry and SVG rendering (ADR-0009), plus `map.css` | The DOM, React, global state |
-| `apps/playground` | The product: Vite, React 19 + React Compiler, Zustand, Base UI (ADR-0014, ADR-0015, ADR-0019) | Any feature the bench has not validated (ADR-0021) |
+| `apps/playground` | The product: Vite, React 19 + React Compiler, Zustand, Base UI (ADR-0014, ADR-0015, ADR-0019); UI ideas are built here directly (ADR-0025) | |
 | `golden-files/` | The spec's executable suite, governed by `TEST_SUITE.md`; at the root on purpose | |
-| `docs/design/` | The bench, where UI ideas are tried and validated before the app builds them | |
+| `scripts/` | `check_spec.py`, the spec's mechanical checks | |
 
 Each area has working notes in `.claude/rules/`, loaded when you open its files.
 
@@ -54,12 +54,11 @@ Each area has working notes in `.claude/rules/`, loaded when you open its files.
 | Expected output, span conventions | `TEST_SUITE.md` + `golden-files/` |
 | Product requirements | `PRD.md` |
 | The visual system | `DESIGN.md` (ADR-0013) |
-| What changed, on the two version axes | `CHANGELOG.md` |
+| What changed in what a `.odds` file means | `CHANGELOG.md` (the ODDS Language Version; everything else is in git) |
 | Why something is the way it is | `docs/adr/` — read the ADRs of an area before proposing another approach |
-| How healthy the model is | `npm run health`; the `health-check` skill owns `HEALTH.md` |
 
 ## Conventions
 
-- **Decisions become ADRs without asking (ADR-0001).** When a choice had more than one plausible way out, someone will reopen it, and undoing costs more than redoing, write the ADR in the same pass with the `adr` skill and announce it in one line. Bug fixes, renames and a rule added through the fixed cycle close with `CHANGELOG.md` + `HEALTH.md` instead.
+- **ADRs are rare and short (ADR-0025).** Only for architecture, stack or language, one page at most, written without asking through the `adr` skill and announced in one line. Everything else goes in the commit message. A superseded ADR leaves the tree for git history.
 - **Issues and branches.** Issues live in GitHub Issues (`gh`), written in Portuguese; external PRs are not a triage queue. Every branch starts from an issue and is named `feature/XXXX-name`, with `XXXX` the issue number zero-padded to four digits (#9 → `feature/0009-enxugar-docs-agents-md`): git flow's naming, not its flow.
-- **Language.** ADRs, `HEALTH.md`, skills and issues in Portuguese. Code, identifiers, test names and commit messages in English, as Conventional Commits with a scope (`feat(core): …`). Each spec document keeps the language policy written in it.
+- **Language.** ADRs, skills and issues in Portuguese. Code, identifiers, test names and commit messages in English, as Conventional Commits with a scope (`feat(core): …`). Each spec document keeps the language policy written in it.
