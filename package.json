@@ -13,7 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --build",
-    "health": "python3 .claude/skills/health-check/scripts/health_check.py",
+    "check:spec": "python3 scripts/check_spec.py",
     "generate:messages": "node packages/messages/scripts/extract-messages.mjs",
     "generate:tokens": "node apps/playground/scripts/generate-tokens.mjs",
     "dev": "npm run dev -w @odds/playground --",
