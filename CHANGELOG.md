@@ -77,7 +77,7 @@ Semântica da linguagem: gatilhos, severidades e escopo de cada regra. Os dois a
 
 ## AST_SCHEMA.md
 
-Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualizador. Versão atual: **v0.3.1**.
+Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualizador. Versão atual: **v0.3.2**.
 
 - **v0.1.0** — versão inicial, derivada de `GRAMMAR.md` v0.1.7 (todas as pendências da gramática já resolvidas nesse ponto). Define `ProgramNode`, `DomainNode`, `SubdomainNode`, `ContextNode`, `MappingNode`, `RelationshipNode`, a tabela de `DiagnosticCode` sincronizada com `RULES.md`, e a estrutura auxiliar `SymbolTable` usada pelo Visitor.
 - **v0.1.1** — sincronizado com `GRAMMAR.md` v0.1.8: `SubdomainNode.subdomainType` e `SymbolTableEntry.subdomainType` passaram de `SubdomainType` (union fechada) para `string` (valor bruto do parser), já que a gramática abriu `subdomain_type` para `identifier` livre. Isso torna `INVALID_SUBDOMAIN_TYPE` um code de fato alcançável pelo Visitor, corrigindo uma inconsistência encontrada ao desenhar a suíte de golden files.
@@ -94,6 +94,7 @@ Contrato de dados (interfaces TypeScript) entre Parser → Visitor → Visualiza
   - **Regra de integridade semântica de `data`: nada de prosa** (§1.2). O contrato dizia que a mensagem não é contrato e que o núcleo validador não conhece locale, mas nada impedia que a frase voltasse *dentro* de um valor de `data` — e tinha voltado, em dois codes. Agora §1.3 fixa a forma de `REMOVED_CONSTRUCT.replacement` (token literal da substituta) e de `SYNTAX_ERROR.expected` (lista de tokens separados por `", "`), e o teste geral é "se o valor mudaria ao traduzir a mensagem, ele não pertence a `data`".
 - **v0.3.0** — `SubdomainNode` ganha `description?: string` e `owner?: string` (`ADR-0008`), direto no nó e não num objeto `properties`, com a razão escrita na §3: o subdomínio sempre tem bloco, então o objeto intermediário não distinguiria nada. Ausentes quando não declarados, nunca vazios. (A linha de versão deste cabeçalho dizia v0.2.0 apesar da entrada v0.2.1 abaixo; corrigida junto.)
 - **v0.3.1** — só correção de referência, nenhuma mudança de contrato e nenhuma de `ODDS Language Version`. Duas frases apontavam para decisões do `GRILLING.md` pelo número (*"por D3"*, *"desde D17"*), e o arquivo saiu da árvore pelo `ADR-0023`. Passam a apontar para onde a regra vive hoje: a supressão que nunca alcança `error` na `RULES-EN.md` §4, e a renderização degradada por elemento na §5.
+- **v0.3.2** — só correção de referência, nenhuma mudança de contrato e nenhuma de `ODDS Language Version`. A §0 dizia que a AST corresponde à `GRAMMAR.md` v0.2.0, número vencido desde a v0.3.0 da gramática, e que a reaferição completa de 2026-10-06 não pegou. A frase passa a apontar para a versão atual dos dois arquivos sem repetir o número, que mora só no `## Changelog` de cada um.
 
 ---
 
@@ -110,13 +111,14 @@ Catálogo de mensagens de diagnóstico, PT + EN, com placeholders nomeados. Vers
 
 ## TEST_SUITE.md
 
-Suíte de golden files (conformidade) para o parser e o validador semântico. Versão atual: **v0.2.2**.
+Suíte de golden files (conformidade) para o parser e o validador semântico. Versão atual: **v0.2.3**.
 
 - **v0.1.0** — versão inicial. 18 golden files cobrindo todos os `DiagnosticCode` de `AST_SCHEMA.md` v0.1.2 / `GRAMMAR.md` v0.1.9. Encontradas e corrigidas duas contradições estruturais na gramática durante o processo (ver `GRAMMAR.md` v0.1.8/v0.1.9 acima).
 - **v0.1.1** — formalizadas duas classes de lacuna encontradas em auditoria da suíte contra `RULES-EN.md`/`RULES-PT.md`: (1) gatilhos vagos de `GENERIC_WITHOUT_OHS_WARNING` e `EXCESSIVE_SHARED_KERNEL_WARNING` (escopo por relacionamento vs. agregado, limiar numérico) — só mudança de texto em `RULES.md`, nenhum golden file precisou mudar; (2) as tags `[SW]` e `[BBM]` não tinham nenhum golden file — adicionados os casos auxiliares `separation-conflict-sw-directional` e `conformist-core-warning-bbm`. Total de casos: 18 → 20.
 - **v0.2.0** — passada de propagação do `GRILLING.md`. Reescrita da suíte inteira: ver a entrada detalhada no próprio `TEST_SUITE.md` §7.
 - **v0.2.1** — sincronizada com `AST_SCHEMA.md` v0.2.1 e `MESSAGES.md` v0.1.1. Dois `expected.json` mudaram, ambos por prosa em inglês dentro de `data`: `syntax-error` (`expected` vira a lista de tokens `"-->, <--, <->, -x-"`) e `removed-construct-sw` (`replacement` vira `"-x-"`). A §4 passa a declarar a unidade de `column` (UTF-16), e as duas menções a "24 regras" viraram 34. Nenhum span, nenhuma severidade e nenhum code mudou — os 44 casos continuam cobrindo os 35 codes.
 - **v0.2.2** — sincronizada com `GRAMMAR.md` v0.3.0. Um único golden file muda: `valid-baseline`, cujo `input.odds` continua idêntico ao exemplo canônico e passa a declarar `description` e `owner` em `Sales`, com `diagnostics` vazio como antes. O número de casos não muda (44). A forma das duas chaves (posição, conjunto fechado, `owner` reservada) é coberta por dez testes em `packages/core/test/parser.test.ts`, porque o golden file só assere diagnósticos e uma regra de forma não produz code próprio.
+- **v0.2.3** — só correção de referência. Nenhum golden file muda, e o número de casos segue 44. A §0 fixava a suíte em quatro versões vencidas: a própria v0.2.0, a `GRAMMAR.md` v0.2.0, o `AST_SCHEMA.md` v0.2.0 e a `ODDS Language Version` v0.1.0, esta última vencida desde a 1.0.0. A frase passa a apontar para a versão atual de cada um, sem copiar o número.
 
 ---
 
@@ -276,7 +278,7 @@ Primeiro código do projeto, iniciado em 2026-09-05 na branch `feat/core-parser`
 
 ## PRD.md
 
-Requisitos de produto. Versão atual: **1.3.0**.
+Requisitos de produto. Versão atual: **1.3.1**.
 
 - **1.0.0 / 1.1.0** — versões iniciais, anteriores ao changelog centralizado.
 - **1.2.0** — passada de propagação do `GRILLING.md` (D1, D5, D10–D13, D17, D20–D23, D25 · F4). Sistemas externos entram na taxonomia (§4.1) e na sintaxe (§4.2); nova §4.4 fixando o poder expressivo **deliberadamente diferente** das duas vistas; §4.5 passa a nove tags, com `[BBM]` numa categoria própria e uma nota respondendo "cadê o Separate Ways?"; §4.6 reescrita com três severidades e o catálogo completo, e a promessa de que erro **não** impede a visualização; §5.2 ganha a renderização degradada, os marcadores e o diagrama obsoleto; nova §5.5 sobre versão da linguagem e links antigos. O diferencial "linter opinativo" passa a ser afirmado na tabela competitiva (§2.4) em vez de implícito.
@@ -288,4 +290,5 @@ Requisitos de produto. Versão atual: **1.3.0**.
   - **§8.3:** diagramas grandes são lidos pelas duas vistas mais a navegação, a resposta do `ADR-0011`.
   - **§9:** cada fase ganha o seu estado. A Fase 1 foi entregue em 2026-09-05. A Fase 2 foi entregue com duas faltas, o auto-save e o nó fantasma da §5.2. A Fase 3 é parcial, porque falta o link compartilhável. A estimativa original fica como estava, marcada como anterior à implementação.
   - As referências a `RULES.md` passam a nomear o `RULES-EN.md`. Na especificação, `RULES.md` é o apelido do par, e nenhum arquivo tem esse nome desde o primeiro commit. O PRD é o documento que quem não conhece a convenção abre, e para essa pessoa o apelido não leva a arquivo nenhum.
+- **1.3.1** — 2026-10-27 · a versão passa a morar numa seção `## Changelog` no fim do arquivo, como nos outros seis normativos (`.claude/rules/spec.md`), e a §1.1 aponta para ela em vez de repetir o número. Nenhum requisito muda.
 
