@@ -50,7 +50,7 @@ Rejeitada, e era a divisão óbvia (linguagem vs. produto, dois pacotes). Perde 
 
 ### Repositórios separados
 
-Rejeitada. A `RULES-EN.md` §3.3 e o `AST_SCHEMA.md` §1.3 são um contrato único que atravessa parser, validador e visualizador; separar em repos faria cada mudança de contrato virar uma coordenação de PRs entre repositórios. O `CLAUDE.md` fixa uma ordem de passe que toca vários artefatos de uma vez — ela pressupõe um repo.
+Rejeitada. A `RULES-EN.md` §3.3 e o `AST_SCHEMA.md` §1.3 são um contrato único que atravessa parser, validador e visualizador; separar em repos faria cada mudança de contrato virar uma coordenação de PRs entre repositórios. O `.claude/rules/spec.md` fixa uma ordem de passe que toca vários artefatos de uma vez — ela pressupõe um repo.
 
 ## Consequências
 
