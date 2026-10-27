@@ -5,7 +5,7 @@
 ### 1.1 Document title and version
 
 - PRD: Open Domain Driven Specification (ODDS)
-- Version: 1.2.0
+- Version: in the [Changelog](#changelog) at the end of this file
 
 ### 1.2 Product summary
 
@@ -36,6 +36,7 @@ The primary web application (the playground) serves as an interactive environmen
 - Supporting full code-generation skeletons from the ODDS DSL for backend frameworks in the MVP.
 - Implementing live collaborative editing (Google Docs style) in this release.
 - Shipping a VS Code (or other IDE) plugin in the initial version — planned as a future distribution channel, out of scope for the MVP (see section 9.3).
+- Shipping the interface in English in the MVP. The interface ships in Brazilian Portuguese, and English arrives later as a language selector (`ADR-0024`, section 5.4).
 
 ### 2.4 Competitive landscape
 
@@ -80,7 +81,7 @@ The language follows a strict hierarchical taxonomy:
 - **Context (Bounded Context)**: Conceptual and technical boundary where the domain model and ubiquitous language are strictly applied.
 - **External system**: A third-party system the user does not control (a payment provider, another company's ERP, a legacy platform), declared in a dedicated `external { }` block. It is a first-class citizen of the language precisely so that the user is never forced to lie that someone else's system is a context of one of *their* subdomains — which used to be the only way to draw it, and which made the linter fire unactionable warnings about an API the user cannot change. External contexts belong to no subdomain and never receive a `core`/`supporting`/`generic` classification: that vocabulary rates the strategic importance of a part of *your* business.
 
-Two limitations of this taxonomy are deliberate, and are documented as such in `RULES.md` §0.5 rather than left implicit: a Bounded Context belongs to exactly one Subdomain (real DDD relates them n:m), and a file describes exactly one Domain (maps spanning several domains are out of scope).
+Two limitations of this taxonomy are deliberate, and are documented as such in `RULES-EN.md` §0.5 rather than left implicit: a Bounded Context belongs to exactly one Subdomain (real DDD relates them n:m), and a file describes exactly one Domain (maps spanning several domains are out of scope).
 
 ### 4.2. Declarative block syntax
 
@@ -92,6 +93,8 @@ domain [DomainName] {
 
   subdomain [core | supporting | generic] [SubdomainName] {
     title: "Optional display label"
+    description: "Why this subdomain exists"
+    owner: "Who answers for it"
 
     context [ContextName]
 
@@ -120,13 +123,14 @@ domain [DomainName] {
 
 > See `GRAMMAR.md` for the authoritative, versioned EBNF grammar — this snippet is illustrative only and must be kept in sync with it.
 
-Two details in the snippet are load-bearing rather than decorative:
+Three details in the snippet are load-bearing rather than decorative:
 - The `external { }` block is single, anonymous, and sits between the subdomains and the mapping. Naming or repeating it would recreate, by another route, the classification taxonomy that is deliberately withheld from third parties.
 - A comment starting with `odds-disable-next-line` is a **suppression directive**, not a comment: it silences one diagnostic code on the following line, and the justification after the colon is mandatory. Suppression lives in the file (not in the UI) so it travels through Git, through the shared URL and through code review — otherwise two people would see different validation panels for the same design. It never reaches a critical error.
+- **Properties are documentation; tags are contracts.** The properties of a `context` and the `description` and `owner` of a `subdomain` (`ADR-0008`) are shown to the reader and never feed the trigger of a rule. Only tags, connectors and structure are validated. That is a promise to the user: fill in `team` or `maturity` without the tool starting to judge you for it (`RULES-EN.md`, *Context Properties*). A `subdomain` accepts only those two properties, because a property that could contradict its classification or its contexts would call for a rule that this promise forbids.
 
 ### 4.3. Team relationship connectors
 
-The parser and visualizer must support directional connectors representing the three Team Relationships (see RULES.md for the full conceptual definitions) between teams:
+The parser and visualizer must support directional connectors representing the three Team Relationships (see `RULES-EN.md` for the full conceptual definitions) between teams:
 
 | Connector | Relationship / Direction | Description |
 | :---: | :--- | :--- |
@@ -137,21 +141,21 @@ The parser and visualizer must support directional connectors representing the t
 
 ### 4.4. Diagram views and their expressive power
 
-The playground must offer two views, which answer different questions and are therefore **deliberately not equivalent in what they can express**:
+The playground must offer two views, which answer different questions and are therefore **deliberately not equivalent in what they can express**. Both are modes of a single honeycomb map (`ADR-0009`, `ADR-0011`): each context is a hexagonal piece, each subdomain is a territory of pieces, and the territories of one subdomain type form one landmass. The two views share that geography, so **switching views moves no piece**, and the reader's mental map survives the switch.
 
 | View | Question it answers | Shows |
 |---|---|---|
-| Relationship flow | *"How does this integrate?"* | Contexts as nodes, relationships as edges, with connectors and pattern tags rendered on the edges |
-| Nested containment | *"How is this organised?"* | Domain → subdomains → contexts as nested boxes, with the `external` block drawn **outside** the domain boundary, touching it |
+| Relationship flow | *"How does this integrate?"* | The relationships as lines between pieces, with an arrow on the downstream end (both ends on `<->`), a break mark on `-x-` and the pattern tags at each end |
+| Nested containment | *"How is this organised?"* | No lines: the domain, its subdomain territories and their context pieces in the foreground, with the `external` block as a landmass of its own, **outside** the domain's territories |
 
 Two consequences are intentional and must not be "fixed" by a later implementation:
 
 - **`[BBM]` appears only in the flow view.** It is an annotation *of a relationship*, and the containment view has no edges. Deriving a node marker from it (marking any context that carries `[BBM]` on *some* relationship) was considered and rejected: the model is not guaranteed to be consistent on this point — there is a dedicated rule, `INCONSISTENT_BBM`, precisely because it may not be — so the derived marker would make the drawing assert more than the text does. Integration risk is, by definition, a question for the flow view.
-- **The containment view draws `external` outside the domain box**, even though the syntax nests it inside. The nesting is a syntactic compromise; the view has none of the constraints that forced it, so drawing it outside costs nothing and cancels the contradiction in the one place a user would ever perceive it.
+- **The containment view draws `external` outside the domain's territories**, as a landmass of its own with a dashed outline, even though the syntax nests it inside the domain. The nesting is a syntactic compromise; the view has none of the constraints that forced it, so drawing it outside costs nothing and cancels the contradiction in the one place a user would ever perceive it.
 
 ### 4.5. Context map patterns (Integration contracts)
 
-The parser and visualizer must support tags in brackets describing technical contracts and translation patterns applied at boundaries. There are **eight pattern tags**, each valid only on the connectors and sides shown — the full normative matrix is in `RULES.md` §1.C:
+The parser and visualizer must support tags in brackets describing technical contracts and translation patterns applied at boundaries. There are **eight pattern tags**, each valid only on the connectors and sides shown — the full normative matrix is in `RULES-EN.md` §1.C:
 
 | Tag | Pattern Name | Valid on | Description |
 | :---: | :--- | :--- | :--- |
@@ -170,13 +174,13 @@ The parser and visualizer must support tags in brackets describing technical con
 | :---: | :--- | :--- | :--- |
 | `BBM` | Big Ball of Mud | any connector, any side | Explicit signaling of a highly coupled, confused, and unstructured legacy system (risk zone). |
 
-> **Note — where is Separate Ways?** It is the `-x-` connector, and it has no tag. Connectors and tags belong to different taxonomies (the shape of the dependency vs. the solution applied on top of it), and Separate Ways is the one pattern whose application *is* the absence of integration — which makes it indistinguishable from the "Free" dependency shape. A tag there could only ever be redundant or wrong, so ODDS carries the pattern on the connector. The full argument is in `RULES.md` §0.2. An earlier version of the language did have an `[SW]` tag; files that still use it get a dedicated migration diagnostic, not a generic syntax error (section 5.5).
+> **Note — where is Separate Ways?** It is the `-x-` connector, and it has no tag. Connectors and tags belong to different taxonomies (the shape of the dependency vs. the solution applied on top of it), and Separate Ways is the one pattern whose application *is* the absence of integration — which makes it indistinguishable from the "Free" dependency shape. A tag there could only ever be redundant or wrong, so ODDS carries the pattern on the connector. The full argument is in `RULES-EN.md` §0.2. An earlier version of the language did have an `[SW]` tag; files that still use it get a dedicated migration diagnostic, not a generic syntax error (section 5.5).
 
 > **Note — Customer/Supplier:** the classic DDD literature describes it as a single pattern applied to a relationship as a whole. ODDS splits it into two independent, position-aware tags (`C` and `S`) so the parser can validate each side of the relationship separately (see Role Conflict in section 4.6). This is an intentional extension of ODDS beyond the classic pattern set, not a literal reproduction of it.
 
 ### 4.6. Architectural validation rules
 
-The system must validate the architecture and identify issues at **three severity levels**. `RULES.md` is the authoritative source for every trigger and severity; the summary below is what the product commits to surfacing.
+The system must validate the architecture and identify issues at **three severity levels**. `RULES-EN.md` (with `RULES-PT.md` as its parallel translation) is the authoritative source for every trigger and severity; the summary below is what the product commits to surfacing.
 
 **Errors — the model is incoherent.** They do **not** prevent visualization (see 5.2): the diagram degrades per element instead of disappearing. They are never suppressible.
   - Orphan Context / Orphan Subdomain: declaring a context outside a subdomain (or outside the `external` block), or a subdomain outside a domain.
@@ -213,7 +217,7 @@ The system must validate the architecture and identify issues at **three severit
   - Published Language without Open-Host Service.
   - Malformed / Unused Suppression: a directive that cannot work, or that no longer silences anything.
 
-Two product constraints govern how this catalogue may grow, and exist to keep the panel worth reading — a linter that produces eight diagnostics for a thirty-line file gets ignored wholesale. A new rule is only admissible if **(a)** it does not presuppose that the user controls the system being judged, and **(b)** its fix is distinct from every existing rule's fix. Both are recorded in `RULES.md` §0.4.
+Two product constraints govern how this catalogue may grow, and exist to keep the panel worth reading — a linter that produces eight diagnostics for a thirty-line file gets ignored wholesale. A new rule is only admissible if **(a)** it does not presuppose that the user controls the system being judged, and **(b)** its fix is distinct from every existing rule's fix. Both are recorded in `RULES-EN.md` §0.4.
 
 ### 4.7. Tactical design evolution (evolution phase)
 
@@ -233,8 +237,10 @@ The system will expand in a future iteration to support tactical modeling struct
 ### 5.2 Core experience
 
 - **Writing declarations**: The user writes the domain model, and the visualization updates automatically.
-- **Interactive validation feedback**: The user views architectural issues in the validation panel, grouped by three severity levels (error / warning / info). Clicking an issue highlights the relevant line in the editor. The panel owns the presentation of severity — icons and colors are chosen here, never embedded in the message text, so that a rule reclassified later does not carry a stale icon with it.
+- **Interactive validation feedback**: The user views architectural issues in the validation panel, with a counter per severity level (error / warning / info) that filters the list. The list itself keeps the normative emission order (`RULES-EN.md` §3.3): by validation phase, then by position in the file. Clicking an issue highlights the relevant line in the editor and selects the element it is about on the map. The panel owns the presentation of severity — icons and colors are chosen here, never embedded in the message text, so that a rule reclassified later does not carry a stale icon with it.
 - **Visualization toggles**: The user switches between the relationship flow view and the nested containment view (see 4.4).
+- **Navigating the map**: The user zooms and pans; selecting a context lights up its relationships and fades the rest, selecting a territory focuses its subdomain, and selecting a line isolates one relationship. A structure panel lists the domain's tree and relationships, and picking an entry frames it on the map.
+- **Inspecting an element**: The selected context, subdomain or relationship opens an inspector with what the text declares about it — its properties, its tags read as patterns, and the diagnostics that concern it.
 - **Workspace sharing**: The user copies a shareable URL to easily send their workspace design to others.
 
 **Rendering with errors — degradation, not blocking.** The diagram must never blank out because the model is invalid. Every intermediate state of a file being typed is a syntax error, so strict blocking would make the canvas blink empty on every keystroke, contradicting the instant-visualization promise in 7.3 and the responsiveness constraint in 8.2. The required behaviour:
@@ -250,8 +256,9 @@ The system will expand in a future iteration to support tactical modeling struct
 
 ### 5.4 UI/UX highlights
 
-- Clean, modern design system with clear typography, intuitive controls, and a polished visual identity.
+- Clean, modern design system with clear typography, intuitive controls, and a polished visual identity, specified in `DESIGN.md` (`ADR-0013`).
 - Smooth transition between light and dark modes.
+- **Interface language:** Brazilian Portuguese in the MVP, with English arriving later as a language selector (`ADR-0024`). The message catalogue (`MESSAGES.md`) is already bilingual, and the `.odds` keywords and diagnostic codes are the same in every language, so a shared design reads the same to everyone.
 
 ### 5.5 Language versioning and old links
 
@@ -300,7 +307,7 @@ The project changes how product and engineering teams align on system architectu
 ### 8.3 Sharing & collaboration limits
 
 - Link sharing: Shareable links must fit within standard communication channel limits (e.g., chat apps) to enable seamless sharing.
-- Multi-view options: Large, complex diagrams must offer alternative layouts or views to remain legible and useful for stakeholders.
+- Multi-view options: Large, complex diagrams must offer alternative layouts or views to remain legible and useful for stakeholders. The answer is the two views plus navigation (`ADR-0011`): a fifty-context map seen whole and still is not legible in the flow view, and it is read by zooming, focusing and lighting up one context at a time.
 
 ## 9. Milestones & sequencing
 
@@ -308,6 +315,7 @@ The project changes how product and engineering teams align on system architectu
 
 - Size: Medium
 - Time estimate: 4 weeks
+- *Written before implementation began, and kept as it was. The status of each phase is in 9.3.*
 
 ### 9.2 Team size & composition
 
@@ -317,14 +325,18 @@ The project changes how product and engineering teams align on system architectu
 
 - **Phase 1: Core language and validation rules (1 week)**
   - Deliverables: Domain language parser and architectural validation system.
+  - **Status: delivered on 2026-09-05.** `@odds/core` passes the 44 golden files, and `@odds/messages` renders every diagnostic in both languages.
 - **Phase 2: User interface and visualization (2 weeks)**
   - Deliverables: Visual playground, dual diagram layouts, validation feedback panel, and automatic saving.
   - Milestone: Complete playground with live visualization and validation feedback.
+  - **Status: delivered, with two gaps.** The playground (`apps/playground`) runs since 2026-10-21 and does everything the bench validated since 2026-10-23. Two pieces are missing: automatic saving of the design and theme (GH-005), and the dotted ghost node for a reference that does not resolve (5.2): today the relationship is reported in the panel and left out of the drawing.
 - **Phase 3: Sharing and export capabilities (1 week)**
   - Deliverables: Shareable link generator, image exports, preset templates, and interface styling.
   - Milestone: Complete playground with sharing features.
+  - **Status: partial.** Image export with the markers (vector SVG), two preset templates and the interface styling (`DESIGN.md`) are delivered. The shareable link (GH-003) is not: its payload format still needs an ADR of its own.
 - **Phase 4: Tactical design support (future evolution)**
   - Deliverables: Language expansion for internal context elements and nested visualization support.
+  - **Status: not started**, by design.
 
 ## 10. User stories
 
@@ -382,3 +394,9 @@ The project changes how product and engineering teams align on system architectu
 - **Acceptance criteria**:
   - The application validates and renders the diagram purely within the user's browser.
   - No network requests containing the design content are sent to external servers.
+
+---
+
+## Changelog
+
+Version history is centralized in [`CHANGELOG.md`](./CHANGELOG.md) (section `## PRD.md`). Current version: **1.3.1**. Any change to this file must get a new entry there, not here.

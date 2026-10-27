@@ -4,6 +4,10 @@
  * docs/design/pages/colmeia-navegacao.docs.mjs (a documentação), montado como o
  * colmeia-embed.mjs o monta — `documented(BARE, MODELS)`, e a fonte rica do modelo
  * canônico. Dados copiados literalmente.
+ *
+ * Os dois módulos foram apagados em 2026-10-24, depois de validados, com os builds da
+ * colmeia-50 e da colmeia-navegacao que os liam (seguem no git em e282c83). Desde então
+ * a fonte é esta, e quem a lê é a bancada, o playground.html, pelo `marketplace()`.
  */
 import { canon } from "../canon.js";
 import type { LayoutContext, LayoutModel } from "../types.js";
@@ -12,10 +16,10 @@ import { sourceOf } from "./source.js";
 
 /* ---- colmeia-50.model.mjs ---- */
 /**
- * O marketplace de 50 contextos, no formato de modelo da colmeia v4. Mora num módulo
- * próprio porque dois instrumentos o leem: o colmeia-50.build.mjs, que mede o mapa
- * parado, e o colmeia-navegacao.build.mjs, que o põe na mão de quem navega. Os dois
- * precisam do MESMO mapa, senão o antes e o depois deixam de ser comparáveis.
+ * O marketplace de 50 contextos, no formato de modelo da colmeia v4. Morava num módulo
+ * próprio porque dois instrumentos o liam: o colmeia-50.build.mjs, que media o mapa
+ * parado, e o colmeia-navegacao.build.mjs, que o punha na mão de quem navega. Os dois
+ * precisavam do MESMO mapa, senão o antes e o depois deixavam de ser comparáveis.
  *
  * O modelo é sintético mas não aleatório: um marketplace de varejo com doze
  * subdomínios e um bloco external, e relações com vizinhança — a maioria dentro de
@@ -79,11 +83,12 @@ if (nCtx !== 50) throw new Error(`o modelo tem ${nCtx} contextos, não 50`);
  * contexto (GRAMMAR.md §3) e de subdomínio (ADR-0008) que a ficha da relação mostra.
  *
  * Vinte e dois contextos e seis subdomínios já têm documentação nos modelos da v4,
- * com os mesmos nomes; o build lê de lá, e este arquivo só preenche o resto. Fica
- * fora do colmeia-50.model.mjs de propósito: propriedade não move peça (o build
- * confere), mas o colmeia-50 mede o mapa parado e não precisa dela.
+ * com os mesmos nomes; o `documented()` lê de lá, e este bloco só preenche o resto.
+ * Ficava fora do colmeia-50.model.mjs de propósito: propriedade não move peça (o
+ * colmeia-navegacao.build.mjs conferia), mas o colmeia-50 media o mapa parado e não
+ * precisava dela.
  *
- * Os valores vão sem aspas aqui; o build as põe, como a fonte .odds pede.
+ * Os valores vão sem aspas aqui; o `documented()` as põe, como a fonte .odds pede.
  */
 export const SUB_DOCS: Record<string, { description: string; owner: string }> = {
   Marketplace: { description: "Abrir a vitrine para vendedores de fora sem perder o controle", owner: "Diretoria de Marketplace" },
@@ -148,8 +153,9 @@ export const CTX_DOCS: Record<string, Omit<LayoutContext, "id">> = {
 /* O marketplace documentado: o modelo nu do colmeia-50 com as propriedades de cada
    contexto e subdomínio. O que os modelos da v4 já documentam, com os mesmos nomes,
    vem de lá (`v4models` é o MODELS do __v3); o resto, das tabelas acima. Os valores
-   da v4 já trazem as aspas da fonte; os daqui ganham agora. Dois builds usam isto, o
-   do colmeia-navegacao e o do colmeia-ao-vivo, para documentarem o mesmo mapa. */
+   da v4 já trazem as aspas da fonte; os daqui ganham agora. Dois builds usavam isto, o
+   do colmeia-navegacao (apagado em 2026-10-24) e o do colmeia-ao-vivo, para
+   documentarem o mesmo mapa; hoje é o `marketplace()` abaixo que usa. */
 export function documented(bare: LayoutModel, v4models: Record<string, LayoutModel>): { model: LayoutModel; undocumented: string[] } {
   const q = (t: string) => '"' + t + '"';
   const fromV4: { ctx: Record<string, LayoutContext>; sub: Record<string, { description: string; owner: string | undefined }> } = { ctx: {}, sub: {} };

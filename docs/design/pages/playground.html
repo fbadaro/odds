@@ -1,5 +1,5 @@
 <title>Playground ODDS</title>
-<!--BUILD:8e194e5d2619-->
+<!--BUILD:54a87783e140-->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -144,7 +144,8 @@ button:focus-visible{outline:2px solid rgb(var(--c-accent)); outline-offset:2px}
 </style>
 <!--V3CSS--><style id="v3css">
 /* ODDS -- folha de estilo do mapa em colmeia (saida de renderSvg).
-   Porte literal das regras de SVG de docs/design/pages/colmeia-v4.html, com as
+   Porte literal das regras de SVG de docs/design/pages/colmeia-v4.html (apagada em
+   2026-10-24, depois de validada; no git em e282c83), com as
    variaveis proprias, prefixo odds-map (triplets RGB, lidos como rgb(var(NOME) / alfa)).
    Auto-contida, sem depender de variaveis de fora. Quem consome mapeia as suas
    para estas (ex.: accent: var(NOSSO-ACCENT)).
@@ -3129,16 +3130,20 @@ __exp.PROP_ORDER = PROP_ORDER; __exp.fnv = fnv; __exp.Src = Src; __exp.ownerDoma
  * docs/design/pages/colmeia-navegacao.docs.mjs (a documentação), montado como o
  * colmeia-embed.mjs o monta — `documented(BARE, MODELS)`, e a fonte rica do modelo
  * canônico. Dados copiados literalmente.
+ *
+ * Os dois módulos foram apagados em 2026-10-24, depois de validados, com os builds da
+ * colmeia-50 e da colmeia-navegacao que os liam (seguem no git em e282c83). Desde então
+ * a fonte é esta, e quem a lê é a bancada, o playground.html, pelo `marketplace()`.
  */
 const { canon } = __odds["odds-layout/canon.js"];
 const { MODELS } = __odds["odds-layout/fixtures/models.js"];
 const { sourceOf } = __odds["odds-layout/fixtures/source.js"];
 /* ---- colmeia-50.model.mjs ---- */
 /**
- * O marketplace de 50 contextos, no formato de modelo da colmeia v4. Mora num módulo
- * próprio porque dois instrumentos o leem: o colmeia-50.build.mjs, que mede o mapa
- * parado, e o colmeia-navegacao.build.mjs, que o põe na mão de quem navega. Os dois
- * precisam do MESMO mapa, senão o antes e o depois deixam de ser comparáveis.
+ * O marketplace de 50 contextos, no formato de modelo da colmeia v4. Morava num módulo
+ * próprio porque dois instrumentos o liam: o colmeia-50.build.mjs, que media o mapa
+ * parado, e o colmeia-navegacao.build.mjs, que o punha na mão de quem navega. Os dois
+ * precisavam do MESMO mapa, senão o antes e o depois deixavam de ser comparáveis.
  *
  * O modelo é sintético mas não aleatório: um marketplace de varejo com doze
  * subdomínios e um bloco external, e relações com vizinhança — a maioria dentro de
@@ -3248,11 +3253,12 @@ if (nCtx !== 50)
  * contexto (GRAMMAR.md §3) e de subdomínio (ADR-0008) que a ficha da relação mostra.
  *
  * Vinte e dois contextos e seis subdomínios já têm documentação nos modelos da v4,
- * com os mesmos nomes; o build lê de lá, e este arquivo só preenche o resto. Fica
- * fora do colmeia-50.model.mjs de propósito: propriedade não move peça (o build
- * confere), mas o colmeia-50 mede o mapa parado e não precisa dela.
+ * com os mesmos nomes; o `documented()` lê de lá, e este bloco só preenche o resto.
+ * Ficava fora do colmeia-50.model.mjs de propósito: propriedade não move peça (o
+ * colmeia-navegacao.build.mjs conferia), mas o colmeia-50 media o mapa parado e não
+ * precisava dela.
  *
- * Os valores vão sem aspas aqui; o build as põe, como a fonte .odds pede.
+ * Os valores vão sem aspas aqui; o `documented()` as põe, como a fonte .odds pede.
  */
 const SUB_DOCS = {
     Marketplace: { description: "Abrir a vitrine para vendedores de fora sem perder o controle", owner: "Diretoria de Marketplace" },
@@ -3315,8 +3321,9 @@ const CTX_DOCS = {
 /* O marketplace documentado: o modelo nu do colmeia-50 com as propriedades de cada
    contexto e subdomínio. O que os modelos da v4 já documentam, com os mesmos nomes,
    vem de lá (`v4models` é o MODELS do __v3); o resto, das tabelas acima. Os valores
-   da v4 já trazem as aspas da fonte; os daqui ganham agora. Dois builds usam isto, o
-   do colmeia-navegacao e o do colmeia-ao-vivo, para documentarem o mesmo mapa. */
+   da v4 já trazem as aspas da fonte; os daqui ganham agora. Dois builds usavam isto, o
+   do colmeia-navegacao (apagado em 2026-10-24) e o do colmeia-ao-vivo, para
+   documentarem o mesmo mapa; hoje é o `marketplace()` abaixo que usa. */
 function documented(bare, v4models) {
     const q = (t) => '"' + t + '"';
     const fromV4 = { ctx: {}, sub: {} };
@@ -5662,6 +5669,10 @@ __exp.SEV_RANK = SEV_RANK; __exp.sevIcon = sevIcon; __exp.worst = worst; __exp.p
  * `@odds/layout` — a colmeia do mapa de contextos ODDS, portada literalmente do
  * script da colmeia-v4 (docs/design/pages/colmeia-v4.html). Sem DOM e sem React;
  * do `@odds/core` só importa tipos.
+ *
+ * A página foi apagada em 2026-10-24, depois de validada: o porte batia com ela byte a
+ * byte, e o que ela produzia ficou congelado nos goldens de test/golden/. Segue no
+ * git: `git show e282c83:docs/design/pages/colmeia-v4.html`.
  */
 __exp.layout = __odds["odds-layout/layout.js"].layout;
 __exp.placeLabels = __odds["odds-layout/labels.js"].placeLabels;

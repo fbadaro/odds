@@ -2,13 +2,16 @@
  * Caracterização do porte: o @odds/layout tem de reproduzir a colmeia-v4 byte a byte.
  *
  * O oráculo é test/golden/*.json, capturado uma vez por scripts/capture-legacy.mjs.
+ * A página e o script de captura foram apagados em 2026-10-24, depois de validados:
+ * os goldens são o que sobrou deles, e os dois seguem no git em e282c83.
  * A geo legada tem referências circulares, então o golden guarda só o recorte
  * `{tiles, rels: [{rk, path}], viewBox}`; aqui se comparam `tiles` e `rels`. O
  * `viewBox` não sai de layout() — quem o escreve é o build() da v4 (render, Task 4).
  * O desenho (`buildSvg`, o `build` da v4) é comparado byte a byte com `svg[chave]`,
  * e o `viewBox` que ele escreve na geo com `viewBoxes[chave]`.
  * Os `bench-*.json` são da Task 5; daqui só se lê o `text` deles, para conferir o
- * gerador de fonte das fixtures.
+ * gerador de fonte das fixtures. A chave `matrix` de seis goldens de modelo é do
+ * differential.test.ts.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -70,7 +73,7 @@ describe("fixtures × golden da v4", () => {
   });
 });
 
-/** O estado da v4 que scripts/capture-legacy.mjs fixou para cada chave de `svg`
+/** O estado da v4 que a captura fixou para cada chave de `svg`
     (DEFAULT_STATE + COMBOS): `sel` e `selSub` sempre nulos. */
 function optsOf(key: string): ViewOptions {
   const [view, tags, labels, sel] = key.split("|");

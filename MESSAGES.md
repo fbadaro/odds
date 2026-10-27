@@ -14,7 +14,7 @@ Três consequências que motivam a separação:
 
 1. **O núcleo validador não conhece locale.** Parser e Visitor produzem veredito estruturado; PT e EN são decisão de apresentação. Antes, as mensagens moravam em `RULES-EN.md`/`RULES-PT.md` como prosa paralela — inclusive com o *nome do contexto de exemplo* traduzido (`'Payment'` × `'Pagamento'`), o que denunciava que aquilo nunca foi um template com placeholder, e sim dois textos independentes que precisavam ser mantidos em sincronia à mão.
 2. **Os golden files asserem `data`, não a frase.** Reformular uma mensagem, corrigir uma vírgula ou revisar a tradução **não quebra teste nenhum** — é um incremento de PATCH da `ODDS Language Version` (`RULES.md` §6).
-3. **A parte que mais divergia entre as duas traduções passou a morar num lugar só**, com PT e EN na mesma linha da tabela. Isso *ajuda* a sincronia que o `CLAUDE.md` exige entre `RULES-EN.md` e `RULES-PT.md`, em vez de disputá-la.
+3. **A parte que mais divergia entre as duas traduções passou a morar num lugar só**, com PT e EN na mesma linha da tabela. Isso *ajuda* a sincronia que o `RULES-EN.md` e o `RULES-PT.md` exigem um do outro, em vez de disputá-la.
 
 **O que a mensagem nunca faz:** repetir a severidade. Nada de `⚠️` embutido no texto, nada de prefixo "Erro:" ou "Aviso:". A severidade é um campo (`AST_SCHEMA.md` §1.1) e o ícone é decisão do painel — texto que carrega severidade fica errado no instante em que uma regra é reclassificada.
 
@@ -148,4 +148,4 @@ Quando a implementação começar, este catálogo deve ser extraído para um `me
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.3**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

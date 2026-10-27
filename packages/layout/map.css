@@ -1,5 +1,6 @@
 /* ODDS -- folha de estilo do mapa em colmeia (saida de renderSvg).
-   Porte literal das regras de SVG de docs/design/pages/colmeia-v4.html, com as
+   Porte literal das regras de SVG de docs/design/pages/colmeia-v4.html (apagada em
+   2026-10-24, depois de validada; no git em e282c83), com as
    variaveis proprias, prefixo odds-map (triplets RGB, lidos como rgb(var(NOME) / alfa)).
    Auto-contida, sem depender de variaveis de fora. Quem consome mapeia as suas
    para estas (ex.: accent: var(NOSSO-ACCENT)).

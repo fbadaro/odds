@@ -1,6 +1,9 @@
 ---
 name: portar-da-bancada
 description: Porta para apps/playground uma feature validada em docs/design/pages/playground.html, levando a funcionalidade e construindo-a com os componentes do Base UI. Use ao portar ou implementar na aplicação algo da bancada, ao falar de paridade ou do Playground ODDS, quando apps/playground/test/parity.test.ts falhar, e quando uma feature nova da bancada ganhar data-feature.
+paths:
+  - "apps/playground/**"
+  - "docs/design/pages/playground.html"
 ---
 
 # Portar da bancada para a aplicação

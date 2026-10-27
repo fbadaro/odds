@@ -74,7 +74,7 @@ São escolhas, não descuidos. Ficam escritas para que ninguém precise redescob
 
 1. **Um Bounded Context pertence a exatamente um Subdomínio.** No DDD real, espaço do problema e espaço da solução se relacionam n:m — um contexto pode atender dois subdomínios. A ODDS mantém 1:1 deliberadamente: n:m destruiria a vista de contenção aninhada que o produto exige, e essa é a mesma simplificação que ferramentas comparáveis fazem.
 2. **Um arquivo, um `domain`.** Mapas que cruzam múltiplos domínios são impossíveis por construção. É isso que torna coerente a premissa "um arquivo = uma URL compartilhável".
-3. **Sistemas de terceiros são cidadãos de primeira classe, via o bloco `external { }`** — não é mais preciso mentir que a Stripe ou o ERP de outra empresa é um contexto de um subdomínio *seu*. **Contradição assumida:** o bloco `external` é declarado *dentro* do `domain { }`, que por definição não o contém. Ele está aninhado ali por razões sintáticas (preserva o invariante de que todo `context` vive dentro de um bloco declarado, e a premissa "um arquivo = um domain"). A contradição é nomeada em vez de escondida — e é cancelada no único lugar onde o usuário a perceberia: a vista de contenção desenha o bloco externo **fora** da fronteira do domínio, encostado nela (§5).
+3. **Sistemas de terceiros são cidadãos de primeira classe, via o bloco `external { }`** — não é mais preciso mentir que a Stripe ou o ERP de outra empresa é um contexto de um subdomínio *seu*. **Contradição assumida:** o bloco `external` é declarado *dentro* do `domain { }`, que por definição não o contém. Ele está aninhado ali por razões sintáticas (preserva o invariante de que todo `context` vive dentro de um bloco declarado, e a premissa "um arquivo = um domain"). A contradição é nomeada em vez de escondida — e é cancelada no único lugar onde o usuário a perceberia: a vista de contenção desenha o bloco externo **fora** dos territórios de subdomínio do domínio, como massa própria ao lado deles (§5).
 4. **`[BBM]` precisa ser repetida em toda linha** que toca aquele sistema (§0.3), mitigado por `INCONSISTENT_BBM`.
 5. **As duas vistas têm poderes expressivos diferentes, deliberadamente.** `[BBM]` é anotação *de uma relação*, e a vista de contenção não tem linhas — então um sistema-pântano aparece lá como qualquer outro contexto. Derivar a marca no nó (marcar um contexto que carregue `[BBM]` em *qualquer* relação) foi rejeitado: construiria uma inferência visual sobre dado que a própria `INCONSISTENT_BBM` admite poder ser contraditório, fazendo o desenho afirmar mais do que o texto. As duas vistas respondem perguntas diferentes — *"como isto está organizado?"* e *"como isto se integra?"* — e risco de integração é, por definição, pergunta da segunda.
 
@@ -441,7 +441,7 @@ A regra, portanto, é **degradação por elemento**:
 * Num par duplicado, **a primeira ocorrência é a que desenha** — coerente com a convenção de span que culpa a segunda.
 * **Exportar com erros é permitido, e o export inclui os marcadores.** A imagem exportada é exatamente o que está no canvas; não existe variante "limpa". Um export sem marcadores viraria documentação afirmando um modelo que nunca foi válido.
 
-A vista de contenção desenha o bloco `external { }` **fora** da fronteira do domínio, encostado nela — cancelando a contradição sintática registrada na §0.5 no único lugar em que o usuário a perceberia.
+A vista de contenção desenha o bloco `external { }` **fora** dos territórios de subdomínio do domínio, como massa própria ao lado deles — cancelando a contradição sintática registrada na §0.5 no único lugar em que o usuário a perceberia. A colmeia não desenha linha em volta de um domínio (`ADR-0011`), então o "fora" se mede pelos territórios dele.
 
 ---
 
@@ -480,4 +480,4 @@ Por fim, ordene o array inteiro pelas chaves da §3.3. A ordem emitida faz parte
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.3.0** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.3.1** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.

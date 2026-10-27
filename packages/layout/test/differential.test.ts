@@ -1,54 +1,30 @@
 /**
- * Verificação diferencial do desenho: o `build` da colmeia-v4, carregado sem DOM da
- * página congelada (docs/design/pages/colmeia-v4.html), contra o `buildSvg` portado.
+ * Verificação diferencial do desenho: o `buildSvg` sobre a matriz de estados que os
+ * goldens de svg não cobrem.
  *
  * Os goldens fixam só quatro estados, com `sel` e `selSub` nulos e `labels: "ctx"`.
  * Aqui se varre o resto da matriz — seleção de contexto, de subdomínio, de
- * diagnóstico, e os rótulos "sub" e "dom" — sobre os modelos da v4, comparando o SVG
- * e o `viewBox` que cada lado escreve na geo.
+ * diagnóstico, e os rótulos "sub" e "dom" — sobre os modelos da v4.
+ *
+ * O oráculo era o `build` da colmeia-v4, carregado sem DOM de
+ * docs/design/pages/colmeia-v4.html. A página foi apagada em 2026-10-24, depois de
+ * validada: nesse dia o porte batia com ela nos 540 estados, e o resultado ficou
+ * congelado na chave `matrix` dos seis goldens, um hash por estado do SVG e do
+ * `viewBox` que a v4 escrevia. A página segue no git:
+ * `git show e282c83:docs/design/pages/colmeia-v4.html`.
  */
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterAll, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { layout } from "@odds/layout";
 import type { LayoutModel, TargetedDiagnostic, ViewOptions } from "@odds/layout";
 import { buildSvg } from "../src/render.js";
 
-type Legacy = any;
-
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const g = globalThis as Record<string, unknown>;
-const saved = { headless: Object.hasOwn(g, "__V3_HEADLESS"), v3: Object.hasOwn(g, "__v3"), h: g.__V3_HEADLESS, x: g.__v3 };
-
-/** A mesma técnica de scripts/capture-legacy.mjs: o último <script> da página. */
-function loadPage(): Legacy {
-  const html = fs.readFileSync(path.join(root, "docs/design/pages/colmeia-v4.html"), "utf8");
-  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-  g.__V3_HEADLESS = true;
-  new Function(scripts[scripts.length - 1]![1]!)();
-  return g.__v3;
-}
-const v3 = loadPage();
-
-afterAll(() => {
-  if (saved.headless) g.__V3_HEADLESS = saved.h;
-  else delete g.__V3_HEADLESS;
-  if (saved.v3) g.__v3 = saved.x;
-  else delete g.__v3;
-});
-
+const goldenDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "golden");
+const read = (name: string) => JSON.parse(fs.readFileSync(path.join(goldenDir, name + ".json"), "utf8"));
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x));
-
-/** A geo da bancada, como na captura: o modelo entra por MODELS.__live. */
-function legacyGeo(M: LayoutModel): Legacy {
-  v3.MODELS.__live = clone(M);
-  try {
-    return v3.layout(v3.canon(v3.declared("__live", "clean", 0, 0)));
-  } finally {
-    delete v3.MODELS.__live;
-  }
-}
 
 /** A matriz: cada seleção sozinha, mais uma combinada, sob as 12 vistas. */
 function statesOf(ctxs: string[], subs: string[], nDiags: number): ViewOptions[] {
@@ -69,21 +45,20 @@ function statesOf(ctxs: string[], subs: string[], nDiags: number): ViewOptions[]
   return out;
 }
 
-const CASES: [string, "clean" | "broken", number][] = [
-  ["one", "clean", 0],
-  ["one", "broken", 0],
-  ["one", "clean", 1],
-  ["many", "clean", 0],
-  ["many", "broken", 0],
-  ["many", "clean", 1],
-];
+const keyOf = (s: ViewOptions) => [s.view, s.tags, s.labels, s.sel ?? "-", s.selSub ?? "-", s.selDiag ?? "-"].join("|");
+const hash = (svg: string, viewBox: unknown) =>
+  crypto.createHash("sha256").update(svg + "\n" + JSON.stringify(viewBox)).digest("hex").slice(0, 16);
 
-describe("buildSvg × build da v4 congelada", () => {
-  for (const [model, file, extra] of CASES) {
-    it(`${model}-${file}-extra${extra}`, () => {
-      const M: LayoutModel = v3.declared(model, file, 0, extra);
-      const diags: TargetedDiagnostic[] = v3.diagsFor(model, file, v3.sourceOf(M, "today")).items;
-      const lg = legacyGeo(M);
+const CASES = ["one-clean", "one-broken", "one-clean-extra1", "many-clean", "many-broken", "many-clean-extra1"];
+
+describe("buildSvg × matriz congelada da v4", () => {
+  for (const name of CASES) {
+    it(name, () => {
+      const g = read(name);
+      const M: LayoutModel = g.model;
+      const diags: TargetedDiagnostic[] = g.diags;
+      // build escreve na geo (viewBox, badges, labels): uma geo só, na ordem da matriz,
+      // como a v4 foi varrida
       const geo = layout(M);
       const ctxs = Object.keys(geo.tiles);
       const subs: string[] = [];
@@ -92,16 +67,11 @@ describe("buildSvg × build da v4 congelada", () => {
         if ((d.external || []).length) subs.push(d.id + "/external");
       });
       const states = statesOf(ctxs, subs, diags.length);
-      const differ: string[] = [];
-      for (const st of states) {
-        Object.assign(v3.state, st);
-        const want = v3.build(lg, clone(diags), null);
-        const got = buildSvg(geo, clone(diags), st);
-        if (got !== want || JSON.stringify(geo.viewBox) !== JSON.stringify(lg.viewBox)) differ.push(JSON.stringify(st));
-      }
-      Object.assign(v3.state, { view: "flow", tags: "on", labels: "ctx", sel: null, selSub: null, selDiag: null });
+      const got: Record<string, string> = {};
+      for (const st of states) got[keyOf(st)] = hash(buildSvg(geo, clone(diags), st), geo.viewBox);
       expect(states.length).toBeGreaterThan(60);
-      expect(differ).toEqual([]);
+      expect(Object.keys(got)).toEqual(Object.keys(g.matrix));
+      expect(got).toEqual(g.matrix);
     });
   }
 });

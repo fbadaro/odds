@@ -4,7 +4,7 @@
 
 Este arquivo é o **contrato de dados** entre as três camadas do sistema: Parser → Validador (Visitor) → Visualizador. Define, em TypeScript, a forma exata da Árvore Sintática Abstrata (AST) que o parser produz a partir de um arquivo `.odds` válido sintaticamente (ver `GRAMMAR.md`), e que o Visitor percorre para aplicar as regras semânticas (ver `RULES-EN.md`).
 
-Esta AST corresponde 1:1 à gramática **GRAMMAR.md v0.2.0**. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`) e com o catálogo de mensagens (`MESSAGES.md`).
+Esta AST corresponde 1:1 à gramática do **`GRAMMAR.md`**, sempre na versão atual dos dois arquivos. O número de cada um fica só no `## Changelog` dele, porque um número copiado para cá vence no próximo incremento. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`) e com o catálogo de mensagens (`MESSAGES.md`).
 
 **Convenção:** cada nó carrega um campo `span` com a posição de início/fim no arquivo-fonte. Isso é o que viabiliza a navegação clique-a-clique do painel de validação (PRD §5.2 / GH-002) — tanto para erros sintáticos quanto semânticos.
 
@@ -200,7 +200,7 @@ A tabela abaixo é **normativa** e é a fonte de verdade de três coisas ao mesm
 
 - `CONFORMIST_CORE.trigger`: `"conformist"` (o lado Downstream `core` carrega `[CF]`) ou `"bbm"` (o lado Upstream carrega `[BBM]`).
 - `INCOMPLETE_MUTUAL_TAG.declaredSide` e `INCOMPLETE_CUSTOMER_SUPPLIER` (`declared`/`missing`): `"left"`/`"right"` para o lado; `"C"`/`"S"` para a tag.
-- `MALFORMED_SUPPRESSION.reason`: `"unknown-code"` (o code nomeado não existe neste catálogo), `"missing-justification"` (a diretiva não traz `: <justificativa>`) ou `"not-suppressible"` (o code nomeado tem severidade `error`, que por D3 nunca é suprimível).
+- `MALFORMED_SUPPRESSION.reason`: `"unknown-code"` (o code nomeado não existe neste catálogo), `"missing-justification"` (a diretiva não traz `: <justificativa>`) ou `"not-suppressible"` (o code nomeado tem severidade `error`, que pela `RULES-EN.md` §4 nunca é suprimível).
 - `REMOVED_CONSTRUCT.removedIn`: a `ODDS Language Version` em que a construção deixou de existir (ver `CHANGELOG.md`).
 - `REMOVED_CONSTRUCT.construct` e `REMOVED_CONSTRUCT.replacement`: **tokens literais da linguagem**, sem prosa em volta e sem crases — a construção removida como se escreve (`[SW]`) e a que ocupa seu lugar (`-x-`). A instrução de *como* usar a substituta é do template, não do dado.
 - `SYNTAX_ERROR.expected`: a **lista de tokens literais** aceitos naquela posição, separados por `", "` (ex.: `"-->, <--, <->, -x-"`). Nunca uma descrição em prosa da categoria esperada — a palavra "conector" que nomeia o conjunto vive no template. Um conjunto aberto é esperado aqui: ao contrário dos demais valores fechados desta lista, `expected` varia com a posição do parser, e por isso é a lista que é normativa, não os seus membros.
@@ -215,7 +215,7 @@ Um elemento que produziu um diagnóstico de severidade **`error`** é registrado
 Duas obrigações que isso impõe a esta AST, e que são a razão de os campos existirem:
 
 1. `SymbolTableEntry.valid` (§5) — uma declaração descartada pelo panic-mode ainda **entra** na tabela de símbolos, marcada como inválida. É isso que mata a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` (o contexto *foi* declarado, só que no lugar errado) e o que permite ao renderizador desenhar o nó fantasma pontilhado em vez de nada.
-2. `astGenerated` **deixou de ser proxy de "renderizável"**. Desde D17 a renderização degrada por elemento: a AST parcial sempre desenha o que for desenhável, e o elemento problemático aparece marcado. `astGenerated: false` significa apenas *"não existe árvore"* — ou seja, `SYNTAX_ERROR` puro —, não *"nada será exibido"*.
+2. `astGenerated` **deixou de ser proxy de "renderizável"**. Desde a v0.2.0 a renderização degrada por elemento (`RULES-EN.md` §5): a AST parcial sempre desenha o que for desenhável, e o elemento problemático aparece marcado. `astGenerated: false` significa apenas *"não existe árvore"* — ou seja, `SYNTAX_ERROR` puro —, não *"nada será exibido"*.
 
 ### 1.5 Quem produz o quê
 
@@ -538,4 +538,4 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 
 ## Changelog
 
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.0**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.
+Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

@@ -5,8 +5,9 @@
  * core e um layout, nenhuma cópia.
  *
  * Desde 2026-10-21 o layout é o pacote `@odds/layout`, e não mais o script da
- * colmeia-v4.html, que ficou como registro congelado do ADR-0010. O pacote entra no
- * mesmo registro do core; a v4 não é mais lida.
+ * colmeia-v4.html, que ficou como registro congelado do ADR-0010 até 2026-10-24, quando
+ * foi apagada depois de validada (segue no git em e282c83). O pacote entra no mesmo
+ * registro do core; a v4 não é mais lida.
  *
  * Por que embutir, e por que script clássico inline: ver colmeia-ao-vivo.build.mjs.
  *
