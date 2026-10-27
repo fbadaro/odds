@@ -6,7 +6,6 @@ date: 2026-10-24
 deciders: Fabio Badaro, Claude
 tags: produto, playground, idioma, prd
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0024 — A interface sai em português no MVP, e o inglês entra depois como seletor
@@ -41,7 +40,7 @@ Era o estado anterior, e foi ele que deixou três camadas decidirem cada uma por
 
 - O `PRD.md` (1.3.0) registra o idioma na §5.4 e põe a interface em inglês entre os não-objetivos do MVP, na §2.3.
 - As palavras-chave do `.odds`, os códigos de diagnóstico e o arquivo compartilhado são os mesmos em qualquer idioma. Um link aberto por alguém que usa outro idioma mostra o mesmo desenho e os mesmos diagnósticos, só com outra frase.
-- **O que piora:** cada componente novo escrito com texto direto aumenta o custo da extração quando o inglês vier. Hoje são dezenas de rótulos em pelo menos 15 arquivos da aplicação, e a bancada tem os seus.
+- **O que piora:** cada componente novo escrito com texto direto aumenta o custo da extração quando o inglês vier. Hoje são dezenas de rótulos em pelo menos 15 arquivos da aplicação.
 - Os códigos (`CONFORMIST_CORE`, `UNDOCUMENTED_CONTRACT`) aparecem em inglês ao lado da frase em português, porque são identificadores, não texto.
 
 ## Reversão
@@ -50,4 +49,4 @@ Era o estado anterior, e foi ele que deixou três camadas decidirem cada uma por
 
 **O custo da volta** cresce com a interface: extrair o texto dos componentes para uma tabela por idioma e acrescentar o seletor. As mensagens de diagnóstico já estão prontas, e basta passar `en` ao `renderMessage`.
 
-**O que foi construído em cima:** a interface da aplicação e da bancada, toda em português, e a §2.3 e a §5.4 do `PRD.md`.
+**O que foi construído em cima:** a interface da aplicação, toda em português, e a §2.3 e a §5.4 do `PRD.md`.

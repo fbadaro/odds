@@ -6,14 +6,13 @@ date: 2026-09-05
 deciders: Fabio Badaro
 tags: stack, parser, toolchain
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0002 — Chevrotain como toolkit de parser
 
 ## Contexto
 
-O repositório tem ~350 KB de especificação normativa, 44 golden files e **zero linhas de código de produto**. O parser é o primeiro código, e a `HEALTH.md` §9.2 registra em **R6.4** que stack e toolchain valem 0 de 20 — "a maior lacuna isolada do projeto inteiro".
+O repositório tem ~350 KB de especificação normativa, 44 golden files e **zero linhas de código de produto**. O parser é o primeiro código, e nenhuma escolha de stack ou toolchain tinha sido feita.
 
 Quatro requisitos deste repo restringem a escolha, e nenhum deles é genérico:
 
@@ -28,7 +27,7 @@ E um fato que só apareceu depois da primeira análise: **a linguagem vai cresce
 
 **Usamos Chevrotain** como toolkit de parser, em TypeScript.
 
-O argumento que venceu é de **coerência entre spec e artefato**, que é a disciplina central deste repositório inteiro. Chevrotain expressa a gramática de forma declarativa, e o resultado é um artefato que pode ser conferido **produção a produção contra a EBNF normativa** da `GRAMMAR.md` §2–§3 — potencialmente até de forma mecânica, como uma checagem futura do `health_check.py`. Um parser recursive descent escrito à mão codifica a gramática em fluxo de controle, onde a deriva em relação à EBNF é invisível: nada quebra quando o código e a spec discordam, e este repo já pagou o preço de números afirmados em prosa sem reconferência (`CHANGELOG.md`, `RULES` v0.2.1).
+O argumento que venceu é de **coerência entre spec e artefato**, que é a disciplina central deste repositório inteiro. Chevrotain expressa a gramática de forma declarativa, e o resultado é um artefato que pode ser conferido **produção a produção contra a EBNF normativa** da `GRAMMAR.md` §2–§3 — potencialmente até de forma mecânica. Um parser recursive descent escrito à mão codifica a gramática em fluxo de controle, onde a deriva em relação à EBNF é invisível: nada quebra quando o código e a spec discordam, e este repo já pagou o preço de números afirmados em prosa sem reconferência (`CHANGELOG.md`, `RULES` v0.2.1).
 
 Três razões de apoio:
 
@@ -64,7 +63,7 @@ Rejeitada. O validador consome a AST, e a AST vem do parser. Escrever as seis fa
 
 ## Consequências
 
-**O que melhora.** A `HEALTH.md` §9.2 **R6.4** deixa de ser 0 de 20 e o `HEALTH.md` §3 prevê `+6` para decisão de stack registrada em ADR. A gramática passa a existir como artefato revisável contra a EBNF. E o projeto sai da spec para o código.
+**O que melhora.** A gramática passa a existir como artefato revisável contra a EBNF. E o projeto sai da spec para o código.
 
 **O que piora, e é o preço real:**
 

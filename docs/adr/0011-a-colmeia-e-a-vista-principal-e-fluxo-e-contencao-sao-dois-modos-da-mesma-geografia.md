@@ -6,12 +6,11 @@ date: 2026-10-07
 deciders: Fabio Badaro, Claude
 tags: render, playground, vistas, prd
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0011 — A colmeia é a vista principal, e fluxo e contenção são dois modos da mesma geografia
 
-> **Fechado em 2026-10-24.** A v3 e a v4, que este ADR cita como o que desenha as duas vistas na mesma geografia, foram apagadas depois de validadas (`ADR-0023`). As duas vistas vivem no `@odds/layout`, e as páginas seguem no git, no commit `e282c83`.
+> Os protótipos que este ADR cita (as páginas da exploração de UI em `docs/`) saíram da árvore depois de validados e seguem no git, no commit `e282c83`. A decisão segue em vigor no `@odds/layout`.
 
 ## Contexto
 
@@ -22,7 +21,7 @@ A colmeia, nascida na rodada de render de 2026-09-11, fez as duas coisas ao mesm
 2. a colmeia é só a contenção, e o fluxo vira um grafo livre (o `ADR-0009` nomeia o ELK como primeiro candidato);
 3. uma vista só, mudando o PRD.
 
-Até 2026-10-06, a evidência favorecia a saída 1: nos modelos de 17 e 24 contextos, a v4 dava 1 cruzamento cada, nenhuma aresta sobre peça alheia e desvio máximo de 1,88×. Em 2026-10-07, o `colmeia-50` mediu um marketplace sintético de 50 contextos, 12 subdomínios e 64 relações (`docs/design/pages/colmeia-50.html`). A contenção continuou legível. O fluxo não:
+Até 2026-10-06, a evidência favorecia a saída 1: nos modelos de 17 e 24 contextos, a v4 dava 1 cruzamento cada, nenhuma aresta sobre peça alheia e desvio máximo de 1,88×. Em 2026-10-07, uma página de medida mediu um marketplace sintético de 50 contextos, 12 subdomínios e 64 relações. A contenção continuou legível. O fluxo não:
 - 120 cruzamentos;
 - uma aresta de 43 células;
 - 18 colisões entre linha e chip;
@@ -68,4 +67,4 @@ Por exemplo, roteamento que atravessa território em vez de contornar o mapa, ou
 
 O sinal de erro é um arquiteto, **com zoom, foco e marcação disponíveis**, ainda não conseguir responder "como isto se integra?" num mapa real de 40 a 60 contextos. Se isso acontecer, a alternativa do ELK para o fluxo é reaberta, e o `ADR-0009` já a prevê. O mesmo vale se a exportação do mapa inteiro virar uso frequente e ninguém quiser o fluxo da colmeia exportado.
 
-Desfazer custa pouco agora: não há playground de produto, só páginas de design. Depois de o `@odds/layout` existir e o playground desenhar o fluxo com ele, a volta é escrever um segundo layout, para o fluxo, e uma transição entre vistas que deixa de ser trivial. O que já foi construído em cima: a v3 e a v4, que desenham as duas vistas na mesma geografia, e o `colmeia-50`, que mediu o custo.
+Desfazer custa pouco agora: não há playground de produto, só páginas de design. Depois de o `@odds/layout` existir e o playground desenhar o fluxo com ele, a volta é escrever um segundo layout, para o fluxo, e uma transição entre vistas que deixa de ser trivial. O que já foi construído em cima: a v3 e a v4, que desenham as duas vistas na mesma geografia, e a página do marketplace de 50 contextos, que mediu o custo.

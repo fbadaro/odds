@@ -6,16 +6,15 @@ date: 2026-10-09
 deciders: Fabio Badaro, Claude
 tags: render, playground, vistas, degradação
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0012 — Na vista de fluxo, a relação acesa corre em tracejado e a inválida fica em tracejado vermelho parado
 
-> **Fechado em 2026-10-24.** O `colmeia-navegacao.build.mjs`, onde moravam as checagens de sentido e de invalidade, foi apagado depois de validado, junto com as colmeias v1 a v4 (`ADR-0023`). A decisão segue em vigor: o `@odds/layout` escreve o `data-flow` no SVG, e a animação mora no `playground.html`, a bancada de comparação, e na aplicação. O script segue no git, no commit `e282c83`.
+> Os protótipos que este ADR cita (as páginas da exploração de UI em `docs/`) saíram da árvore depois de validados e seguem no git, no commit `e282c83`. A decisão segue em vigor no `@odds/layout`. O `@odds/layout` escreve o `data-flow` no SVG, e a animação mora em `apps/playground`.
 
 ## Contexto
 
-A rodada de navegação do `ADR-0011` (página `colmeia-navegacao`) pôs um mapa de 50 contextos na mão de quem navega. Ao clicar num contexto, as relações dele acendiam só por cor e espessura. O autor pediu que as linhas de conexão fossem tracejadas e animadas.
+A rodada de navegação do `ADR-0011` (a página de navegação) pôs um mapa de 50 contextos na mão de quem navega. Ao clicar num contexto, as relações dele acendiam só por cor e espessura. O autor pediu que as linhas de conexão fossem tracejadas e animadas.
 
 Uma restrição já existia. O `RULES-EN.md` §5 define a marca do estado degradado: *"a dashed red edge for an invalid relationship"*. O tracejado já tinha dono. Usá-lo para outra coisa apagaria a única distinção visual que a especificação pede para a relação inválida.
 
@@ -37,7 +36,7 @@ Dois casos sem sentido de dependência ficam parados por natureza, não por inva
 
 ### Pulso de luz sobre linha sólida
 
-Um segmento curto de luz correndo pela linha, em todas as relações em repouso, ou só nas acesas quando há seleção. Não disputava nada com a marca de inválida, porque não é tracejado. Foi construído e comparado na página. Perdeu por escolha do autor diante das duas opções lado a lado. Ficou também uma fraqueza técnica: o pulso tinha comprimento proporcional à aresta, longo nas compridas e quase invisível nas curtas, e precisaria de outra técnica para ter tamanho fixo. Num mapa de 64 relações, todas pulsando em repouso, ele também acrescentava movimento justamente onde o `colmeia-50` já mostrava excesso de linhas.
+Um segmento curto de luz correndo pela linha, em todas as relações em repouso, ou só nas acesas quando há seleção. Não disputava nada com a marca de inválida, porque não é tracejado. Foi construído e comparado na página. Perdeu por escolha do autor diante das duas opções lado a lado. Ficou também uma fraqueza técnica: o pulso tinha comprimento proporcional à aresta, longo nas compridas e quase invisível nas curtas, e precisaria de outra técnica para ter tamanho fixo. Num mapa de 64 relações, todas pulsando em repouso, ele também acrescentava movimento justamente onde a página do marketplace de 50 contextos já mostrava excesso de linhas.
 
 ### Toda linha tracejada e animada, sempre
 
@@ -50,7 +49,7 @@ O estado anterior. A relação acesa já se distinguia por cor e espessura. Reje
 ## Consequências
 
 - O `@odds/layout` e o playground herdam duas marcas de linha com significados disjuntos: o tracejado em movimento (relação válida, acesa) e o tracejado vermelho parado (relação inválida). Qualquer terceiro uso do tracejado precisa passar por este ADR.
-- A rodada de estados (degradação, diagrama obsoleto) ganha a marca de relação inválida já desenhada e conferida. A página `colmeia-navegacao` tem o arquivo *com erros* com três erros plantados só nas tags, e o build confere que exatamente essas três relações saem vermelhas.
+- A rodada de estados (degradação, diagrama obsoleto) ganha a marca de relação inválida já desenhada e conferida. A página de navegação tem o arquivo *com erros* com três erros plantados só nas tags, e o build confere que exatamente essas três relações saem vermelhas.
 - **Piora:** num mapa parado e visto de longe, a relação inválida em tracejado fino pode passar despercebida no meio de 64 linhas. A marca depende do chip de severidade na porta e do painel de diagnósticos para ser achada, e não só da linha.
 - **Piora:** o export vetorial (`PRD.md` §5.2) não carrega movimento. No arquivo exportado, a relação acesa vira tracejado colorido parado, e a distinção para a inválida fica só na cor. O export precisa decidir se exporta a seleção.
 - Com "reduzir movimento" ligado no sistema, a animação desliga. A relação acesa fica tracejada e colorida, e a distinção para a inválida fica de novo só na cor.
@@ -59,4 +58,4 @@ O estado anterior. A relação acesa já se distinguia por cor e espessura. Reje
 
 O sinal de erro seria um usuário confundir relação acesa com relação inválida, ou deixar de ver uma inválida porque o tracejado vermelho se perde no mapa. Outro sinal seria o movimento cansar em sessões longas de navegação. O teste humano da rodada de navegação é a primeira oportunidade de ver isso.
 
-Desfazer custa pouco hoje: são algumas regras de CSS e o atributo `data-flow` numa página de design. Depois de o playground existir, a marca de inválida terá virado vocabulário do usuário, e mudá-la exigirá mudar o `RULES-EN.md` §5 e o `RULES-PT.md` no mesmo passe. O que já foi construído em cima: a página `colmeia-navegacao`, com o seletor de arquivo e as checagens de sentido e de invalidade no `colmeia-navegacao.build.mjs`.
+Desfazer custa pouco hoje: são algumas regras de CSS e o atributo `data-flow` numa página de design. Depois de o playground existir, a marca de inválida terá virado vocabulário do usuário, e mudá-la exigirá mudar o `RULES-EN.md` §5 e o `RULES-PT.md` no mesmo passe. O que já foi construído em cima: a página de navegação, com o seletor de arquivo e as checagens de sentido e de invalidade no build dela.

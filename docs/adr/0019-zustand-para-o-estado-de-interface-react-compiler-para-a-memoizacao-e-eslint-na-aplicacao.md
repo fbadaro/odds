@@ -6,14 +6,13 @@ date: 2026-10-22
 deciders: Fabio Badaro, Claude
 tags: toolchain, ui, react, lint, testes, playground
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0019 — Zustand para o estado de interface, React Compiler para a memoização e ESLint na aplicação
 
 ## Contexto
 
-O `ADR-0014` decidiu React no chrome e deixou em aberto *"as práticas de React a adotar"*. O `ADR-0005` tinha adiado o linter de propósito, porque escolher regras antes de existir código sobre o qual discutir seria decidir no vazio, e o `HEALTH.md` §9.2 segurava 2 pontos do R6.6 por essa ausência.
+O `ADR-0014` decidiu React no chrome e deixou em aberto *"as práticas de React a adotar"*. O `ADR-0005` tinha adiado o linter de propósito, porque escolher regras antes de existir código sobre o qual discutir seria decidir no vazio.
 
 Na conversa de 2026-10-21 sobre como construir a aplicação, essas práticas foram propostas por Claude e o autor não as vetou. O que pesava:
 
@@ -57,7 +56,7 @@ Playwright ou equivalente, rodando a aplicação de verdade. Ficou de fora por o
 - A regra "o texto é o único estado de verdade" vira forma de código: os derivados só têm uma porta de entrada, a ação que muda o texto.
 - O código dos componentes fica sem `useMemo`, `useCallback` e `React.memo`. Quem vier de outro projeto React pode estranhar a ausência e querer pôr de volta, e as regras do compilador no lint apontam a memoização manual que ele não consegue preservar.
 - A fronteira do Base UI fica imposta antes de o Base UI entrar: a regra já está no `eslint.config.js`, e `src/components/ui/` nasce quando a primeira feature precisar de um componente padrão.
-- O `HEALTH.md` §9.2 R6.6 deixa de perder pontos pela ausência de linter, e o `CLAUDE.md` passa a dizer o que existe: lint na aplicação, pacotes ainda sem.
+- O `AGENTS.md` diz o que existe: lint na aplicação, pacotes ainda sem.
 - **Piora: o build tem uma etapa de Babel** só para o compilador, e o compilador é mais uma peça com ciclo próprio entre o código e o navegador. Um erro dele aparece como comportamento estranho, não como erro de compilação.
 - **Piora: o lint é desigual no repositório.** `apps/playground` tem regras e os pacotes não, e quem mexe nos dois precisa saber disso.
 - **Piora: são mais quatro dependências de desenvolvimento diretas no lint** (`eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`), mais o Babel e o plugin do compilador, que o repositório não tinha.

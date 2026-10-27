@@ -6,20 +6,19 @@ date: 2026-10-06
 deciders: Fabio Badaro, Claude
 tags: render, layout, playground, localidade
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0010 — A localidade do layout vem de degraus de capacidade, arranjo fixo e territórios que se resolvem sozinhos
 
-> **Fechado em 2026-10-24.** A `colmeia-v4.html`, onde estes mecanismos nasceram, e o `colmeia-v4.check.mjs`, que conferia a localidade edição por edição, foram apagados depois de validados, junto com a v3 (`ADR-0023`). Os mecanismos vivem no `@odds/layout`, a família 6 do check virou o teste de localidade de `packages/layout/test/properties.test.ts`, e as páginas seguem no git, no commit `e282c83`.
+> Os protótipos que este ADR cita (as páginas da exploração de UI em `docs/`) saíram da árvore depois de validados e seguem no git, no commit `e282c83`. A decisão segue em vigor no `@odds/layout`. A família 6 do check da v4 virou o teste de localidade de `packages/layout/test/properties.test.ts`.
 
 > **O ADR-0009 foi aceito em 2026-10-06**, depois do teste de digitação humana. O bloco abaixo descreve o estado em que este ADR foi escrito.
 
-> **Depende do ADR-0009, que segue `proposed`.** Este ADR decide *como* o layout próprio cumpre a primeira das duas condições de aceite daquele, a localidade. Ele não aceita o ADR-0009: falta a segunda condição, alguém digitar um mapa de tamanho real no `colmeia-ao-vivo` sem perder a peça que estava olhando. Se o ADR-0009 for revertido, este perde o objeto.
+> **Depende do ADR-0009, que segue `proposed`.** Este ADR decide *como* o layout próprio cumpre a primeira das duas condições de aceite daquele, a localidade. Ele não aceita o ADR-0009: falta a segunda condição, alguém digitar um mapa de tamanho real no protótipo ao vivo sem perder a peça que estava olhando. Se o ADR-0009 for revertido, este perde o objeto.
 
 ## Contexto
 
-O protótipo `docs/design/pages/colmeia-ao-vivo.html` mostrou, em 2026-09-28, que a colmeia v3 acompanha a digitação mas não tem localidade: acrescentar um contexto movia 15 a 17 das 17 peças, e acrescentar uma relação, 3 a 8. O ADR-0009 transformou isso em condição de aceite e deu a forma da exigência: acrescentar ou remover um contexto de um subdomínio só pode mover peças daquele subdomínio, e renomear não pode mover nenhuma. Também apontou o tipo de remédio: capacidade em degraus com folga, massas ancoradas por posição. Continuou valendo a restrição que ele mesmo fixou: o layout é função pura do texto, sem posição anterior como semente, por causa da URL compartilhada (`PRD.md` §10.3).
+O protótipo ao vivo mostrou, em 2026-09-28, que a colmeia v3 acompanha a digitação mas não tem localidade: acrescentar um contexto movia 15 a 17 das 17 peças, e acrescentar uma relação, 3 a 8. O ADR-0009 transformou isso em condição de aceite e deu a forma da exigência: acrescentar ou remover um contexto de um subdomínio só pode mover peças daquele subdomínio, e renomear não pode mover nenhuma. Também apontou o tipo de remédio: capacidade em degraus com folga, massas ancoradas por posição. Continuou valendo a restrição que ele mesmo fixou: o layout é função pura do texto, sem posição anterior como semente, por causa da URL compartilhada (`PRD.md` §10.3).
 
 Lendo o layout da v3, a falta de localidade não tinha uma causa só. Era uma cadeia:
 - o tamanho do território era função exata da contagem de contextos;
@@ -45,7 +44,7 @@ A localidade é uma propriedade **verificada edição por edição**, e é obtid
 2. **Arranjo fixo.** A orientação dos territórios numa massa e a ordem dos domínios na prateleira passam a seguir a ordem de id. O `external` continua apontando para os parceiros dele, mas é posto por último, no raio do próprio ângulo, sem empurrar massa alheia.
 3. **Territórios que se resolvem sozinhos.** Uma peça só lê o próprio território. Parceiro de outro território puxa para o centro do território dele, que só muda no degrau. Parceiro no `external` ou em outro domínio não puxa. A distância a peça alheia vira regra de terreno: peça não ocupa célula vizinha de território alheio. A ordem dentro do território é grau, depois a assinatura (em que territórios estão os parceiros), depois o nome. No empate entre células, decide a coordenada relativa à massa, nunca o ruído de ponto flutuante nem a ordem de varredura.
 
-As respostas às cinco perguntas, na ordem: relayout no degrau, com degraus moderados; localidade também para relação; reorganização livre dentro do território; o nome desempata, e renomear pode trocar de lugar um gêmeo estrutural; trabalho na `colmeia-v4.html`, não em pacote.
+As respostas às cinco perguntas, na ordem: relayout no degrau, com degraus moderados; localidade também para relação; reorganização livre dentro do território; o nome desempata, e renomear pode trocar de lugar um gêmeo estrutural; trabalho numa colmeia v4, não em pacote.
 
 O argumento que venceu foi a medição. Desligar uma escolha discreta por vez mostrou que a orientação pontuada pelos parceiros era a principal fonte de movimento sob edição de relação. Mostrou também que ela só podia sair junto com as outras duas: desligada sozinha, o domínio único ia de 1 para 9 cruzamentos. Com as três fixas e o `external` reposicionado, as 71 edições de contexto, as 70 de renome e as 35 de relação dos dois modelos ficaram locais, e a régua passou: 1 cruzamento em cada modelo, nenhuma aresta sobre peça alheia, nenhuma colisão. O robô do protótipo, ao acrescentar `Loyalty` a Atendimento, mede agora **0 de 17** peças andaram.
 
@@ -85,7 +84,7 @@ Tentada para que o giro do `external` nunca deslocasse outro domínio na pratele
 
 ## Consequências
 
-- A v4 (`docs/design/pages/colmeia-v4.html`) substitui a v3 como o layout embutido no `colmeia-ao-vivo`. A família 6 do `colmeia-v4.check.mjs` verifica a localidade sobre toda edição de contexto, renome e relação dos dois modelos. O teste de mutação, que é devolver a puxada para o `external`, a derruba com as três edições esperadas.
+- A v4 substitui a v3 como o layout embutido no protótipo ao vivo. A família 6 do check da v4 verifica a localidade sobre toda edição de contexto, renome e relação dos dois modelos. O teste de mutação, que é devolver a puxada para o `external`, a derruba com as três edições esperadas.
 - As duas buscas fatoriais `perms()` saíram. O risco que o ADR-0009 apontava, 10 domínios travando a aba, deixa de existir no layout.
 - **Piora:** território vazio. Subdomínio de um contexto ocupa 19 células, e a folga é visível.
 - **Piora:** os territórios não se viram mais para os parceiros, e duas puxadas saíram (para o `external` e para outro domínio). A régua não piorou, mas ela é medida em dois modelos. Um terceiro modelo pode mostrar o custo que estes dois não mostram.
@@ -93,7 +92,7 @@ Tentada para que o giro do `external` nunca deslocasse outro domínio na pratele
 - Fica fora da regra, contado à parte pela checagem:
   - a edição que cruza um degrau (2 de 31 e 5 de 40 nos dois modelos);
   - no arquipélago, o domínio deslocado inteiro pela prateleira (1 edição). Ele só existe sob a hipótese de vários domínios, que hoje é `INVALID_DOMAIN_CARDINALITY`. A prateleira é a primeira coisa a rever quando a cardinalidade abrir.
-- Defeito herdado e não resolvido: domínio sem subdomínio e sem `external` ainda derruba o layout, e o `colmeia-ao-vivo` continua contornando isso.
+- Defeito herdado e não resolvido: domínio sem subdomínio e sem `external` ainda derruba o layout, e o protótipo ao vivo continua contornando isso.
 
 ## Reversão
 

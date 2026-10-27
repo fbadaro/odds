@@ -6,7 +6,6 @@ date: 2026-10-22
 deciders: Fabio Badaro, Claude
 tags: estrutura, monorepo, playground
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0016 — A aplicação mora em apps/playground, e packages/ guarda só bibliotecas
@@ -15,7 +14,7 @@ superseded-by: —
 
 O `ADR-0004` fixou o monorepo em `packages/` com três pacotes, e o terceiro era `@odds/playground`, *"o produto: editor, diagrama, URL, auto-save"*. Quando ele foi escrito, em 2026-09-05, não havia uma linha de interface, nem framework, nem bundler. Os três vieram depois: o `ADR-0009` pôs o layout num pacote `@odds/layout`, o `ADR-0014` decidiu React no chrome e o `ADR-0015` trouxe o Vite só para a aplicação.
 
-Em 2026-10-20, ao fechar essas duas últimas decisões de stack, o autor reabriu onde a aplicação mora, e o `HEALTH.md` §9.2 segurou 1 ponto do R6.4 por isso. Na conversa de 2026-10-21 sobre como construir a aplicação, a pergunta ficou concreta. Havia agora duas espécies de coisa no repositório:
+Em 2026-10-20, ao fechar essas duas últimas decisões de stack, o autor reabriu onde a aplicação mora. Na conversa de 2026-10-21 sobre como construir a aplicação, a pergunta ficou concreta. Havia agora duas espécies de coisa no repositório:
 
 - **bibliotecas**, `@odds/core`, `@odds/messages` e o `@odds/layout` que ia nascer, publicáveis, construídas por `tsc` sem bundle (`ADR-0005`), sem DOM e sem React;
 - **um produto**, que é um site estático montado pelo Vite, com React, CSS Modules e um servidor de desenvolvimento, e que ninguém importa.
@@ -40,7 +39,7 @@ Era o plano registrado, e funciona: os workspaces do npm não distinguem um paco
 
 - `packages/` tem três bibliotecas, `@odds/core`, `@odds/messages` e `@odds/layout`, e nenhuma importa React nem toca DOM. `apps/` tem uma aplicação. O próximo produto, se a landing virar site próprio, já tem endereço.
 - A aplicação aponta os pacotes para a fonte (`apps/playground/vite.config.ts`), como o `vitest.config.ts` da raiz já fazia, porque os pacotes publicam `./dist` e ele não existe num checkout limpo.
-- O `CLAUDE.md` passa a listar `@odds/layout` e `apps/playground` na tabela *Code layout*.
+- O `AGENTS.md` lista `@odds/layout` e `apps/playground` na tabela *Layout*.
 - **Piora: o glob de workspace tem duas entradas**, e o Vitest da raiz passou a abrir o projeto de `apps/*` também. É pouco, mas é uma configuração a mais que precisa lembrar das duas árvores.
 - **Piora: o `ADR-0004` passa a ser lido junto com este.** Quem o ler sozinho encontra `@odds/playground` em `packages/`. Ele ganhou uma nota de topo apontando para cá.
 

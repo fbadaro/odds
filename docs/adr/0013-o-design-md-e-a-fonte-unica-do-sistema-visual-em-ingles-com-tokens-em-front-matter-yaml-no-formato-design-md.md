@@ -6,7 +6,6 @@ date: 2026-10-17
 deciders: Fabio Badaro, Claude
 tags: ui, design-system, documentacao, playground, landing
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0013 — O DESIGN.md é a fonte única do sistema visual, em inglês, com tokens em front matter YAML no formato design.md
@@ -19,7 +18,7 @@ superseded-by: —
 
 O `DESIGN.md` nasceu em 2026-09-07 como rascunho de trabalho em português, em prosa com nove seções numeradas. Ele misturava três coisas: o sistema propriamente dito (tokens de cor como triplas RGB, três famílias tipográficas, escala de raios, sombras tingidas), a **procedência** do sistema e o **histórico das hipóteses**. A procedência era o método de tokens, a sombra tingida, a eyebrow e a pill mono, tomados da referência <https://studio.mjolnix.com.br/>, sem tomar nome, marca, estrutura de página nem texto. O histórico incluía o azul de planta trocado pelo roxo na segunda rodada, o marca-texto solar recusado na v4, a troca da Bricolage pela Montserrat e o playground estilizado apagado em 2026-09-11.
 
-Enquanto isso, a exploração do `ADR-0007` produziu páginas que não seguiam o arquivo, e não precisavam: as colmeias, a bancada e o `playground.html` eram testes de hipótese. O playground de 2026-10-16 chegou a vestir a pele da variante D (azul de planta, IBM Plex, neutros quentes), e a landing v5 usa raios de 20px e 14px onde o arquivo diz 16px e 12px. O autor confirmou que o `DESIGN.md` sempre foi a fonte da verdade e que, a partir daqui, tudo passa a considerá-lo: o site e o playground.
+Enquanto isso, a exploração de UI em mocks descartáveis produziu páginas que não seguiam o arquivo, e não precisavam: as colmeias e a bancada do playground eram testes de hipótese. O playground de 2026-10-16 chegou a vestir a pele da variante D (azul de planta, IBM Plex, neutros quentes), e a landing v5 usa raios de 20px e 14px onde o arquivo diz 16px e 12px. O autor confirmou que o `DESIGN.md` sempre foi a fonte da verdade e que, a partir daqui, tudo passa a considerá-lo: o site e o playground.
 
 Para isso o arquivo precisava ser consumível como âncora de implementação, e havia mais de um jeito de chegar lá. O autor trouxe como referência um design system no formato `design.md` (o da Stripe, em `stripe-DESIGN.md`, fora do versionamento): um front matter YAML com `colors`, `typography`, `rounded`, `spacing` e `components` referenciando os outros por `{grupo.token}`, seguido de seções padronizadas (Overview, Colors, Typography, Layout, Elevation & Depth, Shapes, Components, Do's and Don'ts, Responsive Behavior, Iteration Guide).
 
@@ -29,7 +28,7 @@ O `DESIGN.md` segue o formato `design.md`, **em inglês**, com os tokens declara
 
 O argumento que venceu é o de **consumo, não o de aparência**. Prosa normativa obriga quem implementa a extrair valores de parágrafos, e foi exatamente assim que a landing v5 derivou para 20px e 14px sem ninguém perceber. Um front matter com tokens nomeados transforma "o valor do card" numa consulta, deixa referências entre tokens verificáveis (`{colors.accent}` resolve ou não resolve) e é o formato que ferramentas e agentes já leem. O inglês acompanha a escolha: os nomes de seção do formato, os tokens e o código que os consome já são em inglês, e a versão final do sistema é o ponto em que a língua do artefato se alinha com a do código.
 
-Na mesma passada, o arquivo foi reduzido ao que estava **definido**: nenhum valor foi alterado. Saíram a procedência, o histórico das hipóteses, a arte do herói (a escolha entre as cinco candidatas segue aberta em `docs/design/README.md`) e as cores do diagrama, que o arquivo nunca definiu e que a landing e a colmeia pintam de modos diferentes. A procedência e o histórico ficam neste ADR e no `git log`, não no artefato normativo.
+Na mesma passada, o arquivo foi reduzido ao que estava **definido**: nenhum valor foi alterado. Saíram a procedência, o histórico das hipóteses, a arte do herói (a escolha entre as cinco candidatas ficou aberta) e as cores do diagrama, que o arquivo nunca definiu e que a landing e a colmeia pintam de modos diferentes. A procedência e o histórico ficam neste ADR e no `git log`, não no artefato normativo.
 
 ## Alternativas consideradas
 
@@ -47,14 +46,14 @@ Manteria a língua do repositório de design. Rejeitada porque o formato tem nom
 
 ## Consequências
 
-- Toda página nova de `docs/design/pages/` e toda interface do produto consome os tokens do `DESIGN.md`. As páginas existentes **não** seguem: o `playground.html` (pele da variante D), as colmeias (pele própria do mapa) e a landing v5 (raios 20/14) precisam ser ajustadas, e esse trabalho ainda não foi feito.
+- Toda interface do produto consome os tokens do `DESIGN.md`.
 - O arquivo perde a procedência e o porquê de cada escolha. Quem perguntar "por que roxo e não o azul de planta" encontra a resposta aqui e no histórico do git, não no artefato — é o preço de um normativo enxuto.
 - As cores do diagrama (tipo de subdomínio, aresta, linha acesa, linha inválida) seguem **sem token**. Até serem decididas, a colmeia continua com as dela, e o `DESIGN.md` declara isso na própria seção de escopo.
 - Duas escolhas de preenchimento foram feitas na conversão, porque o formato exige um valor onde o original não dava um: o token `typography.button` (Inter 16px/600, o corpo do `body` com o peso que o original dá aos botões) e a regra de cinco pesos (o original dizia "não há 800" mas usava 800 no herói; ficou 800 só no `display-hero`).
-- O `DESIGN.md` continua fora da `ODDS Language Version` e do ciclo fixo de regras do `CLAUDE.md`: mudar um token não exige entrada no `CHANGELOG.md` nem no `HEALTH.md`.
+- O `DESIGN.md` continua fora da `ODDS Language Version` e do ciclo fixo de regras da especificação: mudar um token não exige entrada no `CHANGELOG.md`.
 
 ## Reversão
 
-O sinal de erro seria o formato atrapalhar mais do que ancorar: tokens que ninguém consulta, páginas que continuam derivando apesar dele, ou a necessidade recorrente de valores que o front matter não sabe expressar (gradientes, opacidades, estados), empurrando as regras de volta para a prosa. Se isso acontecer, a saída natural é a segunda alternativa: tokens num arquivo de máquina gerado ou validado por build, o que só faz sentido quando houver framework e bundler decididos (R6.4).
+O sinal de erro seria o formato atrapalhar mais do que ancorar: tokens que ninguém consulta, páginas que continuam derivando apesar dele, ou a necessidade recorrente de valores que o front matter não sabe expressar (gradientes, opacidades, estados), empurrando as regras de volta para a prosa. Se isso acontecer, a saída natural é a segunda alternativa: tokens num arquivo de máquina gerado ou validado por build, o que só faz sentido quando houver framework e bundler decididos.
 
 O custo da volta é baixo enquanto nenhuma página consome os tokens: o conteúdo é o mesmo, só muda a forma. Ele cresce a cada página ajustada ao `DESIGN.md`, porque elas passam a citar os nomes dos tokens.
