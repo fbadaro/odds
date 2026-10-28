@@ -1,0 +1,64 @@
+// ODDS, described in ODDS: the project's own strategic design.
+// Each context is a package, or a third party one depends on.
+domain Odds {
+  title: "ODDS"
+
+  subdomain core Judgement {
+    description: "Judge a strategic design, not only its integrity: the opinionated linter"
+    owner: "Specification maintainers"
+    context Validation {
+      description: "The rules of RULES-EN.md, phase by phase, from root errors to suppression"
+      technology: "TypeScript, @odds/core"
+    }
+  }
+
+  subdomain supporting Language {
+    description: "Read a .odds file into a tree"
+    context Parsing {
+      description: "Lexer, parser with panic-mode recovery, and the AST"
+      technology: "TypeScript, @odds/core"
+    }
+  }
+
+  subdomain supporting Visualization {
+    description: "Draw the file as a map people can read"
+    context Layout {
+      description: "Honeycomb geometry and SVG, with no DOM"
+      technology: "TypeScript, @odds/layout"
+    }
+    context Playground {
+      description: "Write, judge and draw in the browser, with no server"
+      technology: "React 19, Zustand, Vite"
+    }
+  }
+
+  subdomain generic Localization {
+    description: "Say a diagnostic in a language"
+    context Messages {
+      description: "Diagnostic and locale in, sentence out, generated from MESSAGES.md"
+      technology: "TypeScript, @odds/messages"
+    }
+  }
+
+  external {
+    context Chevrotain {
+      description: "Parser toolkit (ADR-0002)"
+    }
+    context BaseUi {
+      title: "Base UI"
+      description: "Unstyled interface components (ADR-0014)"
+    }
+  }
+
+  mapping {
+    Parsing    [P]   <-> [P]       Validation
+    Parsing    [CF]  <--           Chevrotain
+    Layout     [ACL] <-- [OHS, PL] Parsing
+    // odds-disable-next-line CORE_UPSTREAM_OF_GENERIC: ADR-0004, the linter publishes Diagnostic and knows no message text or locale
+    Messages   [CF]  <-- [OHS, PL] Validation
+    Playground       <-- [OHS, PL] Validation
+    Playground       <-- [OHS]     Layout
+    Playground       <-- [OHS]     Messages
+    Playground [ACL] <--           BaseUi
+  }
+}
