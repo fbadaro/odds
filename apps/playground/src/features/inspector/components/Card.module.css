@@ -1,5 +1,4 @@
-/* bancada: o miolo .sel do inspetor (casca herdada da v4, com a escala de tipo do .pg por cima,
-   e o .nav .sel .golink.plain do #navcss), o que os três cartões dividem */
+/* o miolo do inspetor, o que os três cartões dividem */
 .kind,
 .sect {
   font: 500 11px / 1 var(--font-eyebrow-family);

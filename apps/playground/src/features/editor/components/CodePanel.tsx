@@ -7,7 +7,7 @@ import styles from "./CodePanel.module.css";
 import { Editor } from "./Editor";
 
 /**
- * O painel de código da bancada (#pCode): fica montado e só se esconde, para que cursor,
+ * O painel de código: fica montado e só se esconde, para que cursor,
  * rolagem e desfazer do textarea sobrevivam à troca de painel.
  */
 export function CodePanel() {

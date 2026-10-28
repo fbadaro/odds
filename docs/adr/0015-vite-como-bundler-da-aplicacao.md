@@ -6,16 +6,15 @@ date: 2026-10-20
 deciders: Fabio Badaro, Claude
 tags: toolchain, stack, build, playground
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0015 — Vite como bundler da aplicação
 
 ## Contexto
 
-O `ADR-0005` decidiu o ambiente sem bundler, `tsc` para tipos e para o build das bibliotecas, e deixou escrito que o bundler entraria com a aplicação, *"e é decisão de outro ADR"*. O `HEALTH.md` §9.2 (R6.4) o mantinha como uma das duas decisões de stack em aberto.
+O `ADR-0005` decidiu o ambiente sem bundler, `tsc` para tipos e para o build das bibliotecas, e deixou escrito que o bundler entraria com a aplicação, *"e é decisão de outro ADR"*. Ele seguia como uma das duas decisões de stack em aberto.
 
-Até 2026-10-20 não havia o que empacotar: as páginas de `docs/design/pages/` são HTML autônomo, com o `@odds/core` embutido por script de build próprio (`playground.build.mjs`, `colmeia-embed.mjs`). O `ADR-0014` mudou isso ao decidir React, TSX e CSS Modules: nenhum dos três roda no navegador sem transformação, e a escolha deixou de ser *se* haveria bundler para *qual*.
+Até 2026-10-20 não havia o que empacotar: as páginas da exploração de UI eram HTML autônomo, com o `@odds/core` embutido por script de build próprio. O `ADR-0014` mudou isso ao decidir React, TSX e CSS Modules: nenhum dos três roda no navegador sem transformação, e a escolha deixou de ser *se* haveria bundler para *qual*.
 
 O que restringia:
 
@@ -56,11 +55,11 @@ O `ADR-0005` já recusou o Bun como runtime, por acrescentar uma variável de co
 
 ## Consequências
 
-- O R6.4 do `HEALTH.md` §9.2 fecha a última decisão de stack que faltava, junto com o `ADR-0014`.
+- Fecha a última decisão de stack que faltava, junto com o `ADR-0014`.
 - O ambiente do `ADR-0005` fica completo sem ser contrariado: `tsc` continua checando tipos e construindo as bibliotecas (`@odds/core`, `@odds/messages`, e o `@odds/layout` quando nascer), sem impor bundle a quem as consome, e o Vite entra só na aplicação.
 - **Piora: o Vitest precisa subir de versão.** O repositório usa o Vitest 2.1, preso ao Vite 5. Para ir ao Vite 8 é preciso subir o Vitest também (o atual, 5.0.5, aceita do Vite 6.4 ao 8), e essa migração toca a configuração do harness de conformidade. O contrato dele com o core é uma função só (`parseAndValidate`, `TEST_SUITE.md` §3), então a migração não deve tocar o executor, mas precisa ser feita e conferida com os 44 golden files.
 - **Piora: mais uma ferramenta com ciclo próprio.** O Vite publica com frequência e já trocou o motor por baixo (esbuild e Rollup → Rolldown) dentro da mesma vida útil, e acompanhar isso é custo recorrente.
-- Os scripts de montagem das páginas de exploração (`playground.build.mjs`, `colmeia-embed.mjs`) continuam como estão. Eles servem à bancada do `ADR-0007`, não à aplicação.
+- Os scripts de montagem das páginas de exploração continuaram como estavam, servindo à bancada, não à aplicação.
 
 ## Reversão
 

@@ -7,12 +7,12 @@ import styles from "./FileMenu.module.css";
 
 const RADIOS = (Object.keys(MODELS) as ModelKey[]).map((k) => ({ value: k, label: MODELS[k].file, hint: MODELS[k].hint }));
 
-/** A ilha do arquivo da bancada (.i-file): a palavra, o arquivo aberto e o menu que troca de modelo. */
+/** A ilha do arquivo: a palavra, o arquivo aberto e o menu que troca de modelo. */
 export function FileMenu() {
   const modelKey = usePlayground((s) => s.modelKey);
   const loadModel = usePlayground((s) => s.loadModel);
   const resetText = usePlayground((s) => s.resetText);
-  // a bancada abre o menu sob a ilha inteira (.menu: top 70px, left 20px), não sob o botão
+  // o menu abre sob a ilha inteira (top 70px, left 20px), não sob o botão
   const island = useRef<HTMLElement>(null);
   return (
     <Island ref={island} data-feature="file-menu" className={styles.file}>

@@ -5,7 +5,7 @@ import { usePlayground } from "../../../stores/playground";
 import styles from "./PanelIsland.module.css";
 
 type Props = {
-  // literal em cada painel: a varredura de paridade (ADR-0020) lê o TSX
+  // literal em cada painel: a câmera acha o painel aberto por `[data-feature^="panel-"]`
   "data-feature": "panel-code" | "panel-tree" | "panel-help";
   title: string;
   /** O painel que fica montado fechado (o de código) se esconde em vez de sair. */
@@ -16,7 +16,7 @@ type Props = {
   children: ReactNode;
 };
 
-/** O `.i-panel` da bancada: cabeçalho (título, sub, espaço, fechar), corpo e rodapé opcional. */
+/** O painel em ilha: cabeçalho (título, sub, espaço, fechar), corpo e rodapé opcional. */
 export function PanelIsland({ "data-feature": feature, hidden, title, sub, foot, bodyClassName, children }: Props) {
   const closePanel = usePlayground((s) => s.closePanel);
   return (

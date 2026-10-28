@@ -38,7 +38,7 @@ Uma linha de relacionamento carrega anotações de três naturezas diferentes. E
 
 Os dois primeiros eixos são independentes em todas as combinações — você escolhe a forma da dependência e, separadamente, o padrão aplicado sobre ela. **Separate Ways é a única célula em que os dois eixos degeneram num ponto só:** é o padrão cuja aplicação é justamente a *ausência* de integração, o que o torna indistinguível da forma de dependência "Free". Não há solução a escolher sobre uma não-dependência.
 
-Por essa razão, e só por ela, a ODDS carrega Separate Ways no **conector** e não tem tag `[SW]`. `-x-` sozinho significa *Free / Separate Ways*. Uma tag que só pode ser redundante ou errada carrega zero bits: com `[SW]` na linguagem, `A -x- B`, `A [SW] -x- B`, `A -x- [SW] B` e `A [SW] -x- [SW] B` eram quatro grafias de um significado só, enquanto `A [SW] --> B` era um erro que existia apenas porque a tag existia. Nada se perdeu com a remoção — na prática, toda linha `-x-` que alguém se dá ao trabalho de escrever *é* uma decisão deliberada de não integrar. O nome do padrão DDD sobrevive onde importa: na legenda do diagrama e na tabela de padrões abaixo, não como token.
+Por essa razão, e só por ela, a ODDS carrega Separate Ways no **conector** e não tem tag `[SW]`. `-x-` sozinho significa *Free / Separate Ways*. Uma tag que só pode ser redundante ou errada carrega zero bits: com `[SW]` na linguagem, `A -x- B`, `A [SW] -x- B`, `A -x- [SW] B` e `A [SW] -x- [SW] B` eram quatro grafias de um significado só, enquanto `A [SW] --> B` era um erro que existia apenas porque a tag existia. Nada se perdeu com a remoção — na prática, toda linha `-x-` que alguém se dá ao trabalho de escrever *é* uma decisão deliberada de não integrar. O nome do padrão DDD sobrevive onde importa: na legenda do mapa e na tabela de padrões abaixo, não como token.
 
 `[BBM]` é a terceira categoria porque falha no teste das outras duas: não descreve uma solução aplicada sobre uma dependência e não renomeia a dependência — ele **caracteriza o sistema** de uma das pontas. É por isso que `[BBM]` é a única anotação **sem regra de posição e sem regra de conflito**: é legítima em qualquer conector e em qualquer lado (§1.C). Restringi-la a linhas direcionais converteria a limitação de uma *regra* em limitação da *linguagem*, e tornaria inexprimíveis duas afirmações legítimas: *"aquele ERP é um pântano e por isso decidimos não integrar"* (`-x-`) e *"nós alimentamos o pântano de um terceiro"* (`[BBM]` no Downstream).
 
@@ -76,7 +76,7 @@ São escolhas, não descuidos. Ficam escritas para que ninguém precise redescob
 2. **Um arquivo, um `domain`.** Mapas que cruzam múltiplos domínios são impossíveis por construção. É isso que torna coerente a premissa "um arquivo = uma URL compartilhável".
 3. **Sistemas de terceiros são cidadãos de primeira classe, via o bloco `external { }`** — não é mais preciso mentir que a Stripe ou o ERP de outra empresa é um contexto de um subdomínio *seu*. **Contradição assumida:** o bloco `external` é declarado *dentro* do `domain { }`, que por definição não o contém. Ele está aninhado ali por razões sintáticas (preserva o invariante de que todo `context` vive dentro de um bloco declarado, e a premissa "um arquivo = um domain"). A contradição é nomeada em vez de escondida — e é cancelada no único lugar onde o usuário a perceberia: a vista de contenção desenha o bloco externo **fora** dos territórios de subdomínio do domínio, como massa própria ao lado deles (§5).
 4. **`[BBM]` precisa ser repetida em toda linha** que toca aquele sistema (§0.3), mitigado por `INCONSISTENT_BBM`.
-5. **As duas vistas têm poderes expressivos diferentes, deliberadamente.** `[BBM]` é anotação *de uma relação*, e a vista de contenção não tem linhas — então um sistema-pântano aparece lá como qualquer outro contexto. Derivar a marca no nó (marcar um contexto que carregue `[BBM]` em *qualquer* relação) foi rejeitado: construiria uma inferência visual sobre dado que a própria `INCONSISTENT_BBM` admite poder ser contraditório, fazendo o desenho afirmar mais do que o texto. As duas vistas respondem perguntas diferentes — *"como isto está organizado?"* e *"como isto se integra?"* — e risco de integração é, por definição, pergunta da segunda.
+5. **As duas vistas têm poderes expressivos diferentes, deliberadamente.** `[BBM]` é anotação *de uma relação*, e a vista de contenção não tem linhas — então um sistema-pântano aparece lá como qualquer outro contexto. Derivar a marca na peça (marcar um contexto que carregue `[BBM]` em *qualquer* relação) foi rejeitado: construiria uma inferência visual sobre dado que a própria `INCONSISTENT_BBM` admite poder ser contraditório, fazendo o desenho afirmar mais do que o texto. As duas vistas respondem perguntas diferentes — *"como isto está organizado?"* e *"como isto se integra?"* — e risco de integração é, por definição, pergunta da segunda.
 
 ---
 
@@ -118,7 +118,7 @@ Além da declaração estrutural (`context Nome { ... }`), um Bounded Context �
 
 | Propriedade | Disponível em | Propósito |
 |---|---|---|
-| `title` | `domain`, `subdomain`, `context` | Rótulo de exibição legível para humanos, distinto do identificador técnico usado para referenciar o elemento em outros lugares (ex: no `mapping`). Destinado à renderização no canvas/diagrama. |
+| `title` | `domain`, `subdomain`, `context` | Rótulo de exibição legível para humanos, distinto do identificador técnico usado para referenciar o elemento em outros lugares (ex: no `mapping`). Destinado à exibição no mapa. |
 | `type` | `context` | Classificação em texto livre da natureza do contexto (ex: "serviço", "sistema legado", "gateway"). Deliberadamente aberto, sem taxonomia fechada — não existe uma lista fixa de valores válidos. **Não** reutilize aqui o vocabulário de subdomínio (`core`/`supporting`/`generic`): são eixos diferentes, e `type: "generic"` dentro de um `subdomain generic` ensina ao leitor um vocabulário sobrecarregado. |
 | `description` | `subdomain`, `context` | Explicação em texto livre. Num `context`, o propósito e o papel dele na solução; num `subdomain`, **por que ele existe** — a razão de negócio, não a soma das responsabilidades dos contextos filhos. A diferença de sentido vem do nível, não da palavra. |
 | `responsibilities` | `context` | Uma lista das responsabilidades de negócio ou técnicas atribuídas a este contexto. |
@@ -248,7 +248,7 @@ Cada conector tem exatamente um code para "tag errada aqui", então os codes nun
 
 * **Tag mútua incompleta** — `INCOMPLETE_MUTUAL_TAG` · fase 4 · Externo? ✅ vale
   * *Gatilho:* `[SK]` ou `[P]` declarada em apenas um lado de uma linha `<->`.
-  * *Racional:* **a inferência automática é proibida.** Uma versão anterior deste documento permitia ao parser "inferir a tag para o outro lado"; um *pode* na especificação faz duas implementações igualmente conformes produzirem saídas diferentes, e a inferência silenciosa faz o arquivo `.odds` e o diagrama renderizado discordarem — numa ferramenta de Architecture as Code o texto é a fonte de verdade, não um esboço a ser completado pela ferramenta. Além disso, Shared Kernel e Partnership são **acordos bilaterais**: escrever os dois lados é o próprio ato de registrar que a outra equipe também assinou embaixo.
+  * *Racional:* **a inferência automática é proibida.** Uma versão anterior deste documento permitia ao parser "inferir a tag para o outro lado"; um *pode* na especificação faz duas implementações igualmente conformes produzirem saídas diferentes, e a inferência silenciosa faz o arquivo `.odds` e o mapa discordarem — numa ferramenta de Architecture as Code o texto é a fonte de verdade, não um esboço a ser completado pela ferramenta. Além disso, Shared Kernel e Partnership são **acordos bilaterais**: escrever os dois lados é o próprio ato de registrar que a outra equipe também assinou embaixo.
 
 * **Tag mútua com contexto externo** — `MUTUAL_TAG_WITH_EXTERNAL` · fase 4 · Externo? por definição
   * *Gatilho:* `[SK]` ou `[P]` numa relação em que qualquer um dos lados é um contexto externo.
@@ -410,7 +410,7 @@ Checkout [CF] <-- CorporateERP
 As regras:
 
 * **Mora no arquivo, nunca na UI.** Uma supressão precisa viajar no Git, na URL compartilhada e no code review. Se morasse no painel, duas pessoas veriam diagnósticos diferentes para o mesmo desenho.
-* **Alcança `warning` e `info`. Nunca `error`.** O escape hatch existe para decisões conscientes contra um *conselho*; silenciar um `PHANTOM_REFERENCE` faria o diagrama mentir sobre o próprio modelo. Nomear um code de severidade `error` numa diretiva é `MALFORMED_SUPPRESSION`, não uma supressão.
+* **Alcança `warning` e `info`. Nunca `error`.** O escape hatch existe para decisões conscientes contra um *conselho*; silenciar um `PHANTOM_REFERENCE` faria o mapa mentir sobre o próprio modelo. Nomear um code de severidade `error` numa diretiva é `MALFORMED_SUPPRESSION`, não uma supressão.
 * **Granularidade de linha é suficiente, universalmente.** Não existe forma de bloco nem de arquivo. Toda regra — inclusive as agregadas — tem exatamente uma linha-âncora pelas convenções de span da §1/§2 e do `TEST_SUITE.md` §4, então não há nada que uma diretiva de bloco alcançasse e uma de linha não. Supressão de arquivo é também justamente o mecanismo pelo qual linters são derrotados no atacado e em silêncio, e arquivos `.odds` são pequenos demais para precisar disso.
 * **Suprime um code, não a linha.** Outras regras que disparem na mesma linha continuam sendo reportadas.
 * **A justificativa é obrigatória.** Uma supressão sem motivo é indistinguível de desistência, e seis meses depois ninguém sabe se foi decisão ou cansaço.
@@ -431,15 +431,15 @@ Dois diagnósticos mantêm o mecanismo honesto, ambos `info`, ambos fase 6:
 
 ### 5. Erros e renderização
 
-**Um erro crítico não bloqueia o diagrama.** A regra que se enunciava como "erros críticos bloqueiam a compilação" já era falsa dentro deste próprio documento — `ORPHAN_CONTEXT` explicitamente não bloqueava a geração da AST — e contradizia a promessa do produto de visualização instantânea durante a digitação, já que **todo estado intermediário de um arquivo sendo digitado é um erro de sintaxe**. Sob bloqueio estrito, o canvas piscaria vazio a cada tecla.
+**Um erro crítico não bloqueia o mapa.** A regra que se enunciava como "erros críticos bloqueiam a compilação" já era falsa dentro deste próprio documento — `ORPHAN_CONTEXT` explicitamente não bloqueava a geração da AST — e contradizia a promessa do produto de visualização instantânea durante a digitação, já que **todo estado intermediário de um arquivo sendo digitado é um erro de sintaxe**. Sob bloqueio estrito, o mapa piscaria vazio a cada tecla.
 
 A regra, portanto, é **degradação por elemento**:
 
 * A AST parcial sempre renderiza o que for renderizável.
-* O elemento com problema é desenhado **visivelmente marcado**: aresta tracejada vermelha para relação inválida, nó fantasma pontilhado para referência que não resolve. É para isso que existe `SymbolTableEntry.valid` (§3.1).
-* Só um `SYNTAX_ERROR` puro — em que não existe árvore nenhuma — congela o último diagrama bom em vez de apagá-lo. **O diagrama congelado precisa estar marcado como obsoleto**, senão o canvas mente em silêncio sobre o arquivo que afirma mostrar.
+* O elemento com problema é desenhado **visivelmente marcado**: linha tracejada vermelha para relação inválida, peça fantasma pontilhada para referência que não resolve. É para isso que existe `SymbolTableEntry.valid` (§3.1).
+* Só um `SYNTAX_ERROR` puro — em que não existe árvore nenhuma — congela o último mapa bom em vez de apagá-lo. **O mapa congelado precisa estar marcado como obsoleto**, senão o mapa mente em silêncio sobre o arquivo que afirma mostrar.
 * Num par duplicado, **a primeira ocorrência é a que desenha** — coerente com a convenção de span que culpa a segunda.
-* **Exportar com erros é permitido, e o export inclui os marcadores.** A imagem exportada é exatamente o que está no canvas; não existe variante "limpa". Um export sem marcadores viraria documentação afirmando um modelo que nunca foi válido.
+* **Exportar com erros é permitido, e o export inclui os marcadores.** A imagem exportada é exatamente o que está no mapa; não existe variante "limpa". Um export sem marcadores viraria documentação afirmando um modelo que nunca foi válido.
 
 A vista de contenção desenha o bloco `external { }` **fora** dos territórios de subdomínio do domínio, como massa própria ao lado deles — cancelando a contradição sintática registrada na §0.5 no único lugar em que o usuário a perceberia. A colmeia não desenha linha em volta de um domínio (`ADR-0011`), então o "fora" se mede pelos territórios dele.
 
@@ -447,7 +447,7 @@ A vista de contenção desenha o bloco `external { }` **fora** dos territórios 
 
 ### 6. Versão da linguagem e compatibilidade
 
-`GRAMMAR.md`, `AST_SCHEMA.md` e este arquivo carregam cada um sua versão editorial própria, mas o que um `.odds` *significa* é definido pelos três juntos. Esse significado conjunto tem número próprio, a **ODDS Language Version**, mantida no `CHANGELOG.md` e incrementada apenas quando o comportamento observável de um `.odds` muda.
+O que um `.odds` *significa* é definido pelo `GRAMMAR.md`, pelo `AST_SCHEMA.md` e por este arquivo juntos. Esse significado conjunto tem um número, a **ODDS Language Version**, mantida no `CHANGELOG.md` e incrementada apenas quando o comportamento observável de um `.odds` muda.
 
 Ela segue SemVer, com o corte na **validade do arquivo**:
 
@@ -475,9 +475,3 @@ Ao construir o seu *Visitor* (a função que percorre a árvore gerada pelo Pars
 5. **Passo 4 — supressão (fase 6).** Aplique as diretivas coletadas em `ProgramNode.suppressions` sobre o array produzido até aqui, emitindo `MALFORMED_SUPPRESSION` e `UNUSED_SUPPRESSION`.
 
 Por fim, ordene o array inteiro pelas chaves da §3.3. A ordem emitida faz parte do contrato.
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## RULES-EN.md / RULES-PT.md`). Versão atual: **v0.3.1** — este arquivo e o `RULES-EN.md` versionam juntos. Qualquer alteração aqui deve ganhar uma entrada nova lá, não aqui, e ser espelhada no outro idioma na mesma passada.

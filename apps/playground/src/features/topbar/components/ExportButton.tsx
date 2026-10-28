@@ -10,7 +10,7 @@ import { buildExportSvg } from "../lib/exportSvg";
 
 const CSS = [tokens, mapBase, bridge, honeycomb].join("\n");
 
-/** Exporta o mapa inteiro, com os marcadores, num .svg que se basta (bancada: btnExport). */
+/** Exporta o mapa inteiro, com os marcadores, num .svg que se basta. */
 export function ExportButton() {
   const showToast = usePlayground((s) => s.showToast);
 

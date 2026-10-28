@@ -1,4 +1,3 @@
-/* bancada: .drow e a densidade do playground (.pg .drow, .pg .drow .code, .pg .drow .msg code) */
 .row {
   display: grid;
   grid-template-columns: 18px auto minmax(0, 1fr) auto;

@@ -1,6 +1,6 @@
 import type { Box, Point } from "../../../lib/selection";
 
-/** Os limites da câmera, como na bancada. */
+/** Os limites da câmera. */
 export const LIM = { pad: 78, maxFrame: 3, maxZoom: 5, tagPx: 1.15 } as const;
 
 /** A área livre, em pixels da tela: o que sobra entre trilho/painel, inspetor, topo e rodapé. */
@@ -9,7 +9,7 @@ export interface Safe { l: number; t: number; w: number; h: number }
 export interface Viewport { w: number; h: number; safe: Safe }
 export interface RectLike { left: number; right: number }
 
-/** `safe()` da bancada; os retângulos são `null` quando o elemento não existe ou está oculto. */
+/** A área livre; os retângulos são `null` quando o elemento não existe ou está oculto. */
 export function safeArea(w: number, h: number, rail: RectLike | null, panel: RectLike | null, inspector: RectLike | null): Safe {
   const narrow = w <= 760;
   let l = 32, r = 32;

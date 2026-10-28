@@ -4,7 +4,7 @@
 
 Este arquivo é o **contrato de dados** entre as três camadas do sistema: Parser → Validador (Visitor) → Visualizador. Define, em TypeScript, a forma exata da Árvore Sintática Abstrata (AST) que o parser produz a partir de um arquivo `.odds` válido sintaticamente (ver `GRAMMAR.md`), e que o Visitor percorre para aplicar as regras semânticas (ver `RULES-EN.md`).
 
-Esta AST corresponde 1:1 à gramática do **`GRAMMAR.md`**, sempre na versão atual dos dois arquivos. O número de cada um fica só no `## Changelog` dele, porque um número copiado para cá vence no próximo incremento. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`) e com o catálogo de mensagens (`MESSAGES.md`).
+Esta AST corresponde 1:1 à gramática do **`GRAMMAR.md`**. Qualquer mudança na gramática (nova produção, propriedade nova, etc.) deve ser refletida aqui antes de qualquer implementação — os dois arquivos devem andar sempre sincronizados, junto com a suíte de golden files (ver `TEST_SUITE.md`) e com o catálogo de mensagens (`MESSAGES.md`).
 
 **Convenção:** cada nó carrega um campo `span` com a posição de início/fim no arquivo-fonte. Isso é o que viabiliza a navegação clique-a-clique do painel de validação (PRD §5.2 / GH-002) — tanto para erros sintáticos quanto semânticos.
 
@@ -214,7 +214,7 @@ Um elemento que produziu um diagnóstico de severidade **`error`** é registrado
 
 Duas obrigações que isso impõe a esta AST, e que são a razão de os campos existirem:
 
-1. `SymbolTableEntry.valid` (§5) — uma declaração descartada pelo panic-mode ainda **entra** na tabela de símbolos, marcada como inválida. É isso que mata a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` (o contexto *foi* declarado, só que no lugar errado) e o que permite ao renderizador desenhar o nó fantasma pontilhado em vez de nada.
+1. `SymbolTableEntry.valid` (§5) — uma declaração descartada pelo panic-mode ainda **entra** na tabela de símbolos, marcada como inválida. É isso que mata a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` (o contexto *foi* declarado, só que no lugar errado) e o que permite ao renderizador desenhar a peça fantasma pontilhada em vez de nada.
 2. `astGenerated` **deixou de ser proxy de "renderizável"**. Desde a v0.2.0 a renderização degrada por elemento (`RULES-EN.md` §5): a AST parcial sempre desenha o que for desenhável, e o elemento problemático aparece marcado. `astGenerated: false` significa apenas *"não existe árvore"* — ou seja, `SYNTAX_ERROR` puro —, não *"nada será exibido"*.
 
 ### 1.5 Quem produz o quê
@@ -388,7 +388,7 @@ interface RelationshipNode extends AstNode {
 **Notas de implementação:**
 - `leftTags`/`rightTags` são sempre arrays (possivelmente vazios), nunca `undefined` — simplifica os validadores de `RULES.md` (`UPSTREAM_ONLY_TAG_MISPLACED` etc.), que podem sempre iterar sem checar nulidade primeiro.
 - `left` e `right` são apenas o **nome** do contexto referenciado (string), não uma referência direta ao `ContextNode`. A resolução do nome para o nó real (e as checagens `PHANTOM_REFERENCE`/`DUPLICATE_CONTEXT`) é responsabilidade do Visitor, usando a tabela de símbolos construída no Passo 1. A AST em si não pré-resolve essas referências.
-- **Uma linha = uma aresta.** A identidade de uma relação é o **par não-ordenado** `{left, right}` (`RULES.md` §1.A): qualquer segunda linha para o mesmo par é `DUPLICATE_RELATIONSHIP`, independentemente de conector ou tags. O renderizador nunca precisa mesclar linhas nem eleger uma vencedora entre tags conflitantes — num par duplicado, **a primeira ocorrência é a que desenha**.
+- **Uma linha = uma relação.** A identidade de uma relação é o **par não-ordenado** `{left, right}` (`RULES.md` §1.A): qualquer segunda linha para o mesmo par é `DUPLICATE_RELATIONSHIP`, independentemente de conector ou tags. O renderizador nunca precisa mesclar linhas nem eleger uma vencedora entre tags conflitantes — num par duplicado, **a primeira ocorrência é a que desenha**.
 
 ---
 
@@ -533,9 +533,3 @@ interface ValueObjectNode extends AstNode { kind: "ValueObject"; name: string; }
 // ContextNode ganharia:
 // tactical?: AggregateNode[];
 ```
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## AST_SCHEMA.md`). Versão atual: **v0.3.2**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

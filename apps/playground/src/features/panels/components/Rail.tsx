@@ -31,7 +31,7 @@ const SQUARES: { name: PanelName; label: string; icon: ReactNode }[] = [
   },
 ];
 
-/** O trilho da bancada: uma ilha de quadrados, um painel por vez; o mesmo quadrado fecha. */
+/** O trilho: uma ilha de quadrados, um painel por vez; o mesmo quadrado fecha. */
 export function Rail() {
   const openPanel = usePlayground((s) => s.openPanel);
   const togglePanel = usePlayground((s) => s.togglePanel);

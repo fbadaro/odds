@@ -3,7 +3,7 @@ import styles from "./Button.module.css";
 
 type Props = { variant?: "plain" | "primary" } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-/** O `.ibtn` da bancada (e o `.ibtn.primary`): 30px, só ícone ou ícone com rótulo. */
+/** O botão das ilhas (e a variante `primary`): 30px, só ícone ou ícone com rótulo. */
 export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
   { variant = "plain", className, type = "button", ...rest },
   ref,

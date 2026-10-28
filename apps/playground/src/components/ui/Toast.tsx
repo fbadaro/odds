@@ -6,7 +6,7 @@ import styles from "./Toast.module.css";
 export const TOAST_MS = 4200;
 
 /**
- * O aviso da bancada (#toast): mostra o `toast` do store e o dispensa 4200 ms depois do
+ * O aviso: mostra o `toast` do store e o dispensa 4200 ms depois do
  * último. Sem Base UI: o store já guarda uma só mensagem, e a API de gerente do Toast
  * do Base UI (fila, ids) brigaria com isso.
  */

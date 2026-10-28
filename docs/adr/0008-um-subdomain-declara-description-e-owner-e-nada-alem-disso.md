@@ -6,12 +6,11 @@ date: 2026-09-12
 deciders: Fabio Badaro, Claude
 tags: linguagem, gramatica, propriedades, subdomain
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0008 — Um subdomain declara description e owner, e nada além disso
 
-> **Fechado em 2026-10-24.** O mock `docs/design/pages/colmeia-v2.html` que este ADR cita foi apagado depois de validado, junto com as colmeias v1, v3 e v4 (`ADR-0023`). A decisão segue em vigor na linguagem, e o mock segue no git: `git show e282c83:docs/design/pages/colmeia-v2.html`.
+> O mock da colmeia v2 que este ADR cita saiu da árvore depois de validado e segue no git, no commit `e282c83`. A decisão segue em vigor na linguagem.
 
 > **Executado em 2026-10-06**, na `ODDS Language Version` 1.0.0 (`GRAMMAR.md` v0.3.0, `AST_SCHEMA.md` v0.3.0, `RULES` v0.3.0). A execução tomou uma escolha de forma que este ADR não tomou: `owner` passou a ser **palavra reservada**, como todas as chaves de propriedade. Isso torna inválido um nome `owner` e faz da mudança uma MAJOR. A alternativa, palavra contextual, manteria a mudança em MINOR e foi recusada. As duas saídas, e a ausência deliberada de diagnóstico de migração, estão no `CHANGELOG.md` (entrada v1.0.0). O texto abaixo é o da decisão, como foi tomada.
 
@@ -23,7 +22,7 @@ A rodada de render de 2026-09-11/12 preencheu as seis em todos os contextos do m
 
 Três forças em tensão, e nenhuma delas aponta sozinha para uma saída.
 
-A primeira é a **promessa de que propriedade não julga**, escrita no `CLAUDE.md` e sustentada pela divisão do `RULES-EN.md` §0.2 entre anotação que é contrato e anotação que é documentação: nenhuma propriedade alimenta o gatilho de uma regra, e é isso que permite preencher `team` sem medo. A segunda é que o `subdomain` já carrega `core | supporting | generic`, que **é contrato** — alimenta `CORE_IN_SHARED_KERNEL`, `CORE_UPSTREAM_OF_GENERIC`, `GENERIC_WITHOUT_OHS`, `CONFORMIST_CORE` e `DOMAIN_WITHOUT_CORE`, todos catalogados no `AST_SCHEMA.md` §1.3. Qualquer chave nova no subdomínio nasce, portanto, encostada num campo que julga. A terceira é o custo: construto de linguagem entra no eixo **ODDS Language Version** do `CHANGELOG.md` e viaja no payload da URL compartilhável, que o `RULES-EN.md` §0.5 registra como a premissa que sustenta "um arquivo, um `domain`".
+A primeira é a **promessa de que propriedade não julga**, escrita no `AGENTS.md` e sustentada pela divisão do `RULES-EN.md` §0.2 entre anotação que é contrato e anotação que é documentação: nenhuma propriedade alimenta o gatilho de uma regra, e é isso que permite preencher `team` sem medo. A segunda é que o `subdomain` já carrega `core | supporting | generic`, que **é contrato** — alimenta `CORE_IN_SHARED_KERNEL`, `CORE_UPSTREAM_OF_GENERIC`, `GENERIC_WITHOUT_OHS`, `CONFORMIST_CORE` e `DOMAIN_WITHOUT_CORE`, todos catalogados no `AST_SCHEMA.md` §1.3. Qualquer chave nova no subdomínio nasce, portanto, encostada num campo que julga. A terceira é o custo: construto de linguagem entra no eixo **ODDS Language Version** do `CHANGELOG.md` e viaja no payload da URL compartilhável, que o `RULES-EN.md` §0.5 registra como a premissa que sustenta "um arquivo, um `domain`".
 
 O que não se sabia, e o mock passou a mostrar, era se as chaves candidatas atraem prosa de negócio ou descrição técnica disfarçada — e se a ficha fica legível ou vira formulário.
 
@@ -41,7 +40,7 @@ A razão é mecânica, não estética. No instante em que uma propriedade pode c
 
 Duas escolhas de forma, ambas com alternativa registrada abaixo. `description` **reutiliza a chave que já existe** em `context`, em vez de inventar `vision` ou `purpose`: é o mesmo precedente do `title_decl`, que o `GRAMMAR.md` §2 registra ter sido extraído para produção própria justamente para valer nos três níveis sem duplicar lógica. E o conjunto é **fechado e próprio do subdomínio**, não uma liberação parcial das seis chaves do contexto — porque as outras quatro são de espaço de solução e não têm significado neste nível.
 
-O mock em `docs/design/pages/colmeia-v2.html` traz as duas preenchidas nos treze subdomínios, atrás de um controle rotulado como hipótese, e foi ele que fechou a questão sobre a qual não havia opinião possível no papel: as chaves atraem prosa de negócio (*"Receber o dinheiro e provar que recebeu"*), e a ficha ganhou três faixas que se leem sozinhas — **declarado**, **derivado** e **filhos**.
+O mock da colmeia v2 traz as duas preenchidas nos treze subdomínios, atrás de um controle rotulado como hipótese, e foi ele que fechou a questão sobre a qual não havia opinião possível no papel: as chaves atraem prosa de negócio (*"Receber o dinheiro e provar que recebeu"*), e a ficha ganhou três faixas que se leem sozinhas — **declarado**, **derivado** e **filhos**.
 
 ## Alternativas consideradas
 
@@ -93,4 +92,4 @@ Um segundo sinal, mais silencioso: se o preenchimento real de `description` no s
 
 **O custo da volta é assimétrico no tempo.** Hoje é baixo: remover duas produções da gramática, dois campos opcionais do AST, um golden file, e uma entrada de `CHANGELOG.md`. Como as duas chaves são opcionais, nenhum arquivo existente quebra ao serem removidas — só os que as usarem. Depois de haver arquivos de usuários com as chaves preenchidas e URLs compartilhadas circulando, a volta deixa de ser remoção e passa a ser migração, o que é outra ordem de grandeza. O `RULES-EN.md` §0.5 já nomeia a URL compartilhável como premissa estrutural, e é ela que torna a janela de reversão curta.
 
-**O que já foi construído em cima**, no momento em que isto é escrito: o mock `colmeia-v2.html`, com as duas chaves nos treze subdomínios e a ficha em três faixas. É descartável por construção — é o que o `ADR-0007` decidiu, e é a razão de esta decisão ter sido tomada olhando em vez de no papel. A passada normativa ainda **não** foi feita, então quem reverter agora reverte um ADR e um mock, não a linguagem. É a hora mais barata de mudar de ideia, e vale registrar que ela não vai durar.
+**O que já foi construído em cima**, no momento em que isto é escrito: o mock da colmeia v2, com as duas chaves nos treze subdomínios e a ficha em três faixas. É descartável por construção, como todo mock da exploração de UI, e é a razão de esta decisão ter sido tomada olhando em vez de no papel. A passada normativa ainda **não** foi feita, então quem reverter agora reverte um ADR e um mock, não a linguagem. É a hora mais barata de mudar de ideia, e vale registrar que ela não vai durar.

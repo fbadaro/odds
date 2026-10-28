@@ -30,7 +30,7 @@ describe("tokens.css é derivado do DESIGN.md, nunca escrito à mão", () => {
   });
 
   it("traz raios", () => {
-    expect(css).toContain("--radius-button: 12px;");
+    expect(css).toContain("--radius-control: 8px;");
   });
 
   it("não deixa referência {…} sem resolver", () => {

@@ -1,4 +1,3 @@
-/* bancada: .leg, .leg .row, .leg .sw.*, .pg .leg (13px vence os 12.5px) */
 .leg {
   display: flex;
   flex-direction: column;

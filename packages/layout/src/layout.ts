@@ -1,5 +1,5 @@
 /**
- * O layout da colmeia-v4: tudo sai da forma canônica. Massas por domínio, domínios
+ * O layout da colmeia: tudo sai da forma canônica. Massas por domínio, domínios
  * em prateleira, empacotamento dos territórios, colocação das peças e, por fim, as
  * arestas (route.ts). Porte literal de `layoutAt`/`layout`.
  */
@@ -412,8 +412,8 @@ export function layoutAt(cm: CanonModel): Geometry {
   return geo;
 }
 
-/** A `Geometry` de um modelo sem domínio desenhável. Única divergência do porte
-    (plano, Task 3): a v4 lança exceção quando nenhum domínio tem massa (`hub`
+/** A `Geometry` de um modelo sem domínio desenhável. Única divergência do porte:
+    o protótipo v4 lançava exceção quando nenhum domínio tem massa (`hub`
     indefinido), e uma relação sem peça quebraria o roteamento; aqui sai vazio. */
 function emptyGeometry(cm: CanonModel): Geometry {
   return { cm: cm, islands: [], groups: [], tiles: {}, cellOf: {}, groupOf: {}, partners: {}, rels: [], congested: 0 };

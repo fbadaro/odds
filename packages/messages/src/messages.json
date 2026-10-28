@@ -49,8 +49,8 @@
     "pt": "Este arquivo declara {count} shared kernels. Cada um acopla fisicamente dois times; use com parcimônia."
   },
   "EXTERNAL_ONLY_RELATIONSHIP": {
-    "en": "`{left}` and `{right}` are both external systems. A context map documents *your* integrations; how two third parties talk to each other is not your decision to record.",
-    "pt": "`{left}` e `{right}` são ambos sistemas externos. Um context map documenta as *suas* integrações; como dois terceiros conversam entre si não é decisão sua a registrar."
+    "en": "`{left}` and `{right}` are both external contexts. A context map documents *your* integrations; how two third parties talk to each other is not your decision to record.",
+    "pt": "`{left}` e `{right}` são ambos contextos externos. Um context map documenta as *suas* integrações; como dois terceiros conversam entre si não é decisão sua a registrar."
   },
   "GENERIC_WITHOUT_OHS": {
     "en": "`{context}` is Upstream and belongs to the generic subdomain `{subdomain}`, but exposes no `[OHS]`. Generic solutions should provide well-defined services; without one, the coupling is hidden.",

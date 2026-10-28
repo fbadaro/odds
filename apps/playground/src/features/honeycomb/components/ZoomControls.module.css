@@ -1,4 +1,3 @@
-/* bancada: .i-zoom, .vsep e o #zoomOut (o .nav #zoomOut vence o .i-zoom .pct) */
 .zoom {
   bottom: var(--space-xl);
   right: var(--space-xl);
@@ -10,7 +9,7 @@
 }
 
 .pct {
-  /* a altura de linha é a herdada do body da bancada (1.4), não a do token */
+  /* a altura de linha é a do body (1.4), não a do token */
   font: var(--font-mono-sm-weight) var(--font-mono-sm-size) / 1.4 var(--font-mono-sm-family);
   color: rgb(var(--c-ink-mute));
   min-width: 44px;

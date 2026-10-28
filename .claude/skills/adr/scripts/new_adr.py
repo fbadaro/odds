@@ -3,11 +3,11 @@
 
 Uso:
     python3 .claude/skills/adr/scripts/new_adr.py "Título da decisão"
-    python3 .claude/skills/adr/scripts/new_adr.py "Título" --supersedes 0003
+    python3 .claude/skills/adr/scripts/new_adr.py "Título" --supersedes 0003,0007
 
 O script cuida do que é mecânico — número, slug, data, frontmatter, linha no
-índice — e deixa em branco o que exige pensar. Não valide aqui: quem afere a
-integridade do razão é a C16 do `health_check.py`.
+índice, e a saída dos ADRs substituídos — e deixa em branco o que exige pensar.
+Não valide aqui: quem afere a integridade do razão é a C16 do `check_spec.py`.
 
 Sem dependências além da stdlib.
 """
@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import re
+import subprocess
 import sys
 import unicodedata
 from pathlib import Path
@@ -42,6 +43,15 @@ def existing() -> dict[int, Path]:
     }
 
 
+def ever_used() -> set[int]:
+    """Os números que já existiram, inclusive os de ADRs que saíram para o git."""
+    log = subprocess.run(
+        ["git", "log", "--all", "--format=", "--name-only", "--", "docs/adr/"],
+        cwd=ROOT, capture_output=True, text=True, check=False,
+    ).stdout
+    return {int(m.group(1)) for line in log.splitlines() if (m := FILENAME.match(Path(line).name))}
+
+
 def field(text: str, key: str) -> str:
     m = re.search(rf"^{key}:\s*(.*)$", text, re.MULTILINE)
     return m.group(1).strip() if m else ""
@@ -54,12 +64,13 @@ def set_field(text: str, key: str, value: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Aloca o próximo ADR.")
     parser.add_argument("title", help="título da decisão")
-    parser.add_argument("--supersedes", help="número do ADR que este substitui (ex.: 0003)")
+    parser.add_argument("--supersedes", help="números dos ADRs que este substitui (ex.: 0003,0007)")
     parser.add_argument("--status", default="proposed", help="status inicial (padrão: proposed)")
     args = parser.parse_args()
 
     adrs = existing()
-    number = max(adrs, default=0) + 1
+    # Número de ADR que saiu não volta: o git ainda o guarda com outro conteúdo.
+    number = max(set(adrs) | ever_used(), default=0) + 1
     slug = slugify(args.title)
     if not slug:
         print("título não produz slug utilizável", file=sys.stderr)
@@ -72,17 +83,16 @@ def main() -> int:
     body = set_field(body, "status", args.status)
 
     if args.supersedes:
-        old_number = int(args.supersedes)
-        old = adrs.get(old_number)
-        if old is None:
-            print(f"ADR-{old_number:04d} não existe", file=sys.stderr)
-            return 1
-        body = set_field(body, "supersedes", f"{old_number:04d}")
-        old_text = old.read_text(encoding="utf-8")
-        old_text = set_field(old_text, "status", "superseded")
-        old_text = set_field(old_text, "superseded-by", f"{number:04d}")
-        old.write_text(old_text, encoding="utf-8")
-        print(f"ADR-{old_number:04d} marcado como superseded por ADR-{number:04d}")
+        old_numbers = [int(v) for v in args.supersedes.split(",")]
+        for old_number in old_numbers:
+            if old_number not in adrs:
+                print(f"ADR-{old_number:04d} não existe", file=sys.stderr)
+                return 1
+        body = set_field(body, "supersedes", ", ".join(f"{n:04d}" for n in old_numbers))
+        for old_number in old_numbers:
+            # O substituído sai da árvore e fica no histórico do git.
+            adrs.pop(old_number).unlink()
+            print(f"ADR-{old_number:04d} removido, substituído por ADR-{number:04d}")
 
     path.write_text(body, encoding="utf-8")
 
@@ -99,7 +109,7 @@ def main() -> int:
     INDEX.write_text("\n".join(head + rows) + "\n", encoding="utf-8")
 
     print(f"criado: {path.relative_to(ROOT)}")
-    print("as cinco seções vêm em branco — Alternativas consideradas é a que torna a decisão reversível")
+    print("as seções vêm em branco — Alternativas consideradas é a que torna a decisão reversível")
     return 0
 
 

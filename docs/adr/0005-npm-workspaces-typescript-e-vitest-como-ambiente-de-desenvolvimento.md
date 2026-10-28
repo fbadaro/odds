@@ -6,7 +6,6 @@ date: 2026-09-05
 deciders: Fabio Badaro, Claude
 tags: toolchain, ambiente, testes
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0005 — npm workspaces, TypeScript e Vitest como ambiente de desenvolvimento
@@ -17,7 +16,7 @@ superseded-by: —
 
 ## Contexto
 
-A `HEALTH.md` §9.2 marca **R6.6** (ambiente de desenvolvimento) em 2 de 10: *"Só existe o `health_check.py`, que afere spec e não constrói nada. Sem build, sem lint, sem test runner, sem instrução de setup."* O `ADR-0004` decidiu a forma do repositório; falta o que a executa.
+Só existia um script Python que afere a spec e não constrói nada: sem build, sem lint, sem test runner, sem instrução de setup. O `ADR-0004` decidiu a forma do repositório; falta o que a executa.
 
 Três coisas já estão fixadas e restringem a escolha:
 
@@ -55,11 +54,11 @@ Rejeitadas. Resolveriam TypeScript e teste de uma vez, mas o alvo do produto é 
 
 ## Consequências
 
-**O que melhora.** `npm install && npm test` passa a ser a instrução de setup completa, sem pré-requisito além do Node. A `HEALTH.md` §9.2 **R6.6** deixa de ser 2 de 10, e o harness do `TEST_SUITE.md` §3 sai de pseudocódigo — o que também move **R6.3**.
+**O que melhora.** `npm install && npm test` passa a ser a instrução de setup completa, sem pré-requisito além do Node. O harness do `TEST_SUITE.md` §3 sai de pseudocódigo.
 
 **O que piora.** Sem linter, convenções de estilo ficam por conta de revisão até que isso mude. E o `tsc` sem bundler significa que consumidores do `@odds/core` recebem ESM e resolvem o empacotamento por conta própria — correto para biblioteca, mas é uma escolha que alguém pode estranhar.
 
-**O que não muda.** O `health_check.py` continua em Python, stdlib pura, sem dependência — ele afere spec, não código, e não deve passar a exigir Node para rodar.
+**O que não muda.** O `scripts/check_spec.py` continua em Python, stdlib pura, sem dependência — ele afere spec, não código, e não deve passar a exigir Node para rodar.
 
 ## Reversão
 

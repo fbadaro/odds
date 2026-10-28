@@ -6,18 +6,17 @@ date: 2026-10-20
 deciders: Fabio Badaro, Claude
 tags: ui, stack, componentes, acessibilidade, estilo, playground
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0014 — React no chrome da aplicação, com Base UI para o comportamento dos componentes padrão e CSS Modules sobre os tokens do DESIGN.md
 
-> **Os três pontos deixados em aberto foram respondidos em 2026-10-22.** A estrutura do código está no `ADR-0016`: a aplicação mora em `apps/playground`, e `packages/` fica só com bibliotecas. O `ADR-0018` decide como os tokens saem do `DESIGN.md`: são gerados do front matter, com um grupo `elevation`, e conferidos por teste. As práticas de React estão no `ADR-0019`: Zustand, React Compiler e ESLint, com a fronteira do Base UI imposta por `no-restricted-imports`. O destino do `playground.html` atual está no `ADR-0017`: ele continua como bancada, e a aplicação implementa o que ela valida. Nada do que este ADR decidiu muda.
+> **Os três pontos deixados em aberto foram respondidos em 2026-10-22.** A estrutura do código está no `ADR-0016`: a aplicação mora em `apps/playground`, e `packages/` fica só com bibliotecas. O `ADR-0018` decide como os tokens saem do `DESIGN.md`: são gerados do front matter, com um grupo `elevation`, e conferidos por teste. As práticas de React estão no `ADR-0019`: Zustand, React Compiler e ESLint, com a fronteira do Base UI imposta por `no-restricted-imports`. O destino da bancada está no `ADR-0025`: ela se aposentou, e a interface é feita direto na aplicação. Nada do que este ADR decidiu muda.
 
-> **Nota de 2026-10-23: o toast é componente próprio, sem Base UI.** O store guarda uma só mensagem, e a API de gerente do Toast do Base UI (fila, ids) brigaria com isso, como explica o `src/components/ui/Toast.tsx`. A spec da paridade dava o toast como candidato ao Base UI, não como obrigação. Nada do que este ADR decidiu muda.
+> **Nota de 2026-10-23: o toast é componente próprio, sem Base UI.** O store guarda uma só mensagem, e a API de gerente do Toast do Base UI (fila, ids) brigaria com isso, como explica o `src/components/ui/Toast.tsx`. Nada do que este ADR decidiu muda.
 
 ## Contexto
 
-O `ADR-0007` adiou o framework de UI até a exploração de tela produzir fatos, e o `HEALTH.md` §9.2 (R6.4) o mantinha, junto com o bundler, como uma das duas decisões de stack em aberto. Em 2026-10-20 a exploração já tinha os fatos que importavam: o `ADR-0009` fixou que o diagrama é SVG montado pelo `@odds/layout`, o `ADR-0011` fez da colmeia a vista principal, o `ADR-0013` fez do `DESIGN.md` a fonte do sistema visual, e o `docs/design/pages/playground.html` reunia tudo numa bancada única de cerca de 5 mil linhas de JavaScript sem framework.
+A exploração de UI em mocks descartáveis adiou o framework até a tela produzir fatos, e ele seguia, junto com o bundler, como uma das duas decisões de stack em aberto. Em 2026-10-20 a exploração já tinha os fatos que importavam: o `ADR-0009` fixou que o diagrama é SVG montado pelo `@odds/layout`, o `ADR-0011` fez da colmeia a vista principal, o `ADR-0013` fez do `DESIGN.md` a fonte do sistema visual, e a página do playground reunia tudo numa bancada única de cerca de 5 mil linhas de JavaScript sem framework.
 
 A pergunta que reabriu o assunto não foi sobre framework, foi sobre componentes. A aplicação vai precisar de sete peças padrão — modal, tabs, dropdown, tooltip, toast, combobox e popover —, e o autor queria duas coisas delas. A primeira era **comportamento acessível sem reinventar**: foco preso no modal, `Esc`, setas nas tabs, ARIA correto. Na bancada, isso era resolvido caso a caso (um `role="menu"`, alguns `aria-expanded` e tratadores de teclado escritos à mão), e não havia ainda modal nem tabs. A segunda era **variante padronizada**: trocar tamanho e cor de um botão, e de qualquer outro componente, de um jeito fácil. O que é próprio do ODDS (colmeia, ilhas, trilho, painel de diagnósticos) seguiria escrito pelo projeto.
 
@@ -56,7 +55,7 @@ O que a decisão fixa, peça por peça:
 3. **Estilo em duas camadas.** Os **tokens** são variáveis CSS globais (cores em triplets RGB, raios, espaços, sombras, tipografia, as duas densidades), com os valores do `DESIGN.md`. Os **componentes** têm cada um seu `.module.css` ao lado do `.tsx`, consumindo só tokens, nunca valor cru. Variante de tamanho e de cor é uma classe do próprio módulo que troca quais tokens o componente lê. Uma mudança do sistema inteiro é feita no token; a de um componente, na pasta dele.
 4. **O `DESIGN.md` manda nos valores, não nos nomes.** Os componentes que ele descreve (`button-primary`, `island`, `pill-mono`…) são especificação visual: medidas, preenchimentos, estados. Um `<Button variant="primary">` que cumpra o `button-primary` está conforme, qualquer que seja o nome. É a leitura do `ADR-0013`, não uma mudança dele: aquele ADR fez do arquivo a fonte única do *sistema visual* e nunca obrigou nomes no código.
 
-**Fica deliberadamente em aberto**, para uma conversa própria sobre *como construir*: a estrutura do código (um pacote em `packages/` ou outra organização), as práticas de React a adotar, como os tokens saem do `DESIGN.md` para o CSS (gerados ou só validados por build, a saída que o próprio `ADR-0013` previa para quando houvesse framework e bundler) e o destino do `playground.html` atual.
+**Fica deliberadamente em aberto**, para uma conversa própria sobre *como construir*: a estrutura do código (um pacote em `packages/` ou outra organização), as práticas de React a adotar, como os tokens saem do `DESIGN.md` para o CSS (gerados ou só validados por build, a saída que o próprio `ADR-0013` previa para quando houvesse framework e bundler) e o destino da bancada.
 
 ## Alternativas consideradas
 
@@ -98,14 +97,14 @@ Seria a forma mais uniforme: um único modelo de componente para tudo. Rejeitada
 
 ## Consequências
 
-- O R6.4 do `HEALTH.md` §9.2 fecha uma das duas decisões que faltavam. A outra, o bundler, é o `ADR-0015`, inevitável a partir daqui: TSX e CSS Modules precisam de transformação.
+- Fecha uma das duas decisões de stack que faltavam. A outra, o bundler, é o `ADR-0015`, inevitável a partir daqui: TSX e CSS Modules precisam de transformação.
 - O comportamento acessível dos sete componentes deixa de ser código nosso. O que era resolvido caso a caso na bancada passa a vir de uma biblioteca com time dedicado, e o projeto escreve só o estilo.
 - Ajustar visual não exige ler lógica: o token muda o sistema inteiro, e o `.module.css` muda um componente.
 - **Piora: o React entra como dependência de toda a interface.** Fica na casa de 45 a 60 KB comprimidos no primeiro carregamento, a medir no primeiro build, mais o Base UI, que é *tree-shakeable* e só pesa pelo que for importado. E, com ele, um modelo mental (componentes, estado, efeitos) que o projeto não tinha.
 - **Piora: o Base UI é jovem.** A versão estável é de dezembro de 2025. O ritmo é alto, e isso traz mudanças que podem exigir ajuste a cada versão. A dependência é aceita sabendo que as primitivas sem estilo já trocaram de líder uma vez (Radix → Base UI) em pouco mais de um ano.
 - **Piora: a interface passa a ter dois mundos.** O React governa o chrome e a colmeia é imperativa, num contêiner que ele não toca. A costura entre os dois (seleção, foco, clique num diagnóstico que leva ao mapa) é código nosso, e é onde os bugs vão morar.
 - **Piora: no inspetor do navegador, as classes aparecem com sufixo gerado** pelo CSS Modules. É o preço de partir do nome do componente; os *source maps* do bundler levam de volta ao arquivo.
-- Os 5 mil linhas do `playground.html` não migram por esta decisão. Ele continua sendo a bancada de exploração (`ADR-0007`), e como e quando a aplicação em React nasce é a conversa de construção.
+- As 5 mil linhas da bancada não migram por esta decisão. Como e quando a aplicação em React nasce é a conversa de construção.
 
 ## Reversão
 

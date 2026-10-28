@@ -1,12 +1,13 @@
 {
   "hooks": {
-    "PostToolUse": [
+    "PreToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-edit.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/language-version.sh",
+            "statusMessage": "Conferindo a ODDS Language Version"
           }
         ]
       }

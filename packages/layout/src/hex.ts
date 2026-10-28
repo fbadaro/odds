@@ -1,5 +1,5 @@
 /**
- * A grade hexagonal da colmeia-v4: constantes, coordenada axial e espiral.
+ * A grade hexagonal da colmeia: constantes, coordenada axial e espiral.
  * Porte literal do bloco de utilitários do script da v4.
  */
 import type { Axial, Point } from "./types.js";

@@ -1,5 +1,5 @@
 /**
- * As arestas da colmeia-v4: portas nos lados do hexágono, chips de tag, reparo de
+ * As arestas da colmeia: portas nos lados do hexágono, chips de tag, reparo de
  * chips e o roteamento A* pela própria grade em duas passadas. Porte literal de
  * `Heap`, `routeAll` e `chipW`.
  */

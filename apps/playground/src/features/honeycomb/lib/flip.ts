@@ -1,7 +1,7 @@
 import type { Geometry } from "@odds/layout";
 
 /**
- * O `flip` da bancada: cada peça que mudou de lugar começa onde estava e desliza para
+ * O FLIP: cada peça que mudou de lugar começa onde estava e desliza para
  * o novo lugar; a que não existia nasce (`born`) e chega por fade, como o chão e as
  * linhas (`lv-enter`). As transições estão no honeycomb.css.
  */

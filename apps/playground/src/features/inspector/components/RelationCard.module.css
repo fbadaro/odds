@@ -1,5 +1,4 @@
-/* bancada: o inspetor da relação no #navcss (back, relsrc, rside, rs-head, role, rs-meta,
-   tagrow, tgchip, rs-doc) e o .sel-empty */
+/* o inspetor da relação e o estado vazio */
 .empty {
   font-size: 13px;
   color: rgb(var(--c-ink-mute));
@@ -65,7 +64,7 @@ button.back {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  /* a bancada dá só família e tamanho; a altura de linha é a herdada, 1.4 */
+  /* só família e tamanho; a altura de linha é a herdada, 1.4 */
   font: 12px / 1.4 var(--font-code-family);
 }
 

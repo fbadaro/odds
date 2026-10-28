@@ -6,7 +6,6 @@ date: 2026-09-05
 deciders: Fabio Badaro, Claude
 tags: parser, arquitetura, recuperacao-de-erro
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0006 — Recuperação da §5.1 codificada na gramática, com EmbeddedActionsParser e sem camada CST

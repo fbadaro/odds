@@ -1,5 +1,5 @@
 /**
- * O modelo como o autor o escreveu: `declared` da colmeia-v4, com variante, relação
+ * O modelo como o autor o escreveu: `declared`, com variante, relação
  * extra e embaralhamento. Porte literal.
  */
 import { clone } from "../geometry.js";

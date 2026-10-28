@@ -1,0 +1,373 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="odds-map" data-theme="light" viewBox="-750 -254.23840175367854 1206 556.4768035073571" width="1206" height="556"><style>/* gerado de DESIGN.md por apps/playground/scripts/generate-tokens.mjs — não edite */
+:root {
+  --c-canvas: 250 250 253;
+  --c-surface: 255 255 255;
+  --c-surface-muted: 244 243 250;
+  --c-hairline: 230 228 242;
+  --c-ink: 27 26 36;
+  --c-ink-mute: 107 104 128;
+  --c-accent: 108 64 217;
+  --c-accent-lift: 138 91 240;
+  --c-azure: 61 111 232;
+  --c-pulse: 35 168 205;
+  --c-solar: 255 197 61;
+  --c-on-accent: 255 255 255;
+  --c-error: 192 52 43;
+  --c-warning: 166 106 0;
+  --c-info: 91 107 124;
+  --c-edge: 128 125 146;
+  --c-edge-lit: 52 50 66;
+  --c-edge-far: 204 202 216;
+  --c-core-ink: 176 120 0;
+  --c-sup-ink: 61 111 232;
+  --c-gen-ink: 84 82 102;
+  --font-body-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  --font-body-size: 16px;
+  --font-body-weight: 400;
+  --font-body-line-height: 1.6;
+  --font-body-letter-spacing: 0;
+  --font-ui-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  --font-ui-size: 13px;
+  --font-ui-weight: 400;
+  --font-ui-line-height: 1.4;
+  --font-ui-letter-spacing: 0;
+  --font-ui-sm-family: Inter, 'Segoe UI', system-ui, sans-serif;
+  --font-ui-sm-size: 12px;
+  --font-ui-sm-weight: 400;
+  --font-ui-sm-line-height: 1.35;
+  --font-ui-sm-letter-spacing: 0;
+  --font-code-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-code-size: 13px;
+  --font-code-weight: 400;
+  --font-code-line-height: 20px;
+  --font-code-letter-spacing: 0;
+  --font-mono-sm-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-mono-sm-size: 12px;
+  --font-mono-sm-weight: 400;
+  --font-mono-sm-line-height: 1.3;
+  --font-mono-sm-letter-spacing: 0;
+  --font-mono-xs-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-mono-xs-size: 11px;
+  --font-mono-xs-weight: 400;
+  --font-mono-xs-line-height: 1.3;
+  --font-mono-xs-letter-spacing: 0;
+  --font-eyebrow-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-eyebrow-size: 11px;
+  --font-eyebrow-weight: 500;
+  --font-eyebrow-line-height: 1;
+  --font-eyebrow-letter-spacing: 0.22em;
+  --radius-mark: 3px;
+  --radius-chip: 6px;
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-pill: 999px;
+  --space-xxs: 4px;
+  --space-xs: 6px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-2xl: 24px;
+  --space-3xl: 32px;
+  --space-4xl: 40px;
+  --shadow-strength: 0.14;
+  --sh-sm: 0 1px 2px rgb(27 27 25 / calc(var(--shadow-strength) * .4));
+  --sh-cta: 0 10px 30px -8px rgb(var(--c-accent) / calc(var(--shadow-strength) * 4));
+  --sh-island: 0 2px 10px rgb(27 27 25 / calc(var(--shadow-strength) * .5));
+  --grad-primary: linear-gradient(180deg, rgb(var(--c-accent-lift)), rgb(var(--c-accent)));
+}
+
+[data-theme="dark"] {
+  --c-canvas: 18 17 26;
+  --c-surface: 26 25 38;
+  --c-surface-muted: 35 33 47;
+  --c-hairline: 50 47 69;
+  --c-ink: 236 235 245;
+  --c-ink-mute: 154 151 174;
+  --c-accent: 173 141 255;
+  --c-accent-lift: 198 176 255;
+  --c-azure: 125 163 255;
+  --c-pulse: 94 208 238;
+  --c-solar: 255 209 99;
+  --c-on-accent: 18 17 26;
+  --c-error: 224 121 111;
+  --c-warning: 217 164 65;
+  --c-info: 147 163 179;
+  --c-edge: 118 115 140;
+  --c-edge-lit: 222 220 234;
+  --c-edge-far: 64 62 82;
+  --c-core-ink: 255 200 90;
+  --c-sup-ink: 125 163 255;
+  --c-gen-ink: 196 193 214;
+  --shadow-strength: 0.5;
+}
+
+/* ODDS -- folha de estilo do mapa em colmeia (saida de renderSvg).
+   Porte literal das regras de SVG do prototipo v4 (no git em e282c83), com as
+   variaveis proprias, prefixo odds-map (triplets RGB, lidos como rgb(var(NOME) / alfa)).
+   Auto-contida, sem depender de variaveis de fora. Quem consome mapeia as suas
+   para estas (ex.: accent: var(NOSSO-ACCENT)).
+   Fora daqui, de proposito: casca de pagina (body, .wrap, .seg, botoes, cards, fonte,
+   diagnosticos, legenda) e toda interacao (.lit, .focus, .mute, svg.far,
+   animacao de data-flow, mapeamento [data-type] -&gt; --t).
+   Os padroes tem especificidade zero (:where) de proposito: os aliases :root de quem
+   consome sempre vencem, em qualquer ordem.
+   O repouso e o que foi validado em 2026-10-09: o roxo
+   saiu do mapa e ficou so na interface. Linha, ponta e borda de tag em --odds-map-edge
+   (cinza), texto de tag em tinta; e traco de espessura fixa na tela. */
+:where(:root){
+  color-scheme: light;
+  --odds-map-bg:250 250 253; --odds-map-panel:255 255 255; --odds-map-panel2:244 243 250; --odds-map-border:230 228 242;
+  --odds-map-ink:27 26 36; --odds-map-dim:107 104 128;
+  --odds-map-accent:108 64 217; --odds-map-azure:61 111 232; --odds-map-pulse:35 168 205;
+  --odds-map-solar:255 197 61; --odds-map-error:192 52 43; --odds-map-warning:166 106 0; --odds-map-info:91 107 124;
+  --odds-map-edge:128 125 146;
+  --odds-map-shadow-strength:.14;
+  --odds-map-mix-core:17%; --odds-map-mix-sup:9%; --odds-map-mix-gen:6%;
+  --odds-map-tile-core:62%; --odds-map-tile-sup:36%; --odds-map-tile-gen:20%; --odds-map-tile-edge:46%;
+}
+@media (prefers-color-scheme: dark){
+  :where(:root:not([data-theme="light"])){
+    color-scheme: dark;
+    --odds-map-bg:18 17 26; --odds-map-panel:26 25 38; --odds-map-panel2:35 33 47; --odds-map-border:50 47 69;
+    --odds-map-ink:236 235 245; --odds-map-dim:154 151 174;
+    --odds-map-accent:173 141 255; --odds-map-azure:125 163 255; --odds-map-pulse:94 208 238;
+    --odds-map-solar:255 209 99; --odds-map-error:224 121 111; --odds-map-warning:217 164 65; --odds-map-info:147 163 179;
+    --odds-map-edge:118 115 140;
+    --odds-map-shadow-strength:.5;
+    --odds-map-mix-core:10%; --odds-map-mix-sup:10%; --odds-map-mix-gen:7%;
+    --odds-map-tile-core:46%; --odds-map-tile-sup:44%; --odds-map-tile-gen:28%; --odds-map-tile-edge:40%;
+  }
+}
+:where(:root[data-theme="dark"]){
+  color-scheme: dark;
+  --odds-map-bg:18 17 26; --odds-map-panel:26 25 38; --odds-map-panel2:35 33 47; --odds-map-border:50 47 69;
+  --odds-map-ink:236 235 245; --odds-map-dim:154 151 174;
+  --odds-map-accent:173 141 255; --odds-map-azure:125 163 255; --odds-map-pulse:94 208 238;
+  --odds-map-solar:255 209 99; --odds-map-error:224 121 111; --odds-map-warning:217 164 65; --odds-map-info:147 163 179;
+  --odds-map-edge:118 115 140;
+  --odds-map-shadow-strength:.5;
+  --odds-map-mix-core:10%; --odds-map-mix-sup:10%; --odds-map-mix-gen:7%;
+  --odds-map-tile-core:46%; --odds-map-tile-sup:44%; --odds-map-tile-gen:28%; --odds-map-tile-edge:40%;
+}
+
+.dregion{fill:rgb(var(--odds-map-ink) / .026)}
+.bdom{fill:none; stroke:rgb(var(--odds-map-ink) / .30); stroke-width:1.8; stroke-linecap:round}
+.terr{transition:opacity .18s}
+.terr.core{fill:color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-mix-core), rgb(var(--odds-map-panel)))}
+.terr.supporting{fill:color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-mix-sup), rgb(var(--odds-map-panel)))}
+.terr.generic{fill:color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-mix-gen), rgb(var(--odds-map-panel)))}
+.terr.external{fill:rgb(var(--odds-map-panel2))}
+/* Na vista de fluxo o chao recua e a linha avanca; na de contencao, o contrario.
+   Mesma geografia nas duas — e isso que preserva o mapa mental na troca. */
+svg.v-flow .terr{opacity:.62}
+svg.v-flow .bsub{opacity:.7}
+.bsub{fill:none; stroke:rgb(var(--odds-map-ink) / .16); stroke-width:1; stroke-linecap:round;
+  transition:stroke .14s, stroke-width .14s}
+.subwash{fill:rgb(var(--odds-map-accent) / 0); transition:fill .14s; pointer-events:all}
+g.sub.hot .subwash{fill:rgb(var(--odds-map-accent) / .09)}
+g.sub.hot .bsub{stroke:rgb(var(--odds-map-accent) / .8); stroke-width:1.8; opacity:1}
+g.sub.on .subwash{fill:rgb(var(--odds-map-accent) / .07)}
+g.sub.on .bsub{stroke:rgb(var(--odds-map-accent)); stroke-width:2; opacity:1}
+g.sublab.subhot .snm{fill:rgb(var(--odds-map-accent))}
+g.node.subhot .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2}
+.bmass{fill:none; stroke:rgb(var(--odds-map-ink) / .26); stroke-width:1.2; stroke-linecap:round}
+.bmass.ext{stroke:rgb(var(--odds-map-dim) / .85); stroke-dasharray:4 3}
+
+/* A peca agora se destaca do chao por tres sinais e nao por um: tom mais
+   concentrado, borda propria e sombra de peca sobre tabuleiro. Na v2 era so o tom,
+   e 77% das celulas eram chao da mesma forma e do mesmo tamanho. */
+.tile{stroke-width:1.2; transition:fill .14s, stroke .14s}
+.tile.core{fill:color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-tile-core), rgb(var(--odds-map-panel)));
+  stroke:color-mix(in srgb, rgb(var(--odds-map-ink)) var(--odds-map-tile-edge), color-mix(in srgb, rgb(var(--odds-map-solar)) var(--odds-map-tile-core), rgb(var(--odds-map-panel))));}
+.tile.supporting{fill:color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-tile-sup), rgb(var(--odds-map-panel)));
+  stroke:color-mix(in srgb, rgb(var(--odds-map-ink)) var(--odds-map-tile-edge), color-mix(in srgb, rgb(var(--odds-map-azure)) var(--odds-map-tile-sup), rgb(var(--odds-map-panel))));}
+.tile.generic{fill:color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-tile-gen), rgb(var(--odds-map-panel)));
+  stroke:color-mix(in srgb, rgb(var(--odds-map-ink)) var(--odds-map-tile-edge), color-mix(in srgb, rgb(var(--odds-map-dim)) var(--odds-map-tile-gen), rgb(var(--odds-map-panel))));}
+.tile.external{fill:color-mix(in srgb, rgb(var(--odds-map-dim)) 14%, rgb(var(--odds-map-panel)));
+  stroke:rgb(var(--odds-map-dim)); stroke-dasharray:5 3;}
+g.node{cursor:pointer; outline:none}
+g.node:hover .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.4}
+g.node:focus-visible .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.8; stroke-dasharray:none}
+g.node.on .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.8; stroke-dasharray:none}
+.hit{fill:transparent; stroke:none}
+
+.cnm{font-family:"JetBrains Mono",Menlo,monospace; font-size:10px; fill:rgb(var(--odds-map-ink) / .92);
+  pointer-events:none; user-select:none;
+  paint-order:stroke; stroke:rgb(var(--odds-map-bg)); stroke-width:3.5px; stroke-linejoin:round}
+.snm{font-family:"JetBrains Mono",Menlo,monospace; letter-spacing:.16em; text-anchor:middle;
+  fill:rgb(var(--odds-map-ink) / .42); pointer-events:none; user-select:none; transition:fill .14s;
+  paint-order:stroke; stroke:rgb(var(--odds-map-panel)); stroke-width:3.5px; stroke-linejoin:round}
+.dnm{font-family:"Inter",system-ui,sans-serif; font-weight:600; letter-spacing:-.01em;
+  text-anchor:middle; fill:rgb(var(--odds-map-ink) / .78)}
+.did{font-family:"JetBrains Mono",Menlo,monospace; font-size:9.5px; letter-spacing:.16em;
+  text-anchor:middle; fill:rgb(var(--odds-map-dim) / .85)}
+
+.ecase{fill:none; stroke:rgb(var(--odds-map-bg) / .9); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
+/* Linha em repouso: cinza, inclusive a de -x-. */
+.edge{fill:none; stroke:rgb(var(--odds-map-edge)); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.edge.sep{stroke-width:1.4}
+.head{fill:rgb(var(--odds-map-edge))}
+.tick{stroke:rgb(var(--odds-map-dim)); stroke-width:1.6; stroke-linecap:round; fill:none}
+/* A porta: a tag encostada no lado do hexagono a que ela pertence. */
+/* Sem diagnostico, a tag e cinza com texto em tinta; a de so [BBM] tambem. */
+.port rect{fill:rgb(var(--odds-map-panel)); stroke:rgb(var(--odds-map-edge) / .75)}
+.port text{font-family:"JetBrains Mono",Menlo,monospace; font-size:9px; font-weight:500;
+  fill:rgb(var(--odds-map-ink) / .82); dominant-baseline:central}
+.port text .bbm{fill:rgb(var(--odds-map-dim)); font-weight:400}
+.port.only-bbm rect{stroke-dasharray:3 2}
+.port.sev-error rect{stroke:rgb(var(--odds-map-error)); stroke-width:1.4}
+.port.sev-error text{fill:rgb(var(--odds-map-error))}
+.port.sev-warning rect{stroke:rgb(var(--odds-map-warning)); stroke-width:1.4}
+.port.sev-warning text{fill:rgb(var(--odds-map-warning))}
+.port.sev-info rect{stroke:rgb(var(--odds-map-info)); stroke-width:1.4}
+.port.sev-info text{fill:rgb(var(--odds-map-info))}
+.sev-error .ic-bg{fill:rgb(var(--odds-map-error))}
+.sev-warning .ic-bg{fill:rgb(var(--odds-map-warning))}
+.sev-info .ic-bg{fill:rgb(var(--odds-map-info))}
+.ic-fg{stroke:rgb(var(--odds-map-panel)); stroke-width:1.5; stroke-linecap:round; fill:none}
+.ic-dot{fill:rgb(var(--odds-map-panel))}
+.badge .ring{fill:rgb(var(--odds-map-panel))}
+g.fade{opacity:.12}
+text.cnm.fade{opacity:.14}
+text.cnm.on{fill:rgb(var(--odds-map-accent)); font-weight:500}
+g.rel.lit .edge{stroke:rgb(var(--odds-map-accent)); stroke-width:2.2}
+g.rel.lit .port rect{stroke-width:1.4}
+
+/* Estado de repouso do que renderSvg emite alem do prototipo v4. */
+/* Traco de espessura fixa na tela: sem isso, no mapa inteiro (~0,5-0,7 px por unidade)
+   o contorno de destaque e a linha invalida somem, e com zoom ficam grossos. */
+svg:is(.v-flow, .v-contain) :is(path, rect, line, polyline, circle){vector-effect:non-scaling-stroke}
+svg:not(.far) g.far-lab{display:none}
+.rhit{fill:none; stroke:transparent; stroke-width:12px; pointer-events:stroke; cursor:pointer}
+g.rel.invalid .edge{stroke:rgb(var(--odds-map-error)); stroke-width:1.8; stroke-dasharray:6 4}
+g.rel.invalid .head{fill:rgb(var(--odds-map-error))}
+@media (prefers-reduced-motion: reduce){ .terr, .bsub, .subwash, .tile, .snm{transition:none !important} }
+
+/* Liga o mapa aos tokens da aplicação (ambos são triplets RGB). As --odds-map-tile-* e
+   --odds-map-mix-* não têm token na aplicação e ficam com os padrões do map.css.
+   O export embute este arquivo no SVG exportado. */
+:root {
+  --odds-map-bg: var(--c-canvas);
+  --odds-map-panel: var(--c-surface);
+  --odds-map-panel2: var(--c-surface-muted);
+  --odds-map-border: var(--c-hairline);
+  --odds-map-dim: var(--c-ink-mute);
+  --odds-map-ink: var(--c-ink);
+  --odds-map-accent: var(--c-accent);
+  --odds-map-azure: var(--c-azure);
+  --odds-map-pulse: var(--c-pulse);
+  --odds-map-solar: var(--c-solar);
+  --odds-map-error: var(--c-error);
+  --odds-map-warning: var(--c-warning);
+  --odds-map-info: var(--c-info);
+  --odds-map-edge: var(--c-edge);
+  --odds-map-shadow-strength: var(--shadow-strength);
+}
+
+/* O mapa: a interação sobre o que o @odds/layout desenha. O palco, o FLIP (.lv-anim,
+   .lv-enter, .born) e as regras de mapa, sob a classe global .odds-map e com as cores em
+   tokens. As regras que vestem o inspetor, a legenda e o zoom ficam nos módulos desses
+   componentes.
+   Global de propósito, e auto-suficiente com tokens.css + map.css + map-bridge.css:
+   o export embute este arquivo no SVG exportado. Por isso o palco é div.odds-map —
+   num SVG exportado com class="odds-map", só as regras do desenho valem. */
+
+/* ---------- o palco: a colmeia na tela inteira ---------- */
+div.odds-map {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+  z-index: 0;
+  background-color: rgb(var(--c-canvas));
+  background-image: radial-gradient(rgb(var(--c-ink) / .13) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* o foco do mapa vence o inset do palco */
+div.odds-map:focus-visible { box-shadow: 0 0 0 2px rgb(var(--c-accent)); }
+div.odds-map.dragging { cursor: grabbing; }
+div.odds-map.frozen svg { opacity: .42; filter: saturate(.2); }
+div.odds-map.frozen { background-image: repeating-linear-gradient(135deg, rgb(var(--c-ink) / .045) 0 10px, transparent 10px 20px); }
+
+/* ---------- FLIP: peças deslizam, chão e linhas chegam por fade ---------- */
+.odds-map .lv-anim g.node, .odds-map .lv-anim text.cnm { transition: transform .46s cubic-bezier(.2, .75, .2, 1); }
+.odds-map .lv-anim :is(g.rel, path.terr, g.sub, path.bmass, g.sublab, path.bdom, path.dregion, g.badge, text.dnm, text.did) { transition: opacity .3s ease .3s; }
+.odds-map .lv-enter :is(g.rel, path.terr, g.sub, path.bmass, g.sublab, path.bdom, path.dregion, g.badge, text.dnm, text.did) { opacity: 0 !important; }
+.odds-map .lv-anim g.node.born { transition: transform .46s cubic-bezier(.2, .75, .2, 1), opacity .3s ease .25s; }
+.odds-map .lv-enter g.node.born { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .odds-map .lv-anim :is(g.node, text.cnm, g.rel, path.terr, g.sub, path.bmass, g.sublab, path.bdom, path.dregion, g.badge, text.dnm, text.did) { transition: none !important; }
+}
+
+/* ---------- detalhe por zoom ---------- */
+/* Longe demais para ler uma tag, ela só faz ruído. A relação acesa mostra as suas em
+   qualquer zoom, porque é para ler aquela que se clicou. */
+.odds-map svg.far g.rel:not(.lit) .port { display: none; }
+/* Traço de espessura fixa na tela; de longe, o nome de contexto some e o do subdomínio
+   cresce, para o mapa se ler como territórios. Com algo selecionado, os nomes que a
+   seleção deixa acesos voltam, em tamanho fixo na tela (--k, escrito pela câmera). */
+.odds-map svg :is(path, rect, line, polyline, circle) { vector-effect: non-scaling-stroke; }
+.odds-map svg.far text.cnm { display: none; }
+.odds-map svg.far.sel-on text.cnm:not(.fade) { display: inline; font-size: calc(var(--k) * 11px); stroke-width: calc(var(--k) * 3.5px); }
+.odds-map svg.far g.sublab:not(.far-lab), .odds-map svg:not(.far) g.far-lab { display: none; }
+.odds-map svg.far g.far-lab .snm { fill: rgb(var(--c-ink) / .58); stroke-width: 5px; }
+.odds-map svg.far g.far-lab.subhot .snm { fill: rgb(var(--t)); }
+/* de longe a linha afina: com traço fixo na tela, as linhas pesavam mais que os territórios */
+.odds-map svg.far .edge { stroke-width: 1; }
+.odds-map svg.far .ecase { stroke-width: 2.6; }
+.odds-map svg.far g.rel.lit .edge { stroke-width: 1.8; }
+
+/* ---------- cor por tipo de subdomínio ---------- */
+/* O roxo fica só na interface. Linha é cinza; acesa, quase tinta. Peça e território
+   tomam o tom do próprio tipo. A inválida segue vermelha. */
+.odds-map [data-type="core"] { --t: var(--c-core-ink); }
+.odds-map [data-type="supporting"] { --t: var(--c-sup-ink); }
+.odds-map [data-type="generic"], .odds-map [data-type="external"] { --t: var(--c-gen-ink); }
+.odds-map .edge { stroke: rgb(var(--c-edge)); }
+.odds-map .head { fill: rgb(var(--c-edge)); }
+.odds-map g.rel.lit .edge { stroke: rgb(var(--c-edge-lit)); stroke-width: 2; }
+.odds-map g.rel.lit .head { fill: rgb(var(--c-edge-lit)); }
+.odds-map .port:not([class*="sev-"]) rect { stroke: rgb(var(--c-edge) / .75); }
+.odds-map .port:not([class*="sev-"]) text { fill: rgb(var(--c-ink) / .82); }
+.odds-map g.node:hover .tile, .odds-map g.node.subhot .tile { stroke: rgb(var(--t)); }
+.odds-map g.node:focus-visible .tile, .odds-map g.node.on .tile { stroke: rgb(var(--t)); }
+.odds-map text.cnm.on { fill: rgb(var(--t)); }
+.odds-map g.sub.hot .subwash { fill: rgb(var(--t) / .12); }
+.odds-map g.sub.hot .bsub { stroke: rgb(var(--t) / .85); }
+.odds-map g.sub.on .subwash { fill: rgb(var(--t) / .10); }
+.odds-map g.sub.on .bsub { stroke: rgb(var(--t)); }
+.odds-map g.sublab.subhot .snm { fill: rgb(var(--t)); }
+.odds-map g.rel.invalid.lit .head { fill: rgb(var(--c-error)); }
+/* de longe, a linha em repouso é um cinza clarinho: as linhas só sugerem a trama */
+.odds-map svg.far g.rel:not(.lit):not(.invalid) .edge { stroke: rgb(var(--c-edge-far)); }
+.odds-map svg.far g.rel:not(.lit):not(.invalid) .head { fill: rgb(var(--c-edge-far)); }
+.odds-map svg.far g.rel.invalid .edge { stroke-width: 1.6; }
+
+/* ---------- linha (ADR-0012) ---------- */
+/* Acesa, a válida vira tracejado correndo do upstream para o downstream; a mútua fica
+   tracejada e parada. A inválida é tracejado vermelho e parado, sempre. */
+.odds-map g.rel.lit .edge:not(.sep) { stroke-dasharray: 7 5; animation: odds-dash-run .7s linear infinite; }
+.odds-map g.rel.lit[data-flow="rev"] .edge { animation-direction: reverse; }
+.odds-map g.rel.lit[data-flow="both"] .edge { animation: none; }
+@keyframes odds-dash-run { to { stroke-dashoffset: -12; } }
+.odds-map g.rel.invalid .edge, .odds-map g.rel.invalid.lit .edge { stroke: rgb(var(--c-error)); stroke-width: 1.8; stroke-dasharray: 6 4; animation: none; }
+.odds-map g.rel.invalid .head { fill: rgb(var(--c-error)); }
+@media (prefers-reduced-motion: reduce) { .odds-map g.rel .edge { animation: none !important; } }
+
+/* ---------- uma relação por vez ---------- */
+/* A linha é clicável por um traço invisível de 12 px na tela; sob o mouse, escurece. Em
+   foco, fica mais grossa; as outras do contexto de onde se veio seguem acesas, num cinza
+   mais claro, clicáveis e mostrando o sentido. */
+.odds-map g.rel .rhit { fill: none; stroke: transparent; stroke-width: 12px; pointer-events: stroke; cursor: pointer; }
+.odds-map g.rel:hover .edge { stroke: rgb(var(--c-edge-lit)); }
+.odds-map g.rel:hover .head { fill: rgb(var(--c-edge-lit)); }
+.odds-map g.rel.focus .edge, .odds-map svg.far g.rel.focus .edge { stroke-width: 3; }
+.odds-map g.rel.lit.mute:not(.invalid) .edge { stroke: rgb(var(--c-edge) / .6); stroke-width: 1.6; }
+.odds-map g.rel.lit.mute:not(.invalid) .head { fill: rgb(var(--c-edge) / .6); }
+.odds-map g.rel.lit.mute .port { opacity: .6; }
+.odds-map svg.far g.rel.mute .port { display: none; }
+.odds-map g.rel.fade .rhit { cursor: pointer; }
+</style><svg class="v-flow" viewBox="-750 -254.23840175367854 1206 556.4768035073571" role="img" aria-label="Mapa de contextos em colmeia, vista de fluxo" x="-750" y="-254.23840175367854" width="1206" height="556.4768035073571"><defs><filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="rgb(20,18,30)" flood-opacity="0.10"/></filter><filter id="tsh" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgb(20,18,30)" flood-opacity="0.18"/></filter></defs><path class="dregion" d="M28.0 0.0L14.0 24.2L-14.0 24.2L-28.0 0.0L-14.0 -24.2L14.0 -24.2ZM70.0 24.2L56.0 48.5L28.0 48.5L14.0 24.2L28.0 0.0L56.0 -0.0ZM28.0 48.5L14.0 72.7L-14.0 72.7L-28.0 48.5L-14.0 24.2L14.0 24.2ZM-14.0 24.2L-28.0 48.5L-56.0 48.5L-70.0 24.2L-56.0 0.0L-28.0 -0.0ZM-14.0 -24.2L-28.0 0.0L-56.0 0.0L-70.0 -24.2L-56.0 -48.5L-28.0 -48.5ZM28.0 -48.5L14.0 -24.2L-14.0 -24.2L-28.0 -48.5L-14.0 -72.7L14.0 -72.7ZM70.0 -24.2L56.0 0.0L28.0 0.0L14.0 -24.2L28.0 -48.5L56.0 -48.5ZM112.0 48.5L98.0 72.7L70.0 72.7L56.0 48.5L70.0 24.2L98.0 24.2ZM70.0 72.7L56.0 97.0L28.0 97.0L14.0 72.7L28.0 48.5L56.0 48.5ZM112.0 0.0L98.0 24.2L70.0 24.2L56.0 0.0L70.0 -24.2L98.0 -24.2ZM28.0 97.0L14.0 121.2L-14.0 121.2L-28.0 97.0L-14.0 72.7L14.0 72.7ZM-14.0 72.7L-28.0 97.0L-56.0 97.0L-70.0 72.7L-56.0 48.5L-28.0 48.5ZM-56.0 48.5L-70.0 72.7L-98.0 72.7L-112.0 48.5L-98.0 24.2L-70.0 24.2ZM-56.0 0.0L-70.0 24.2L-98.0 24.2L-112.0 0.0L-98.0 -24.2L-70.0 -24.2ZM-56.0 -48.5L-70.0 -24.2L-98.0 -24.2L-112.0 -48.5L-98.0 -72.7L-70.0 -72.7ZM-14.0 -72.7L-28.0 -48.5L-56.0 -48.5L-70.0 -72.7L-56.0 -97.0L-28.0 -97.0ZM28.0 -97.0L14.0 -72.7L-14.0 -72.7L-28.0 -97.0L-14.0 -121.2L14.0 -121.2ZM70.0 -72.7L56.0 -48.5L28.0 -48.5L14.0 -72.7L28.0 -97.0L56.0 -97.0ZM112.0 -48.5L98.0 -24.2L70.0 -24.2L56.0 -48.5L70.0 -72.7L98.0 -72.7ZM154.0 72.7L140.0 97.0L112.0 97.0L98.0 72.7L112.0 48.5L140.0 48.5ZM112.0 97.0L98.0 121.2L70.0 121.2L56.0 97.0L70.0 72.7L98.0 72.7ZM154.0 24.2L140.0 48.5L112.0 48.5L98.0 24.2L112.0 0.0L140.0 -0.0ZM70.0 121.2L56.0 145.5L28.0 145.5L14.0 121.2L28.0 97.0L56.0 97.0ZM154.0 -24.2L140.0 0.0L112.0 0.0L98.0 -24.2L112.0 -48.5L140.0 -48.5ZM28.0 145.5L14.0 169.7L-14.0 169.7L-28.0 145.5L-14.0 121.2L14.0 121.2ZM-14.0 121.2L-28.0 145.5L-56.0 145.5L-70.0 121.2L-56.0 97.0L-28.0 97.0ZM-56.0 97.0L-70.0 121.2L-98.0 121.2L-112.0 97.0L-98.0 72.7L-70.0 72.7ZM-98.0 72.7L-112.0 97.0L-140.0 97.0L-154.0 72.7L-140.0 48.5L-112.0 48.5ZM-98.0 24.2L-112.0 48.5L-140.0 48.5L-154.0 24.2L-140.0 0.0L-112.0 -0.0ZM-98.0 -24.2L-112.0 0.0L-140.0 0.0L-154.0 -24.2L-140.0 -48.5L-112.0 -48.5ZM-98.0 -72.7L-112.0 -48.5L-140.0 -48.5L-154.0 -72.7L-140.0 -97.0L-112.0 -97.0ZM-56.0 -97.0L-70.0 -72.7L-98.0 -72.7L-112.0 -97.0L-98.0 -121.2L-70.0 -121.2ZM-14.0 -121.2L-28.0 -97.0L-56.0 -97.0L-70.0 -121.2L-56.0 -145.5L-28.0 -145.5ZM28.0 -145.5L14.0 -121.2L-14.0 -121.2L-28.0 -145.5L-14.0 -169.7L14.0 -169.7ZM70.0 -121.2L56.0 -97.0L28.0 -97.0L14.0 -121.2L28.0 -145.5L56.0 -145.5ZM112.0 -97.0L98.0 -72.7L70.0 -72.7L56.0 -97.0L70.0 -121.2L98.0 -121.2ZM154.0 -72.7L140.0 -48.5L112.0 -48.5L98.0 -72.7L112.0 -97.0L140.0 -97.0ZM196.0 97.0L182.0 121.2L154.0 121.2L140.0 97.0L154.0 72.7L182.0 72.7ZM196.0 48.5L182.0 72.7L154.0 72.7L140.0 48.5L154.0 24.2L182.0 24.2ZM196.0 0.0L182.0 24.2L154.0 24.2L140.0 0.0L154.0 -24.2L182.0 -24.2ZM196.0 -48.5L182.0 -24.2L154.0 -24.2L140.0 -48.5L154.0 -72.7L182.0 -72.7ZM196.0 -97.0L182.0 -72.7L154.0 -72.7L140.0 -97.0L154.0 -121.2L182.0 -121.2ZM-98.0 121.2L-112.0 145.5L-140.0 145.5L-154.0 121.2L-140.0 97.0L-112.0 97.0ZM-98.0 -121.2L-112.0 -97.0L-140.0 -97.0L-154.0 -121.2L-140.0 -145.5L-112.0 -145.5ZM-140.0 97.0L-154.0 121.2L-182.0 121.2L-196.0 97.0L-182.0 72.7L-154.0 72.7ZM-140.0 48.5L-154.0 72.7L-182.0 72.7L-196.0 48.5L-182.0 24.2L-154.0 24.2ZM-140.0 0.0L-154.0 24.2L-182.0 24.2L-196.0 0.0L-182.0 -24.2L-154.0 -24.2ZM-140.0 -48.5L-154.0 -24.2L-182.0 -24.2L-196.0 -48.5L-182.0 -72.7L-154.0 -72.7ZM-140.0 -97.0L-154.0 -72.7L-182.0 -72.7L-196.0 -97.0L-182.0 -121.2L-154.0 -121.2ZM238.0 72.7L224.0 97.0L196.0 97.0L182.0 72.7L196.0 48.5L224.0 48.5ZM238.0 24.2L224.0 48.5L196.0 48.5L182.0 24.2L196.0 0.0L224.0 -0.0ZM238.0 -24.2L224.0 0.0L196.0 0.0L182.0 -24.2L196.0 -48.5L224.0 -48.5ZM238.0 -72.7L224.0 -48.5L196.0 -48.5L182.0 -72.7L196.0 -97.0L224.0 -97.0ZM-140.0 145.5L-154.0 169.7L-182.0 169.7L-196.0 145.5L-182.0 121.2L-154.0 121.2ZM-140.0 -145.5L-154.0 -121.2L-182.0 -121.2L-196.0 -145.5L-182.0 -169.7L-154.0 -169.7ZM-182.0 72.7L-196.0 97.0L-224.0 97.0L-238.0 72.7L-224.0 48.5L-196.0 48.5ZM-182.0 24.2L-196.0 48.5L-224.0 48.5L-238.0 24.2L-224.0 0.0L-196.0 -0.0ZM-182.0 -24.2L-196.0 0.0L-224.0 0.0L-238.0 -24.2L-224.0 -48.5L-196.0 -48.5ZM-182.0 -72.7L-196.0 -48.5L-224.0 -48.5L-238.0 -72.7L-224.0 -97.0L-196.0 -97.0ZM238.0 121.2L224.0 145.5L196.0 145.5L182.0 121.2L196.0 97.0L224.0 97.0ZM238.0 -121.2L224.0 -97.0L196.0 -97.0L182.0 -121.2L196.0 -145.5L224.0 -145.5ZM-182.0 121.2L-196.0 145.5L-224.0 145.5L-238.0 121.2L-224.0 97.0L-196.0 97.0ZM-182.0 -121.2L-196.0 -97.0L-224.0 -97.0L-238.0 -121.2L-224.0 -145.5L-196.0 -145.5ZM-266.0 -72.7L-280.0 -48.5L-308.0 -48.5L-322.0 -72.7L-308.0 -97.0L-280.0 -97.0ZM-224.0 -48.5L-238.0 -24.2L-266.0 -24.2L-280.0 -48.5L-266.0 -72.7L-238.0 -72.7ZM-266.0 -24.2L-280.0 0.0L-308.0 0.0L-322.0 -24.2L-308.0 -48.5L-280.0 -48.5ZM-308.0 -48.5L-322.0 -24.2L-350.0 -24.2L-364.0 -48.5L-350.0 -72.7L-322.0 -72.7ZM-308.0 -97.0L-322.0 -72.7L-350.0 -72.7L-364.0 -97.0L-350.0 -121.2L-322.0 -121.2ZM-266.0 -121.2L-280.0 -97.0L-308.0 -97.0L-322.0 -121.2L-308.0 -145.5L-280.0 -145.5ZM-224.0 -97.0L-238.0 -72.7L-266.0 -72.7L-280.0 -97.0L-266.0 -121.2L-238.0 -121.2ZM-224.0 0.0L-238.0 24.2L-266.0 24.2L-280.0 0.0L-266.0 -24.2L-238.0 -24.2ZM-266.0 24.2L-280.0 48.5L-308.0 48.5L-322.0 24.2L-308.0 0.0L-280.0 -0.0ZM-308.0 0.0L-322.0 24.2L-350.0 24.2L-364.0 0.0L-350.0 -24.2L-322.0 -24.2ZM-350.0 -24.2L-364.0 0.0L-392.0 0.0L-406.0 -24.2L-392.0 -48.5L-364.0 -48.5ZM-350.0 -72.7L-364.0 -48.5L-392.0 -48.5L-406.0 -72.7L-392.0 -97.0L-364.0 -97.0ZM-350.0 -121.2L-364.0 -97.0L-392.0 -97.0L-406.0 -121.2L-392.0 -145.5L-364.0 -145.5ZM-308.0 -145.5L-322.0 -121.2L-350.0 -121.2L-364.0 -145.5L-350.0 -169.7L-322.0 -169.7ZM-266.0 -169.7L-280.0 -145.5L-308.0 -145.5L-322.0 -169.7L-308.0 -194.0L-280.0 -194.0ZM-224.0 -145.5L-238.0 -121.2L-266.0 -121.2L-280.0 -145.5L-266.0 -169.7L-238.0 -169.7ZM-224.0 48.5L-238.0 72.7L-266.0 72.7L-280.0 48.5L-266.0 24.2L-238.0 24.2ZM-266.0 72.7L-280.0 97.0L-308.0 97.0L-322.0 72.7L-308.0 48.5L-280.0 48.5ZM-308.0 48.5L-322.0 72.7L-350.0 72.7L-364.0 48.5L-350.0 24.2L-322.0 24.2ZM-350.0 24.2L-364.0 48.5L-392.0 48.5L-406.0 24.2L-392.0 0.0L-364.0 -0.0ZM-392.0 0.0L-406.0 24.2L-434.0 24.2L-448.0 0.0L-434.0 -24.2L-406.0 -24.2ZM-392.0 -48.5L-406.0 -24.2L-434.0 -24.2L-448.0 -48.5L-434.0 -72.7L-406.0 -72.7ZM-392.0 -97.0L-406.0 -72.7L-434.0 -72.7L-448.0 -97.0L-434.0 -121.2L-406.0 -121.2ZM-392.0 -145.5L-406.0 -121.2L-434.0 -121.2L-448.0 -145.5L-434.0 -169.7L-406.0 -169.7ZM-350.0 -169.7L-364.0 -145.5L-392.0 -145.5L-406.0 -169.7L-392.0 -194.0L-364.0 -194.0ZM-308.0 -194.0L-322.0 -169.7L-350.0 -169.7L-364.0 -194.0L-350.0 -218.2L-322.0 -218.2ZM-266.0 -218.2L-280.0 -194.0L-308.0 -194.0L-322.0 -218.2L-308.0 -242.5L-280.0 -242.5ZM-224.0 -194.0L-238.0 -169.7L-266.0 -169.7L-280.0 -194.0L-266.0 -218.2L-238.0 -218.2ZM-182.0 -169.7L-196.0 -145.5L-224.0 -145.5L-238.0 -169.7L-224.0 -194.0L-196.0 -194.0ZM-224.0 97.0L-238.0 121.2L-266.0 121.2L-280.0 97.0L-266.0 72.7L-238.0 72.7ZM-308.0 97.0L-322.0 121.2L-350.0 121.2L-364.0 97.0L-350.0 72.7L-322.0 72.7ZM-350.0 72.7L-364.0 97.0L-392.0 97.0L-406.0 72.7L-392.0 48.5L-364.0 48.5ZM-392.0 48.5L-406.0 72.7L-434.0 72.7L-448.0 48.5L-434.0 24.2L-406.0 24.2ZM-434.0 24.2L-448.0 48.5L-476.0 48.5L-490.0 24.2L-476.0 0.0L-448.0 -0.0ZM-266.0 121.2L-280.0 145.5L-308.0 145.5L-322.0 121.2L-308.0 97.0L-280.0 97.0ZM-224.0 145.5L-238.0 169.7L-266.0 169.7L-280.0 145.5L-266.0 121.2L-238.0 121.2ZM-308.0 145.5L-322.0 169.7L-350.0 169.7L-364.0 145.5L-350.0 121.2L-322.0 121.2ZM-350.0 121.2L-364.0 145.5L-392.0 145.5L-406.0 121.2L-392.0 97.0L-364.0 97.0ZM-392.0 97.0L-406.0 121.2L-434.0 121.2L-448.0 97.0L-434.0 72.7L-406.0 72.7ZM-434.0 72.7L-448.0 97.0L-476.0 97.0L-490.0 72.7L-476.0 48.5L-448.0 48.5ZM-266.0 169.7L-280.0 194.0L-308.0 194.0L-322.0 169.7L-308.0 145.5L-280.0 145.5ZM-182.0 169.7L-196.0 194.0L-224.0 194.0L-238.0 169.7L-224.0 145.5L-196.0 145.5ZM-224.0 194.0L-238.0 218.2L-266.0 218.2L-280.0 194.0L-266.0 169.7L-238.0 169.7ZM-266.0 218.2L-280.0 242.5L-308.0 242.5L-322.0 218.2L-308.0 194.0L-280.0 194.0ZM-308.0 194.0L-322.0 218.2L-350.0 218.2L-364.0 194.0L-350.0 169.7L-322.0 169.7ZM-350.0 169.7L-364.0 194.0L-392.0 194.0L-406.0 169.7L-392.0 145.5L-364.0 145.5ZM-392.0 145.5L-406.0 169.7L-434.0 169.7L-448.0 145.5L-434.0 121.2L-406.0 121.2ZM-434.0 121.2L-448.0 145.5L-476.0 145.5L-490.0 121.2L-476.0 97.0L-448.0 97.0ZM322.0 24.2L308.0 48.5L280.0 48.5L266.0 24.2L280.0 0.0L308.0 -0.0ZM364.0 48.5L350.0 72.7L322.0 72.7L308.0 48.5L322.0 24.2L350.0 24.2ZM322.0 72.7L308.0 97.0L280.0 97.0L266.0 72.7L280.0 48.5L308.0 48.5ZM280.0 48.5L266.0 72.7L238.0 72.7L224.0 48.5L238.0 24.2L266.0 24.2ZM280.0 0.0L266.0 24.2L238.0 24.2L224.0 0.0L238.0 -24.2L266.0 -24.2ZM322.0 -24.2L308.0 0.0L280.0 0.0L266.0 -24.2L280.0 -48.5L308.0 -48.5ZM364.0 0.0L350.0 24.2L322.0 24.2L308.0 0.0L322.0 -24.2L350.0 -24.2ZM406.0 72.7L392.0 97.0L364.0 97.0L350.0 72.7L364.0 48.5L392.0 48.5ZM364.0 97.0L350.0 121.2L322.0 121.2L308.0 97.0L322.0 72.7L350.0 72.7ZM406.0 24.2L392.0 48.5L364.0 48.5L350.0 24.2L364.0 0.0L392.0 -0.0ZM322.0 121.2L308.0 145.5L280.0 145.5L266.0 121.2L280.0 97.0L308.0 97.0ZM280.0 97.0L266.0 121.2L238.0 121.2L224.0 97.0L238.0 72.7L266.0 72.7ZM280.0 -48.5L266.0 -24.2L238.0 -24.2L224.0 -48.5L238.0 -72.7L266.0 -72.7ZM322.0 -72.7L308.0 -48.5L280.0 -48.5L266.0 -72.7L280.0 -97.0L308.0 -97.0ZM364.0 -48.5L350.0 -24.2L322.0 -24.2L308.0 -48.5L322.0 -72.7L350.0 -72.7ZM406.0 -24.2L392.0 0.0L364.0 0.0L350.0 -24.2L364.0 -48.5L392.0 -48.5ZM406.0 121.2L392.0 145.5L364.0 145.5L350.0 121.2L364.0 97.0L392.0 97.0ZM448.0 48.5L434.0 72.7L406.0 72.7L392.0 48.5L406.0 24.2L434.0 24.2ZM364.0 145.5L350.0 169.7L322.0 169.7L308.0 145.5L322.0 121.2L350.0 121.2ZM448.0 0.0L434.0 24.2L406.0 24.2L392.0 0.0L406.0 -24.2L434.0 -24.2ZM280.0 145.5L266.0 169.7L238.0 169.7L224.0 145.5L238.0 121.2L266.0 121.2ZM280.0 -97.0L266.0 -72.7L238.0 -72.7L224.0 -97.0L238.0 -121.2L266.0 -121.2ZM322.0 -121.2L308.0 -97.0L280.0 -97.0L266.0 -121.2L280.0 -145.5L308.0 -145.5ZM364.0 -97.0L350.0 -72.7L322.0 -72.7L308.0 -97.0L322.0 -121.2L350.0 -121.2ZM406.0 -72.7L392.0 -48.5L364.0 -48.5L350.0 -72.7L364.0 -97.0L392.0 -97.0ZM448.0 -48.5L434.0 -24.2L406.0 -24.2L392.0 -48.5L406.0 -72.7L434.0 -72.7ZM280.0 -145.5L266.0 -121.2L238.0 -121.2L224.0 -145.5L238.0 -169.7L266.0 -169.7Z"/><path class="bdom" d="M140.0 97.0L112.0 97.0M112.0 97.0L98.0 121.2M98.0 121.2L70.0 121.2M70.0 121.2L56.0 145.5M56.0 145.5L28.0 145.5M28.0 145.5L14.0 169.7M14.0 169.7L-14.0 169.7M-14.0 169.7L-28.0 145.5M-28.0 145.5L-56.0 145.5M-56.0 145.5L-70.0 121.2M-70.0 121.2L-98.0 121.2M-98.0 -121.2L-70.0 -121.2M-70.0 -121.2L-56.0 -145.5M-56.0 -145.5L-28.0 -145.5M-28.0 -145.5L-14.0 -169.7M-14.0 -169.7L14.0 -169.7M14.0 -169.7L28.0 -145.5M28.0 -145.5L56.0 -145.5M56.0 -145.5L70.0 -121.2M70.0 -121.2L98.0 -121.2M98.0 -121.2L112.0 -97.0M112.0 -97.0L140.0 -97.0M182.0 121.2L154.0 121.2M154.0 121.2L140.0 97.0M140.0 -97.0L154.0 -121.2M154.0 -121.2L182.0 -121.2M-98.0 121.2L-112.0 145.5M-112.0 145.5L-140.0 145.5M-140.0 -145.5L-112.0 -145.5M-112.0 -145.5L-98.0 -121.2M-140.0 145.5L-154.0 169.7M-154.0 169.7L-182.0 169.7M-182.0 -169.7L-154.0 -169.7M-154.0 -169.7L-140.0 -145.5M224.0 145.5L196.0 145.5M196.0 145.5L182.0 121.2M182.0 -121.2L196.0 -145.5M196.0 -145.5L224.0 -145.5M-448.0 0.0L-434.0 -24.2M-434.0 -24.2L-448.0 -48.5M-448.0 -48.5L-434.0 -72.7M-434.0 -72.7L-448.0 -97.0M-448.0 -97.0L-434.0 -121.2M-434.0 -121.2L-448.0 -145.5M-448.0 -145.5L-434.0 -169.7M-434.0 -169.7L-406.0 -169.7M-406.0 -169.7L-392.0 -194.0M-392.0 -194.0L-364.0 -194.0M-364.0 -194.0L-350.0 -218.2M-350.0 -218.2L-322.0 -218.2M-322.0 -218.2L-308.0 -242.5M-308.0 -242.5L-280.0 -242.5M-280.0 -242.5L-266.0 -218.2M-266.0 -218.2L-238.0 -218.2M-238.0 -218.2L-224.0 -194.0M-224.0 -194.0L-196.0 -194.0M-196.0 -194.0L-182.0 -169.7M-476.0 48.5L-490.0 24.2M-490.0 24.2L-476.0 0.0M-476.0 0.0L-448.0 -0.0M-476.0 97.0L-490.0 72.7M-490.0 72.7L-476.0 48.5M-182.0 169.7L-196.0 194.0M-196.0 194.0L-224.0 194.0M-224.0 194.0L-238.0 218.2M-238.0 218.2L-266.0 218.2M-266.0 218.2L-280.0 242.5M-280.0 242.5L-308.0 242.5M-308.0 242.5L-322.0 218.2M-322.0 218.2L-350.0 218.2M-350.0 218.2L-364.0 194.0M-364.0 194.0L-392.0 194.0M-392.0 194.0L-406.0 169.7M-406.0 169.7L-434.0 169.7M-434.0 169.7L-448.0 145.5M-448.0 145.5L-476.0 145.5M-476.0 145.5L-490.0 121.2M-490.0 121.2L-476.0 97.0M406.0 72.7L392.0 97.0M308.0 145.5L280.0 145.5M406.0 121.2L392.0 145.5M392.0 145.5L364.0 145.5M392.0 97.0L406.0 121.2M448.0 48.5L434.0 72.7M434.0 72.7L406.0 72.7M434.0 24.2L448.0 48.5M364.0 145.5L350.0 169.7M350.0 169.7L322.0 169.7M322.0 169.7L308.0 145.5M448.0 0.0L434.0 24.2M434.0 -24.2L448.0 0.0M280.0 145.5L266.0 169.7M266.0 169.7L238.0 169.7M238.0 169.7L224.0 145.5M280.0 -145.5L308.0 -145.5M308.0 -145.5L322.0 -121.2M322.0 -121.2L350.0 -121.2M350.0 -121.2L364.0 -97.0M364.0 -97.0L392.0 -97.0M392.0 -97.0L406.0 -72.7M448.0 -48.5L434.0 -24.2M406.0 -72.7L434.0 -72.7M434.0 -72.7L448.0 -48.5M224.0 -145.5L238.0 -169.7M238.0 -169.7L266.0 -169.7M266.0 -169.7L280.0 -145.5"/><path class="terr core" d="M28.0 0.0L14.0 24.2L-14.0 24.2L-28.0 0.0L-14.0 -24.2L14.0 -24.2ZM70.0 24.2L56.0 48.5L28.0 48.5L14.0 24.2L28.0 0.0L56.0 -0.0ZM70.0 -24.2L56.0 0.0L28.0 0.0L14.0 -24.2L28.0 -48.5L56.0 -48.5ZM28.0 48.5L14.0 72.7L-14.0 72.7L-28.0 48.5L-14.0 24.2L14.0 24.2ZM28.0 -48.5L14.0 -24.2L-14.0 -24.2L-28.0 -48.5L-14.0 -72.7L14.0 -72.7ZM-14.0 24.2L-28.0 48.5L-56.0 48.5L-70.0 24.2L-56.0 0.0L-28.0 -0.0ZM-14.0 -24.2L-28.0 0.0L-56.0 0.0L-70.0 -24.2L-56.0 -48.5L-28.0 -48.5ZM112.0 0.0L98.0 24.2L70.0 24.2L56.0 0.0L70.0 -24.2L98.0 -24.2ZM70.0 72.7L56.0 97.0L28.0 97.0L14.0 72.7L28.0 48.5L56.0 48.5ZM70.0 -72.7L56.0 -48.5L28.0 -48.5L14.0 -72.7L28.0 -97.0L56.0 -97.0ZM-14.0 72.7L-28.0 97.0L-56.0 97.0L-70.0 72.7L-56.0 48.5L-28.0 48.5ZM-14.0 -72.7L-28.0 -48.5L-56.0 -48.5L-70.0 -72.7L-56.0 -97.0L-28.0 -97.0ZM-56.0 0.0L-70.0 24.2L-98.0 24.2L-112.0 0.0L-98.0 -24.2L-70.0 -24.2ZM112.0 48.5L98.0 72.7L70.0 72.7L56.0 48.5L70.0 24.2L98.0 24.2ZM112.0 -48.5L98.0 -24.2L70.0 -24.2L56.0 -48.5L70.0 -72.7L98.0 -72.7ZM28.0 97.0L14.0 121.2L-14.0 121.2L-28.0 97.0L-14.0 72.7L14.0 72.7ZM28.0 -97.0L14.0 -72.7L-14.0 -72.7L-28.0 -97.0L-14.0 -121.2L14.0 -121.2ZM-56.0 48.5L-70.0 72.7L-98.0 72.7L-112.0 48.5L-98.0 24.2L-70.0 24.2ZM-56.0 -48.5L-70.0 -24.2L-98.0 -24.2L-112.0 -48.5L-98.0 -72.7L-70.0 -72.7Z" filter="url(#sh)"/><g class="sub" data-sub="Odds/Judgement" data-type="core"><path class="subwash" d="M28.0 0.0L14.0 24.2L-14.0 24.2L-28.0 0.0L-14.0 -24.2L14.0 -24.2ZM70.0 24.2L56.0 48.5L28.0 48.5L14.0 24.2L28.0 0.0L56.0 -0.0ZM70.0 -24.2L56.0 0.0L28.0 0.0L14.0 -24.2L28.0 -48.5L56.0 -48.5ZM28.0 48.5L14.0 72.7L-14.0 72.7L-28.0 48.5L-14.0 24.2L14.0 24.2ZM28.0 -48.5L14.0 -24.2L-14.0 -24.2L-28.0 -48.5L-14.0 -72.7L14.0 -72.7ZM-14.0 24.2L-28.0 48.5L-56.0 48.5L-70.0 24.2L-56.0 0.0L-28.0 -0.0ZM-14.0 -24.2L-28.0 0.0L-56.0 0.0L-70.0 -24.2L-56.0 -48.5L-28.0 -48.5ZM112.0 0.0L98.0 24.2L70.0 24.2L56.0 0.0L70.0 -24.2L98.0 -24.2ZM70.0 72.7L56.0 97.0L28.0 97.0L14.0 72.7L28.0 48.5L56.0 48.5ZM70.0 -72.7L56.0 -48.5L28.0 -48.5L14.0 -72.7L28.0 -97.0L56.0 -97.0ZM-14.0 72.7L-28.0 97.0L-56.0 97.0L-70.0 72.7L-56.0 48.5L-28.0 48.5ZM-14.0 -72.7L-28.0 -48.5L-56.0 -48.5L-70.0 -72.7L-56.0 -97.0L-28.0 -97.0ZM-56.0 0.0L-70.0 24.2L-98.0 24.2L-112.0 0.0L-98.0 -24.2L-70.0 -24.2ZM112.0 48.5L98.0 72.7L70.0 72.7L56.0 48.5L70.0 24.2L98.0 24.2ZM112.0 -48.5L98.0 -24.2L70.0 -24.2L56.0 -48.5L70.0 -72.7L98.0 -72.7ZM28.0 97.0L14.0 121.2L-14.0 121.2L-28.0 97.0L-14.0 72.7L14.0 72.7ZM28.0 -97.0L14.0 -72.7L-14.0 -72.7L-28.0 -97.0L-14.0 -121.2L14.0 -121.2ZM-56.0 48.5L-70.0 72.7L-98.0 72.7L-112.0 48.5L-98.0 24.2L-70.0 24.2ZM-56.0 -48.5L-70.0 -24.2L-98.0 -24.2L-112.0 -48.5L-98.0 -72.7L-70.0 -72.7Z"/><path class="bsub" d="M112.0 0.0L98.0 24.2M98.0 -24.2L112.0 0.0M70.0 72.7L56.0 97.0M56.0 97.0L28.0 97.0M28.0 -97.0L56.0 -97.0M56.0 -97.0L70.0 -72.7M-28.0 97.0L-56.0 97.0M-56.0 97.0L-70.0 72.7M-70.0 -72.7L-56.0 -97.0M-56.0 -97.0L-28.0 -97.0M-98.0 24.2L-112.0 0.0M-112.0 0.0L-98.0 -24.2M112.0 48.5L98.0 72.7M98.0 72.7L70.0 72.7M98.0 24.2L112.0 48.5M112.0 -48.5L98.0 -24.2M70.0 -72.7L98.0 -72.7M98.0 -72.7L112.0 -48.5M28.0 97.0L14.0 121.2M14.0 121.2L-14.0 121.2M-14.0 121.2L-28.0 97.0M-28.0 -97.0L-14.0 -121.2M-14.0 -121.2L14.0 -121.2M14.0 -121.2L28.0 -97.0M-70.0 72.7L-98.0 72.7M-98.0 72.7L-112.0 48.5M-112.0 48.5L-98.0 24.2M-98.0 -24.2L-112.0 -48.5M-112.0 -48.5L-98.0 -72.7M-98.0 -72.7L-70.0 -72.7"/></g><path class="bmass" d="M112.0 0.0L98.0 24.2M98.0 -24.2L112.0 0.0M70.0 72.7L56.0 97.0M56.0 97.0L28.0 97.0M28.0 -97.0L56.0 -97.0M56.0 -97.0L70.0 -72.7M-28.0 97.0L-56.0 97.0M-56.0 97.0L-70.0 72.7M-70.0 -72.7L-56.0 -97.0M-56.0 -97.0L-28.0 -97.0M-98.0 24.2L-112.0 0.0M-112.0 0.0L-98.0 -24.2M112.0 48.5L98.0 72.7M98.0 72.7L70.0 72.7M98.0 24.2L112.0 48.5M112.0 -48.5L98.0 -24.2M70.0 -72.7L98.0 -72.7M98.0 -72.7L112.0 -48.5M28.0 97.0L14.0 121.2M14.0 121.2L-14.0 121.2M-14.0 121.2L-28.0 97.0M-28.0 -97.0L-14.0 -121.2M-14.0 -121.2L14.0 -121.2M14.0 -121.2L28.0 -97.0M-70.0 72.7L-98.0 72.7M-98.0 72.7L-112.0 48.5M-112.0 48.5L-98.0 24.2M-98.0 -24.2L-112.0 -48.5M-112.0 -48.5L-98.0 -72.7M-98.0 -72.7L-70.0 -72.7"/><path class="terr supporting" d="M-266.0 -72.7L-280.0 -48.5L-308.0 -48.5L-322.0 -72.7L-308.0 -97.0L-280.0 -97.0ZM-266.0 -121.2L-280.0 -97.0L-308.0 -97.0L-322.0 -121.2L-308.0 -145.5L-280.0 -145.5ZM-224.0 -97.0L-238.0 -72.7L-266.0 -72.7L-280.0 -97.0L-266.0 -121.2L-238.0 -121.2ZM-308.0 -97.0L-322.0 -72.7L-350.0 -72.7L-364.0 -97.0L-350.0 -121.2L-322.0 -121.2ZM-224.0 -48.5L-238.0 -24.2L-266.0 -24.2L-280.0 -48.5L-266.0 -72.7L-238.0 -72.7ZM-308.0 -48.5L-322.0 -24.2L-350.0 -24.2L-364.0 -48.5L-350.0 -72.7L-322.0 -72.7ZM-266.0 -24.2L-280.0 0.0L-308.0 0.0L-322.0 -24.2L-308.0 -48.5L-280.0 -48.5ZM-224.0 -145.5L-238.0 -121.2L-266.0 -121.2L-280.0 -145.5L-266.0 -169.7L-238.0 -169.7ZM-308.0 -145.5L-322.0 -121.2L-350.0 -121.2L-364.0 -145.5L-350.0 -169.7L-322.0 -169.7ZM-182.0 -72.7L-196.0 -48.5L-224.0 -48.5L-238.0 -72.7L-224.0 -97.0L-196.0 -97.0ZM-350.0 -72.7L-364.0 -48.5L-392.0 -48.5L-406.0 -72.7L-392.0 -97.0L-364.0 -97.0ZM-266.0 -169.7L-280.0 -145.5L-308.0 -145.5L-322.0 -169.7L-308.0 -194.0L-280.0 -194.0ZM-182.0 -121.2L-196.0 -97.0L-224.0 -97.0L-238.0 -121.2L-224.0 -145.5L-196.0 -145.5ZM-224.0 0.0L-238.0 24.2L-266.0 24.2L-280.0 0.0L-266.0 -24.2L-238.0 -24.2ZM-308.0 0.0L-322.0 24.2L-350.0 24.2L-364.0 0.0L-350.0 -24.2L-322.0 -24.2ZM-350.0 -121.2L-364.0 -97.0L-392.0 -97.0L-406.0 -121.2L-392.0 -145.5L-364.0 -145.5ZM-182.0 -24.2L-196.0 0.0L-224.0 0.0L-238.0 -24.2L-224.0 -48.5L-196.0 -48.5ZM-350.0 -24.2L-364.0 0.0L-392.0 0.0L-406.0 -24.2L-392.0 -48.5L-364.0 -48.5ZM-266.0 24.2L-280.0 48.5L-308.0 48.5L-322.0 24.2L-308.0 0.0L-280.0 -0.0ZM-266.0 72.7L-280.0 97.0L-308.0 97.0L-322.0 72.7L-308.0 48.5L-280.0 48.5ZM-266.0 121.2L-280.0 145.5L-308.0 145.5L-322.0 121.2L-308.0 97.0L-280.0 97.0ZM-224.0 97.0L-238.0 121.2L-266.0 121.2L-280.0 97.0L-266.0 72.7L-238.0 72.7ZM-308.0 97.0L-322.0 121.2L-350.0 121.2L-364.0 97.0L-350.0 72.7L-322.0 72.7ZM-224.0 48.5L-238.0 72.7L-266.0 72.7L-280.0 48.5L-266.0 24.2L-238.0 24.2ZM-308.0 48.5L-322.0 72.7L-350.0 72.7L-364.0 48.5L-350.0 24.2L-322.0 24.2ZM-224.0 145.5L-238.0 169.7L-266.0 169.7L-280.0 145.5L-266.0 121.2L-238.0 121.2ZM-308.0 145.5L-322.0 169.7L-350.0 169.7L-364.0 145.5L-350.0 121.2L-322.0 121.2ZM-182.0 72.7L-196.0 97.0L-224.0 97.0L-238.0 72.7L-224.0 48.5L-196.0 48.5ZM-350.0 72.7L-364.0 97.0L-392.0 97.0L-406.0 72.7L-392.0 48.5L-364.0 48.5ZM-266.0 169.7L-280.0 194.0L-308.0 194.0L-322.0 169.7L-308.0 145.5L-280.0 145.5ZM-182.0 121.2L-196.0 145.5L-224.0 145.5L-238.0 121.2L-224.0 97.0L-196.0 97.0ZM-350.0 121.2L-364.0 145.5L-392.0 145.5L-406.0 121.2L-392.0 97.0L-364.0 97.0ZM-182.0 24.2L-196.0 48.5L-224.0 48.5L-238.0 24.2L-224.0 0.0L-196.0 -0.0ZM-350.0 24.2L-364.0 48.5L-392.0 48.5L-406.0 24.2L-392.0 0.0L-364.0 -0.0ZM-140.0 97.0L-154.0 121.2L-182.0 121.2L-196.0 97.0L-182.0 72.7L-154.0 72.7ZM-392.0 97.0L-406.0 121.2L-434.0 121.2L-448.0 97.0L-434.0 72.7L-406.0 72.7ZM-140.0 48.5L-154.0 72.7L-182.0 72.7L-196.0 48.5L-182.0 24.2L-154.0 24.2ZM-392.0 48.5L-406.0 72.7L-434.0 72.7L-448.0 48.5L-434.0 24.2L-406.0 24.2Z" filter="url(#sh)"/><g class="sub" data-sub="Odds/Language" data-type="supporting"><path class="subwash" d="M-266.0 -72.7L-280.0 -48.5L-308.0 -48.5L-322.0 -72.7L-308.0 -97.0L-280.0 -97.0ZM-266.0 -121.2L-280.0 -97.0L-308.0 -97.0L-322.0 -121.2L-308.0 -145.5L-280.0 -145.5ZM-224.0 -97.0L-238.0 -72.7L-266.0 -72.7L-280.0 -97.0L-266.0 -121.2L-238.0 -121.2ZM-308.0 -97.0L-322.0 -72.7L-350.0 -72.7L-364.0 -97.0L-350.0 -121.2L-322.0 -121.2ZM-224.0 -48.5L-238.0 -24.2L-266.0 -24.2L-280.0 -48.5L-266.0 -72.7L-238.0 -72.7ZM-308.0 -48.5L-322.0 -24.2L-350.0 -24.2L-364.0 -48.5L-350.0 -72.7L-322.0 -72.7ZM-266.0 -24.2L-280.0 0.0L-308.0 0.0L-322.0 -24.2L-308.0 -48.5L-280.0 -48.5ZM-224.0 -145.5L-238.0 -121.2L-266.0 -121.2L-280.0 -145.5L-266.0 -169.7L-238.0 -169.7ZM-308.0 -145.5L-322.0 -121.2L-350.0 -121.2L-364.0 -145.5L-350.0 -169.7L-322.0 -169.7ZM-182.0 -72.7L-196.0 -48.5L-224.0 -48.5L-238.0 -72.7L-224.0 -97.0L-196.0 -97.0ZM-350.0 -72.7L-364.0 -48.5L-392.0 -48.5L-406.0 -72.7L-392.0 -97.0L-364.0 -97.0ZM-266.0 -169.7L-280.0 -145.5L-308.0 -145.5L-322.0 -169.7L-308.0 -194.0L-280.0 -194.0ZM-182.0 -121.2L-196.0 -97.0L-224.0 -97.0L-238.0 -121.2L-224.0 -145.5L-196.0 -145.5ZM-224.0 0.0L-238.0 24.2L-266.0 24.2L-280.0 0.0L-266.0 -24.2L-238.0 -24.2ZM-308.0 0.0L-322.0 24.2L-350.0 24.2L-364.0 0.0L-350.0 -24.2L-322.0 -24.2ZM-350.0 -121.2L-364.0 -97.0L-392.0 -97.0L-406.0 -121.2L-392.0 -145.5L-364.0 -145.5ZM-182.0 -24.2L-196.0 0.0L-224.0 0.0L-238.0 -24.2L-224.0 -48.5L-196.0 -48.5ZM-350.0 -24.2L-364.0 0.0L-392.0 0.0L-406.0 -24.2L-392.0 -48.5L-364.0 -48.5ZM-266.0 24.2L-280.0 48.5L-308.0 48.5L-322.0 24.2L-308.0 0.0L-280.0 -0.0Z"/><path class="bsub" d="M-266.0 -169.7L-238.0 -169.7M-238.0 -169.7L-224.0 -145.5M-364.0 -145.5L-350.0 -169.7M-350.0 -169.7L-322.0 -169.7M-182.0 -72.7L-196.0 -48.5M-196.0 -97.0L-182.0 -72.7M-392.0 -48.5L-406.0 -72.7M-406.0 -72.7L-392.0 -97.0M-322.0 -169.7L-308.0 -194.0M-308.0 -194.0L-280.0 -194.0M-280.0 -194.0L-266.0 -169.7M-182.0 -121.2L-196.0 -97.0M-224.0 -145.5L-196.0 -145.5M-196.0 -145.5L-182.0 -121.2M-224.0 0.0L-238.0 24.2M-238.0 24.2L-266.0 24.2M-322.0 24.2L-350.0 24.2M-350.0 24.2L-364.0 0.0M-392.0 -97.0L-406.0 -121.2M-406.0 -121.2L-392.0 -145.5M-392.0 -145.5L-364.0 -145.5M-182.0 -24.2L-196.0 0.0M-196.0 0.0L-224.0 0.0M-196.0 -48.5L-182.0 -24.2M-364.0 0.0L-392.0 0.0M-392.0 0.0L-406.0 -24.2M-406.0 -24.2L-392.0 -48.5M-266.0 24.2L-280.0 48.5M-280.0 48.5L-308.0 48.5M-308.0 48.5L-322.0 24.2"/></g><g class="sub" data-sub="Odds/Visualization" data-type="supporting"><path class="subwash" d="M-266.0 72.7L-280.0 97.0L-308.0 97.0L-322.0 72.7L-308.0 48.5L-280.0 48.5ZM-266.0 121.2L-280.0 145.5L-308.0 145.5L-322.0 121.2L-308.0 97.0L-280.0 97.0ZM-224.0 97.0L-238.0 121.2L-266.0 121.2L-280.0 97.0L-266.0 72.7L-238.0 72.7ZM-308.0 97.0L-322.0 121.2L-350.0 121.2L-364.0 97.0L-350.0 72.7L-322.0 72.7ZM-224.0 48.5L-238.0 72.7L-266.0 72.7L-280.0 48.5L-266.0 24.2L-238.0 24.2ZM-308.0 48.5L-322.0 72.7L-350.0 72.7L-364.0 48.5L-350.0 24.2L-322.0 24.2ZM-224.0 145.5L-238.0 169.7L-266.0 169.7L-280.0 145.5L-266.0 121.2L-238.0 121.2ZM-308.0 145.5L-322.0 169.7L-350.0 169.7L-364.0 145.5L-350.0 121.2L-322.0 121.2ZM-182.0 72.7L-196.0 97.0L-224.0 97.0L-238.0 72.7L-224.0 48.5L-196.0 48.5ZM-350.0 72.7L-364.0 97.0L-392.0 97.0L-406.0 72.7L-392.0 48.5L-364.0 48.5ZM-266.0 169.7L-280.0 194.0L-308.0 194.0L-322.0 169.7L-308.0 145.5L-280.0 145.5ZM-182.0 121.2L-196.0 145.5L-224.0 145.5L-238.0 121.2L-224.0 97.0L-196.0 97.0ZM-350.0 121.2L-364.0 145.5L-392.0 145.5L-406.0 121.2L-392.0 97.0L-364.0 97.0ZM-182.0 24.2L-196.0 48.5L-224.0 48.5L-238.0 24.2L-224.0 0.0L-196.0 -0.0ZM-350.0 24.2L-364.0 48.5L-392.0 48.5L-406.0 24.2L-392.0 0.0L-364.0 -0.0ZM-140.0 97.0L-154.0 121.2L-182.0 121.2L-196.0 97.0L-182.0 72.7L-154.0 72.7ZM-392.0 97.0L-406.0 121.2L-434.0 121.2L-448.0 97.0L-434.0 72.7L-406.0 72.7ZM-140.0 48.5L-154.0 72.7L-182.0 72.7L-196.0 48.5L-182.0 24.2L-154.0 24.2ZM-392.0 48.5L-406.0 72.7L-434.0 72.7L-448.0 48.5L-434.0 24.2L-406.0 24.2Z"/><path class="bsub" d="M-308.0 48.5L-280.0 48.5M-280.0 48.5L-266.0 24.2M-266.0 24.2L-238.0 24.2M-350.0 24.2L-322.0 24.2M-322.0 24.2L-308.0 48.5M-224.0 145.5L-238.0 169.7M-238.0 169.7L-266.0 169.7M-322.0 169.7L-350.0 169.7M-350.0 169.7L-364.0 145.5M-266.0 169.7L-280.0 194.0M-280.0 194.0L-308.0 194.0M-308.0 194.0L-322.0 169.7M-182.0 121.2L-196.0 145.5M-196.0 145.5L-224.0 145.5M-364.0 145.5L-392.0 145.5M-392.0 145.5L-406.0 121.2M-238.0 24.2L-224.0 0.0M-224.0 0.0L-196.0 -0.0M-196.0 -0.0L-182.0 24.2M-406.0 24.2L-392.0 0.0M-392.0 0.0L-364.0 -0.0M-364.0 -0.0L-350.0 24.2M-140.0 97.0L-154.0 121.2M-154.0 121.2L-182.0 121.2M-154.0 72.7L-140.0 97.0M-406.0 121.2L-434.0 121.2M-434.0 121.2L-448.0 97.0M-448.0 97.0L-434.0 72.7M-140.0 48.5L-154.0 72.7M-182.0 24.2L-154.0 24.2M-154.0 24.2L-140.0 48.5M-434.0 72.7L-448.0 48.5M-448.0 48.5L-434.0 24.2M-434.0 24.2L-406.0 24.2"/></g><path class="bmass" d="M-266.0 -169.7L-238.0 -169.7M-238.0 -169.7L-224.0 -145.5M-364.0 -145.5L-350.0 -169.7M-350.0 -169.7L-322.0 -169.7M-182.0 -72.7L-196.0 -48.5M-196.0 -97.0L-182.0 -72.7M-392.0 -48.5L-406.0 -72.7M-406.0 -72.7L-392.0 -97.0M-322.0 -169.7L-308.0 -194.0M-308.0 -194.0L-280.0 -194.0M-280.0 -194.0L-266.0 -169.7M-182.0 -121.2L-196.0 -97.0M-224.0 -145.5L-196.0 -145.5M-196.0 -145.5L-182.0 -121.2M-392.0 -97.0L-406.0 -121.2M-406.0 -121.2L-392.0 -145.5M-392.0 -145.5L-364.0 -145.5M-182.0 -24.2L-196.0 0.0M-196.0 -48.5L-182.0 -24.2M-392.0 0.0L-406.0 -24.2M-406.0 -24.2L-392.0 -48.5M-224.0 145.5L-238.0 169.7M-238.0 169.7L-266.0 169.7M-322.0 169.7L-350.0 169.7M-350.0 169.7L-364.0 145.5M-266.0 169.7L-280.0 194.0M-280.0 194.0L-308.0 194.0M-308.0 194.0L-322.0 169.7M-182.0 121.2L-196.0 145.5M-196.0 145.5L-224.0 145.5M-364.0 145.5L-392.0 145.5M-392.0 145.5L-406.0 121.2M-196.0 -0.0L-182.0 24.2M-406.0 24.2L-392.0 0.0M-140.0 97.0L-154.0 121.2M-154.0 121.2L-182.0 121.2M-154.0 72.7L-140.0 97.0M-406.0 121.2L-434.0 121.2M-434.0 121.2L-448.0 97.0M-448.0 97.0L-434.0 72.7M-140.0 48.5L-154.0 72.7M-182.0 24.2L-154.0 24.2M-154.0 24.2L-140.0 48.5M-434.0 72.7L-448.0 48.5M-448.0 48.5L-434.0 24.2M-434.0 24.2L-406.0 24.2"/><path class="terr generic" d="M322.0 24.2L308.0 48.5L280.0 48.5L266.0 24.2L280.0 0.0L308.0 -0.0ZM322.0 -24.2L308.0 0.0L280.0 0.0L266.0 -24.2L280.0 -48.5L308.0 -48.5ZM280.0 0.0L266.0 24.2L238.0 24.2L224.0 0.0L238.0 -24.2L266.0 -24.2ZM364.0 0.0L350.0 24.2L322.0 24.2L308.0 0.0L322.0 -24.2L350.0 -24.2ZM280.0 48.5L266.0 72.7L238.0 72.7L224.0 48.5L238.0 24.2L266.0 24.2ZM280.0 -48.5L266.0 -24.2L238.0 -24.2L224.0 -48.5L238.0 -72.7L266.0 -72.7ZM364.0 48.5L350.0 72.7L322.0 72.7L308.0 48.5L322.0 24.2L350.0 24.2ZM364.0 -48.5L350.0 -24.2L322.0 -24.2L308.0 -48.5L322.0 -72.7L350.0 -72.7ZM322.0 72.7L308.0 97.0L280.0 97.0L266.0 72.7L280.0 48.5L308.0 48.5ZM322.0 -72.7L308.0 -48.5L280.0 -48.5L266.0 -72.7L280.0 -97.0L308.0 -97.0ZM238.0 24.2L224.0 48.5L196.0 48.5L182.0 24.2L196.0 0.0L224.0 -0.0ZM238.0 -24.2L224.0 0.0L196.0 0.0L182.0 -24.2L196.0 -48.5L224.0 -48.5ZM406.0 24.2L392.0 48.5L364.0 48.5L350.0 24.2L364.0 0.0L392.0 -0.0ZM406.0 -24.2L392.0 0.0L364.0 0.0L350.0 -24.2L364.0 -48.5L392.0 -48.5ZM280.0 97.0L266.0 121.2L238.0 121.2L224.0 97.0L238.0 72.7L266.0 72.7ZM280.0 -97.0L266.0 -72.7L238.0 -72.7L224.0 -97.0L238.0 -121.2L266.0 -121.2ZM238.0 72.7L224.0 97.0L196.0 97.0L182.0 72.7L196.0 48.5L224.0 48.5ZM238.0 -72.7L224.0 -48.5L196.0 -48.5L182.0 -72.7L196.0 -97.0L224.0 -97.0ZM364.0 97.0L350.0 121.2L322.0 121.2L308.0 97.0L322.0 72.7L350.0 72.7Z" filter="url(#sh)"/><g class="sub" data-sub="Odds/Localization" data-type="generic"><path class="subwash" d="M322.0 24.2L308.0 48.5L280.0 48.5L266.0 24.2L280.0 0.0L308.0 -0.0ZM322.0 -24.2L308.0 0.0L280.0 0.0L266.0 -24.2L280.0 -48.5L308.0 -48.5ZM280.0 0.0L266.0 24.2L238.0 24.2L224.0 0.0L238.0 -24.2L266.0 -24.2ZM364.0 0.0L350.0 24.2L322.0 24.2L308.0 0.0L322.0 -24.2L350.0 -24.2ZM280.0 48.5L266.0 72.7L238.0 72.7L224.0 48.5L238.0 24.2L266.0 24.2ZM280.0 -48.5L266.0 -24.2L238.0 -24.2L224.0 -48.5L238.0 -72.7L266.0 -72.7ZM364.0 48.5L350.0 72.7L322.0 72.7L308.0 48.5L322.0 24.2L350.0 24.2ZM364.0 -48.5L350.0 -24.2L322.0 -24.2L308.0 -48.5L322.0 -72.7L350.0 -72.7ZM322.0 72.7L308.0 97.0L280.0 97.0L266.0 72.7L280.0 48.5L308.0 48.5ZM322.0 -72.7L308.0 -48.5L280.0 -48.5L266.0 -72.7L280.0 -97.0L308.0 -97.0ZM238.0 24.2L224.0 48.5L196.0 48.5L182.0 24.2L196.0 0.0L224.0 -0.0ZM238.0 -24.2L224.0 0.0L196.0 0.0L182.0 -24.2L196.0 -48.5L224.0 -48.5ZM406.0 24.2L392.0 48.5L364.0 48.5L350.0 24.2L364.0 0.0L392.0 -0.0ZM406.0 -24.2L392.0 0.0L364.0 0.0L350.0 -24.2L364.0 -48.5L392.0 -48.5ZM280.0 97.0L266.0 121.2L238.0 121.2L224.0 97.0L238.0 72.7L266.0 72.7ZM280.0 -97.0L266.0 -72.7L238.0 -72.7L224.0 -97.0L238.0 -121.2L266.0 -121.2ZM238.0 72.7L224.0 97.0L196.0 97.0L182.0 72.7L196.0 48.5L224.0 48.5ZM238.0 -72.7L224.0 -48.5L196.0 -48.5L182.0 -72.7L196.0 -97.0L224.0 -97.0ZM364.0 97.0L350.0 121.2L322.0 121.2L308.0 97.0L322.0 72.7L350.0 72.7Z"/><path class="bsub" d="M364.0 48.5L350.0 72.7M322.0 -72.7L350.0 -72.7M350.0 -72.7L364.0 -48.5M308.0 97.0L280.0 97.0M280.0 -97.0L308.0 -97.0M308.0 -97.0L322.0 -72.7M196.0 48.5L182.0 24.2M182.0 24.2L196.0 0.0M196.0 0.0L182.0 -24.2M182.0 -24.2L196.0 -48.5M406.0 24.2L392.0 48.5M392.0 48.5L364.0 48.5M392.0 -0.0L406.0 24.2M406.0 -24.2L392.0 0.0M364.0 -48.5L392.0 -48.5M392.0 -48.5L406.0 -24.2M280.0 97.0L266.0 121.2M266.0 121.2L238.0 121.2M238.0 121.2L224.0 97.0M224.0 -97.0L238.0 -121.2M238.0 -121.2L266.0 -121.2M266.0 -121.2L280.0 -97.0M224.0 97.0L196.0 97.0M196.0 97.0L182.0 72.7M182.0 72.7L196.0 48.5M196.0 -48.5L182.0 -72.7M182.0 -72.7L196.0 -97.0M196.0 -97.0L224.0 -97.0M364.0 97.0L350.0 121.2M350.0 121.2L322.0 121.2M322.0 121.2L308.0 97.0M350.0 72.7L364.0 97.0"/></g><path class="bmass" d="M364.0 48.5L350.0 72.7M322.0 -72.7L350.0 -72.7M350.0 -72.7L364.0 -48.5M308.0 97.0L280.0 97.0M280.0 -97.0L308.0 -97.0M308.0 -97.0L322.0 -72.7M196.0 48.5L182.0 24.2M182.0 24.2L196.0 0.0M196.0 0.0L182.0 -24.2M182.0 -24.2L196.0 -48.5M406.0 24.2L392.0 48.5M392.0 48.5L364.0 48.5M392.0 -0.0L406.0 24.2M406.0 -24.2L392.0 0.0M364.0 -48.5L392.0 -48.5M392.0 -48.5L406.0 -24.2M280.0 97.0L266.0 121.2M266.0 121.2L238.0 121.2M238.0 121.2L224.0 97.0M224.0 -97.0L238.0 -121.2M238.0 -121.2L266.0 -121.2M266.0 -121.2L280.0 -97.0M224.0 97.0L196.0 97.0M196.0 97.0L182.0 72.7M182.0 72.7L196.0 48.5M196.0 -48.5L182.0 -72.7M182.0 -72.7L196.0 -97.0M196.0 -97.0L224.0 -97.0M364.0 97.0L350.0 121.2M350.0 121.2L322.0 121.2M322.0 121.2L308.0 97.0M350.0 72.7L364.0 97.0"/><path class="terr external" d="M-602.0 24.2L-616.0 48.5L-644.0 48.5L-658.0 24.2L-644.0 0.0L-616.0 -0.0ZM-602.0 -24.2L-616.0 0.0L-644.0 0.0L-658.0 -24.2L-644.0 -48.5L-616.0 -48.5ZM-560.0 0.0L-574.0 24.2L-602.0 24.2L-616.0 0.0L-602.0 -24.2L-574.0 -24.2ZM-644.0 0.0L-658.0 24.2L-686.0 24.2L-700.0 0.0L-686.0 -24.2L-658.0 -24.2ZM-560.0 48.5L-574.0 72.7L-602.0 72.7L-616.0 48.5L-602.0 24.2L-574.0 24.2ZM-560.0 -48.5L-574.0 -24.2L-602.0 -24.2L-616.0 -48.5L-602.0 -72.7L-574.0 -72.7ZM-644.0 48.5L-658.0 72.7L-686.0 72.7L-700.0 48.5L-686.0 24.2L-658.0 24.2ZM-644.0 -48.5L-658.0 -24.2L-686.0 -24.2L-700.0 -48.5L-686.0 -72.7L-658.0 -72.7ZM-602.0 72.7L-616.0 97.0L-644.0 97.0L-658.0 72.7L-644.0 48.5L-616.0 48.5ZM-602.0 -72.7L-616.0 -48.5L-644.0 -48.5L-658.0 -72.7L-644.0 -97.0L-616.0 -97.0ZM-518.0 24.2L-532.0 48.5L-560.0 48.5L-574.0 24.2L-560.0 0.0L-532.0 -0.0ZM-518.0 -24.2L-532.0 0.0L-560.0 0.0L-574.0 -24.2L-560.0 -48.5L-532.0 -48.5ZM-686.0 24.2L-700.0 48.5L-728.0 48.5L-742.0 24.2L-728.0 0.0L-700.0 -0.0ZM-686.0 -24.2L-700.0 0.0L-728.0 0.0L-742.0 -24.2L-728.0 -48.5L-700.0 -48.5ZM-560.0 97.0L-574.0 121.2L-602.0 121.2L-616.0 97.0L-602.0 72.7L-574.0 72.7ZM-560.0 -97.0L-574.0 -72.7L-602.0 -72.7L-616.0 -97.0L-602.0 -121.2L-574.0 -121.2ZM-518.0 72.7L-532.0 97.0L-560.0 97.0L-574.0 72.7L-560.0 48.5L-532.0 48.5ZM-518.0 -72.7L-532.0 -48.5L-560.0 -48.5L-574.0 -72.7L-560.0 -97.0L-532.0 -97.0ZM-644.0 97.0L-658.0 121.2L-686.0 121.2L-700.0 97.0L-686.0 72.7L-658.0 72.7Z" filter="url(#sh)"/><g class="sub" data-sub="Odds/external" data-type="external"><path class="subwash" d="M-602.0 24.2L-616.0 48.5L-644.0 48.5L-658.0 24.2L-644.0 0.0L-616.0 -0.0ZM-602.0 -24.2L-616.0 0.0L-644.0 0.0L-658.0 -24.2L-644.0 -48.5L-616.0 -48.5ZM-560.0 0.0L-574.0 24.2L-602.0 24.2L-616.0 0.0L-602.0 -24.2L-574.0 -24.2ZM-644.0 0.0L-658.0 24.2L-686.0 24.2L-700.0 0.0L-686.0 -24.2L-658.0 -24.2ZM-560.0 48.5L-574.0 72.7L-602.0 72.7L-616.0 48.5L-602.0 24.2L-574.0 24.2ZM-560.0 -48.5L-574.0 -24.2L-602.0 -24.2L-616.0 -48.5L-602.0 -72.7L-574.0 -72.7ZM-644.0 48.5L-658.0 72.7L-686.0 72.7L-700.0 48.5L-686.0 24.2L-658.0 24.2ZM-644.0 -48.5L-658.0 -24.2L-686.0 -24.2L-700.0 -48.5L-686.0 -72.7L-658.0 -72.7ZM-602.0 72.7L-616.0 97.0L-644.0 97.0L-658.0 72.7L-644.0 48.5L-616.0 48.5ZM-602.0 -72.7L-616.0 -48.5L-644.0 -48.5L-658.0 -72.7L-644.0 -97.0L-616.0 -97.0ZM-518.0 24.2L-532.0 48.5L-560.0 48.5L-574.0 24.2L-560.0 0.0L-532.0 -0.0ZM-518.0 -24.2L-532.0 0.0L-560.0 0.0L-574.0 -24.2L-560.0 -48.5L-532.0 -48.5ZM-686.0 24.2L-700.0 48.5L-728.0 48.5L-742.0 24.2L-728.0 0.0L-700.0 -0.0ZM-686.0 -24.2L-700.0 0.0L-728.0 0.0L-742.0 -24.2L-728.0 -48.5L-700.0 -48.5ZM-560.0 97.0L-574.0 121.2L-602.0 121.2L-616.0 97.0L-602.0 72.7L-574.0 72.7ZM-560.0 -97.0L-574.0 -72.7L-602.0 -72.7L-616.0 -97.0L-602.0 -121.2L-574.0 -121.2ZM-518.0 72.7L-532.0 97.0L-560.0 97.0L-574.0 72.7L-560.0 48.5L-532.0 48.5ZM-518.0 -72.7L-532.0 -48.5L-560.0 -48.5L-574.0 -72.7L-560.0 -97.0L-532.0 -97.0ZM-644.0 97.0L-658.0 121.2L-686.0 121.2L-700.0 97.0L-686.0 72.7L-658.0 72.7Z"/><path class="bsub" d="M-686.0 72.7L-700.0 48.5M-700.0 -48.5L-686.0 -72.7M-686.0 -72.7L-658.0 -72.7M-616.0 97.0L-644.0 97.0M-658.0 -72.7L-644.0 -97.0M-644.0 -97.0L-616.0 -97.0M-518.0 24.2L-532.0 48.5M-532.0 -0.0L-518.0 24.2M-518.0 -24.2L-532.0 0.0M-532.0 -48.5L-518.0 -24.2M-700.0 48.5L-728.0 48.5M-728.0 48.5L-742.0 24.2M-742.0 24.2L-728.0 0.0M-728.0 0.0L-742.0 -24.2M-742.0 -24.2L-728.0 -48.5M-728.0 -48.5L-700.0 -48.5M-560.0 97.0L-574.0 121.2M-574.0 121.2L-602.0 121.2M-602.0 121.2L-616.0 97.0M-616.0 -97.0L-602.0 -121.2M-602.0 -121.2L-574.0 -121.2M-574.0 -121.2L-560.0 -97.0M-518.0 72.7L-532.0 97.0M-532.0 97.0L-560.0 97.0M-532.0 48.5L-518.0 72.7M-518.0 -72.7L-532.0 -48.5M-560.0 -97.0L-532.0 -97.0M-532.0 -97.0L-518.0 -72.7M-644.0 97.0L-658.0 121.2M-658.0 121.2L-686.0 121.2M-686.0 121.2L-700.0 97.0M-700.0 97.0L-686.0 72.7"/></g><path class="bmass ext" d="M-686.0 72.7L-700.0 48.5M-700.0 -48.5L-686.0 -72.7M-686.0 -72.7L-658.0 -72.7M-616.0 97.0L-644.0 97.0M-658.0 -72.7L-644.0 -97.0M-644.0 -97.0L-616.0 -97.0M-518.0 24.2L-532.0 48.5M-532.0 -0.0L-518.0 24.2M-518.0 -24.2L-532.0 0.0M-532.0 -48.5L-518.0 -24.2M-700.0 48.5L-728.0 48.5M-728.0 48.5L-742.0 24.2M-742.0 24.2L-728.0 0.0M-728.0 0.0L-742.0 -24.2M-742.0 -24.2L-728.0 -48.5M-728.0 -48.5L-700.0 -48.5M-560.0 97.0L-574.0 121.2M-574.0 121.2L-602.0 121.2M-602.0 121.2L-616.0 97.0M-616.0 -97.0L-602.0 -121.2M-602.0 -121.2L-574.0 -121.2M-574.0 -121.2L-560.0 -97.0M-518.0 72.7L-532.0 97.0M-532.0 97.0L-560.0 97.0M-532.0 48.5L-518.0 72.7M-518.0 -72.7L-532.0 -48.5M-560.0 -97.0L-532.0 -97.0M-532.0 -97.0L-518.0 -72.7M-644.0 97.0L-658.0 121.2M-658.0 121.2L-686.0 121.2M-686.0 121.2L-700.0 97.0M-700.0 97.0L-686.0 72.7"/><g class="rel" data-rk="BaseUi|Playground" data-flow="fwd"><path class="ecase" d="M-525.0 84.9L-514.4 91.0Q-504.0 97.0 -493.6 91.0L-388.4 30.2Q-378.0 24.2 -367.6 30.2L-273.0 84.9"/><path class="rhit" d="M-525.0 84.9L-514.4 91.0Q-504.0 97.0 -493.6 91.0L-388.4 30.2Q-378.0 24.2 -367.6 30.2L-273.0 84.9"/><path class="edge" d="M-525.0 84.9L-514.4 91.0Q-504.0 97.0 -493.6 91.0L-388.4 30.2Q-378.0 24.2 -367.6 30.2L-273.0 84.9"/><g class="port"><rect x="-314.4" y="62.1" width="30.0" height="15" rx="6"/><text x="-308.4" y="69.6">ACL</text></g><path class="head" d="M-273.4 84.6L-283.4 83.9L-279.0 76.3Z"/></g><g class="rel" data-rk="Chevrotain|Parsing" data-flow="fwd"><path class="ecase" d="M-567.0 -12.1L-472.4 -66.7Q-462.0 -72.7 -451.6 -66.7L-388.4 -30.2Q-378.0 -24.2 -367.6 -30.2L-315.0 -60.6"/><path class="rhit" d="M-567.0 -12.1L-472.4 -66.7Q-462.0 -72.7 -451.6 -66.7L-388.4 -30.2Q-378.0 -24.2 -367.6 -30.2L-315.0 -60.6"/><path class="edge" d="M-567.0 -12.1L-472.4 -66.7Q-462.0 -72.7 -451.6 -66.7L-388.4 -30.2Q-378.0 -24.2 -367.6 -30.2L-315.0 -60.6"/><g class="port"><rect x="-352.4" y="-53.4" width="24.0" height="15" rx="6"/><text x="-346.4" y="-45.9">CF</text></g><path class="head" d="M-315.4 -60.4L-321.0 -52.1L-325.4 -59.7Z"/></g><g class="rel" data-rk="Layout|Parsing" data-flow="rev"><path class="ecase" d="M-378.0 48.5L-378.0 36.2Q-378.0 24.2 -367.6 18.2L-304.4 -18.2Q-294.0 -24.2 -294.0 -36.2L-294.0 -48.5"/><path class="rhit" d="M-378.0 48.5L-378.0 36.2Q-378.0 24.2 -367.6 18.2L-304.4 -18.2Q-294.0 -24.2 -294.0 -36.2L-294.0 -48.5"/><path class="edge" d="M-378.0 48.5L-378.0 36.2Q-378.0 24.2 -367.6 18.2L-304.4 -18.2Q-294.0 -24.2 -294.0 -36.2L-294.0 -48.5"/><g class="port"><rect x="-393.0" y="6.0" width="30.0" height="15" rx="6"/><text x="-387.0" y="13.5">ACL</text></g><path class="head" d="M-378.0 48.0L-382.4 39.0L-373.6 39.0Z"/><g class="port"><rect x="-318.0" y="-42.5" width="48.0" height="15" rx="6"/><text x="-312.0" y="-35.0">OHS PL</text></g></g><g class="rel" data-rk="Layout|Playground" data-flow="fwd"><path class="ecase" d="M-357.0 84.9L-304.4 115.2Q-294.0 121.2 -283.6 115.2L-273.0 109.1"/><path class="rhit" d="M-357.0 84.9L-304.4 115.2Q-294.0 121.2 -283.6 115.2L-273.0 109.1"/><path class="edge" d="M-357.0 84.9L-304.4 115.2Q-294.0 121.2 -283.6 115.2L-273.0 109.1"/><g class="port"><rect x="-353.8" y="87.9" width="30.0" height="15" rx="6"/><text x="-347.8" y="95.4">OHS</text></g><path class="head" d="M-273.4 109.4L-279.0 117.7L-283.4 110.1Z"/></g><g class="rel" data-rk="Messages|Playground" data-flow="fwd"><path class="ecase" d="M231.0 12.1L-31.6 163.7Q-42.0 169.7 -52.4 163.7L-199.6 78.7Q-210.0 72.7 -220.4 78.7L-231.0 84.9"/><path class="rhit" d="M231.0 12.1L-31.6 163.7Q-42.0 169.7 -52.4 163.7L-199.6 78.7Q-210.0 72.7 -220.4 78.7L-231.0 84.9"/><path class="edge" d="M231.0 12.1L-31.6 163.7Q-42.0 169.7 -52.4 163.7L-199.6 78.7Q-210.0 72.7 -220.4 78.7L-231.0 84.9"/><g class="port"><rect x="197.8" y="15.1" width="30.0" height="15" rx="6"/><text x="203.8" y="22.6">OHS</text></g><path class="head" d="M-230.6 84.6L-225.0 76.3L-220.6 83.9Z"/></g><g class="rel" data-rk="Messages|Validation" data-flow="rev"><path class="ecase" d="M231.0 -12.1L178.4 -42.5Q168.0 -48.5 157.6 -42.5L136.4 -30.2Q126.0 -24.2 126.0 -12.2L126.0 12.2Q126.0 24.2 115.6 30.2L94.4 42.5Q84.0 48.5 73.6 42.5L21.0 12.1"/><path class="rhit" d="M231.0 -12.1L178.4 -42.5Q168.0 -48.5 157.6 -42.5L136.4 -30.2Q126.0 -24.2 126.0 -12.2L126.0 12.2Q126.0 24.2 115.6 30.2L94.4 42.5Q84.0 48.5 73.6 42.5L21.0 12.1"/><path class="edge" d="M231.0 -12.1L178.4 -42.5Q168.0 -48.5 157.6 -42.5L136.4 -30.2Q126.0 -24.2 126.0 -12.2L126.0 12.2Q126.0 24.2 115.6 30.2L94.4 42.5Q84.0 48.5 73.6 42.5L21.0 12.1"/><g class="port"><rect x="193.6" y="-34.3" width="24.0" height="15" rx="6"/><text x="199.6" y="-26.8">CF</text></g><path class="head" d="M230.6 -12.4L220.6 -13.1L225.0 -20.7Z"/><g class="port"><rect x="20.0" y="17.9" width="48.0" height="15" rx="6"/><text x="26.0" y="25.4">OHS PL</text></g></g><g class="rel" data-rk="Parsing|Validation" data-flow="both"><path class="ecase" d="M-273.0 -60.6L-178.4 -6.0Q-168.0 0.0 -157.6 -6.0L-94.4 -42.5Q-84.0 -48.5 -73.6 -42.5L-21.0 -12.1"/><path class="rhit" d="M-273.0 -60.6L-178.4 -6.0Q-168.0 0.0 -157.6 -6.0L-94.4 -42.5Q-84.0 -48.5 -73.6 -42.5L-21.0 -12.1"/><path class="edge" d="M-273.0 -60.6L-178.4 -6.0Q-168.0 0.0 -157.6 -6.0L-94.4 -42.5Q-84.0 -48.5 -73.6 -42.5L-21.0 -12.1"/><g class="port"><rect x="-259.6" y="-55.2" width="18.0" height="15" rx="6"/><text x="-253.6" y="-47.7">P</text></g><path class="head" d="M-272.6 -60.4L-262.6 -59.7L-267.0 -52.1Z"/><g class="port"><rect x="-52.4" y="-32.6" width="18.0" height="15" rx="6"/><text x="-46.4" y="-25.1">P</text></g><path class="head" d="M-21.4 -12.4L-31.4 -13.1L-27.0 -20.7Z"/></g><g class="rel" data-rk="Playground|Validation" data-flow="rev"><path class="ecase" d="M-231.0 109.1L-220.4 115.2Q-210.0 121.2 -199.6 115.2L-21.0 12.1"/><path class="rhit" d="M-231.0 109.1L-220.4 115.2Q-210.0 121.2 -199.6 115.2L-21.0 12.1"/><path class="edge" d="M-231.0 109.1L-220.4 115.2Q-210.0 121.2 -199.6 115.2L-21.0 12.1"/><path class="head" d="M-230.6 109.4L-220.6 110.1L-225.0 117.7Z"/><g class="port"><rect x="-68.0" y="17.9" width="48.0" height="15" rx="6"/><text x="-62.0" y="25.4">OHS PL</text></g></g><g class="node" data-ctx="Validation" data-sub="Odds/Judgement" data-type="core" tabindex="0" role="button" aria-label="context Validation"><path class="tile core" d="M28.0 0.0L14.0 24.2L-14.0 24.2L-28.0 0.0L-14.0 -24.2L14.0 -24.2Z" filter="url(#tsh)"/><path class="hit" d="M27.0 0.0L13.5 23.4L-13.5 23.4L-27.0 0.0L-13.5 -23.4L13.5 -23.4Z"/></g><g class="node" data-ctx="Parsing" data-sub="Odds/Language" data-type="supporting" tabindex="0" role="button" aria-label="context Parsing"><path class="tile supporting" d="M-266.0 -72.7L-280.0 -48.5L-308.0 -48.5L-322.0 -72.7L-308.0 -97.0L-280.0 -97.0Z" filter="url(#tsh)"/><path class="hit" d="M-267.0 -72.7L-280.5 -49.4L-307.5 -49.4L-321.0 -72.7L-307.5 -96.1L-280.5 -96.1Z"/></g><g class="node" data-ctx="Layout" data-sub="Odds/Visualization" data-type="supporting" tabindex="0" role="button" aria-label="context Layout"><path class="tile supporting" d="M-350.0 72.7L-364.0 97.0L-392.0 97.0L-406.0 72.7L-392.0 48.5L-364.0 48.5Z" filter="url(#tsh)"/><path class="hit" d="M-351.0 72.7L-364.5 96.1L-391.5 96.1L-405.0 72.7L-391.5 49.4L-364.5 49.4Z"/></g><g class="node" data-ctx="Playground" data-sub="Odds/Visualization" data-type="supporting" tabindex="0" role="button" aria-label="context Playground"><path class="tile supporting" d="M-224.0 97.0L-238.0 121.2L-266.0 121.2L-280.0 97.0L-266.0 72.7L-238.0 72.7Z" filter="url(#tsh)"/><path class="hit" d="M-225.0 97.0L-238.5 120.4L-265.5 120.4L-279.0 97.0L-265.5 73.6L-238.5 73.6Z"/></g><g class="node" data-ctx="Messages" data-sub="Odds/Localization" data-type="generic" tabindex="0" role="button" aria-label="context Messages"><path class="tile generic" d="M280.0 0.0L266.0 24.2L238.0 24.2L224.0 0.0L238.0 -24.2L266.0 -24.2Z" filter="url(#tsh)"/><path class="hit" d="M279.0 0.0L265.5 23.4L238.5 23.4L225.0 0.0L238.5 -23.4L265.5 -23.4Z"/></g><g class="node" data-ctx="BaseUi" data-sub="Odds/external" data-type="external" tabindex="0" role="button" aria-label="context BaseUi"><path class="tile external" d="M-518.0 72.7L-532.0 97.0L-560.0 97.0L-574.0 72.7L-560.0 48.5L-532.0 48.5Z" filter="url(#tsh)"/><path class="hit" d="M-519.0 72.7L-532.5 96.1L-559.5 96.1L-573.0 72.7L-559.5 49.4L-532.5 49.4Z"/></g><g class="node" data-ctx="Chevrotain" data-sub="Odds/external" data-type="external" tabindex="0" role="button" aria-label="context Chevrotain"><path class="tile external" d="M-560.0 0.0L-574.0 24.2L-602.0 24.2L-616.0 0.0L-602.0 -24.2L-574.0 -24.2Z" filter="url(#tsh)"/><path class="hit" d="M-561.0 0.0L-574.5 23.4L-601.5 23.4L-615.0 0.0L-601.5 -23.4L-574.5 -23.4Z"/></g><g class="sublab" data-sub="Odds/Judgement" data-type="core"><text class="snm" style="font-size:13px" x="0" y="53">JUDGEMENT</text></g><g class="sublab" data-sub="Odds/Language" data-type="supporting"><text class="snm" style="font-size:13px" x="-273" y="-129">LANGUAGE</text></g><g class="sublab" data-sub="Odds/Visualization" data-type="supporting"><text class="snm" style="font-size:13px" x="-273" y="162">VISUALIZATION</text></g><g class="sublab" data-sub="Odds/Localization" data-type="generic"><text class="snm" style="font-size:13px" x="252" y="53">LOCALIZATION</text></g><g class="sublab" data-sub="Odds/external" data-type="external"><text class="snm" style="font-size:13px" x="-609" y="-32">EXTERNAL</text></g><text class="cnm" data-type="external" x="-546.0" y="110.0" text-anchor="middle">BaseUi</text><text class="cnm" data-type="external" x="-588.0" y="37.2" text-anchor="middle">Chevrotain</text><text class="cnm" data-type="supporting" x="-378.0" y="110.0" text-anchor="middle">Layout</text><text class="cnm" data-type="generic" x="252.0" y="-30.2" text-anchor="middle">Messages</text><text class="cnm" data-type="supporting" x="-294.0" y="-103.0" text-anchor="middle">Parsing</text><text class="cnm" data-type="supporting" x="-252.0" y="134.2" text-anchor="middle">Playground</text><text class="cnm" data-type="core" x="0.0" y="-30.2" text-anchor="middle">Validation</text><text class="dnm" style="font-size:16px" x="-147" y="280">ODDS</text><text class="did" x="-147" y="295">DOMAIN ODDS</text><g class="sublab far-lab" data-sub="Odds/Judgement" data-type="core"><text class="snm" style="font-size:18px" x="0" y="55">JUDGEMENT</text></g><g class="sublab far-lab" data-sub="Odds/Language" data-type="supporting"><text class="snm" style="font-size:18px" x="-294" y="-115">LANGUAGE</text></g><g class="sublab far-lab" data-sub="Odds/Visualization" data-type="supporting"><text class="snm" style="font-size:18px" x="-294" y="152">VISUALIZATION</text></g><g class="sublab far-lab" data-sub="Odds/Localization" data-type="generic"><text class="snm" style="font-size:18px" x="252" y="55">LOCALIZATION</text></g><g class="sublab far-lab" data-sub="Odds/external" data-type="external"><text class="snm" style="font-size:18px" x="-588" y="-42">EXTERNAL</text></g></svg></svg>

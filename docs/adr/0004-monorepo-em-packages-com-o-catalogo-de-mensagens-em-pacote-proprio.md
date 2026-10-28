@@ -6,7 +6,6 @@ date: 2026-09-05
 deciders: Fabio Badaro, Claude
 tags: estrutura, arquitetura, fronteiras
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0004 — Monorepo em packages/, com o catálogo de mensagens em pacote próprio
@@ -19,7 +18,7 @@ O primeiro código do projeto precisa de um lugar. Duas coisas do modelo já exi
 
 **A linguagem e o produto não são a mesma coisa.** O `PRD.md` descreve um playground; os artefatos normativos descrevem uma DSL com gramática, contrato de dados e catálogo de regras. Um terceiro poderia querer validar `.odds` sem nunca abrir o playground — em CI, num editor, num bot de PR. Misturar os dois num pacote só torna isso impossível sem reempacotar.
 
-**E há uma fronteira que hoje é só uma promessa em prosa.** O `CLAUDE.md` e o `MESSAGES.md` §1 fixam que um `Diagnostic` carrega `severity` + `code` + `span` + `data`, e **nunca** `message`: a frase é renderizada em separado, a partir do catálogo. A regra é explícita — *"never put a locale, an emoji, or a severity word inside the validator core"* — e a `HEALTH.md` §4 penaliza em −6 prosa, locale ou emoji dentro de `data`, e em −8 o retorno de `message` ao contrato. Hoje nada impede um `import` de violar isso; só disciplina.
+**E há uma fronteira que hoje é só uma promessa em prosa.** O `MESSAGES.md` §1 fixa que um `Diagnostic` carrega `severity` + `code` + `span` + `data`, e **nunca** `message`: a frase é renderizada em separado, a partir do catálogo. A regra é explícita — *"never put a locale, an emoji, or a severity word inside the validator core"*. Hoje nada impede um `import` de violar isso; só disciplina.
 
 Uma tentativa de scaffold não commitada, de 2026-08-27, já tinha `@odds/core` e `@odds/messages` como pacotes separados. Os diretórios sumiram e sobraram apenas symlinks quebrados em `node_modules`, mas a intuição por trás daquilo é boa e é adotada aqui.
 
@@ -51,13 +50,13 @@ Rejeitada, e era a divisão óbvia (linguagem vs. produto, dois pacotes). Perde 
 
 ### Repositórios separados
 
-Rejeitada. A `RULES-EN.md` §3.3 e o `AST_SCHEMA.md` §1.3 são um contrato único que atravessa parser, validador e visualizador; separar em repos faria cada mudança de contrato virar uma coordenação de PRs entre repositórios. O `CLAUDE.md` fixa uma ordem de passe que toca vários artefatos de uma vez — ela pressupõe um repo.
+Rejeitada. A `RULES-EN.md` §3.3 e o `AST_SCHEMA.md` §1.3 são um contrato único que atravessa parser, validador e visualizador; separar em repos faria cada mudança de contrato virar uma coordenação de PRs entre repositórios. O `.claude/rules/spec.md` fixa uma ordem de passe que toca vários artefatos de uma vez — ela pressupõe um repo.
 
 ## Consequências
 
 **O que melhora.** A proibição mais importante do contrato de diagnósticos passa a ser estrutural. O validador vira publicável sozinho, sem arrastar o playground. E `@odds/messages` pode receber PATCH sem tocar na versão do core.
 
-**O que piora.** Um pacote a mais para versionar, publicar e manter em sincronia — e três `package.json` em vez de um. Há também um risco real de a fronteira ser furada por conveniência (`@odds/core` importando mensagens "só para um log"); vale uma checagem futura no `health_check.py` que verifique o grafo de dependências, mas ela não existe ainda e **esta ADR não a promete**.
+**O que piora.** Um pacote a mais para versionar, publicar e manter em sincronia — e três `package.json` em vez de um. Há também um risco real de a fronteira ser furada por conveniência (`@odds/core` importando mensagens "só para um log"); vale uma checagem futura que verifique o grafo de dependências, mas ela não existe ainda e **esta ADR não a promete**.
 
 **O que não muda.** `golden-files/` continua na raiz e continua governado pelo `TEST_SUITE.md`.
 

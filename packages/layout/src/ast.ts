@@ -1,7 +1,6 @@
 /**
- * O adaptador AST → modelo do layout e o alvo de cada diagnóstico no mapa. Porte
- * literal do `toModel`, `keysOf`, `anchorsOf` e `targetOf` do adaptador da bancada
- * (docs/design/pages/playground.html), com os tipos postos e os globais de módulo
+ * O adaptador AST → modelo do layout e o alvo de cada diagnóstico no mapa:
+ * `toModel`, `keysOf`, `anchorsOf` e `targetOf`, com os globais de módulo
  * (`lastType`, `file`) passados como parâmetros.
  */
 import type { Diagnostic, ProgramNode, RelationshipNode, SourceSpan, SubdomainType } from "@odds/core";

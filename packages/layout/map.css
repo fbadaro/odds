@@ -1,15 +1,14 @@
 /* ODDS -- folha de estilo do mapa em colmeia (saida de renderSvg).
-   Porte literal das regras de SVG de docs/design/pages/colmeia-v4.html (apagada em
-   2026-10-24, depois de validada; no git em e282c83), com as
+   Porte literal das regras de SVG do prototipo v4 (no git em e282c83), com as
    variaveis proprias, prefixo odds-map (triplets RGB, lidos como rgb(var(NOME) / alfa)).
    Auto-contida, sem depender de variaveis de fora. Quem consome mapeia as suas
    para estas (ex.: accent: var(NOSSO-ACCENT)).
    Fora daqui, de proposito: casca de pagina (body, .wrap, .seg, botoes, cards, fonte,
-   diagnosticos, legenda) e toda interacao da bancada (.lit, .focus, .mute, svg.far,
+   diagnosticos, legenda) e toda interacao (.lit, .focus, .mute, svg.far,
    animacao de data-flow, mapeamento [data-type] -> --t).
    Os padroes tem especificidade zero (:where) de proposito: os aliases :root de quem
    consome sempre vencem, em qualquer ordem.
-   O repouso e o que a bancada validou em 2026-10-09 (docs/design/README.md): o roxo
+   O repouso e o que foi validado em 2026-10-09: o roxo
    saiu do mapa e ficou so na interface. Linha, ponta e borda de tag em --odds-map-edge
    (cinza), texto de tag em tinta; e traco de espessura fixa na tela. */
 :where(:root){
@@ -101,14 +100,13 @@ g.node.on .tile{stroke:rgb(var(--odds-map-accent)); stroke-width:2.8; stroke-das
   text-anchor:middle; fill:rgb(var(--odds-map-dim) / .85)}
 
 .ecase{fill:none; stroke:rgb(var(--odds-map-bg) / .9); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
-/* Linha em repouso: cinza, inclusive a de -x- (na bancada, .nav .edge vence a cor de .edge.sep). */
+/* Linha em repouso: cinza, inclusive a de -x-. */
 .edge{fill:none; stroke:rgb(var(--odds-map-edge)); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
 .edge.sep{stroke-width:1.4}
 .head{fill:rgb(var(--odds-map-edge))}
 .tick{stroke:rgb(var(--odds-map-dim)); stroke-width:1.6; stroke-linecap:round; fill:none}
 /* A porta: a tag encostada no lado do hexagono a que ela pertence. */
-/* Sem diagnostico, a tag e cinza com texto em tinta; a de so [BBM] tambem (na bancada,
-   .nav .port:not([class*="sev-"]) rect vence a cor de .port.only-bbm rect). */
+/* Sem diagnostico, a tag e cinza com texto em tinta; a de so [BBM] tambem. */
 .port rect{fill:rgb(var(--odds-map-panel)); stroke:rgb(var(--odds-map-edge) / .75)}
 .port text{font-family:"JetBrains Mono",Menlo,monospace; font-size:9px; font-weight:500;
   fill:rgb(var(--odds-map-ink) / .82); dominant-baseline:central}
@@ -132,7 +130,7 @@ text.cnm.on{fill:rgb(var(--odds-map-accent)); font-weight:500}
 g.rel.lit .edge{stroke:rgb(var(--odds-map-accent)); stroke-width:2.2}
 g.rel.lit .port rect{stroke-width:1.4}
 
-/* Estado de repouso do que renderSvg emite alem da v4 (antes decorado pela bancada). */
+/* Estado de repouso do que renderSvg emite alem do prototipo v4. */
 /* Traco de espessura fixa na tela: sem isso, no mapa inteiro (~0,5-0,7 px por unidade)
    o contorno de destaque e a linha invalida somem, e com zoom ficam grossos. */
 svg:is(.v-flow, .v-contain) :is(path, rect, line, polyline, circle){vector-effect:non-scaling-stroke}

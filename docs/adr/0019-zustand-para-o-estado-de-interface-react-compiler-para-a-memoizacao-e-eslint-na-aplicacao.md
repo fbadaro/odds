@@ -6,14 +6,13 @@ date: 2026-10-22
 deciders: Fabio Badaro, Claude
 tags: toolchain, ui, react, lint, testes, playground
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0019 — Zustand para o estado de interface, React Compiler para a memoização e ESLint na aplicação
 
 ## Contexto
 
-O `ADR-0014` decidiu React no chrome e deixou em aberto *"as práticas de React a adotar"*. O `ADR-0005` tinha adiado o linter de propósito, porque escolher regras antes de existir código sobre o qual discutir seria decidir no vazio, e o `HEALTH.md` §9.2 segurava 2 pontos do R6.6 por essa ausência.
+O `ADR-0014` decidiu React no chrome e deixou em aberto *"as práticas de React a adotar"*. O `ADR-0005` tinha adiado o linter de propósito, porque escolher regras antes de existir código sobre o qual discutir seria decidir no vazio.
 
 Na conversa de 2026-10-21 sobre como construir a aplicação, essas práticas foram propostas por Claude e o autor não as vetou. O que pesava:
 
@@ -26,7 +25,7 @@ Na conversa de 2026-10-21 sobre como construir a aplicação, essas práticas fo
 
 **O estado de interface mora num store Zustand, a memoização é feita pelo React Compiler, e a aplicação tem ESLint.** Os testes da aplicação usam o Vitest do repositório com Testing Library, e componentes rodam em jsdom.
 
-1. **Zustand** (5.0) guarda o texto e o que deriva dele, mais o estado de interface (vista, seleção). O ciclo da bancada mora nas ações do store: `setText` analisa, decide se o desenho muda já ou depois da pausa, e congela o diagrama quando o texto quebra. Os derivados só são escritos por essas ações, a partir do texto, e nenhuma ação os escreve por outro caminho. O store é criado por instância (`createPlaygroundStore`), e é testado em node, sem renderizar nada.
+1. **Zustand** (5.0) guarda o texto e o que deriva dele, mais o estado de interface (vista, seleção). O ciclo de análise e desenho mora nas ações do store: `setText` analisa, decide se o desenho muda já ou depois da pausa, e congela o diagrama quando o texto quebra. Os derivados só são escritos por essas ações, a partir do texto, e nenhuma ação os escreve por outro caminho. O store é criado por instância (`createPlaygroundStore`), e é testado em node, sem renderizar nada.
 2. **React Compiler** (`babel-plugin-react-compiler` 1.0, ligado no Vite pelo `reactCompilerPreset` do `@vitejs/plugin-react` 6 e pelo `@rolldown/plugin-babel`). Não se escreve `useMemo` nem `useCallback` à mão.
 3. **ESLint** (10, configuração plana) com `typescript-eslint`, as regras recomendadas do `eslint-plugin-react-hooks` 7, que incluem as que vêm do compilador, e `no-restricted-imports` proibindo `@base-ui/react` fora de `src/components/ui/**`. O lint cobre só `apps/playground` (`npm run lint`).
 
@@ -57,7 +56,7 @@ Playwright ou equivalente, rodando a aplicação de verdade. Ficou de fora por o
 - A regra "o texto é o único estado de verdade" vira forma de código: os derivados só têm uma porta de entrada, a ação que muda o texto.
 - O código dos componentes fica sem `useMemo`, `useCallback` e `React.memo`. Quem vier de outro projeto React pode estranhar a ausência e querer pôr de volta, e as regras do compilador no lint apontam a memoização manual que ele não consegue preservar.
 - A fronteira do Base UI fica imposta antes de o Base UI entrar: a regra já está no `eslint.config.js`, e `src/components/ui/` nasce quando a primeira feature precisar de um componente padrão.
-- O `HEALTH.md` §9.2 R6.6 deixa de perder pontos pela ausência de linter, e o `CLAUDE.md` passa a dizer o que existe: lint na aplicação, pacotes ainda sem.
+- O `AGENTS.md` diz o que existe: lint na aplicação, pacotes ainda sem.
 - **Piora: o build tem uma etapa de Babel** só para o compilador, e o compilador é mais uma peça com ciclo próprio entre o código e o navegador. Um erro dele aparece como comportamento estranho, não como erro de compilação.
 - **Piora: o lint é desigual no repositório.** `apps/playground` tem regras e os pacotes não, e quem mexe nos dois precisa saber disso.
 - **Piora: são mais quatro dependências de desenvolvimento diretas no lint** (`eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`), mais o Babel e o plugin do compilador, que o repositório não tinha.
@@ -69,4 +68,4 @@ Playwright ou equivalente, rodando a aplicação de verdade. Ficou de fora por o
 
 **O custo da volta, por peça.** Desligar o compilador é tirar o preset do `vite.config.ts`: o código continua correto, só sem memoização, e os pontos lentos aparecem para receber `useMemo` à mão. Trocar o Zustand é reescrever o store e os seletores dos componentes, e o custo cresce com o número de componentes que leem o store. Tirar o ESLint é apagar um arquivo, mas a fronteira do Base UI volta a depender de memória.
 
-**O que já foi construído em cima:** o store do primeiro incremento com o ciclo da bancada e os testes dele, o contêiner da colmeia, que lê do store só a string SVG pronta, os componentes `Editor` e `SeverityCounters` sem memoização manual, e o `eslint.config.js` com a fronteira do Base UI.
+**O que já foi construído em cima:** o store do primeiro incremento com o ciclo de análise e desenho e os testes dele, o contêiner da colmeia, que lê do store só a string SVG pronta, os componentes `Editor` e `SeverityCounters` sem memoização manual, e o `eslint.config.js` com a fronteira do Base UI.

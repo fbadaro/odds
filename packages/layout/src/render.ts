@@ -1,5 +1,5 @@
 /**
- * O desenho da colmeia-v4: geometria + diagnósticos → SVG. Porte literal do bloco
+ * O desenho da colmeia: geometria + diagnósticos → SVG. Porte literal do bloco
  * *render* do script (`sevIcon`, `worst`, `pathOf`, `along`, `badgeSpot`, `arrowAt`,
  * `breakMark`, `portSvg`, `build`), com o `state` global da página trocado pelas
  * `ViewOptions` e sem o parâmetro `src`, que o `build` legado recebia e não lia.
@@ -237,8 +237,8 @@ export function subOf(m: CanonModel, key: string): SubInfo | null {
   return null;
 }
 
-/** O que a bancada acrescentava ao SVG depois de pronto (`decorate`), agora posto na
-    montagem: o sentido de cada relação, o tipo de cada peça e os rótulos de longe. */
+/** O que o SVG ganha na montagem, além do `build`: o sentido de cada relação, o tipo
+    de cada peça e os rótulos de longe. */
 interface Deco {
   flow: Record<string, string>;
   /** Por `data-sub` já escapado; o que não está aqui é o bloco `external`. */
@@ -432,7 +432,7 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
           (opts.selSub && (selSubIds.indexOf(rel.l) >= 0 || selSubIds.indexOf(rel.r) >= 0)) ||
           (selD && selT!.rk === E.rk);
       const faded = (opts.sel || opts.selSub || selD) && !lit;
-      /* a bancada só decorava o `<g class="rel">` pelado, sem lit nem fade */
+      /* só o `<g class="rel">` pelado ganha o selo, sem lit nem fade */
       const dr = deco && !lit && !faded ? deco : null;
       let g =
         '<g class="rel' +
@@ -589,7 +589,7 @@ export function buildSvg(geo: Geometry, diags: TargetedDiagnostic[], opts: ViewO
 }
 
 /**
- * O SVG do mapa como a bancada o exibe: o `build` da v4 mais o que a navegação
+ * O SVG do mapa como a aplicação o exibe: o `build` mais o que a navegação
  * precisa nele (`data-type`, `data-flow`, a área de clique das relações, o selo de
  * relação inválida e os nomes de subdomínio que aparecem ao afastar).
  *

@@ -1,5 +1,5 @@
 /**
- * `prep` e `canon` da colmeia-v4: a forma canônica é a única que o layout vê.
+ * `prep` e `canon` da colmeia: a forma canônica é a única que o layout vê.
  * Porte literal.
  */
 import { TAG_ORDER } from "./hex.js";

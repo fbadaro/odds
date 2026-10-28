@@ -6,7 +6,7 @@ Este arquivo documenta a suíte de testes de referência ("golden files") para o
 
 O objetivo é permitir desenvolvimento (humano ou via IA) no estilo TDD: *"faça o parser/validador passar nestes 44 casos"* é uma especificação muito mais verificável do que "implemente as regras descritas em prosa no RULES.md".
 
-Esta suíte corresponde à versão atual do `GRAMMAR.md`, do `AST_SCHEMA.md` e da `ODDS Language Version`. Os números moram no `## Changelog` de cada arquivo e no [`CHANGELOG.md`](./CHANGELOG.md), e não se repetem aqui, porque um número copiado vence no próximo incremento. Qualquer mudança em qualquer um dos documentos-fonte deve ser acompanhada de uma revisão desta suíte — e de uma entrada nova em [`CHANGELOG.md`](./CHANGELOG.md).
+Esta suíte corresponde ao `GRAMMAR.md`, ao `AST_SCHEMA.md` e à `ODDS Language Version` atual, mantida no [`CHANGELOG.md`](./CHANGELOG.md). Qualquer mudança num dos documentos-fonte deve ser acompanhada de uma revisão desta suíte — e, se mudar o que um `.odds` significa, de uma entrada nova no [`CHANGELOG.md`](./CHANGELOG.md).
 
 ---
 
@@ -212,9 +212,3 @@ Isso mantém a tradição da v0.1.0, em que escrever a suíte encontrou duas con
 - Não há golden files para os **presets** completos do produto (E-Commerce, Simple Domain — PRD GH-001); esta suíte testa regras isoladas, não os arquivos de exemplo reais que o playground vai carregar. Quando existirem, valem como um segundo `valid-baseline` cada.
 - Os spans continuam sendo **especificação-alvo**, não verificados contra um parser real.
 - Não há caso de **`SYNTAX_ERROR` dentro de um bloco `external`** nem de diretiva de supressão fora do `mapping` — ambos devem funcionar, mas nenhum teste garante.
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## TEST_SUITE.md`). Versão atual: **v0.2.3**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

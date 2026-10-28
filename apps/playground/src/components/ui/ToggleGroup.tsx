@@ -11,7 +11,7 @@ type Item<V extends string> = {
   label: string;
   /** O que o botão mostra no lugar do rótulo, um ícone. */
   content?: ReactNode;
-  /** A dica da bancada, quando ela tem uma. */
+  /** A dica, quando há uma. */
   hint?: string;
 };
 
@@ -29,8 +29,8 @@ type Props<V extends string> = Common<V> &
   );
 
 /**
- * A escolha única da bancada: o selecionado fica em `aria-pressed` e as setas andam entre
- * os botões. Sem `allowEmpty` (a `.i-view`), apertar de novo não o solta; com ele (o
+ * A escolha única: o selecionado fica em `aria-pressed` e as setas andam entre
+ * os botões. Sem `allowEmpty` (a troca de vista), apertar de novo não o solta; com ele (o
  * trilho), o mesmo botão solta, e não fica nenhum.
  */
 export function ToggleGroup<V extends string>(props: Props<V>) {

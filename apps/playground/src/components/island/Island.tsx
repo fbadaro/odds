@@ -8,7 +8,7 @@ type Props = {
   ref?: Ref<HTMLElement> | undefined;
 } & HTMLAttributes<HTMLElement>;
 
-/** A casca `.isl` da bancada: superfície flutuante com borda, raio e sombra de ilha. */
+/** A casca de ilha: superfície flutuante com borda, raio e sombra de ilha. */
 export function Island({ as: Tag = "div", className, children, ref, ...rest }: Props) {
   return (
     // o ref vale para qualquer um dos quatro elementos; o TS só não une as quatro assinaturas

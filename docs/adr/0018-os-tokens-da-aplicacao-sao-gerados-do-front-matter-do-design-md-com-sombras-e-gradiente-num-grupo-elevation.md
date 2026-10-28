@@ -6,7 +6,6 @@ date: 2026-10-22
 deciders: Fabio Badaro, Claude
 tags: ui, design-system, build, playground
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0018 — Os tokens da aplicação são gerados do front matter do DESIGN.md, com sombras e gradiente num grupo elevation
@@ -55,8 +54,8 @@ Pouparia uma tradução de cabeça entre bancada e aplicação, e o bloco CSS do
 
 - O `DESIGN.md` é a única coisa que se edita para mudar um valor visual da aplicação. Salvar o arquivo atualiza a tela aberta.
 - O formato `design.md` ganha um grupo que ele não define, `elevation`. Se a ferramenta do formato não o ler, o arquivo continua válido como texto, e só o nosso gerador depende dele.
-- O `CLAUDE.md` passa a dizer que o `tokens.css` é gerado, como o `messages.json`.
-- **Piora: a bancada e a aplicação usam nomes diferentes para os mesmos valores.** A bancada continua com `--c-bg`, `--c-panel`, `--c-panel2`…, num arquivo escrito à mão (`docs/design/pages/bancada-tokens.css`) que o `colmeia-embed.mjs` embute nas duas páginas vivas, e o bloco CSS da seção *Colors* do `DESIGN.md` mostra esses nomes. Uma frase ao lado do bloco diz isso. A deriva de **valor** entre a bancada e o `DESIGN.md` continua possível, porque nada confere o arquivo da bancada.
+- O `AGENTS.md` diz que o `tokens.css` é gerado, como o `messages.json`.
+- **Piorava: a bancada e a aplicação usavam nomes diferentes para os mesmos valores**, e nada conferia o arquivo de tokens da bancada. A bancada saiu da árvore (`ADR-0025`), e com ela a deriva.
 - **Piora: as cores do mapa seguem sem token.** O `@odds/layout` publica um `map.css` com variáveis próprias (`--odds-map-*`), e cada tela as liga aos próprios tokens. Isso é deliberado (`ADR-0013` deixou as cores do diagrama em aberto), mas significa que o gerador não cobre tudo o que aparece na tela.
 - **Piora: mais uma dependência de desenvolvimento**, o parser `yaml`, para ler o front matter.
 

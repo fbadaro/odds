@@ -3,7 +3,7 @@ import type { Selection } from "../../../lib/selection";
 
 const each = <T extends Element>(list: NodeListOf<T>, fn: (el: T) => void) => list.forEach(fn);
 
-/** O `paintSel` da bancada, só as classes: a legenda e a árvore ficam com quem as desenha. */
+/** A seleção pintada no mapa, só as classes: a legenda e a árvore ficam com quem as desenha. */
 export function paintSelection(svg: SVGSVGElement, nav: Nav, sel: Selection, hover: string | null): void {
   const rk = sel && "rel" in sel ? sel.rel : null;
   const from = sel && "rel" in sel ? sel.from : null;

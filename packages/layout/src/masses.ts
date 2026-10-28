@@ -1,5 +1,5 @@
 /**
- * Massas da colmeia-v4: uma por tipo de subdomínio, mais a do external; a extensão
+ * Massas da colmeia: uma por tipo de subdomínio, mais a do external; a extensão
  * angular de cada uma e o arranjo delas dentro do domínio. Porte literal.
  */
 import { C, CELL_AREA, GAP, kk, TYPES } from "./hex.js";

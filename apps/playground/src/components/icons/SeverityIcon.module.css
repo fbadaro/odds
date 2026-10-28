@@ -1,4 +1,4 @@
-/* bancada: .sev-* .ic-bg, .ic-fg, .ic-dot (o mesmo glifo do mapa; --odds-map-panel é a --c-surface) */
+/* o mesmo glifo do mapa; --odds-map-panel é a --c-surface */
 .error .bg {
   fill: rgb(var(--c-error));
 }

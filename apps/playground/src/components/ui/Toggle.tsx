@@ -5,7 +5,7 @@ import { Tooltip } from "./Tooltip";
 type Props = {
   pressed: boolean;
   onPressedChange: (pressed: boolean) => void;
-  /** A dica da bancada, quando ela tem uma. */
+  /** A dica, quando há uma. */
   hint?: string | undefined;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "onChange" | "value" | "defaultValue">;
 

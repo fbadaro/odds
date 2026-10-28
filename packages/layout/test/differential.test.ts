@@ -6,12 +6,10 @@
  * Aqui se varre o resto da matriz — seleção de contexto, de subdomínio, de
  * diagnóstico, e os rótulos "sub" e "dom" — sobre os modelos da v4.
  *
- * O oráculo era o `build` da colmeia-v4, carregado sem DOM de
- * docs/design/pages/colmeia-v4.html. A página foi apagada em 2026-10-24, depois de
- * validada: nesse dia o porte batia com ela nos 540 estados, e o resultado ficou
- * congelado na chave `matrix` dos seis goldens, um hash por estado do SVG e do
- * `viewBox` que a v4 escrevia. A página segue no git:
- * `git show e282c83:docs/design/pages/colmeia-v4.html`.
+ * O oráculo era o `build` do protótipo v4, carregado sem DOM. Quando ele saiu da
+ * árvore, o porte batia com ele nos 540 estados, e o resultado ficou congelado na
+ * chave `matrix` dos seis goldens, um hash por estado do SVG e do `viewBox` que a v4
+ * escrevia. O protótipo segue no git, no commit `e282c83`.
  */
 import crypto from "node:crypto";
 import fs from "node:fs";

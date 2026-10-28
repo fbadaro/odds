@@ -6,7 +6,6 @@ date: 2026-09-05
 deciders: Fabio Badaro
 tags: produto, parser, arquitetura
 supersedes: —
-superseded-by: —
 ---
 
 # ADR-0003 — O .odds é fonte única: o diagrama nunca escreve de volta no texto

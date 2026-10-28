@@ -67,7 +67,7 @@ O teste prático, para quem for escrever um code novo: **se o valor mudaria ao t
 | `PHANTOM_REFERENCE` | — | The context `{context}`, referenced in the Context Map, was not declared in any subdomain or in the `external` block. | O contexto `{context}`, referenciado no Context Map, não foi declarado em nenhum subdomínio nem no bloco `external`. |
 | `SELF_RELATIONSHIP` | — | `{context}` cannot be in a relationship with itself. | `{context}` não pode se relacionar consigo mesmo. |
 | `DUPLICATE_RELATIONSHIP` | — | `{left}` and `{right}` are already related on line {firstLine}. A pair of contexts has exactly one relationship — merge the two lines into one. | `{left}` e `{right}` já se relacionam na linha {firstLine}. Um par de contextos tem exatamente uma relação — junte as duas linhas em uma. |
-| `EXTERNAL_ONLY_RELATIONSHIP` | — | `{left}` and `{right}` are both external systems. A context map documents *your* integrations; how two third parties talk to each other is not your decision to record. | `{left}` e `{right}` são ambos sistemas externos. Um context map documenta as *suas* integrações; como dois terceiros conversam entre si não é decisão sua a registrar. |
+| `EXTERNAL_ONLY_RELATIONSHIP` | — | `{left}` and `{right}` are both external contexts. A context map documents *your* integrations; how two third parties talk to each other is not your decision to record. | `{left}` e `{right}` são ambos contextos externos. Um context map documenta as *suas* integrações; como dois terceiros conversam entre si não é decisão sua a registrar. |
 
 ---
 
@@ -143,9 +143,3 @@ Quando a implementação começar, este catálogo deve ser extraído para um `me
 ```
 
 **Comportamento obrigatório em caso de falta:** se um code não tiver template no locale pedido, caia para `en`; se não tiver em `en`, renderize o próprio `code` mais o `data` serializado. Nunca lance exceção e nunca renderize string vazia — uma mensagem faltando é um bug de catálogo, e engolir o diagnóstico inteiro por causa dele esconderia um problema real do modelo do usuário atrás de um problema de tradução.
-
----
-
-## Changelog
-
-Histórico de versões centralizado em [`CHANGELOG.md`](./CHANGELOG.md) (seção `## MESSAGES.md`). Versão atual: **v0.1.3**. Qualquer alteração a este arquivo deve ganhar uma entrada nova lá, não aqui.

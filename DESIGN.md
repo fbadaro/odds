@@ -1,7 +1,7 @@
 ---
 version: alpha
 name: odds-design-system
-description: The visual system of ODDS (Open Domain Driven Specification), a browser-only linter and playground for DDD context maps. A cool, violet-tinted neutral canvas carries a single purple accent for action and selection, an azure counterpoint used only in the purple-to-azure gradient, and a solar yellow that is always surface and never ink. Three type families with fixed jobs — Montserrat for display, Inter for interface and reading, JetBrains Mono for anything that is literal data — and three functional severity colors that never borrow the accent. One system with two densities, a spacious landing page that is read once and a dense playground that is lived in.
+description: The visual system of ODDS (Open Domain Driven Specification), a browser-only linter and playground for DDD context maps. A cool, violet-tinted neutral canvas carries a single purple accent for action and selection, an azure counterpoint used only in the purple-to-azure gradient, and a solar yellow that is always surface and never ink. Two type families with fixed jobs — Inter for interface and reading, JetBrains Mono for anything that is literal data — and three functional severity colors that never borrow the accent. A dense playground that is lived in.
 
 colors:
   canvas: "#FAFAFD"
@@ -48,41 +48,11 @@ colors:
   gen-ink-dark: "#C4C1D6"
 
 typography:
-  display-hero:
-    fontFamily: "Montserrat, Inter, system-ui, sans-serif"
-    fontSize: 62px
-    fontWeight: 800
-    lineHeight: 1.05
-    letterSpacing: -0.04em
-  display-section:
-    fontFamily: "Montserrat, Inter, system-ui, sans-serif"
-    fontSize: 38px
-    fontWeight: 700
-    lineHeight: 1.1
-    letterSpacing: -0.03em
-  title:
-    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
-    fontSize: 20px
-    fontWeight: 600
-    lineHeight: 1.3
-    letterSpacing: -0.01em
-  body-lg:
-    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
-    fontSize: 18px
-    fontWeight: 400
-    lineHeight: 1.65
-    letterSpacing: 0
   body:
     fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
     fontSize: 16px
     fontWeight: 400
     lineHeight: 1.6
-    letterSpacing: 0
-  button:
-    fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
-    fontSize: 16px
-    fontWeight: 600
-    lineHeight: 1.0
     letterSpacing: 0
   ui:
     fontFamily: "Inter, 'Segoe UI', system-ui, sans-serif"
@@ -125,7 +95,6 @@ rounded:
   mark: 3px
   chip: 6px
   control: 8px
-  button: 12px
   card: 10px
   pill: 999px
 
@@ -139,50 +108,28 @@ spacing:
   2xl: 24px
   3xl: 32px
   4xl: 40px
-  5xl: 64px
-  6xl: 96px
 
 elevation:
   shadow-strength: "0.14"
   shadow-strength-dark: "0.5"
   sm: "0 1px 2px rgb(27 27 25 / calc({elevation.shadow-strength} * .4))"
-  card: "0 18px 44px -22px rgb({colors.accent} / calc({elevation.shadow-strength} * 2))"
   cta: "0 10px 30px -8px rgb({colors.accent} / calc({elevation.shadow-strength} * 4))"
   island: "0 2px 10px rgb(27 27 25 / calc({elevation.shadow-strength} * .5))"
-  lift: "0 22px 48px -20px rgb({colors.accent} / calc({elevation.shadow-strength} * 5))"
   gradient-primary: "linear-gradient(180deg, rgb({colors.accent-lift}), rgb({colors.accent}))"
 
 components:
   button-primary:
     backgroundColor: "{colors.accent}"
     textColor: "{colors.on-accent}"
-    typography: "{typography.button}"
-    rounded: "{rounded.button}"
-    padding: 12px 24px
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: 0 12px
   button-primary-gradient:
     backgroundColor: "{colors.accent}"
     textColor: "{colors.on-accent}"
-    typography: "{typography.button}"
-    rounded: "{rounded.button}"
-    padding: 12px 24px
-  button-secondary:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.button}"
-    rounded: "{rounded.button}"
-    padding: 12px 24px
-  card:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.card}"
-    padding: 24px
-  card-large:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    rounded: "{rounded.card}"
-    padding: 32px
+    typography: "{typography.ui}"
+    rounded: "{rounded.control}"
+    padding: 0 12px
   island:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
@@ -230,9 +177,9 @@ ODDS is an architecture tool, and its interface reads like one: a light, cool ca
 
 Color has three jobs and they never overlap. **Purple** (`{colors.accent}`) is action and selection — the primary button, the selected item, the focused control, inline links. **Severity** belongs to three functional colors (`{colors.error}`, `{colors.warning}`, `{colors.info}`), each paired with its own icon. **Solar yellow** (`{colors.solar}`) is surface: a block, a band, the ground a numeral sits on — never text, never a mark. Azure (`{colors.azure}`) exists to close the purple-to-azure gradient and is not used on its own.
 
-Typography separates prose from data. **Montserrat** sets display headlines only. **Inter** sets every word of interface and reading. **JetBrains Mono** sets anything that is literal data: `.odds` source, a `DiagnosticCode`, a span like `L24:5`, a tag like `[OHS]`, a context name quoted in a sentence. The boundary is the same one `MESSAGES.md` keeps between a diagnostic's `data` and its rendered prose, and the screen makes it visible.
+Typography separates prose from data. **Inter** sets every word of interface and reading. **JetBrains Mono** sets anything that is literal data: `.odds` source, a `DiagnosticCode`, a span like `L24:5`, a tag like `[OHS]`, a context name quoted in a sentence. The boundary is the same one `MESSAGES.md` keeps between a diagnostic's `data` and its rendered prose, and the screen makes it visible.
 
-The system runs at two densities. The **landing** is spacious — large display type, cards, comfortable 44px controls. The **playground** is dense — 13px interface type, 30px controls, floating islands over the diagram canvas. Same palette, same families, same radii; only the rhythm changes.
+The **playground** is dense — 13px interface type, 30px controls, floating panels and toolbars over the map.
 
 **Key Characteristics:**
 - Cool, violet-tinted neutrals; the dark theme is the same family inverted, never a separate palette.
@@ -244,52 +191,13 @@ The system runs at two densities. The **landing** is spacious — large display 
 - 1px borders everywhere; emphasis comes from fill, text color or shadow, never from a thicker line.
 - Shadows tint with the accent instead of darkening, with negative spread.
 
-**Scope.** This version covers the landing page and the playground chrome. Diagram rendering — node and edge colors per subdomain type, lit and invalid relationship strokes, and the degraded states required by `PRD.md` §5.2 — is not part of the system yet.
+**Scope.** This version covers the playground chrome. Map rendering — piece and line colors per subdomain type, lit and invalid relationship strokes, and the degraded states required by `PRD.md` §5.2 — is not part of the system yet.
 
 ## Colors
 
 All colors are implemented as CSS custom properties holding **RGB triplets**, consumed with `rgb(var(--token) / <alpha>)`. This lets any token take an opacity without defining a second color.
 
-The block below, and the `CSS --c-…` names in the lists that follow, are the bench's names (`docs/design/pages/`); the app's `tokens.css` is generated from the front matter and uses the front-matter names instead (`--c-canvas`, `--c-surface`, `--c-surface-muted`, `--c-hairline`, `--c-ink-mute`…) — the values bind, the names are free (ADR-0014, ADR-0018).
-
-```css
-:root {
-  color-scheme: light;
-  --c-bg: 250 250 253;       /* canvas */
-  --c-panel: 255 255 255;    /* surface */
-  --c-panel2: 244 243 250;   /* surface-muted */
-  --c-border: 230 228 242;   /* hairline */
-  --c-ink: 27 26 36;         /* ink */
-  --c-dim: 107 104 128;      /* ink-mute */
-  --c-accent: 108 64 217;    /* accent */
-  --c-accent-lift: 138 91 240;
-  --c-azure: 61 111 232;
-  --c-pulse: 35 168 205;
-  --c-solar: 255 197 61;
-  --c-error: 192 52 43;
-  --c-warning: 166 106 0;
-  --c-info: 91 107 124;
-  --shadow-strength: .14;
-}
-[data-theme="dark"] {
-  color-scheme: dark;
-  --c-bg: 18 17 26;
-  --c-panel: 26 25 38;
-  --c-panel2: 35 33 47;
-  --c-border: 50 47 69;
-  --c-ink: 236 235 245;
-  --c-dim: 154 151 174;
-  --c-accent: 173 141 255;
-  --c-accent-lift: 198 176 255;
-  --c-azure: 125 163 255;
-  --c-pulse: 94 208 238;
-  --c-solar: 255 209 99;
-  --c-error: 224 121 111;
-  --c-warning: 217 164 65;
-  --c-info: 147 163 179;
-  --shadow-strength: .5;
-}
-```
+The CSS names are the front-matter names with a `--c-` prefix, generated into the app's `tokens.css` (ADR-0018).
 
 ### Brand & Accent
 - **Accent** (`{colors.accent}` — `#6C40D9`, CSS `--c-accent`): Action and selection. Primary button fill, selected state, focus ring, inline links.
@@ -299,14 +207,14 @@ The block below, and the `CSS --c-…` names in the lists that follow, are the b
 - **Solar** (`{colors.solar}` — `#FFC53D`, CSS `--c-solar`): Third brand color. Surface only — blocks, bands, numeral grounds.
 
 ### Surface
-- **Canvas** (`{colors.canvas}` — `#FAFAFD`, CSS `--c-bg`): Page background.
-- **Surface** (`{colors.surface}` — `#FFFFFF`, CSS `--c-panel`): Cards, islands, panels.
-- **Surface Muted** (`{colors.surface-muted}` — `#F4F3FA`, CSS `--c-panel2`): Bands, rails, panel headers, inactive states.
-- **Hairline** (`{colors.hairline}` — `#E6E4F2`, CSS `--c-border`): Every border in the system, always 1px.
+- **Canvas** (`{colors.canvas}` — `#FAFAFD`, CSS `--c-canvas`): Page and map background.
+- **Surface** (`{colors.surface}` — `#FFFFFF`, CSS `--c-surface`): Panels and toolbars.
+- **Surface Muted** (`{colors.surface-muted}` — `#F4F3FA`, CSS `--c-surface-muted`): Bands, rails, panel headers, inactive states.
+- **Hairline** (`{colors.hairline}` — `#E6E4F2`, CSS `--c-hairline`): Every border in the system, always 1px.
 
 ### Text
 - **Ink** (`{colors.ink}` — `#1B1A24`, CSS `--c-ink`): Primary text; also the text color on solar surfaces.
-- **Ink Mute** (`{colors.ink-mute}` — `#6B6880`, CSS `--c-dim`): Secondary text, eyebrows, metadata, spans.
+- **Ink Mute** (`{colors.ink-mute}` — `#6B6880`, CSS `--c-ink-mute`): Secondary text, eyebrows, metadata, spans.
 - **On Accent** (`{colors.on-accent}` — `#FFFFFF`; dark `{colors.on-accent-dark}` — `#12111A`): Text on the primary button. The accent lightens in the dark theme, so white on it stops reading; the dark value is the dark canvas.
 
 - **Map line** (`{colors.edge}` — `#807D92`, CSS `--c-edge`; lit `{colors.edge-lit}` — `#343242`, `--c-edge-lit`; far `{colors.edge-far}` — `#CCCAD8`, `--c-edge-far`): The relationship line of the context map at rest, lit when hovered or selected, and seen from afar (zoomed out). Neutral, never the accent; the dark values are in `{colors.edge-dark}`, `{colors.edge-lit-dark}` and `{colors.edge-far-dark}`.
@@ -332,11 +240,10 @@ Every token has a dark counterpart (`{colors.canvas-dark}`, `{colors.accent-dark
 
 | Role | Family | Job |
 |---|---|---|
-| Display | **Montserrat** | Hero headline and large section openers. Nothing else |
 | Sans | **Inter** | All interface and reading text: body, buttons, labels, panels |
 | Mono | **JetBrains Mono** | `.odds` editor, `DiagnosticCode`, spans, tags, pills, eyebrows — anything that is data |
 
-All three are open-source and loaded from Google Fonts. Fallback stacks are part of the token: `Montserrat, Inter, system-ui, sans-serif` · `Inter, 'Segoe UI', system-ui, sans-serif` · `'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace`.
+Both are open-source and loaded from Google Fonts. Fallback stacks are part of the token: `Inter, 'Segoe UI', system-ui, sans-serif` · `'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace`.
 
 In the editor, disable ligatures (`font-variant-ligatures: none`): JetBrains Mono draws `<--` as a single arrow, and a DSL editor must show exactly what was typed.
 
@@ -344,12 +251,7 @@ In the editor, disable ligatures (`font-variant-ligatures: none`): JetBrains Mon
 
 | Token | Size | Weight | Line Height | Letter Spacing | Use |
 |---|---|---|---|---|---|
-| `{typography.display-hero}` | 62px (42px < 640px) | 800 | 1.05 | -0.04em | Hero headline, once per page |
-| `{typography.display-section}` | 38px (30px < 640px) | 700 | 1.1 | -0.03em | Section opener |
-| `{typography.title}` | 20px | 600 | 1.3 | -0.01em | Card title |
-| `{typography.body-lg}` | 18px | 400 | 1.65 | 0 | Hero subtitle, lead paragraph |
-| `{typography.body}` | 16px | 400 | 1.6 | 0 | Running text |
-| `{typography.button}` | 16px | 600 | 1.0 | 0 | Landing button label |
+| `{typography.body}` | 16px | 400 | 1.6 | 0 | Running text (help, long-form prose) |
 | `{typography.ui}` | 13px | 400 / 500 | 1.4 | 0 | Dense interface: buttons, labels, playground lists |
 | `{typography.ui-sm}` | 12px | 400 / 500 | 1.35 | 0 | Metadata, counters |
 | `{typography.code}` | 13px | 400 | 20px | 0 | Editor and `.odds` excerpts |
@@ -359,56 +261,44 @@ In the editor, disable ligatures (`font-variant-ligatures: none`): JetBrains Mon
 
 ### Principles
 - **Mono is data, sans is prose.** A `DiagnosticCode`, a quoted context name, a span, a tag: mono. A sentence about them: sans.
-- **Display is Montserrat, and only display.** Never set interface or body text in Montserrat.
-- **Five weights, each with a place.** 400 and 500 for text and interface, 600 for titles and buttons, 700 for section display, 800 only for the hero headline.
-- **Tight tracking on display.** Montserrat is wide and geometric; -0.04em at hero size and -0.03em at section size keep headlines dense.
+- **Three weights, each with a place.** 400 and 500 for text and interface, 600 for titles.
 
 ## Layout
 
 ### Spacing System
 - **Base unit**: 4px.
-- **Tokens**: `{spacing.xxs}` 4px · `{spacing.xs}` 6px · `{spacing.sm}` 8px · `{spacing.md}` 12px · `{spacing.lg}` 16px · `{spacing.xl}` 20px · `{spacing.2xl}` 24px · `{spacing.3xl}` 32px · `{spacing.4xl}` 40px · `{spacing.5xl}` 64px · `{spacing.6xl}` 96px.
+- **Tokens**: `{spacing.xxs}` 4px · `{spacing.xs}` 6px · `{spacing.sm}` 8px · `{spacing.md}` 12px · `{spacing.lg}` 16px · `{spacing.xl}` 20px · `{spacing.2xl}` 24px · `{spacing.3xl}` 32px · `{spacing.4xl}` 40px.
 
-### Densities
+### Density
 
-| Context | Landing (spacious) | Playground (dense) |
-|---|---|---|
-| Control height | 44px | 30px |
-| Interface type | `{typography.body}` | `{typography.ui}` |
-| Section padding | 96px vertical (64px < 640px) | — |
-| Card padding | 24px, 32px on large cards | — |
-| Panel header | — | 36px |
-| List row (diagnostics) | — | 34px |
-| Inline gap (pill, row) | 8px | 8px |
+| Element | Size |
+|---|---|
+| Control height | 30px |
+| Interface type | `{typography.ui}` |
+| Panel header | 36px |
+| List row (diagnostics) | 34px |
+| Inline gap (pill, row) | 8px |
 
-### Grid & Container
-- Landing content centers in a **1152px** container with a **24px** gutter.
-- The playground is full-viewport: the diagram canvas fills the screen and the chrome floats over it as islands.
-
-### Whitespace Philosophy
-The landing is read once, so it breathes: 96px between sections, one idea per band. The playground is lived in, so it packs: dense type and short controls, with air concentrated around the diagram rather than inside the chrome.
+### Container
+The playground is full-viewport: the map fills the screen and the chrome floats over it as panels and toolbars, with air concentrated around the map rather than inside the chrome.
 
 ## Elevation & Depth
 
 Shadows **tint, they don't darken**: the color comes from the accent and the spread is negative, so the shadow is smaller than the element and suggests height without dirtying the edge. A single variable per theme, `--shadow-strength`, scales every shadow — a tinted shadow that works in light mode disappears in dark mode, and one number fixes both.
 
-The five shadows live in the front matter's `elevation` group — `{elevation.sm}`, `{elevation.card}`, `{elevation.cta}`, `{elevation.island}` and `{elevation.lift}` — as CSS `--sh-sm`, `--sh-card`, `--sh-cta`, `--sh-island` and `--sh-lift`. Each is built from `{elevation.shadow-strength}` (`0.14` in light, `0.5` in dark, via `shadow-strength-dark`) and, when tinted, from `{colors.accent}`. The values are defined once, there; this section says what they are for.
+The three shadows live in the front matter's `elevation` group — `{elevation.sm}`, `{elevation.cta}` and `{elevation.island}` — as CSS `--sh-sm`, `--sh-cta` and `--sh-island`. Each is built from `{elevation.shadow-strength}` (`0.14` in light, `0.5` in dark, via `shadow-strength-dark`) and, when tinted, from `{colors.accent}`. The values are defined once, there; this section says what they are for.
 
 | Level | Token | Use |
 |---|---|---|
 | 0 | Flat, 1px `{colors.hairline}` border | Default surface |
-| 1 | `--sh-sm` | Resting controls, pills, secondary button |
-| 2 | `--sh-card` | Cards |
-| 3 | `--sh-cta` | Primary button |
-| 4 | `--sh-island` | Playground islands floating over the canvas |
-| state | `--sh-lift` | Card hover (landing only) |
+| 1 | `--sh-sm` | Resting controls, pills |
+| 2 | `--sh-cta` | Primary button |
+| 3 | `--sh-island` | Panels and toolbars floating over the map |
 
 Shadows never take a functional color: an element with an error gets a marker, not a red shadow.
 
 ### Decorative Depth
-- **Grid backdrop.** The landing uses a 28px line grid at `rgb(var(--c-accent) / .07)` behind the hero and canvas; the playground uses a 22px **dot** grid. Lines are atmosphere; dots are a position reference.
-- **Blurred blobs.** Behind the landing hero, final CTA and section edges: four or five large circular blobs, `filter: blur(64px)`, 22–34rem in diameter, opacity 0.28–0.50, in pale violet, pale azure and pale cyan (at most one blob outside that family). They drift on a 16s `ease-in-out` loop with a different **negative** delay each, so they never pulse in unison.
-- **Perspective drafting board.** A line grid receding to the horizon behind the hero and the final CTA, built without images: two 1px `linear-gradient`s, `transform: perspective(600px) rotateX(62deg)`, and a `mask-image` that dissolves it before the horizon. Lines at ~8% of the accent.
+- **Dot grid.** The map's background is a 22px **dot** grid, a position reference behind the map.
 
 ## Shapes
 
@@ -416,11 +306,10 @@ Shadows never take a functional color: an element with an error gets a marker, n
 
 | Token | Value | Use |
 |---|---|---|
-| `{rounded.mark}` | 3px | Canvas markers |
+| `{rounded.mark}` | 3px | Map markers |
 | `{rounded.chip}` | 6px | Code chip, tag chip `[OHS]` |
-| `{rounded.control}` | 8px | Dense controls: segmented control, icon button, rail squares |
-| `{rounded.button}` | 12px | Buttons and tall fields |
-| `{rounded.card}` | 10px | Cards, large panels, playground islands |
+| `{rounded.control}` | 8px | Buttons and dense controls: segmented control, icon button, rail squares |
+| `{rounded.card}` | 10px | Panels and toolbars |
 | `{rounded.pill}` | 999px | Pills, severity counters, badges |
 
 ### Borders
@@ -430,28 +319,20 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 
 ### Buttons
 
-**`button-primary`** — the main call to action.
-- Solid `{colors.accent}`, text `{colors.on-accent}` in `{typography.button}`, padding 12px 24px, rounded `{rounded.button}`, shadow `--sh-cta`.
+**`button-primary`** — the main action of a toolbar (Share).
+- Solid `{colors.accent}`, text `{colors.on-accent}` in `{typography.ui}` at weight 500, 30px tall, padding 0 12px, rounded `{rounded.control}`, shadow `--sh-cta`.
 - Hover: `filter: brightness(1.08)`.
 
-**`button-primary-gradient`** — the same button, opted into the gradient (CSS: `.primary.gradient`).
+**`button-primary-gradient`** — the same button, opted into the gradient.
 - Replaces only the background: the vertical gradient `{elevation.gradient-primary}` (CSS `--grad-primary`), `{colors.accent-lift}` → `{colors.accent}`. The stops are tokens, so each theme draws its own gradient. Counts toward the gradient's twice-per-screen limit; everything else is `button-primary`.
-
-**`button-secondary`** — the alternative action.
-- Background `{colors.surface}`, 1px `{colors.hairline}` border, text `{colors.ink}` in `{typography.button}`, same geometry, shadow `--sh-sm`.
-- Hover: border becomes `rgb(var(--c-accent) / .5)`.
 
 **`control`** — dense playground controls (segmented control, icon button, rail square).
 - `{typography.ui}`, rounded `{rounded.control}`, 30px tall. The selected state uses the accent.
 
-### Cards & Containers
+### Containers
 
-**`card`** — the landing's content container.
-- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, padding 24px (`card-large`: 32px), shadow `--sh-card`.
-- Hover (landing only): shadow `--sh-lift` and a 4px rise.
-
-**`island`** — the playground's floating chrome: identity, view switch, actions, zoom, panels, diagnostics.
-- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, shadow `--sh-island`. Islands float over the canvas with a margin; none is docked to the viewport edge.
+**`island`** — the surface every panel and toolbar floats on: identity, view switch, actions, zoom, panels, diagnostics. The component keeps this name until the code follows `GLOSSARY.md`, where an island is the drawn domain.
+- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, shadow `--sh-island`. Panels and toolbars float over the map with a margin; none is docked to the viewport edge.
 
 **`solar-block`** — the yellow surface.
 - Background `{colors.solar}`, text `{colors.ink}`. A band, a block, the ground of a numeral. Content that carries a severity marker sits on a white surface placed in front of the block, never on the yellow itself.
@@ -461,7 +342,7 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 **`pill-mono`** — the most repeated element of the system.
 - Background `{colors.surface}`, 1px `{colors.hairline}` border, text `{colors.ink-mute}` in `{typography.mono-sm}`, padding 6px 14px, rounded `{rounded.pill}`, shadow `--sh-sm`, 8px gap when it carries an icon or status dot.
 
-**`eyebrow`** — section label on the landing, panel name in the playground.
+**`eyebrow`** — panel name in the playground.
 - `{typography.eyebrow}` (mono 11px, uppercase, 0.22em tracking) in `{colors.ink-mute}`.
 
 **`code-chip`** — the literal `DiagnosticCode`.
@@ -475,13 +356,7 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 
 ### Motion
 
-Two animations and no ornament:
-- **Rise** — hero entrance: 8px translate + opacity, 0.7s, `cubic-bezier(.2,.7,.2,1)`, staggered 80ms per element.
-- **Lift** — card hover on the landing (`--sh-lift` + 4px rise).
-
-The playground animates only what is functional: opening and closing a panel, 180ms.
-
-Everything stops under `prefers-reduced-motion: reduce`, including blob drift (the blobs remain, still).
+The playground animates only what is functional: opening and closing a panel, 180ms, and the map's own transitions. Everything stops under `prefers-reduced-motion: reduce`.
 
 ## Do's and Don'ts
 
@@ -499,36 +374,23 @@ Everything stops under `prefers-reduced-motion: reduce`, including blob drift (t
 ### Don't
 - Don't use the accent to communicate severity — a purple button inside an error row is still a button.
 - Don't let severity depend on color alone; exports in grayscale and color-blind readers are real, and the export carries the markers.
-- Don't use the gradient more than twice per screen (a `button-primary-gradient`, one hero expression), and never across reading text.
+- Don't use the gradient more than twice per screen, and never across reading text.
 - Don't use `{colors.solar}` as text, highlight, underline, or behind small text — and never at chip scale next to a diagnostic, where it reads as a warning.
 - Don't add 2px borders; emphasize with fill, text color or shadow.
 - Don't give shadows a functional color.
-- Don't place blobs behind small text.
 - Don't use warm neutrals next to the violet accent.
-- Don't set interface text in Montserrat.
 
 ## Responsive Behavior
 
-### Breakpoints
-
-| Name | Width | Key Changes |
-|---|---|---|
-| Desktop | ≥ 640px | Hero 62px, section display 38px, section padding 96px |
-| Mobile | < 640px | Hero 42px, section display 30px, section padding 64px |
-
-### Touch Targets
-- Minimum touch target is **44px**. Landing controls are 44px tall.
-
-### Collapsing Strategy
-- Display type and section padding step down at 640px (see Breakpoints).
-- In the playground, islands keep their margin from the viewport edge at every width.
+- Minimum touch target is **44px**.
+- Panels and toolbars keep their margin from the viewport edge at every width.
 
 ## Iteration Guide
 
 1. Change one component at a time.
 2. Reference tokens by name (`{colors.accent}`, `{rounded.card}`, `{typography.ui}`), never by raw value.
 3. Add a token to the front matter before using it in a page; a value that exists only in a stylesheet is not part of the system.
-4. Add variants as separate entries (`card-large`, `severity-counter-warning`).
-5. Default interface text to `{typography.ui}` in the playground and `{typography.body}` on the landing.
+4. Add variants as separate entries (`severity-counter-warning`).
+5. Default interface text to `{typography.ui}`.
 6. Check every change in both themes.
-7. When a page and this file disagree, the page is wrong.
+7. When the app and this file disagree, the app is wrong.

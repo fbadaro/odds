@@ -2,11 +2,11 @@ import type { Box, Point } from "../../../lib/selection";
 import { camFor, clampCam, ease, fitCam, frameOf, isFar, pan, safeArea, zoomAt, zoomPercent, type RectLike, type Viewport } from "./camera";
 
 export interface CameraController {
-  /** Um SVG novo no mapa (o `paint` da bancada); `animate` é o FLIP do `relayout`. */
+  /** Um SVG novo no mapa; `animate` é o FLIP do `relayout`. */
   setDrawing(svg: SVGSVGElement, fit: Box, animate: boolean): void;
-  /** O `frameTo` da bancada: enquadra os pontos na área livre, em 420 ms. */
+  /** Enquadra os pontos na área livre, em 420 ms. */
   frame(pts: Point[]): void;
-  /** O `toFit` da bancada: o mapa inteiro, e a câmera volta a ser automática. */
+  /** O mapa inteiro, e a câmera volta a ser automática. */
   fit(): void;
   /** Zoom no centro da área livre. */
   zoomMid(f: number): void;
@@ -27,8 +27,7 @@ export interface CameraOptions {
 }
 
 /**
- * A câmera da bancada (`apply`, `go`, `frameTo`, `toFit`, `safeChanged` e o
- * `ResizeObserver`): só o `viewBox` muda, e `camAuto` quer dizer "quem navega ainda não
+ * A câmera (`apply`, `go`, `frameTo`, `toFit`, `safeChanged` e o `ResizeObserver`): só o `viewBox` muda, e `camAuto` quer dizer "quem navega ainda não
  * mexeu". Todo enquadramento mira a área livre que trilho, painel e inspetor deixam.
  * Fica fora do store: só a porcentagem de zoom é publicada.
  */

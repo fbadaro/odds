@@ -1,8 +1,7 @@
 /**
- * Os adaptadores da bancada como API do pacote: o texto `.odds` de cada
+ * Os adaptadores como API do pacote: o texto `.odds` de cada fixture
  * test/golden/bench-*.json, passado por parseAndValidate, tem de dar o mesmo modelo,
- * as mesmas chaves de topologia, os mesmos alvos e, byte a byte, o SVG que a bancada
- * exibia (`decorate(build(...))`).
+ * as mesmas chaves de topologia, os mesmos alvos e, byte a byte, o mesmo SVG.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -30,8 +29,8 @@ function targeted(text: string) {
   return { ast: r.ast!, diags };
 }
 
-describe("adaptadores × golden da bancada", () => {
-  it("há três goldens da bancada", () => {
+describe("adaptadores × fixtures bench-*", () => {
+  it("há três fixtures", () => {
     expect(benches.length).toBe(3);
   });
   for (const file of benches) {

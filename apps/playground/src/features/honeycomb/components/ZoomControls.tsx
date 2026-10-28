@@ -4,7 +4,7 @@ import { Tooltip } from "../../../components/ui/Tooltip";
 import { usePlayground } from "../../../stores/playground";
 import styles from "./ZoomControls.module.css";
 
-/** A ilha de zoom da bancada (.i-zoom): afastar, a porcentagem, aproximar e o mapa inteiro. */
+/** A ilha de zoom: afastar, a porcentagem, aproximar e o mapa inteiro. */
 export function ZoomControls() {
   const zoomPct = usePlayground((s) => s.zoomPct);
   const commandCamera = usePlayground((s) => s.commandCamera);

@@ -40,26 +40,13 @@ build/
 
 # References
 REFERENCES.md
-# Bytecode Python (o health_check.py roda direto da skill)
+# Bytecode Python (scripts/check_spec.py e os scripts das skills)
 __pycache__/
 *.py[cod]
 
 # Vitest
 .vitest-cache/
 *.tsbuildinfo
-
-# Design: duas árvores, e a diferença decide o que sobrevive ao commit.
-#
-#   docs/design/canvas/  — seeds do editor de canvas. Os .dc.html e o canvas.json
-#                          são a fonte e ficam versionados; o odds-*.html de cada
-#                          pasta é o bundle montado a partir deles, regenerável,
-#                          e por isso ignorado.
-#   docs/design/pages/   — páginas autônomas escritas à mão (com <script>), que
-#                          NÃO são geradas por nada. Ficam fora de canvas/ de
-#                          propósito: aqui a regra abaixo não alcança, e elas
-#                          são versionadas normalmente.
-docs/design/canvas/**/*.html
-!docs/design/canvas/**/*.dc.html
 
 # Design systems de referência (ex.: stripe-DESIGN.md) ficam só na máquina. O único
 # DESIGN.md versionado é o da raiz, a fonte única do sistema visual (ADR-0013).

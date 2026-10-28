@@ -1,4 +1,4 @@
-/* bancada: o corpo do painel de código não rola; quem rola é o textarea */
+/* o corpo do painel de código não rola; quem rola é o textarea */
 .body {
   overflow: hidden;
 }
