@@ -16,6 +16,7 @@
     "check:spec": "python3 scripts/check_spec.py",
     "generate:messages": "node packages/messages/scripts/extract-messages.mjs",
     "generate:tokens": "node apps/playground/scripts/generate-tokens.mjs",
+    "generate:map": "vitest run apps/playground/test/selfMapSvg.test.ts --update",
     "dev": "npm run dev -w @odds/playground --",
     "build:app": "npm run build -w @odds/playground --",
     "lint": "npm run lint -w @odds/playground --"
