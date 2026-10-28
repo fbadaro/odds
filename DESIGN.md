@@ -179,7 +179,7 @@ Color has three jobs and they never overlap. **Purple** (`{colors.accent}`) is a
 
 Typography separates prose from data. **Inter** sets every word of interface and reading. **JetBrains Mono** sets anything that is literal data: `.odds` source, a `DiagnosticCode`, a span like `L24:5`, a tag like `[OHS]`, a context name quoted in a sentence. The boundary is the same one `MESSAGES.md` keeps between a diagnostic's `data` and its rendered prose, and the screen makes it visible.
 
-The **playground** is dense — 13px interface type, 30px controls, floating islands over the diagram canvas.
+The **playground** is dense — 13px interface type, 30px controls, floating panels and toolbars over the map.
 
 **Key Characteristics:**
 - Cool, violet-tinted neutrals; the dark theme is the same family inverted, never a separate palette.
@@ -191,7 +191,7 @@ The **playground** is dense — 13px interface type, 30px controls, floating isl
 - 1px borders everywhere; emphasis comes from fill, text color or shadow, never from a thicker line.
 - Shadows tint with the accent instead of darkening, with negative spread.
 
-**Scope.** This version covers the playground chrome. Diagram rendering — node and edge colors per subdomain type, lit and invalid relationship strokes, and the degraded states required by `PRD.md` §5.2 — is not part of the system yet.
+**Scope.** This version covers the playground chrome. Map rendering — piece and line colors per subdomain type, lit and invalid relationship strokes, and the degraded states required by `PRD.md` §5.2 — is not part of the system yet.
 
 ## Colors
 
@@ -207,8 +207,8 @@ The CSS names are the front-matter names with a `--c-` prefix, generated into th
 - **Solar** (`{colors.solar}` — `#FFC53D`, CSS `--c-solar`): Third brand color. Surface only — blocks, bands, numeral grounds.
 
 ### Surface
-- **Canvas** (`{colors.canvas}` — `#FAFAFD`, CSS `--c-canvas`): Page and diagram background.
-- **Surface** (`{colors.surface}` — `#FFFFFF`, CSS `--c-surface`): Islands and panels.
+- **Canvas** (`{colors.canvas}` — `#FAFAFD`, CSS `--c-canvas`): Page and map background.
+- **Surface** (`{colors.surface}` — `#FFFFFF`, CSS `--c-surface`): Panels and toolbars.
 - **Surface Muted** (`{colors.surface-muted}` — `#F4F3FA`, CSS `--c-surface-muted`): Bands, rails, panel headers, inactive states.
 - **Hairline** (`{colors.hairline}` — `#E6E4F2`, CSS `--c-hairline`): Every border in the system, always 1px.
 
@@ -280,7 +280,7 @@ In the editor, disable ligatures (`font-variant-ligatures: none`): JetBrains Mon
 | Inline gap (pill, row) | 8px |
 
 ### Container
-The playground is full-viewport: the diagram canvas fills the screen and the chrome floats over it as islands, with air concentrated around the diagram rather than inside the chrome.
+The playground is full-viewport: the map fills the screen and the chrome floats over it as panels and toolbars, with air concentrated around the map rather than inside the chrome.
 
 ## Elevation & Depth
 
@@ -293,12 +293,12 @@ The three shadows live in the front matter's `elevation` group — `{elevation.s
 | 0 | Flat, 1px `{colors.hairline}` border | Default surface |
 | 1 | `--sh-sm` | Resting controls, pills |
 | 2 | `--sh-cta` | Primary button |
-| 3 | `--sh-island` | Playground islands floating over the canvas |
+| 3 | `--sh-island` | Panels and toolbars floating over the map |
 
 Shadows never take a functional color: an element with an error gets a marker, not a red shadow.
 
 ### Decorative Depth
-- **Dot grid.** The playground canvas uses a 22px **dot** grid, a position reference behind the diagram.
+- **Dot grid.** The map's background is a 22px **dot** grid, a position reference behind the map.
 
 ## Shapes
 
@@ -306,10 +306,10 @@ Shadows never take a functional color: an element with an error gets a marker, n
 
 | Token | Value | Use |
 |---|---|---|
-| `{rounded.mark}` | 3px | Canvas markers |
+| `{rounded.mark}` | 3px | Map markers |
 | `{rounded.chip}` | 6px | Code chip, tag chip `[OHS]` |
 | `{rounded.control}` | 8px | Buttons and dense controls: segmented control, icon button, rail squares |
-| `{rounded.card}` | 10px | Panels and playground islands |
+| `{rounded.card}` | 10px | Panels and toolbars |
 | `{rounded.pill}` | 999px | Pills, severity counters, badges |
 
 ### Borders
@@ -319,7 +319,7 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 
 ### Buttons
 
-**`button-primary`** — the main action of an island (Share).
+**`button-primary`** — the main action of a toolbar (Share).
 - Solid `{colors.accent}`, text `{colors.on-accent}` in `{typography.ui}` at weight 500, 30px tall, padding 0 12px, rounded `{rounded.control}`, shadow `--sh-cta`.
 - Hover: `filter: brightness(1.08)`.
 
@@ -331,8 +331,8 @@ Every border is **1px** and `{colors.hairline}`. There is no 2px border in the s
 
 ### Containers
 
-**`island`** — the playground's floating chrome: identity, view switch, actions, zoom, panels, diagnostics.
-- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, shadow `--sh-island`. Islands float over the canvas with a margin; none is docked to the viewport edge.
+**`island`** — the surface every panel and toolbar floats on: identity, view switch, actions, zoom, panels, diagnostics. The component keeps this name until the code follows `GLOSSARY.md`, where an island is the drawn domain.
+- Background `{colors.surface}`, 1px `{colors.hairline}` border, rounded `{rounded.card}`, shadow `--sh-island`. Panels and toolbars float over the map with a margin; none is docked to the viewport edge.
 
 **`solar-block`** — the yellow surface.
 - Background `{colors.solar}`, text `{colors.ink}`. A band, a block, the ground of a numeral. Content that carries a severity marker sits on a white surface placed in front of the block, never on the yellow itself.
@@ -383,7 +383,7 @@ The playground animates only what is functional: opening and closing a panel, 18
 ## Responsive Behavior
 
 - Minimum touch target is **44px**.
-- Islands keep their margin from the viewport edge at every width.
+- Panels and toolbars keep their margin from the viewport edge at every width.
 
 ## Iteration Guide
 

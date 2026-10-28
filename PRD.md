@@ -13,7 +13,7 @@ The project is an open-source initiative designed to simplify, standardize, and 
 
 By rendering these declarations dynamically into graphical representations, the project bridges the gap between technical architecture and visual documentation. This eliminates the obsolescence of static, manually maintained visual diagrams (such as those in Miro or Lucidchart) by keeping them version-controlled and coupled with the codebase.
 
-The primary web application (the playground) serves as an interactive environment where users can write ODDS declarations, receive instant feedback, view graphical diagrams dynamically, and share their designs using shareable links.
+The primary web application (the playground) serves as an interactive environment where users can write ODDS declarations, receive instant feedback, watch the map redraw as they type, and share their designs using shareable links.
 
 ## 2. Goals
 
@@ -79,7 +79,7 @@ The language follows a strict hierarchical taxonomy:
 - **Domain**: Delimits the complete enterprise ecosystem or the business area under analysis.
 - **Subdomain**: Divisions of the domain based on business importance, categorized as core, supporting, or generic.
 - **Context (Bounded Context)**: Conceptual and technical boundary where the domain model and ubiquitous language are strictly applied.
-- **External system**: A third-party system the user does not control (a payment provider, another company's ERP, a legacy platform), declared in a dedicated `external { }` block. It is a first-class citizen of the language precisely so that the user is never forced to lie that someone else's system is a context of one of *their* subdomains — which used to be the only way to draw it, and which made the linter fire unactionable warnings about an API the user cannot change. External contexts belong to no subdomain and never receive a `core`/`supporting`/`generic` classification: that vocabulary rates the strategic importance of a part of *your* business.
+- **External context**: A third-party system the user does not control (a payment provider, another company's ERP, a legacy platform), declared in a dedicated `external { }` block. It is a first-class citizen of the language precisely so that the user is never forced to lie that someone else's system is a context of one of *their* subdomains — which used to be the only way to draw it, and which made the linter fire unactionable warnings about an API the user cannot change. External contexts belong to no subdomain and never receive a `core`/`supporting`/`generic` classification: that vocabulary rates the strategic importance of a part of *your* business.
 
 Two limitations of this taxonomy are deliberate, and are documented as such in `RULES-EN.md` §0.5 rather than left implicit: a Bounded Context belongs to exactly one Subdomain (real DDD relates them n:m), and a file describes exactly one Domain (maps spanning several domains are out of scope).
 
@@ -139,7 +139,7 @@ The parser and visualizer must support directional connectors representing the t
 | `<->` | Mutually Dependent | Strong delivery interdependence. If one team fails or shifts timeline, the other is immediately impacted. This is the only way to express Mutual Dependency in ODDS — there is no separate tag for it. |
 | `-x-` | Free / Separate Ways | Complete autonomy of operation. No organizational or technical link, and no alignment of timelines or daily impact between the two contexts. This connector **also carries the Separate Ways pattern**, which has no tag of its own — see the note in section 4.5. |
 
-### 4.4. Diagram views and their expressive power
+### 4.4. Map views and their expressive power
 
 The playground must offer two views, which answer different questions and are therefore **deliberately not equivalent in what they can express**. Both are modes of a single honeycomb map (`ADR-0009`, `ADR-0011`): each context is a hexagonal piece, each subdomain is a territory of pieces, and the territories of one subdomain type form one landmass. The two views share that geography, so **switching views moves no piece**, and the reader's mental map survives the switch.
 
@@ -150,7 +150,7 @@ The playground must offer two views, which answer different questions and are th
 
 Two consequences are intentional and must not be "fixed" by a later implementation:
 
-- **`[BBM]` appears only in the flow view.** It is an annotation *of a relationship*, and the containment view has no edges. Deriving a node marker from it (marking any context that carries `[BBM]` on *some* relationship) was considered and rejected: the model is not guaranteed to be consistent on this point — there is a dedicated rule, `INCONSISTENT_BBM`, precisely because it may not be — so the derived marker would make the drawing assert more than the text does. Integration risk is, by definition, a question for the flow view.
+- **`[BBM]` appears only in the flow view.** It is an annotation *of a relationship*, and the containment view has no lines. Deriving a piece marker from it (marking any context that carries `[BBM]` on *some* relationship) was considered and rejected: the model is not guaranteed to be consistent on this point — there is a dedicated rule, `INCONSISTENT_BBM`, precisely because it may not be — so the derived marker would make the drawing assert more than the text does. Integration risk is, by definition, a question for the flow view.
 - **The containment view draws `external` outside the domain's territories**, as a landmass of its own with a dashed outline, even though the syntax nests it inside the domain. The nesting is a syntactic compromise; the view has none of the constraints that forced it, so drawing it outside costs nothing and cancels the contradiction in the one place a user would ever perceive it.
 
 ### 4.5. Context map patterns (Integration contracts)
@@ -182,14 +182,14 @@ The parser and visualizer must support tags in brackets describing technical con
 
 The system must validate the architecture and identify issues at **three severity levels**. `RULES-EN.md` (with `RULES-PT.md` as its parallel translation) is the authoritative source for every trigger and severity; the summary below is what the product commits to surfacing.
 
-**Errors — the model is incoherent.** They do **not** prevent visualization (see 5.2): the diagram degrades per element instead of disappearing. They are never suppressible.
+**Errors — the model is incoherent.** They do **not** prevent visualization (see 5.2): the map degrades per element instead of disappearing. They are never suppressible.
   - Orphan Context / Orphan Subdomain: declaring a context outside a subdomain (or outside the `external` block), or a subdomain outside a domain.
   - Invalid Domain Cardinality: a file that declares zero domains, or more than one.
   - Phantom Reference: a relationship involving a context not declared anywhere in the file.
   - Duplicate Context / Duplicate Subdomain: the same name declared twice. Internal and external contexts share one namespace.
   - Invalid Subdomain Type: classifiers other than core, supporting or generic.
   - Self Relationship: a context related to itself.
-  - Duplicate Relationship: a second line for a pair of contexts that are already related — whether it repeats, contradicts, or splits tags across lines. One pair, one relationship, one edge.
+  - Duplicate Relationship: a second line for a pair of contexts that are already related — whether it repeats, contradicts, or splits tags across lines. One pair, one relationship, one line.
   - External-only Relationship: both sides are third-party systems. A context map documents *your* integrations.
   - Misplaced Tags: an Upstream-only tag (OHS, PL, S) on the Downstream side, or vice-versa.
   - Tag/connector mismatch: a mutual tag (SK, P) on a directional connector, or a position-dependent tag on `<->`.
@@ -231,7 +231,7 @@ The system will expand in a future iteration to support tactical modeling struct
 ### 5.1 Entry points & first-time user flow
 
 - The user accesses the playground web app via the browser.
-- A default pre-populated template is loaded into the editor, rendering the diagram instantly.
+- A default pre-populated template is loaded into the editor, drawing the map instantly.
 - The UI guides the user on how to edit the DSL and see updates in real time.
 
 ### 5.2 Core experience
@@ -243,16 +243,16 @@ The system will expand in a future iteration to support tactical modeling struct
 - **Inspecting an element**: The selected context, subdomain or relationship opens an inspector with what the text declares about it — its properties, its tags read as patterns, and the diagnostics that concern it.
 - **Workspace sharing**: The user copies a shareable URL to easily send their workspace design to others.
 
-**Rendering with errors — degradation, not blocking.** The diagram must never blank out because the model is invalid. Every intermediate state of a file being typed is a syntax error, so strict blocking would make the canvas blink empty on every keystroke, contradicting the instant-visualization promise in 7.3 and the responsiveness constraint in 8.2. The required behaviour:
+**Rendering with errors — degradation, not blocking.** The map must never blank out because the model is invalid. Every intermediate state of a file being typed is a syntax error, so strict blocking would make the map blink empty on every keystroke, contradicting the instant-visualization promise in 7.3 and the responsiveness constraint in 8.2. The required behaviour:
 
-- The partial model always renders whatever is renderable; the element with the problem is drawn **visibly marked** — a dashed red edge for an invalid relationship, a dotted ghost node for a reference that does not resolve.
-- Only a pure syntax error, where no tree exists at all, freezes the last good diagram instead of erasing it. **The frozen diagram must be visibly marked as stale**, otherwise the canvas silently misrepresents the file the user is looking at.
-- **Exporting with errors is allowed, and the export includes the markers.** The exported image is exactly what is on the canvas; there is no "clean" variant, because an export without markers becomes documentation asserting a model that was never valid.
+- The partial model always renders whatever is renderable; the element with the problem is drawn **visibly marked** — a dashed red line for an invalid relationship, a dotted ghost piece for a reference that does not resolve.
+- Only a pure syntax error, where no tree exists at all, freezes the last good map instead of erasing it. **The frozen map must be visibly marked as stale**, otherwise the map silently misrepresents the file the user is looking at.
+- **Exporting with errors is allowed, and the export includes the markers.** The exported image is exactly what is on the map; there is no "clean" variant, because an export without markers becomes documentation asserting a model that was never valid.
 
 ### 5.3 Advanced features & edge cases
 
-- **Complex domains**: When relationship graphs become too dense, the user utilizes the containment view to inspect structural clusters and nesting.
-- **Offline usage**: The app works fully offline, allowing users to design and view diagrams without an internet connection or external server dependency.
+- **Complex domains**: When the flow view becomes too dense, the user utilizes the containment view to inspect structural clusters and nesting.
+- **Offline usage**: The app works fully offline, allowing users to design and view maps without an internet connection or external server dependency.
 
 ### 5.4 UI/UX highlights
 
@@ -267,12 +267,12 @@ The shareable URL payload carries the **ODDS Language Version** the design was w
 Opening a link written against an older version:
 
 - **The application never rewrites the user's text.** Automatic migration would mean shipping migration code for every past version in the browser bundle forever — permanent weight in a 100% client-side product — and silently editing someone's architecture document contradicts the premise that the text is the source of truth.
-- Instead, the text loads as-is, the diagram renders, and any construct that no longer exists produces a **dedicated migration diagnostic** on its exact line, naming the replacement (e.g. *"`[SW]` was removed in ODDS 0.1.0 — use `-x-` on its own"*), rather than a generic syntax error that explains nothing.
+- Instead, the text loads as-is, the map renders, and any construct that no longer exists produces a **dedicated migration diagnostic** on its exact line, naming the replacement (e.g. *"`[SW]` was removed in ODDS 0.1.0 — use `-x-` on its own"*), rather than a generic syntax error that explains nothing.
 - Only a MAJOR version difference — one where a previously valid file stops being valid — triggers these diagnostics. Adding a new lint rule changes what the panel says without breaking the file, and must not be announced as a breaking change.
 
 ## 6. Narrative
 
-The project changes how product and engineering teams align on system architecture. When a software architect, Alex, designs a new system, they write the ODDS declarations directly in the playground instead of drawing static shapes. The system immediately validates the architecture design rules. When Alex attempts to connect a critical core subdomain context directly to a legacy system without protection, the diagram still renders — Alex can see the shape of what they just wrote — and the console flags a strategic risk: the core domain is conforming to another system's model, and should be protected via an ACL. Alex corrects the relationship by adding a protection layer, and the warning disappears. On the one integration where conforming really was a deliberate business decision, Alex instead writes a suppression directive above the line, recording *why* — which is the most valuable sentence in the file, and now travels with it into the pull request. Alex then exports the diagram as a vector image to attach to the project documentation and copies the shareable link to include in the pull request description so that other developers can interactively inspect and modify the design.
+The project changes how product and engineering teams align on system architecture. When a software architect, Alex, designs a new system, they write the ODDS declarations directly in the playground instead of drawing static shapes. The system immediately validates the architecture design rules. When Alex attempts to connect a critical core subdomain context directly to a legacy system without protection, the map still renders — Alex can see the shape of what they just wrote — and the console flags a strategic risk: the core domain is conforming to another system's model, and should be protected via an ACL. Alex corrects the relationship by adding a protection layer, and the warning disappears. On the one integration where conforming really was a deliberate business decision, Alex instead writes a suppression directive above the line, recording *why* — which is the most valuable sentence in the file, and now travels with it into the pull request. Alex then exports the map as a vector image to attach to the project documentation and copies the shareable link to include in the pull request description so that other developers can interactively inspect and modify the design.
 
 ## 7. Success metrics
 
@@ -301,13 +301,13 @@ The project changes how product and engineering teams align on system architectu
 
 ### 8.2 Usability & performance constraints
 
-- Interaction responsiveness: The interface must remain responsive during typing, avoiding lagging or stuttering of the visual diagram.
+- Interaction responsiveness: The interface must remain responsive during typing, avoiding lagging or stuttering of the map.
 - High-quality presentation: Visual exports must be high-resolution and suitable for inclusion in professional architecture reports.
 
 ### 8.3 Sharing & collaboration limits
 
 - Link sharing: Shareable links must fit within standard communication channel limits (e.g., chat apps) to enable seamless sharing.
-- Multi-view options: Large, complex diagrams must offer alternative layouts or views to remain legible and useful for stakeholders. The answer is the two views plus navigation (`ADR-0011`): a fifty-context map seen whole and still is not legible in the flow view, and it is read by zooming, focusing and lighting up one context at a time.
+- Multi-view options: Large, complex maps must offer alternative layouts or views to remain legible and useful for stakeholders. The answer is the two views plus navigation (`ADR-0011`): a fifty-context map seen whole and still is not legible in the flow view, and it is read by zooming, focusing and lighting up one context at a time.
 
 ## 9. Milestones & sequencing
 
@@ -327,9 +327,9 @@ The project changes how product and engineering teams align on system architectu
   - Deliverables: Domain language parser and architectural validation system.
   - **Status: delivered on 2026-09-05.** `@odds/core` passes the 44 golden files, and `@odds/messages` renders every diagnostic in both languages.
 - **Phase 2: User interface and visualization (2 weeks)**
-  - Deliverables: Visual playground, dual diagram layouts, validation feedback panel, and automatic saving.
+  - Deliverables: Visual playground, the two map views, validation feedback panel, and automatic saving.
   - Milestone: Complete playground with live visualization and validation feedback.
-  - **Status: delivered, with two gaps.** The playground (`apps/playground`) runs since 2026-10-21 and does everything the bench validated since 2026-10-23. Two pieces are missing: automatic saving of the design and theme (GH-005), and the dotted ghost node for a reference that does not resolve (5.2): today the relationship is reported in the panel and left out of the drawing.
+  - **Status: delivered, with two gaps.** The playground (`apps/playground`) runs since 2026-10-21 and does everything the bench validated since 2026-10-23. Two pieces are missing: automatic saving of the design and theme (GH-005), and the dotted ghost piece for a reference that does not resolve (5.2): today the relationship is reported in the panel and left out of the drawing.
 - **Phase 3: Sharing and export capabilities (1 week)**
   - Deliverables: Shareable link generator, image exports, preset templates, and interface styling.
   - Milestone: Complete playground with sharing features.
@@ -347,7 +347,7 @@ The project changes how product and engineering teams align on system architectu
 - **Acceptance criteria**:
   - A templates dropdown is populated with at least two presets (e.g., E-Commerce, Simple Domain).
   - Selecting a preset loads the DSL code into the editor.
-  - The diagram renders automatically upon preset selection.
+  - The map renders automatically upon preset selection.
 
 ### 10.2. Interactive validation console
 
@@ -357,7 +357,7 @@ The project changes how product and engineering teams align on system architectu
   - The validation console updates automatically as I type.
   - Each diagnostic displays the line number, severity (Error / Warning / Info), and a detailed message.
   - Clicking on a message highlights the specific line in the editor.
-  - The diagram keeps rendering while errors exist, with the offending elements marked (see 5.2).
+  - The map keeps rendering while errors exist, with the offending elements marked (see 5.2).
   - A `// odds-disable-next-line <CODE>: <justification>` directive removes a warning or info from the console; it never removes an error.
 
 ### 10.3. Shareable URL link
@@ -376,7 +376,7 @@ The project changes how product and engineering teams align on system architectu
 - **Description**: As a user wanting more detail, I want the tool to support representing internal context structures like aggregates, entities, and value objects.
 - **Acceptance criteria**:
   - The system supports writing aggregate, entity, and value object definitions within contexts.
-  - The visual diagram displays these internal elements nested inside their respective contexts.
+  - The map displays these internal elements nested inside their respective contexts.
 
 ### 10.5. Auto-saved design and preferences
 
@@ -392,5 +392,5 @@ The project changes how product and engineering teams align on system architectu
 - **ID**: GH-006
 - **Description**: As a designer working on proprietary architecture, I want to ensure my design text and structure are processed strictly on my local machine without transmission to any external servers, to comply with security guidelines.
 - **Acceptance criteria**:
-  - The application validates and renders the diagram purely within the user's browser.
+  - The application validates and draws the map purely within the user's browser.
   - No network requests containing the design content are sent to external servers.

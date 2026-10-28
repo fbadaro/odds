@@ -214,7 +214,7 @@ Um elemento que produziu um diagnóstico de severidade **`error`** é registrado
 
 Duas obrigações que isso impõe a esta AST, e que são a razão de os campos existirem:
 
-1. `SymbolTableEntry.valid` (§5) — uma declaração descartada pelo panic-mode ainda **entra** na tabela de símbolos, marcada como inválida. É isso que mata a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` (o contexto *foi* declarado, só que no lugar errado) e o que permite ao renderizador desenhar o nó fantasma pontilhado em vez de nada.
+1. `SymbolTableEntry.valid` (§5) — uma declaração descartada pelo panic-mode ainda **entra** na tabela de símbolos, marcada como inválida. É isso que mata a cascata `ORPHAN_CONTEXT` → `PHANTOM_REFERENCE` (o contexto *foi* declarado, só que no lugar errado) e o que permite ao renderizador desenhar a peça fantasma pontilhada em vez de nada.
 2. `astGenerated` **deixou de ser proxy de "renderizável"**. Desde a v0.2.0 a renderização degrada por elemento (`RULES-EN.md` §5): a AST parcial sempre desenha o que for desenhável, e o elemento problemático aparece marcado. `astGenerated: false` significa apenas *"não existe árvore"* — ou seja, `SYNTAX_ERROR` puro —, não *"nada será exibido"*.
 
 ### 1.5 Quem produz o quê
@@ -388,7 +388,7 @@ interface RelationshipNode extends AstNode {
 **Notas de implementação:**
 - `leftTags`/`rightTags` são sempre arrays (possivelmente vazios), nunca `undefined` — simplifica os validadores de `RULES.md` (`UPSTREAM_ONLY_TAG_MISPLACED` etc.), que podem sempre iterar sem checar nulidade primeiro.
 - `left` e `right` são apenas o **nome** do contexto referenciado (string), não uma referência direta ao `ContextNode`. A resolução do nome para o nó real (e as checagens `PHANTOM_REFERENCE`/`DUPLICATE_CONTEXT`) é responsabilidade do Visitor, usando a tabela de símbolos construída no Passo 1. A AST em si não pré-resolve essas referências.
-- **Uma linha = uma aresta.** A identidade de uma relação é o **par não-ordenado** `{left, right}` (`RULES.md` §1.A): qualquer segunda linha para o mesmo par é `DUPLICATE_RELATIONSHIP`, independentemente de conector ou tags. O renderizador nunca precisa mesclar linhas nem eleger uma vencedora entre tags conflitantes — num par duplicado, **a primeira ocorrência é a que desenha**.
+- **Uma linha = uma relação.** A identidade de uma relação é o **par não-ordenado** `{left, right}` (`RULES.md` §1.A): qualquer segunda linha para o mesmo par é `DUPLICATE_RELATIONSHIP`, independentemente de conector ou tags. O renderizador nunca precisa mesclar linhas nem eleger uma vencedora entre tags conflitantes — num par duplicado, **a primeira ocorrência é a que desenha**.
 
 ---
 

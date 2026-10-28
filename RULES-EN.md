@@ -36,7 +36,7 @@ A relationship line carries annotations of three different kinds. They are indep
 
 The first two axes are independent in every combination — you choose the shape of the dependency, and separately the pattern applied on top of it. **Separate Ways is the single cell where the two axes degenerate into one point:** it is the pattern whose application is precisely the *absence* of integration, which makes it indistinguishable from the "Free" dependency shape. There is no solution to choose about a non-dependency.
 
-For that reason, and only that reason, ODDS carries Separate Ways on the **connector** and has no `[SW]` tag. `-x-` alone means *Free / Separate Ways*. A tag that can only ever be redundant or wrong carries zero bits: with `[SW]` in the language, `A -x- B`, `A [SW] -x- B`, `A -x- [SW] B` and `A [SW] -x- [SW] B` were four spellings of one meaning, while `A [SW] --> B` was an error that existed only because the tag existed. Nothing was lost by removing it — in practice, any `-x-` line somebody bothers to write *is* a deliberate decision not to integrate. The DDD pattern name survives where it belongs: in the diagram legend and in the pattern table below, not as a token.
+For that reason, and only that reason, ODDS carries Separate Ways on the **connector** and has no `[SW]` tag. `-x-` alone means *Free / Separate Ways*. A tag that can only ever be redundant or wrong carries zero bits: with `[SW]` in the language, `A -x- B`, `A [SW] -x- B`, `A -x- [SW] B` and `A [SW] -x- [SW] B` were four spellings of one meaning, while `A [SW] --> B` was an error that existed only because the tag existed. Nothing was lost by removing it — in practice, any `-x-` line somebody bothers to write *is* a deliberate decision not to integrate. The DDD pattern name survives where it belongs: in the map legend and in the pattern table below, not as a token.
 
 `[BBM]` is the third category because it fails the test for both of the others: it does not describe a solution applied over a dependency, and it does not rename the dependency — it characterises the system on one end of it. That is why `[BBM]` is the only annotation with **no position rule and no conflict rule**: it is legal on any connector and on any side (§1.C). Restricting it to directional lines would turn a limitation of one *rule* into a limitation of the *language*, and would make two legitimate statements inexpressible: *"that ERP is a swamp and that is why we decided not to integrate"* (`-x-`) and *"we feed a third party's swamp"* (`[BBM]` downstream).
 
@@ -74,7 +74,7 @@ These are choices, not oversights. They are written down so nobody has to redisc
 2. **One file, one `domain`.** Maps that span multiple domains are impossible by construction. This is what makes "one file = one shareable URL" coherent.
 3. **Third-party systems are first class, via the `external { }` block** — you no longer have to lie that Stripe or another company's ERP is a context of one of *your* subdomains. **Assumed contradiction:** the `external` block is declared *inside* `domain { }`, which by definition does not contain it. It is nested there for syntactic reasons (it preserves the invariant that every `context` lives inside a declared block, and the "one file = one domain" premise). The contradiction is named rather than hidden — and it is cancelled in the only place the user would see it: the containment view draws the external block **outside** the domain's subdomain territories, as a landmass of its own beside them (§5).
 4. **`[BBM]` must be repeated on every line** touching that system (§0.3), mitigated by `INCONSISTENT_BBM`.
-5. **The two views have different expressive power, deliberately.** `[BBM]` is an annotation *of a relationship*, and the containment view has no lines — so a swamp system looks like any other context there. Deriving the mark on the node (marking a context that carries `[BBM]` on *any* relationship) was rejected: it would build a visual inference on data that `INCONSISTENT_BBM` itself admits may be contradictory, making the drawing assert more than the text. The two views answer different questions — *"how is this organised?"* and *"how does this integrate?"* — and integration risk is by definition a question for the second.
+5. **The two views have different expressive power, deliberately.** `[BBM]` is an annotation *of a relationship*, and the containment view has no lines — so a swamp system looks like any other context there. Deriving the mark on the piece (marking a context that carries `[BBM]` on *any* relationship) was rejected: it would build a visual inference on data that `INCONSISTENT_BBM` itself admits may be contradictory, making the drawing assert more than the text. The two views answer different questions — *"how is this organised?"* and *"how does this integrate?"* — and integration risk is by definition a question for the second.
 
 ---
 
@@ -116,7 +116,7 @@ Beyond the structural declaration (`context Name { ... }`), a Bounded Context �
 
 | Property | Available on | Purpose |
 |---|---|---|
-| `title` | `domain`, `subdomain`, `context` | Human-readable display label, distinct from the technical identifier used to reference the element elsewhere (e.g. in `mapping`). Intended for rendering on the canvas/diagram. |
+| `title` | `domain`, `subdomain`, `context` | Human-readable display label, distinct from the technical identifier used to reference the element elsewhere (e.g. in `mapping`). Intended for display on the map. |
 | `type` | `context` | Free-text classification of the context's nature (e.g. "service", "legacy system", "gateway"). Deliberately left open-ended rather than a closed taxonomy — there is no fixed list of valid values. **Do not** reuse the subdomain vocabulary (`core`/`supporting`/`generic`) here: they are different axes, and `type: "generic"` inside a `subdomain generic` teaches the reader an overloaded vocabulary. |
 | `description` | `subdomain`, `context` | Free-text explanation. On a `context`, its purpose and role in the solution; on a `subdomain`, **why it exists** — the business reason, not the sum of its child contexts' responsibilities. The difference in meaning comes from the level, not from the word. |
 | `responsibilities` | `context` | A list of the business or technical responsibilities owned by this context. |
@@ -246,7 +246,7 @@ Each connector has exactly one code for "wrong tag here", so the codes never ove
 
 * **Incomplete Mutual Tag** — `INCOMPLETE_MUTUAL_TAG` · phase 4 · External? ✅ applies
   * *Trigger:* `[SK]` or `[P]` declared on only one side of a `<->` line.
-  * *Rationale:* **automatic inference is forbidden.** An earlier draft of this document allowed the parser to "infer the tag for the other side"; a *may* in a specification makes two equally conforming implementations produce different output, and silent inference makes the `.odds` file and the rendered diagram disagree — in an Architecture-as-Code tool the text is the source of truth, not a sketch for the tool to complete. Beyond that, Shared Kernel and Partnership are **bilateral agreements**: writing both sides is the very act of recording that the other team also signed.
+  * *Rationale:* **automatic inference is forbidden.** An earlier draft of this document allowed the parser to "infer the tag for the other side"; a *may* in a specification makes two equally conforming implementations produce different output, and silent inference makes the `.odds` file and the map disagree — in an Architecture-as-Code tool the text is the source of truth, not a sketch for the tool to complete. Beyond that, Shared Kernel and Partnership are **bilateral agreements**: writing both sides is the very act of recording that the other team also signed.
 
 * **Mutual Tag with an External Context** — `MUTUAL_TAG_WITH_EXTERNAL` · phase 4 · External? by definition
   * *Trigger:* `[SK]` or `[P]` on a relationship where either side is an external context.
@@ -408,7 +408,7 @@ Checkout [CF] <-- CorporateERP
 The rules:
 
 * **It lives in the file, never in the UI.** A suppression has to travel through Git, through the shared URL, and through code review. If it lived in the panel, two people would see different diagnostics for the same drawing.
-* **It reaches `warning` and `info`. Never `error`.** The escape hatch exists for conscious decisions against a piece of *advice*; silencing a `PHANTOM_REFERENCE` would make the diagram lie about the model itself. Naming an `error` code in a directive is `MALFORMED_SUPPRESSION`, not a suppression.
+* **It reaches `warning` and `info`. Never `error`.** The escape hatch exists for conscious decisions against a piece of *advice*; silencing a `PHANTOM_REFERENCE` would make the map lie about the model itself. Naming an `error` code in a directive is `MALFORMED_SUPPRESSION`, not a suppression.
 * **Line granularity is enough, universally.** There is no block form and no file form. Every rule — including the aggregate ones — has exactly one anchor line by the span conventions in §1/§2 and `TEST_SUITE.md` §4, so there is nothing a block directive could reach that a line directive cannot. File-wide suppression is also precisely the mechanism by which linters get defeated wholesale and in silence, and `.odds` files are far too small to need it.
 * **It suppresses one code, not the line.** Other rules firing on the same line are still reported.
 * **The justification is mandatory.** A suppression with no reason is indistinguishable from giving up, and six months later nobody knows whether it was a decision or fatigue.
@@ -429,15 +429,15 @@ Two diagnostics keep the mechanism honest, both `info`, both phase 6:
 
 ### 5. Errors and rendering
 
-**A critical error does not block the diagram.** The rule that used to be stated as "critical errors block compilation" was already false in this very document — `ORPHAN_CONTEXT` explicitly did not block AST generation — and it contradicted the product's promise of instant visualisation while typing, since **every intermediate state of a file being typed is a syntax error**. Under strict blocking the canvas would blink empty on every keystroke.
+**A critical error does not block the map.** The rule that used to be stated as "critical errors block compilation" was already false in this very document — `ORPHAN_CONTEXT` explicitly did not block AST generation — and it contradicted the product's promise of instant visualisation while typing, since **every intermediate state of a file being typed is a syntax error**. Under strict blocking the map would blink empty on every keystroke.
 
 The rule is therefore **degradation per element**:
 
 * The partial AST always renders whatever is renderable.
-* The element with the problem is drawn **visibly marked**: a dashed red edge for an invalid relationship, a dotted ghost node for a reference that does not resolve. This is what `SymbolTableEntry.valid` exists for (§3.1).
-* Only a pure `SYNTAX_ERROR` — where no tree exists at all — freezes the last good diagram instead of erasing it. **The frozen diagram must be marked as stale**, otherwise the canvas silently lies about the file it claims to show.
+* The element with the problem is drawn **visibly marked**: a dashed red line for an invalid relationship, a dotted ghost piece for a reference that does not resolve. This is what `SymbolTableEntry.valid` exists for (§3.1).
+* Only a pure `SYNTAX_ERROR` — where no tree exists at all — freezes the last good map instead of erasing it. **The frozen map must be marked as stale**, otherwise the map silently lies about the file it claims to show.
 * In a duplicated pair, **the first occurrence is the one that draws** — consistent with the span convention that blames the second.
-* **Exporting with errors is allowed, and the export includes the markers.** The exported image is exactly what is on the canvas; there is no "clean" variant. An export without markers would become documentation asserting a model that was never valid.
+* **Exporting with errors is allowed, and the export includes the markers.** The exported image is exactly what is on the map; there is no "clean" variant. An export without markers would become documentation asserting a model that was never valid.
 
 The containment view draws the `external { }` block **outside** the domain's subdomain territories, as a landmass of its own beside them — cancelling the syntactic contradiction recorded in §0.5 in the one place the user would perceive it. The honeycomb draws no line around a domain (`ADR-0011`), so "outside" is measured against its territories.
 
