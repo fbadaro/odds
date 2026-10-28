@@ -17,7 +17,9 @@ concurrency:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # arm64, like the machine that captured the @odds/layout goldens: the layout reads the
+    # last bit of Math.sin/cos/atan2/log, which V8 computes differently on x64
+    runs-on: macos-latest
     steps:
       # C17 compares against main, so the history has to be there
       - uses: actions/checkout@v4
