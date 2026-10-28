@@ -47,6 +47,7 @@ Each area has working notes in `.claude/rules/`, loaded when you open its files.
 
 | Question | Source |
 |---|---|
+| Which word to use for a concept, in English and in Portuguese | `GLOSSARY.md` |
 | What a `.odds` file means: rules, severities, phases, suppression | `RULES-EN.md`, with `RULES-PT.md` as its parallel translation |
 | The syntax | `GRAMMAR.md` (EBNF) |
 | The AST, and every `DiagnosticCode` with its phase and `data` keys | `AST_SCHEMA.md` §1.3 |
