@@ -159,7 +159,3 @@ npm run check:spec   # the specification's mechanical checks (Python 3, stdlib)
 ## License
 
 No license has been chosen yet. Until a `LICENSE` file lands, default copyright applies.
-
-## Related work
-
-[Context Mapper](https://contextmapper.org/) is the prior art for text-based context mapping. [`REFERENCES.md`](REFERENCES.md) lists the other tools and inspirations.
