@@ -18,7 +18,6 @@ O script aloca o próximo número sem reusar nenhum que o git já viu, escreve o
 | ADR | Título | Status | Data |
 |---|---|---|---|
 | [ADR-0002](0002-chevrotain-como-toolkit-de-parser.md) | Chevrotain como toolkit de parser | accepted | 2026-09-05 |
-| [ADR-0003](0003-o-odds-e-fonte-unica-o-diagrama-nunca-escreve-de-volta-no-texto.md) | O `.odds` é fonte única: o diagrama nunca escreve de volta no texto | accepted | 2026-09-05 |
 | [ADR-0004](0004-monorepo-em-packages-com-o-catalogo-de-mensagens-em-pacote-proprio.md) | Monorepo em packages/, com o catálogo de mensagens em pacote próprio | accepted | 2026-09-05 |
 | [ADR-0005](0005-npm-workspaces-typescript-e-vitest-como-ambiente-de-desenvolvimento.md) | npm workspaces, TypeScript e Vitest como ambiente de desenvolvimento | accepted | 2026-09-05 |
 | [ADR-0006](0006-recuperacao-da-5-1-codificada-na-gramatica-com-embeddedactionsparser-e-sem-camada-cst.md) | Recuperação da §5.1 codificada na gramática, com EmbeddedActionsParser e sem camada CST | accepted | 2026-09-05 |
@@ -36,3 +35,4 @@ O script aloca o próximo número sem reusar nenhum que o git já viu, escreve o
 | [ADR-0022](0022-as-instrucoes-de-agente-moram-num-agents-md-enxuto-com-regras-por-caminho-em-claude-rules.md) | As instruções de agente moram num AGENTS.md enxuto, com regras por caminho em .claude/rules/ | accepted | 2026-10-24 |
 | [ADR-0024](0024-a-interface-sai-em-portugues-no-mvp-e-o-ingles-entra-depois-como-seletor.md) | A interface sai em português no MVP, e o inglês entra depois como seletor | accepted | 2026-10-24 |
 | [ADR-0025](0025-a-interface-e-feita-direto-na-aplicacao-e-um-passe-fecha-com-testes-verdes-e-adr-so-para-arquitetura-stack-ou-linguagem.md) | A interface é feita direto na aplicação, e um passe fecha com testes verdes e ADR só para arquitetura, stack ou linguagem | accepted | 2026-10-27 |
+| [ADR-0026](0026-o-texto-segue-fonte-unica-e-o-app-so-escreve-nele-inserindo-um-trecho-canonico-por-comando-explicito.md) | O texto segue fonte única, e o app só escreve nele inserindo um trecho canônico por comando explícito | accepted | 2026-11-01 |
