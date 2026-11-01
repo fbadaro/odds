@@ -1,0 +1,31 @@
+.empty {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  width: min(380px, calc(100vw - 32px));
+  padding: var(--space-xl);
+  text-align: center;
+  font-family: var(--font-ui-family);
+  font-size: var(--font-ui-size);
+  line-height: var(--font-ui-line-height);
+}
+
+.lead {
+  margin: 0 0 var(--space-xs);
+  color: rgb(var(--c-ink));
+  font-size: 14px;
+}
+
+.sub {
+  margin: 0 0 var(--space-lg);
+  color: rgb(var(--c-ink-mute));
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+}

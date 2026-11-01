@@ -64,7 +64,7 @@ A alternativa séria, e a que qualquer pessoa proporia primeiro: layout em camad
 
 ### Motor de diagrama interativo completo (Cytoscape, React Flow, JointJS)
 
-Dão de graça seleção, arrasto, pan/zoom e eventos por elemento. Rejeitados por três motivos. Nenhum gera território hexagonal, então o layout continuaria nosso e o motor viraria só uma camada de desenho cara. Vários desenham em canvas, o que põe o export com marcadores atrás de uma conversão raster→vetor que o `PRD.md` §5.2 não tolera. E o que eles mais oferecem — arrastar nó — é exatamente o que o `ADR-0003` recusa: o diagrama nunca escreve de volta no texto, e posição arrastada que não volta para o texto some no próximo layout.
+Dão de graça seleção, arrasto, pan/zoom e eventos por elemento. Rejeitados por três motivos. Nenhum gera território hexagonal, então o layout continuaria nosso e o motor viraria só uma camada de desenho cara. Vários desenham em canvas, o que põe o export com marcadores atrás de uma conversão raster→vetor que o `PRD.md` §5.2 não tolera. E o que eles mais oferecem — arrastar nó — é exatamente o que o `ADR-0026` recusa: o diagrama não guarda estado fora do texto, e posição arrastada que não volta para o texto some no próximo layout.
 
 ### Bibliotecas de grade hexagonal (`honeycomb-grid`, `d3-hexbin`)
 
@@ -72,7 +72,7 @@ Resolvem só a matemática da grade — coordenada axial, vizinhança, conversã
 
 ### Layout "grudento": a posição anterior entra como semente e o deslocamento é penalizado
 
-A medida mais eficaz contra os 18–47% de peças movidas, e a que um editor de diagramas convencional usaria. Rejeitada por uma promessa de produto: o `PRD.md` §10.3 exige que a URL compartilhada abra o playground *"with my exact design loaded"*, e a URL carrega o texto, não a sessão. Com layout dependente de histórico, dois usuários com o mesmo arquivo veriam mapas diferentes, e o mapa de quem recebe o link seria outro que o de quem mandou. Seria também a primeira vez que o diagrama tem estado próprio fora do texto, que é a fresta que o `ADR-0003` fecha. As três medidas adotadas atacam o mesmo problema sem abrir essa fresta; se não bastarem, a volta passa por decidir de novo o fork 2 do README de design — posição derivada ou escolhida —, não por esconder estado no layout.
+A medida mais eficaz contra os 18–47% de peças movidas, e a que um editor de diagramas convencional usaria. Rejeitada por uma promessa de produto: o `PRD.md` §10.3 exige que a URL compartilhada abra o playground *"with my exact design loaded"*, e a URL carrega o texto, não a sessão. Com layout dependente de histórico, dois usuários com o mesmo arquivo veriam mapas diferentes, e o mapa de quem recebe o link seria outro que o de quem mandou. Seria também a primeira vez que o diagrama tem estado próprio fora do texto, que é a fresta que o `ADR-0026` mantém fechada. As três medidas adotadas atacam o mesmo problema sem abrir essa fresta; se não bastarem, a volta passa por decidir de novo o fork 2 do README de design — posição derivada ou escolhida —, não por esconder estado no layout.
 
 ### Recalcular a cada tecla, sem separar topologia de repintura
 

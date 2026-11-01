@@ -1,0 +1,124 @@
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxs);
+}
+
+.choices > button {
+  border: 1px solid rgb(var(--c-hairline));
+}
+
+.choices > button[data-pressed] {
+  border-color: rgb(var(--c-accent));
+  color: rgb(var(--c-accent));
+  background: rgb(var(--c-accent) / 0.08);
+}
+
+.mono > button {
+  font-family: var(--font-code-family);
+}
+
+.details {
+  margin-bottom: var(--space-md);
+}
+
+.more {
+  margin-left: calc(var(--space-sm) * -1);
+  margin-bottom: var(--space-sm);
+}
+
+.chev,
+.chevOpen {
+  width: 12px !important;
+  height: 12px !important;
+  transition: transform 120ms ease;
+}
+
+.chevOpen {
+  transform: rotate(90deg);
+}
+
+.panel {
+  padding-left: var(--space-xs);
+  border-left: 2px solid rgb(var(--c-hairline));
+}
+
+.sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+@media (max-width: 480px) {
+  .sides {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xxs);
+  margin-top: var(--space-sm);
+}
+
+.tag {
+  appearance: none;
+  height: 26px;
+  padding: 0 var(--space-sm);
+  border: 1px solid rgb(var(--c-hairline));
+  border-radius: var(--radius-chip);
+  background: transparent;
+  color: rgb(var(--c-ink-mute));
+  font-family: var(--font-code-family);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tag:hover {
+  color: rgb(var(--c-ink));
+}
+
+.tag[data-pressed] {
+  border-color: rgb(var(--c-accent));
+  color: rgb(var(--c-accent));
+  background: rgb(var(--c-accent) / 0.08);
+}
+
+.tag:focus-visible {
+  outline: 2px solid rgb(var(--c-accent));
+  outline-offset: 1px;
+}
+
+.problem {
+  margin: var(--space-md) 0 0;
+  color: rgb(var(--c-error));
+  font-size: 12px;
+}
+
+.preview {
+  margin-top: var(--space-lg);
+}
+
+.previewLabel {
+  display: block;
+  margin-bottom: var(--space-xxs);
+  color: rgb(var(--c-ink-mute));
+  font-family: var(--font-eyebrow-family);
+  font-size: var(--font-eyebrow-size);
+  letter-spacing: var(--font-eyebrow-letter-spacing);
+  text-transform: uppercase;
+}
+
+.preview pre {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-control);
+  background: rgb(var(--c-surface-muted));
+  color: rgb(var(--c-ink));
+  font-family: var(--font-code-family);
+  font-size: 12px;
+  line-height: 18px;
+  overflow-x: auto;
+  white-space: pre;
+}

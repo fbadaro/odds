@@ -16,7 +16,7 @@ O `ADR-0014` decidiu React no chrome e deixou em aberto *"as práticas de React 
 
 Na conversa de 2026-10-21 sobre como construir a aplicação, essas práticas foram propostas por Claude e o autor não as vetou. O que pesava:
 
-- **O texto é o único estado de verdade** (`ADR-0003`). AST, diagnósticos e geometria derivam dele, mas não no mesmo instante: o layout espera 300 ms de pausa na digitação, e um `SYNTAX_ERROR` congela o último diagrama bom, marcado como obsoleto (`PRD.md` §5.2). Esse ciclo tem relógio e memória entre teclas, e na bancada ele vivia fora de qualquer componente.
+- **O texto é o único estado de verdade** (`ADR-0026`). AST, diagnósticos e geometria derivam dele, mas não no mesmo instante: o layout espera 300 ms de pausa na digitação, e um `SYNTAX_ERROR` congela o último diagrama bom, marcado como obsoleto (`PRD.md` §5.2). Esse ciclo tem relógio e memória entre teclas, e na bancada ele vivia fora de qualquer componente.
 - **A colmeia fica fora da reconciliação** (`ADR-0014`), num contêiner que o React não toca. O componente que a hospeda só precisa da string SVG pronta, não de como ela foi calculada nem de quando.
 - **O autor vai manter a aplicação**, e quer pouco código nosso. Memoização escrita à mão (`useMemo`, `useCallback`, listas de dependência) é código que ele teria de entender e acertar.
 - O `ADR-0014` pediu que a troca de biblioteca de componentes ficasse barata: o código da aplicação importa os nossos componentes, nunca o `@base-ui/react` direto. Isso precisava de alguma coisa que impusesse a regra.
