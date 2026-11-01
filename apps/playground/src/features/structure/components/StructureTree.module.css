@@ -151,3 +151,37 @@
     transition: none;
   }
 }
+
+.d0 {
+  --d: 0;
+}
+
+/* the rows that open a form: quieter than the tree's own rows, and a tree row, not an island button */
+.tw.add {
+  width: 100%;
+  height: 28px;
+  padding: 0 16px 0 calc(16px + var(--d) * 16px);
+  border-radius: 0;
+  justify-content: flex-start;
+  color: rgb(var(--c-ink-mute));
+  font-size: 12px;
+}
+
+.tw.add:hover {
+  color: rgb(var(--c-accent));
+  background: transparent;
+}
+
+.add[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.blocked {
+  margin: 8px 12px 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-control);
+  background: rgb(var(--c-error) / 0.08);
+  color: rgb(var(--c-error));
+  font-size: 12px;
+}

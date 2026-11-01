@@ -93,11 +93,23 @@ export function createDocumentSlice(initialText: string): StateCreator<Playgroun
     };
 
     /** The patch of a draw: on failure the previous drawing stays and the flag holds the message.
-     *  Every new drawing prunes the selection to what is still on the map. */
-    const patchOf = (r: Drawn, sel: Selection, extra: Partial<PlaygroundState> = {}): Partial<PlaygroundState> =>
-      r.ok
-        ? { drawing: r.drawing, layoutError: null, selection: r.drawing ? aliveSelection(sel, r.drawing.nav) : null, ...extra }
-        : { layoutError: r.error };
+     *  Every new drawing prunes the selection to what is still on the map. A `final` drawing is the
+     *  current text's own (not the old geometry repainted during the pause): it settles `wantSelect`,
+     *  selecting and framing what a form just created when the map shows it, and dropping it otherwise. */
+    const patchOf = (r: Drawn, sel: Selection, extra: Partial<PlaygroundState> = {}, final = true): Partial<PlaygroundState> => {
+      if (!r.ok) return { layoutError: r.error };
+      const { wantSelect, frameSeq } = get();
+      const nav = r.drawing?.nav;
+      const wanted = final && wantSelect && nav ? aliveSelection(wantSelect, nav) : null;
+      return {
+        drawing: r.drawing,
+        layoutError: null,
+        selection: wanted ?? (nav ? aliveSelection(sel, nav) : null),
+        ...(final && wantSelect ? { wantSelect: null } : {}),
+        ...(wanted ? { frameSeq: frameSeq + 1 } : {}),
+        ...extra,
+      };
+    };
 
     /** What a new text does to the state, given the drawing and selection it lands on. */
     const textPatch = (text: string, file: string, cur: Drawing | null, sel: Selection): Partial<PlaygroundState> => {
@@ -111,7 +123,7 @@ export function createDocumentSlice(initialText: string): StateCreator<Playgroun
       const base = { text, analysis, ast: analysis.ast, markers: diagnostics, stale: false, waiting: false };
       if (!hasMass(model)) {
         clearPending();
-        return { ...base, drawing: null, selection: null, layoutError: null };
+        return { ...base, drawing: null, selection: null, wantSelect: null, layoutError: null };
       }
       if (cur && keys.full === cur.full) {
         clearPending();
@@ -125,7 +137,7 @@ export function createDocumentSlice(initialText: string): StateCreator<Playgroun
       pending = { model, keys };
       clearTimeout(timer);
       timer = setTimeout(flush, PAUSE_MS);
-      return { ...base, ...patchOf(repaint(cur, diagnostics, view), sel), waiting: true };
+      return { ...base, ...patchOf(repaint(cur, diagnostics, view), sel, {}, false), waiting: true };
     };
 
     const flush = () => {
@@ -159,7 +171,7 @@ export function createDocumentSlice(initialText: string): StateCreator<Playgroun
     const setView = (v: ViewOptions["view"]) => {
       const { drawing, markers, view: was, selection } = get();
       const view = { ...was, view: v };
-      set({ view, ...(drawing ? patchOf(repaint(drawing, markers, view), selection) : {}) });
+      set({ view, ...(drawing ? patchOf(repaint(drawing, markers, view), selection, {}, false) : {}) });
     };
 
     // the first text: built here because set() is not usable before the store exists

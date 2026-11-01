@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { ConfirmDialog } from "../../../components/ui/Dialog";
 import { Island } from "../../../components/island/Island";
 import { Menu } from "../../../components/ui/Menu";
 import { MODELS, type ModelKey } from "../../../lib/models";
@@ -12,6 +13,8 @@ export function FileMenu() {
   const modelKey = usePlayground((s) => s.modelKey);
   const loadModel = usePlayground((s) => s.loadModel);
   const resetText = usePlayground((s) => s.resetText);
+  const newDesign = usePlayground((s) => s.newDesign);
+  const [confirm, setConfirm] = useState(false);
   // o menu abre sob a ilha inteira (top 70px, left 20px), não sob o botão
   const island = useRef<HTMLElement>(null);
   return (
@@ -28,8 +31,22 @@ export function FileMenu() {
         radios={RADIOS}
         value={modelKey}
         onValueChange={(k) => loadModel(k as ModelKey)}
-        actions={[{ label: "restaurar o texto inicial", onSelect: resetText }]}
+        actions={[
+          { label: "novo design", onSelect: () => setConfirm(true) },
+          { label: "restaurar o texto inicial", onSelect: resetText },
+        ]}
         anchor={island}
+      />
+      <ConfirmDialog
+        open={confirm}
+        onOpenChange={setConfirm}
+        title="Começar um design novo?"
+        description="O texto atual sai inteiro do editor, e o formulário do domínio abre. Um Ctrl+Z no editor traz o texto de volta."
+        confirm="Começar do zero"
+        onConfirm={() => {
+          setConfirm(false);
+          newDesign();
+        }}
       />
     </Island>
   );

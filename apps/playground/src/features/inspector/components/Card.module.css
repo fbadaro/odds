@@ -133,3 +133,15 @@
   color: rgb(var(--c-ink));
   word-break: break-word;
 }
+
+/* the button that opens a creation form from the card */
+.create {
+  margin-top: var(--space-xs);
+  color: rgb(var(--c-accent));
+  font-size: 12px;
+}
+
+.create[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

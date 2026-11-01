@@ -5,12 +5,15 @@ import card from "./Card.module.css";
 import styles from "./SubdomainCard.module.css";
 import { SubProp } from "./DocProps";
 import { LineLink } from "./Links";
+import { CreateButton } from "../../create/components/CreateButton";
+import { domainIndex } from "../../create/lib/blocked";
 
 const plural = (k: number, one: string, many: string) => `${k} ${k === 1 ? one : many}`;
 
 /** The bench's subdomain panel: type and title, description and owner, the derived tally and its contexts. */
 export function SubdomainCard({ sub, f, nav }: { sub: string; f: InspectorData; nav: Nav }) {
   const select = usePlayground((s) => s.select);
+  const ast = usePlayground((s) => s.analysis.ast);
   const s = nav.subs[sub];
   if (!s) return null;
   const ids = s.ids, key = sub.split("/")[1]!, sd = f.sub[sub];
@@ -49,6 +52,9 @@ export function SubdomainCard({ sub, f, nav }: { sub: string; f: InspectorData; 
           <span className={styles.cnt}>{deg[id] ?? 0} rel.</span>
         </button>
       ))}
+      <CreateButton label="Novo context aqui" target={{ kind: "context", domain: domainIndex(ast, sub.split("/")[0]!), parent: key }} className={card.create}>
+        + novo context
+      </CreateButton>
     </div>
   );
 }

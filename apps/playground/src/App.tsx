@@ -2,6 +2,8 @@ import { Toast } from "./components/ui/Toast";
 import { TooltipProvider } from "./components/ui/Tooltip";
 import { DiagnosticsDock } from "./features/diagnostics/components/DiagnosticsDock";
 import { CodePanel } from "./features/editor/components/CodePanel";
+import { CreateDialog } from "./features/create/components/CreateDialog";
+import { EmptyMap } from "./features/create/components/EmptyMap";
 import { HelpPanel } from "./features/help/components/HelpPanel";
 import { Inspector } from "./features/inspector/components/Inspector";
 import { SelectionCaption } from "./features/inspector/components/SelectionCaption";
@@ -26,6 +28,7 @@ export function App() {
         <main>
           <Honeycomb />
         </main>
+        <EmptyMap />
         <FileMenu />
         <ViewSwitch />
         <Actions />
@@ -39,6 +42,7 @@ export function App() {
         <WaitIndicator />
         <DiagnosticsDock />
         <ZoomControls />
+        <CreateDialog />
         <Toast />
       </div>
     </TooltipProvider>

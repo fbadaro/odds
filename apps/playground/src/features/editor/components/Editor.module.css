@@ -64,3 +64,48 @@
   caret-color: rgb(var(--c-accent));
   font-variant-ligatures: none;
 }
+
+/* the textarea's column: the band of fresh lines floats over it, without taking the pointer */
+.code {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.code .editor {
+  height: 100%;
+}
+
+.band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: rgb(var(--c-accent) / 0.12);
+  animation: fresh 1.6s ease-out forwards;
+}
+
+.gut div[data-fresh] {
+  background: rgb(var(--c-accent) / 0.18);
+  color: rgb(var(--c-accent));
+}
+
+@keyframes fresh {
+  from {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .band {
+    animation: none;
+  }
+}

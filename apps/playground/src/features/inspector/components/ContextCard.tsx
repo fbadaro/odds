@@ -6,6 +6,8 @@ import styles from "./ContextCard.module.css";
 import { DocProps, hasDoc } from "./DocProps";
 import { CtxLink, LineLink, SubLink, Tags } from "./Links";
 import { Verdict } from "./Verdict";
+import { CreateButton } from "../../create/components/CreateButton";
+import { domainOfContext } from "../../create/lib/blocked";
 
 /** What touches a context: its tile, one of its ports, or a relation it is an end of. */
 const touches = (d: TargetedDiagnostic, id: string) =>
@@ -14,6 +16,7 @@ const touches = (d: TargetedDiagnostic, id: string) =>
 /** The bench's context panel: title, home, verdict, contract, properties and the fence. */
 export function ContextCard({ id, f, nav, markers }: { id: string; f: InspectorData; nav: Nav; markers: TargetedDiagnostic[] }) {
   const clickRelation = usePlayground((s) => s.clickRelation);
+  const ast = usePlayground((s) => s.analysis.ast);
   const home = nav.ctxSub[id], hs = home ? nav.subs[home] : undefined, cd: Partial<DocInfo> = f.ctx[id] ?? {};
   const mine = Object.values(f.rels).filter((r) => r.l === id || r.r === id).sort((a, b) => a.line - b.line);
   const verdict = markers.filter((d) => touches(d, id));
@@ -51,6 +54,9 @@ export function ContextCard({ id, f, nav, markers }: { id: string; f: InspectorD
       ) : (
         <div className={card.none}>Nenhuma relação no mapping.</div>
       )}
+      <CreateButton label="Nova relação a partir daqui" target={{ kind: "relationship", domain: domainOfContext(ast, id), left: id }} className={card.create}>
+        + nova relação
+      </CreateButton>
       <div className={card.sect} data-sect>Propriedades</div>
       {hasDoc(cd) ? <DocProps d={cd} /> : <div className={card.nofill}>Nenhuma propriedade declarada.</div>}
       <div className={card.fence} data-fence>

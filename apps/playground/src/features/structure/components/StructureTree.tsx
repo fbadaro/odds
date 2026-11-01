@@ -4,6 +4,8 @@ import { SeverityIcon, type Severity } from "../../../components/icons/SeverityI
 import { pairKey } from "../../../lib/selection";
 import { usePlayground } from "../../../stores/playground";
 import { sevMarks } from "../lib/sevMarks";
+import { CreateButton } from "../../create/components/CreateButton";
+import { blockedReason } from "../../create/lib/blocked";
 import styles from "./StructureTree.module.css";
 
 const TYPES = ["core", "supporting", "generic"];
@@ -45,6 +47,7 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
   const selection = usePlayground((s) => s.selection);
   const hover = usePlayground((s) => s.hover);
   const setHover = usePlayground((s) => s.setHover);
+  const blocked = usePlayground((s) => blockedReason(s.analysis));
 
   if (!ast) return <div className={styles.empty}>O texto ainda não tem estrutura.</div>;
 
@@ -84,9 +87,20 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
     </button>
   );
 
+  const add = (depth: string) => `${styles.tw} ${depth} ${styles.add}`;
+
   return (
     <div onClick={click} onPointerOver={over} onPointerLeave={() => hover && setHover(null)}>
-      {ast.domains.map((d) => {
+      {blocked && <div className={styles.blocked}>{blocked}</div>}
+      {ast.domains.length === 0 && (
+        <div className={styles.sec}>
+          <div className={styles.empty}>O texto ainda não declara um domínio.</div>
+          <CreateButton label="Criar domínio" target={{ kind: "domain" }} className={add(styles.d0!)}>
+            + domínio
+          </CreateButton>
+        </div>
+      )}
+      {ast.domains.map((d, di) => {
         const dk = "d:" + d.name;
         const rels = d.mapping ? d.mapping.relationships : [];
         return (
@@ -114,7 +128,14 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
                           <span className={styles.grow} />
                           <Sev s={m.sub[key]} />
                         </button>
-                        {!shut.has(sk) && sd.contexts.map(ctxRow)}
+                        {!shut.has(sk) && (
+                          <>
+                            {sd.contexts.map(ctxRow)}
+                            <CreateButton label={`Novo context em ${sd.name}`} target={{ kind: "context", domain: di, parent: sd.name }} className={add(styles.d2!)}>
+                              + context
+                            </CreateButton>
+                          </>
+                        )}
                       </div>
                     );
                   })}
@@ -127,6 +148,12 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
                       {!shut.has("e:" + d.name) && d.external.contexts.map(ctxRow)}
                     </>
                   )}
+                  <CreateButton label={`Novo subdomínio em ${d.name}`} target={{ kind: "subdomain", domain: di }} className={add(styles.d1!)}>
+                    + subdomínio
+                  </CreateButton>
+                  <CreateButton label="Novo context externo" target={{ kind: "context", domain: di, parent: null }} className={add(styles.d1!)}>
+                    + context externo
+                  </CreateButton>
                 </>
               )}
             </div>
@@ -143,6 +170,9 @@ export function StructureTree({ shut, onToggle }: { shut: ReadonlySet<string>; o
                 );
               })}
               {rels.length === 0 && <div className={styles.empty}>Nenhuma relação no mapping.</div>}
+              <CreateButton label="Nova relação" target={{ kind: "relationship", domain: di }} className={add(styles.d0!)}>
+                + relação
+              </CreateButton>
             </div>
           </div>
         );

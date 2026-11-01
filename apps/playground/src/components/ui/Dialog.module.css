@@ -1,0 +1,49 @@
+/* the dialog floats over the map and the islands; Base UI puts the state in data-* */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgb(var(--c-ink) / 0.24);
+}
+
+.popup {
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: var(--space-xl);
+  background: rgb(var(--c-surface));
+  border: 1px solid rgb(var(--c-hairline));
+  border-radius: var(--radius-card);
+  box-shadow: var(--sh-island);
+  color: rgb(var(--c-ink));
+  font-family: var(--font-ui-family);
+  font-size: var(--font-ui-size);
+  line-height: var(--font-ui-line-height);
+}
+
+.narrow {
+  width: min(400px, calc(100vw - 32px));
+}
+
+.title {
+  margin: 0 0 var(--space-xs);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.desc {
+  margin: 0 0 var(--space-lg);
+  color: rgb(var(--c-ink-mute));
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-xl);
+}
