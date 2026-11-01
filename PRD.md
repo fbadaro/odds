@@ -237,6 +237,11 @@ The system will expand in a future iteration to support tactical modeling struct
 ### 5.2 Core experience
 
 - **Writing declarations**: The user writes the domain model, and the visualization updates automatically.
+- **Creating elements by form**: A user who does not know the syntax yet creates the domain, a subdomain, a context (inside a subdomain or in `external`) or a relationship through a form. The form offers every field the grammar accepts for that element. It offers only the tags valid for the chosen connector and side (`RULES-EN.md` §1.C), and it blocks an illegal or duplicate name before inserting. The form is a shortcut for typing, not a second representation (`ADR-0026`):
+  - The application writes to the text only on that explicit command, and only by **inserting** a canonical snippet at the end of the parent block. It never reformats, moves or deletes existing text.
+  - Each insertion is one undo step in the editor. The new element is selected on the map, and the inserted lines are highlighted in the editor.
+  - While the text is a pure syntax error there is no tree to insert into, so the creation commands are disabled, and the interface points to the error.
+  - "New design" is the one command that replaces the whole file, and it asks for confirmation first.
 - **Interactive validation feedback**: The user views architectural issues in the validation panel, with a counter per severity level (error / warning / info) that filters the list. The list itself keeps the normative emission order (`RULES-EN.md` §3.3): by validation phase, then by position in the file. Clicking an issue highlights the relevant line in the editor and selects the element it is about on the map. The panel owns the presentation of severity — icons and colors are chosen here, never embedded in the message text, so that a rule reclassified later does not carry a stale icon with it.
 - **Visualization toggles**: The user switches between the relationship flow view and the nested containment view (see 4.4).
 - **Navigating the map**: The user zooms and pans; selecting a context lights up its relationships and fades the rest, selecting a territory focuses its subdomain, and selecting a line isolates one relationship. A structure panel lists the domain's tree and relationships, and picking an entry frames it on the map.
@@ -394,3 +399,15 @@ The project changes how product and engineering teams align on system architectu
 - **Acceptance criteria**:
   - The application validates and draws the map purely within the user's browser.
   - No network requests containing the design content are sent to external servers.
+
+### 10.7. Create elements without knowing the syntax
+
+- **ID**: GH-007
+- **Description**: As a first-time user who does not know the ODDS syntax, I want to create subdomains, contexts and relationships through forms, so that I can build a design and learn the language from the text it produces.
+- **Acceptance criteria**:
+  - Starting from an empty file, I can create the domain, and from there every subdomain, context and relationship, without typing ODDS by hand.
+  - Each form offers every field the grammar accepts for that element, and only the tags valid for the chosen connector and side.
+  - An illegal or duplicate name is rejected in the form, before anything is written.
+  - Each creation inserts a snippet at the end of its parent block and leaves the rest of the text exactly as it was; one undo removes it.
+  - The new element is selected on the map, and its lines are highlighted in the editor.
+  - While the text has a pure syntax error, the creation commands are disabled and say why.
